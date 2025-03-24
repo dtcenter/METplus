@@ -14,14 +14,23 @@
 import sys
 
 VERSION_LOOKUP = {
+    '6.1': {
+        'metplus': '6.1.0',
+        'met': '12.1.0',
+        'metplotpy': '3.1.0',
+        'metcalcpy': '3.1.0',
+        'metdataio': '3.1.0',
+        'metviewer': '6.1.0',
+        'metexpress': None,
+    },
     '6.0': {
         'metplus': '6.0.0',
-        'met': '12.0.0',
+        'met': '12.0.2',
         'metplotpy': '3.0.0',
         'metcalcpy': '3.0.0',
         'metdataio': '3.0.0',
         'metviewer': '6.0.0',
-        'metexpress': None,
+        'metexpress': '6.0.0',
     },
     '5.1': {
         'metplus': '5.1.0',
@@ -30,7 +39,7 @@ VERSION_LOOKUP = {
         'metcalcpy': '2.1.0',
         'metdataio': '2.1.0',
         'metviewer': '5.1.0',
-        'metexpress': '5.3.3',
+        'metexpress': '5.3.5',
     },
 }
 
@@ -152,10 +161,12 @@ def main():
                                  args.output_component, args.output_format,
                                  args.get_dev_version, args.rc_is_dev)
 
+def init():
+    if __name__ == "__main__":
+        out_version = main()
+        if not out_version:
+            sys.exit(1)
 
-if __name__ == "__main__":
-    out_version = main()
-    if not out_version:
-        sys.exit(1)
+        print(out_version)
 
-    print(out_version)
+init()

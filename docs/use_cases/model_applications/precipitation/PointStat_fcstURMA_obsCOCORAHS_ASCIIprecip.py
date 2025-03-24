@@ -27,17 +27,22 @@ model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
 
 ##############################################################################
 # Datasets
-# ---------------------
+# --------
 #
-# | **Forecast:** 24 URMA 1 hour precipitation accumulation files
+# **Forecast:** 24 UnRestricted Mesoscale Analysis (URMA) 1 hour precipitation accumulation files
 #
-# | **Observations:** CoCoRaHS, the Community Collaborative Rain, Hail, and Snow Network
+# **Observations:** CoCoRaHS, the Community Collaborative Rain, Hail, and Snow Network
 #
+# **Climatology:** None
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
-#
-# | **Data Source:** EMC
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -51,6 +56,14 @@ model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (VALID_BEG):** 2022091423
+#
+# **End time (VALID_END):** 2022091423
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 1M
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 24H
+#
 # 1 csv file of multiple valid observation times is passed to ASCII2NC via Python embedding, resulting in a netCDF output.
 # 24 forecast files, each composed of 1 hour precipitation accumulation forecasts, is summarized via PCPCombine.
 # The following boundary times are used for the forecast summation times:
@@ -62,15 +75,14 @@ model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
 # Finally, PointStat is used to compare the two new fields (point data in netCDF and precipitation accumulation over 24 hours).
 # Because the Valid Time used in configuration file is set to one time (2022-09-14 at 23z) and the precipitation accumulation valid time is set to this same time, 
 # the observation window spans across the entire 2022-09-14 24 hour timeframe.
-#
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# i.e. -c parm/use_cases/model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
@@ -78,43 +90,47 @@ model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
-# METplus sets environment variables based on the values in the METplus configuration file. These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the ‘User Defined Config’ section on the ‘System Configuration’ page of the METplus User’s Guide for more information.
+# METplus sets environment variables based on user settings in the METplus
+# configuration file. See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details.
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/Ascii2NcConfig_wrapped
-# .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
-# 
+# **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
+#
+# If there is a setting in the MET configuration file that is currently
+# not supported by METplus you’d like to control, please refer to:
+# :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
+#
+# .. dropdown:: Ascii2NcConfig_wrapped
+#
+#   .. literalinclude:: ../../../../parm/met_config/Ascii2NcConfig_wrapped
+#
+# .. dropdown:: PointStatConfig_wrapped
+#
+#   .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped 
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf then a user-specific system configuration file::
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf /path/to/user_system.conf
 #
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip::
-#
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [config]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

@@ -184,6 +184,7 @@ exclude_patterns = ['_build',
                     'use_cases',
                     'Release_Guide/release_steps',
                     'Verification_Datasets/datasets/template.rst',
+                    'Users_Guide/existing_builds_template.rst',
                     ]
 
 # Suppress certain warning messages
@@ -197,7 +198,7 @@ suppress_warnings = ['ref.citation']
 #
 html_theme = 'sphinx_rtd_theme'
 html_theme_path = ["_themes", ]
-html_js_files = ['pop_ver.js']
+html_js_files = []
 html_css_files = ['theme_override.css']
 
 # Add any paths that contain custom static files (such as style sheets) here,

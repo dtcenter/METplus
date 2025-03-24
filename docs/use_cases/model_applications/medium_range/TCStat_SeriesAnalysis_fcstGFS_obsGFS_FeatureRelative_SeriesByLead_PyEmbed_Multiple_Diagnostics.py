@@ -14,7 +14,7 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 ##############################################################################
 # Scientific Objective
 # --------------------
-# This use case calls multiple tools to produce diagnostic plots of systematic erros relative to a
+# This use case calls multiple tools to produce diagnostic plots of systematic errors relative to a
 # feature (e.g. hurricane, MCS, etc...). This use case calls two user provided python scripts that
 # calculate diagnostics of interest (e.g. integrated vapor transport, potential vorticity, etc...).
 # These user diagnostics are then used to define the systematic errors. This example calculates
@@ -36,6 +36,10 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 #
 # Additionally, the ability to calculate model statistical errors based on user provided diagnostics
 # allows the user to customize the feature relative analysis to suit their needs.
+#
+# This use case compares the Global Forecast System (GFS) forecast to the GFS analysis for
+# hurricane Dorian. It is based on three user provided python scripts that calculate the diagnostic 
+# integrated vaport transport (IVT) baroclinic potential vorticity (PV), and saturation equivalent potential temperature (SEPT), respectively. 
 
 ##############################################################################
 # Version Added
@@ -47,45 +51,34 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 # Datasets
 # --------
 #
-# This use case compares the Global Forecast System (GFS) forecast to the GFS analysis for
-# hurricane Dorian. It is based on three user provided python scripts that calculate the diagnostic 
-# integrated vaport transport (IVT) baroclinic potential vorticity (PV), and saturation equivalent potential temperature (SEPT), respectively. 
-# 
-#  - Variables required to calculate IVT:
-#    Levels required: all pressure levels >= 100mb
-#    #. Temperature
-#    #. v- component of wind
-#    #. u- component of wind
-#    #. Geopotential height
-#    #. Specific humidity OR Relative Humidity
+# **Forecast:** NOAA Global Forecast System (GFS) with the required variables
+# at all levels >= 100 hPa:
 #
-#  - Variables required to calculate PV:
-#    Levels required: all pressure levels >= 100mb
-#    #. U-wind
-#    #. V-wind
-#    #. Temperature
+# #. Temperature
+# #. v- component of wind
+# #. u- component of wind
+# #. Geoopotential height
+# #. Specific Humidity OR Relative Humidity 
 #
-#  - Variables required to calculate saturation equivalent potential temperature:
-#    Levels required: all pressure levels >= 100mb
-#    #. Temperature
+# **Observation:** Automated Tropical Cyclone Forecasting System (ATCF) ADeck and BDeck data
+# and NOAA Global Forecast System (GFS) with the reaquired variables at all levels >= 100 hPa:
 #
-#  - Forecast dataset: GFS Grid 4 Forecast
-#    GFS Forecast data can be found at the following website: https://www.ncdc.noaa.gov/data-access/model-data/model-datasets/global-forcast-system-gfs
-#    - Initialization date: 20190830
-#    - Initialization hours: 00, 06, 12, 18 UTC
-#    - Lead times: 90, 96, 102, 108, 114
-#    - Format: Grib2
-#    - Resolution: 0.5 degree
-#  - Observation dataset: GFS Grid 4 Analysis
-#    GFS Analysis data can be found at the following website: https://www.ncdc.noaa.gov/data-access/model-data/model-datasets/global-forcast-system-gfs
-#    - Valid date/time range: 20190902_18 - 20190904_12 every 6 hours
-#    - Format: Grib2
-#    - Resolution: 0.5 degree
-#  - Hurricane Track Data
-#    Hurricane track data can be found at the following website: http://hurricanes.ral.ucar.edu/repository/data/
-#    - ADeck Track File: aal052019.dat
-#    - BDeck Track File: bal052019.dat
+# #. Temperature
+# #. v- component of wind
+# #. u- component of wind
+# #. Geoopotential height
+# #. Specific Humidity OR Relative Humidity 
 #
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # External Dependencies
@@ -127,6 +120,14 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (INIT_BEG):** 2019083000
+#
+# **End time (INIT_END):** 2019083023
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 21600
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 90, 96, 102, 108, 114
+#
 # This use case loops by process which means that each tool is run for all times before moving to the
 # next tool. The tool order is as follows:
 # 
@@ -140,27 +141,22 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 # | **Init:** 20190830_00Z
 # | **Forecast lead:** 90, 96, 102, 108, 114
 # |
-#
 # | **Init:** 20190830_06Z
 # | **Forecast lead:** 90, 96, 102, 108, 114
 # |
-#
 # | **Init:** 20190830_12Z
 # | **Forecast lead:** 90, 96, 102, 108, 114
 # |
-#
 # | **Init:** 20190830_18Z
 # | **Forecast lead:** 90, 96, 102, 108, 114
-# |
-#
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_Multiple_Diagnostics.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_Multiple_Diagnostics.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf
@@ -168,7 +164,7 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 
 #############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on user settings in the METplus configuration file. 
 # See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
@@ -178,26 +174,17 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# **TCPairsConfig_wrapped**
+# .. dropdown:: TCPairsConfig_wrapped
 #
-# .. note:: See the :ref:`TCPairs MET Configuration<tc-pairs-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+#   .. literalinclude:: ../../../../parm/met_config/TCPairsConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/TCPairsConfig_wrapped
+# .. dropdown:: TCStatConfig_wrapped
 #
-# **TCStatConfig_wrapped**
+#   .. literalinclude:: ../../../../parm/met_config/TCStatConfig_wrapped
 #
-# .. note:: See the :ref:`TCStat MET Configuration<tc-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: SeriesAnalysisConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/TCStatConfig_wrapped
-#
-# **SeriesAnalysisConfig_wrapped**
-#
-# .. note:: See the :ref:`SeriesAnalysis MET Configuration<series-analysis-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
-#
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
+#   .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
 
 ##############################################################################
 # Python Embedding
@@ -206,78 +193,56 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 # This use case uses four Python embedding scripts to read input data, two for the forecast data and two for the analysis data.
 # The multiple datatype input requires the two-script approach.
 #
-# parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_ivt_fcst.py
+# .. dropdown:: parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_ivt_fcst.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_ivt_fcst.py
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_ivt_fcst.py
 #
-# parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_pv_fcst.py
+# .. dropdown:: parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_pv_fcst.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_pv_fcst.py
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_pv_fcst.py
 #
-# parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_sept_fcst.py
+# .. dropdown:: parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_sept_fcst.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_sept_fcst.py
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_sept_fcst.py
 #
+# .. dropdown:: parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_ivt_analysis.py
 #
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_ivt_analysis.py
 #
-# parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_ivt_analysis.py
+# .. dropdown:: parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_pv_analysis.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_ivt_analysis.py
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_pv_analysis.py
 #
-# parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_pv_analysis.py
+# .. dropdown:: parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_sept_analysis.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_pv_analysis.py
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_sept_analysis.py
 #
-# parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_sept_analysis.py
+# 
+# For more information on the basic requirements to utilize Python Embedding in METplus, 
+# please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
+
+##############################################################################
+# User Scripting
+# --------------
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_sept_analysis.py
-#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf, 
-# then a user-specific system configuration file::
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf /path/to/user_system.conf
 #
-#        run_metplus.py \
-#        /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf \
-#        /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf::
-#
-#        run_metplus.py \
-#        /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-#  and for the [exe] section, you will need to define the location of NON-MET executables.
-#  If the executable is in the user's path, METplus will find it from the name. 
-#  If the executable is not in the path, specify the full path to the executable here (i.e. CONVERT = /usr/bin/convert)
-#  The following executables are required for performing series analysis use cases:
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y
-#
-#   [exe]
-#   CONVERT = /path/to/convert
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output
@@ -349,4 +314,3 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 #
 #
 # sphinx_gallery_thumbnail_path = '_static/medium_range-TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multivariate_Diagnostics.png'
-#

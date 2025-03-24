@@ -46,10 +46,10 @@ lead_hours = lead_td.days * 24 + (lead_td.seconds//3600)
 lead_hms = (f"{str(lead_hours).zfill(2)}"
             f"{str((lead_td.seconds//60)%60).zfill(2)}00")
 
-nx = ds.dims['west_east_subgrid']
-ny = ds.dims['south_north_subgrid']
+nx = ds.sizes['west_east_subgrid']
+ny = ds.sizes['south_north_subgrid']
 
-d_km = ds.attrs['DX'] * ds.dims['west_east'] / nx / 1000
+d_km = ds.attrs['DX'] * ds.sizes['west_east'] / nx / 1000
 
 lat_ll = float(ds['FXLAT'][0][0][0])
 lon_ll = float(ds['FXLONG'][0][0][0])

@@ -28,10 +28,20 @@ model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 # Datasets
 # --------
 #
-# Relevant information about the datasets that would be beneficial include:
-# 
-# * Observation dataset: Local Storm Reports
+# **Forecast:** None
 #
+# **Observation:** NOAA Storm Prediction Center (SPC) Local Storm Reports
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -46,26 +56,32 @@ model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (INIT_BEG):** 2020020500
+#
+# **End time (INIT_END):** 2020020500
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 24H
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 24H
+#
 # The following tools are used for each run time:
 #
 # ASCII2NC > Point2Grid > RegridDataPlane 
 #
 # This example runs on a single time/file at a time. Each storm report is 
-# assumed to have no more than 24 hours of data inside 
+# assumed to have no more than 24 hours of data inside. 
 #
 # Run times:
 #
-# | 2020-02-05
-# |
-#
+# 2020-02-05
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
@@ -73,61 +89,52 @@ model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
-# METplus sets environment variables based on the values in the METplus configuration file.
-# These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
+# METplus sets environment variables based on user settings in the METplus
+# configuration file. See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details.
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/Ascii2NcConfig_wrapped
+# **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
 #
-# See the following files for more information about the environment variables set in this configuration file.
+# If there is a setting in the MET configuration file that is currently
+# not supported by METplus you’d like to control, please refer to:
+# :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# parm/use_cases/met_tool_wrapper/Point2Grid/Point2Grid.py
-# parm/use_cases/met_tool_wrapper/RegridDataPlane/RegridDataPlane.py
+# .. dropdown:: Ascii2NcConfig_wrapped
 #
+#   .. literalinclude:: ../../../../parm/met_config/Ascii2NcConfig_wrapped
 
 ##############################################################################
 # Python Embedding
 # ----------------
 #
-# This use case uses a Python embedding script to read input data
+# This use case uses a Python embedding script to read input data.
 #
-# parm/use_cases/model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect/read_ascii_storm.py
+#  .. dropdown:: parm/use_cases/model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect/read_ascii_storm.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect/read_ascii_storm.py
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect/read_ascii_storm.py
 #
+# For more information on the basic requirements to utilize Python Embedding in METplus, 
+# please refer to the MET User’s Guide section on
+# `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.conf then a user-specific system configuration file::
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf /path/to/user_system.conf
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf -c /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.conf::
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/short_range/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-# **NOTE:** All of these items must be found under the [dir] section.
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

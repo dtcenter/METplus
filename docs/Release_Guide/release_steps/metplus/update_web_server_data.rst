@@ -1,40 +1,45 @@
 Update DTC Web Server Data
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Create Directory for Next Release
-"""""""""""""""""""""""""""""""""
+Create a directory for the next release.
 
-On the DTC web server where the sample input data for use cases is hosted,
-run the setup_next_release_data.py script for the next upcoming release
-to set up the data directory for the next major/minor version development.
-The script can be found in the METplus repository in internal/tests/use_cases.
-The file should be found in the home directory of the met_test user on
-the DTC web server host. It is linked to the file in the METplus repository.
-Pull the latest changes from the develop branch before running the script::
+.. dropdown:: If creating an rc1 release
 
-    runas met_test
-    cd /home/met_test/METplus
-    git checkout develop
-    git pull
+  On the DTC web server where the sample input data for use cases is hosted,
+  run the setup_next_release_data.py script for the next upcoming release
+  to set up the data directory for the next major/minor version development.
+  The script can be found in the METplus repository in internal/tests/use_cases.
+  The file should be found in the home directory of the met_test user on
+  the DTC web server host. It is linked to the file in the METplus repository.
+  Pull the latest changes from the develop branch before running the script::
 
-Now run the script passing in the version of the next release, i.e.
-if creating the v4.1.0 release, pass in v5.0 as the argument::
+      runas met_test
+      cd /home/met_test/METplus
+      git checkout develop
+      git pull
 
-    new_version=v5.0
-    /home/met_test/setup_next_release_data.py ${new_version}
+  Now run the script passing in the version of the next release, i.e.
+  if creating the v6.0.0-rc1 release, pass in v6.1 as the argument::
 
-See the comments in the script for more details.
-Ensure that the script runs without error and that the newly created
-directory contains links to all of the sample data tar files::
+      new_version=v6.1
+      /home/met_test/setup_next_release_data.py ${new_version}
 
-    ls -lh /home/met_test/METplus_Data/${new_version}
+  See the comments in the script for more details.
+  Ensure that the script runs without error and that the newly created
+  directory contains links to all of the sample data tar files::
 
-Untar each of the sample data tarfiles so the model_applications and
-met_test directories exist::
+      ls -lh /home/met_test/METplus_Data/${new_version}
 
-    cd /home/met_test/METplus_Data/${new_version}
-    for f in sample_data*; do echo tar xzf $f;tar xzf $f; done
+  Untar each of the sample data tarfiles so the model_applications and
+  met_test directories exist::
 
-Check if the met_test and model_applications directories now exist::
+      cd /home/met_test/METplus_Data/${new_version}
+      for f in sample_data*; do echo tar xzf $f;tar xzf $f; done
 
-    ls -lh /home/met_test/METplus_Data/${new_version}
+  Check if the met_test and model_applications directories now exist::
+
+      ls -lh /home/met_test/METplus_Data/${new_version}
+
+.. dropdown:: If creating a betaN or rc2+ release
+
+  Continue to the next instruction.

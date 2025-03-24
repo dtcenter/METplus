@@ -11,7 +11,7 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_Extr
 #   :local:
 #   :backlinks: none
 
-###########################################
+##############################################################################
 # Scientific Objective
 # --------------------
 #
@@ -30,17 +30,22 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_Extr
 # Datasets
 # --------
 #
-#
-# | **Forecast:** Adeck
-# |     /path/to/{init?fmt=%Y}/trak.gfso.atcf_gen.glbl.{init?fmt=%Y}
-# | **Observation:** Bdeck
+# | **Forecast:** Automated Tropical Cyclone Forecasting System (ATCF) Adeck
 # |     /path/to/{init?fmt=%Y}/trak.gfso.atcf_gen.glbl.{init?fmt=%Y}
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# | **Observation:** Automated Tropical Cyclone Forecasting System (Bdeck)
+# |     /path/to/{init?fmt=%Y}/trak.gfso.atcf_gen.glbl.{init?fmt=%Y}
 #
-# | **Data Source:** GFS
-# |
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # External Dependencies
@@ -65,23 +70,25 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_Extr
 # METplus Workflow
 # ----------------
 #
-# TCPairs is the first tool called in this example. It processes the following
-# run times for each storm file:
+# **Beginning time (INIT_BEG):** 20201007
 #
-# | **Init/Valid:** 2020100700
-# |
+# **End time (INIT_END):** None
 #
-# CyclonePlotter is the second (and final) tool called in this example. It processes the output
-# from TCPairs.
+# **Increment between beginning and end times (INIT_INCREMENT):** None
 #
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
+# TCPairs is the first tool called in this example, then CyclonePlotter 
+# is the second (and final) tool called in this example. This example does not
+# loop in time, and only runs once for the time set by INIT_BEG.
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c /path/to/TCPairs_extra_tropical.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.conf
@@ -98,10 +105,9 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_Extr
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`TCPairs MET Configuration<tc-pairs-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: TCPairsConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/TCPairsConfig_wrapped
+#   .. literalinclude:: ../../../../parm/met_config/TCPairsConfig_wrapped
 
 ##############################################################################
 # Python Embedding
@@ -113,38 +119,31 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_Extr
 # the user input. These storms are put into separate storm files, to better mimic how TC storms are
 # typically passed to TCPairs.
 #
-# parm/use_cases/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC/extract_opc_decks.py
+# .. dropdown:: parm/use_cases/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC/extract_opc_decks.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC/extract_opc_decks.py
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC/extract_opc_decks.py
 #
+# For more information on the basic requirements to utilize Python Embedding in METplus, 
+# please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
 
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# It is recommended to run this use case by:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# Passing in TCPairs_extra_tropical.conf then a user-specific system configuration file::
+#   run_metplus.py /path/to/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.conf /path/to/user_system.conf
 #
-#   run_metplus.py -c /path/to/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.conf -c /path/to/user_system.conf
-#
-# The following METplus configuration variables must be set correctly to run this example.:
-#
-# * **INPUT_BASE** - Path to directory where EMC data files (csv) are read (See Datasets section to obtain tarballs).
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-# **NOTE:** All of these items must be found under the [dir] section.
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

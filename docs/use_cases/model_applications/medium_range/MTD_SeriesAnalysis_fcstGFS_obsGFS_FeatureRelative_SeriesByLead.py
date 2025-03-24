@@ -5,7 +5,6 @@ Multi_Tool (MTD): Feature Relative by Lead (with lead groupings)
 model_applicaitons/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf
 
 """
-
 ##############################################################################
 # .. contents::
 #   :depth: 1
@@ -30,13 +29,20 @@ model_applicaitons/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelativ
 # Datasets
 # --------
 #
-# Relevant information about the datasets that would be beneficial include:
+# **Forecast:** NOAA Global Forecast System (GFS)
 #
-#  * MODE Time Domain Forecast dataset: GFS
-#  * Series-Analysis Forecast dataset: GFS
-#  * MODE Time Domain Observation dataset: GFS Analysis
-#  * Series-Analysis Observation dataset: GFS Analysis
+# **Observation:** NOAA Global Forecast System (GFS) analysis
 #
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -51,11 +57,18 @@ model_applicaitons/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelativ
 # are aggregated into forecast hour groupings as specified by the start and end
 # increment in the METplus configuration file, as well as labels to identify each
 # forecast hour grouping.
-#
 
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (INIT_BEG):** 2021071200
+#
+# **End time (INIT_END):** 2021071212
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 6H
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** begin_end_incr(0,30,6)
 #
 # The following tools are used for each run time:
 #
@@ -68,15 +81,11 @@ model_applicaitons/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelativ
 # | **Init:** 20210712_00Z
 # | **Forecast lead:** 6, 12, 18, 24, 30
 # |
-#
 # | **Init:** 20210712_06Z
 # | **Forecast lead:** 6, 12, 18, 24, 30
 # |
-#
 # | **Init:** 20210712_12Z
 # | **Forecast lead:** 6, 12, 18, 24, 30
-# |
-#
 
 ##############################################################################
 # METplus Configuration
@@ -100,54 +109,41 @@ model_applicaitons/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelativ
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# **MTDConfig_wrapped**
+#  .. dropdown:: MTDConfig_wrapped
 #
-# .. note:: See the :ref:`MTD MET Configuration<mtd-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+#   .. literalinclude:: ../../../../parm/met_config/MTDConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/MTDConfig_wrapped
+#  .. dropdown:: SeriesAnalysisConfig_wrapped
 #
-# **SeriesAnalysisConfig_wrapped**
+#   .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
 #
-# .. note:: See the :ref:`SeriesAnalysis MET Configuration<series-analysis-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf, then a user-specific system configuration file::
-#
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf
-#        /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf::
-#
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf /path/to/user_system.conf
+
 #  If the 'convert' executable is not in the user's path, specify the full
 #  path to the executable here
 #
 # * **CONVERT = /usr/bin/convert**
 #
-# Example User Configuration File::
-#
-#   [config]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y
-#   CONVERT = /path/to/convert
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

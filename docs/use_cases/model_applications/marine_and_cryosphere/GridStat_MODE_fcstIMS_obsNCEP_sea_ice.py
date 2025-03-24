@@ -54,7 +54,7 @@ model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.c
 # **Climatology:** None
 #    
 # **Data source:** Received from Robert Grumbine at EMC. IMS data is originally from the
-#  `NIC <https://usicecenter.gov/Products/ImsData>`_. NCEP data is originally from NCEP.
+# `NIC <https://usicecenter.gov/Products/ImsData>`_. NCEP data is originally from NCEP.
 #  
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
@@ -114,7 +114,6 @@ model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.c
 #
 # .. dropdown:: GridStatConfig_wrapped
 #
-#   .. highlight:: bash
 #   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 #
 # .. dropdown:: MODEConfig_wrapped

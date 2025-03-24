@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import pytest
+from unittest import mock
 
 from metplus import component_versions
 
@@ -17,6 +18,7 @@ from metplus import component_versions
         ('metcalcpy', 'v3.0.0-rc1', '6.0'),
         ('METplus', '6.0-latest', '6.0'),
         ('METplus', '3.0-latest', None),
+        ('METmrPlow', '6.1.0', None),
     ]
 )
 @pytest.mark.util
@@ -44,6 +46,8 @@ def test_get_coordinated_version(component, version, expected_result):
         # get latest bugfix version from main branch or X.Y version
         ('MET', 'main_v11.1', 'MET', '{X}.{Y}.{Z}{N}', '11.1.1'),
         ('MET', '11.1.Z', 'MET', '{X}.{Y}.{Z}{N}', '11.1.1'),
+        ('METmrPlow', '11.1.Z', 'MET', '{X}.{Y}.{Z}{N}', None),
+        ('MET', '11.1.Z', 'METmrPlow', '{X}.{Y}.{Z}{N}', None),
     ]
 )
 @pytest.mark.util
@@ -66,3 +70,18 @@ def test_get_component_version(input_component, input_version, output_component,
 @pytest.mark.util
 def test_get_component_version_get_dev(input_version, get_dev, rc_is_dev, expected_result):
     assert component_versions.get_component_version('METplus', input_version, 'METplus', get_dev=get_dev, rc_is_dev=rc_is_dev) == expected_result
+
+@pytest.mark.util
+def test_main():
+    with mock.patch.object(component_versions, '__name__', '__main__'):
+        with mock.patch.object(component_versions.sys, 'argv', ['component_versions.py', '-v', '6.0.0', '-o', 'METplus']):
+            assert component_versions.main() == 'v6.0.0'
+
+@pytest.mark.util
+def test_init():
+    with mock.patch.object(component_versions, 'main', return_value=None):
+        with mock.patch.object(component_versions, '__name__', '__main__'):
+            with mock.patch.object(component_versions.sys, 'argv', ['component_versions.py']):
+                with mock.patch.object(component_versions.sys, 'exit') as mock_exit:
+                    component_versions.init()
+                    assert mock_exit.call_args[0][0] == 1

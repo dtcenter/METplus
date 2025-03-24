@@ -2,8 +2,10 @@
 
 Update Version Number
 ^^^^^^^^^^^^^^^^^^^^^
-  
-* Update the version in the code and documentation:
+
+Update the version number in the code and documentation.
+
+.. dropdown:: Instructions
   
   * If necessary, update the 'met_version' variable in 'src/basic/vx_util/util_constants.h' which defines the version number written to the MET output files.
 

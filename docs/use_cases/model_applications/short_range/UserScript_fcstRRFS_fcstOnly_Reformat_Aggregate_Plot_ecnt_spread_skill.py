@@ -1,4 +1,4 @@
- """
+"""
 UserScript: Reformat MET .stat ECNT data, calculate aggregation statistics, and generate a spread skill plot
 ============================================================================================================
 
@@ -31,27 +31,26 @@ model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_P
 # Datasets
 # --------
 #
-#  * Forecast dataset: RRFS GEFS (Rapid Refresh Forecast System Global Ensemble Forecast System)
-#  * Observation dataset: None
+# **Forecast:** RRFS GEFS (Rapid Refresh Forecast System Global Ensemble Forecast System)
+# Ensemble-Stat output files
 #
-#  **Input**: MET .stat files from MET ensemble-stat tool for RRFS for 20220506
+# **Observation:** None
 #
-#  **Location**: All the input data required for this use case can be found in the met_test sample data tarball
-#  (**sample_data-short_range.tgz**).
+# **Climatology:** None
 #
-#  Click here to see the METplus releases page and download sample data for the appropriate
-#  release: https://github.com/dtcenter/METplus/releases
-#
-#  See `Running METplus <https://metplus.readthedocs.io/en/develop/Users_Guide/getting_started.html#running-metplus>`_
-#  section for more information.
-#
-#  **This tarball should be unpacked into the directory corresponding to the value of INPUT_BASE** in the
-#  `User Configuration File <https://metplus.readthedocs.io/en/develop/Users_Guide/systemconfiguration.html#user-configuration-file>`_
-#  section.
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 #############################################################################
 # External Dependencies
 # ---------------------
+#
 # You will need to use the version of Python that is required for the METplus version
 # in use.  Refer to the Installation section of the User's Guide for basic Python requirements:
 # https://metplus.readthedocs.io/en/latest/Users_Guide/installation.html
@@ -73,8 +72,6 @@ model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_P
 #  * kaleido (python-kaleido)
 #  * plotly
 #  * matplotlib
-
-
 
 ##############################################################################
 # METplus Components
@@ -103,28 +100,32 @@ model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_P
 # Define the OUTPUT_BASE, INPUT_BASE, and MET_INSTALL_DIR settings in the user
 # configuration file. For instructions on how to set up the user configuration file, refer to the `User ConfigurationFile
 # <https://metplus.readthedocs.io/en/develop/Users_Guide/systemconfiguration.html#user-configuration-file>`_ section.
-#
-
 
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (VALID_BEG):** 20220506_000000
+#
+# **End time (VALID_END):** None
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** None
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
 #
 # This use case reads in the MET .stat output that contains the ECNT linetype (from
 # the MET ensemble-stat tool).  The .stat output *MUST* reside under one directory.
 # If .stat files are spread among multiple directories, these must be consolidated under a
 # single directory.
 # The use case loops over three processes: reformatting, aggregating, and plotting.
-#
-
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
 # METplus first loads all the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.conf
@@ -132,84 +133,56 @@ model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_P
 
 #############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # There are no MET tools used in this use case. The use case uses MET .stat
 # output as input for the reformatting step.
-#
 
 ##############################################################################
 # Python Embedding
 # ----------------
 #
-# There is no python embedding in this use case
-#
+# This use case does not use Python embedding.
 
 ##############################################################################
-# Python Scripts
-# ----------------
-# This use case uses Python scripts to invoke the METdataio reformatter, the METcalcpy aggregator, and the METplotpy
-# line plot.
+# User Scripting
+# --------------
+#
+# This use case uses Python scripts to invoke the METdataio reformatter, the METcalcpy aggregator,
+# and the METplotpy line plot.
 #
 # The following Python script (from METdataio) is used to reformat the MET .stat ECNT linetype data
 # into a format that can be used by the aggregating script.
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/reformat_ecnt_linetype.py
+# .. dropdown:: parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/reformat_ecnt_linetype.py
+#
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/reformat_ecnt_linetype.py
 #
 # This Python script (from METcalcpy) is used to calculate aggregation statistics for the ECNT linetype.
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/aggregate_ecnt.py
+# .. dropdown:: parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/aggregate_ecnt.py
+#
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/aggregate_ecnt.py
 #
 # Finally,this Python script (from METplotpy) is used to generate a spread-skill plot using the METplotypy line plot code.
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/plot_spread_skill.py
+# .. dropdown:: parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/plot_spread_skill.py
 #
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/plot_spread_skill.py
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.conf,
-# then a user-specific system configuration file::
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.conf /path/to/user_system.conf
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.conf -c /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.conf::
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-#  and for the [exe] section, you will need to define the location of NON-MET executables.
-#  If the executable is in the user's path, METplus will find it from the name. 
-#  If the executable is not in the path, specify the full path to the executable here (i.e. RM = /bin/rm)  
-#  The following executables are required for performing series analysis use cases:
-#
-# Example User Configuration File::
-#
-#   [config]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y
-#
-#
-#   [exe]
-#   RM = /path/to/rm
-#   CUT = /path/to/cut
-#   TR = /path/to/tr
-#   NCAP2 = /path/to/ncap2
-#   CONVERT = /path/to/convert
-#   NCDUMP = /path/to/ncdump
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

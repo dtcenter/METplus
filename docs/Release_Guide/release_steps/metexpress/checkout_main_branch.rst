@@ -1,20 +1,21 @@
 Checkout the Main Branch
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-Checkout the main branch of the METexpress repo.
+Checkout the main branch of the METexpress repositories.
 
-.. parsed-literal::
+.. dropdown:: Instructions
 
-    git checkout main
-    git pull
-    cd MATScommon
-    git checkout main
-    git pull
-    cd ../METexpress
-    git checkout main
-    git pull
-    cd MATScommon
-    git checkout main
-    git pull
-    cd ../..
+  .. parsed-literal::
 
+      git checkout main
+      git pull
+      cd MATScommon
+      git checkout main
+      git pull
+      cd ../METexpress
+      git checkout main
+      git pull
+      cd MATScommon
+      git checkout main
+      git pull
+      cd ../..

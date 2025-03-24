@@ -42,6 +42,9 @@ def print_doc_text(tool_name, input_dict):
     _print_script_info_text()
 
     wrapper_camel = get_wrapper_name(tool_name)
+    if wrapper_camel is None:
+        print(f'ERROR: Invalid tool name: {tool_name}')
+        sys.exit(1)
 
     # get info for each variable and store it in a dictionary
     met_vars = _get_met_vars(tool_name, input_dict)

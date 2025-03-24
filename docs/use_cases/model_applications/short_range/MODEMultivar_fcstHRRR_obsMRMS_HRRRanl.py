@@ -42,23 +42,20 @@ model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 # Datasets
 # --------
 #
-# **Forecast dataset:** 1-hour HRRR in grib2
+# **Forecast:** Subset of NOAA High Resolution Rapid Refresh (HRRR) in grib2
 #
-# **Observation dataset:** MRMS and HRRR analysis in grib2
+# **Observation:** Subset of Multi-Radar Multi-Sensor (MRMS) and HRRR analysis in grib2
 # 
-# The forecast and observation fields are only a subset of the full domain in
-# order for a faster run-time of Multivariate MODE. An example command using
-# wgrib2 to create the HRRR subdomain is::
+# **Climatology:** None
 #
-#   wgrib2 infile.grib2 -new_grid_winds earth -new_grid lambert:262.5:38.5:38.5:38.5 -83.0:400:3000 37.0:400:3000 outfile.grib2 
-#
-# **Location:** All of the input data required for this use case can be found
-# in the *short_range* sample data tarball.
-# Navigate to `METplus Releases <https://github.com/dtcenter/METplus/releases>`_
-# and download sample data for the appropriate release.
-#
-# This tarball should be unpacked into the directory that you will set the
-# value of INPUT_BASE. See :ref:`running-metplus` for more information.
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -66,11 +63,18 @@ model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 #
 # This use case utilizes the METplus MODE wrapper, ingesting multiple variables
 # to output complex super objects based on a user-defined logical expression. 
-# 
 
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (INIT_BEG):** 2021020100
+#
+# **End time (INIT_END):** 2021020100
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** None
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 21
 #
 # MODE is the only tool called and ingests multiple fields to create a complex
 # super object.
@@ -79,22 +83,21 @@ model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 #
 # | **Initialization:** 2021020100
 # | **Forecast lead:** 21
-#
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line:
-# parm/use_cases/model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on user settings in the METplus configuration file. 
 # See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
@@ -104,10 +107,21 @@ model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`MODE MET Configuration<mode-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: MODEConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/MODEConfig_wrapped
+#   .. literalinclude:: ../../../../parm/met_config/MODEConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
@@ -116,7 +130,7 @@ model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 # Pass the use case configuration file to the run_metplus.py script
 # along with any user-specific system configuration files if desired::
 #
-#    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 
@@ -154,6 +168,7 @@ model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 #   * NOAAWPCOrgUseCase
 #   * NCAROrgUseCase 
 #   * DiagnosticsUseCase
+#   * MvMODEUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

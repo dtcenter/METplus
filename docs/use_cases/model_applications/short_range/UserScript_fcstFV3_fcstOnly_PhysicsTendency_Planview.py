@@ -43,21 +43,27 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planv
 # Datasets
 # --------
 #
-#  * Forecast dataset: FV3 3-D history file with physics and dynamics tendencies
-#  * Grid specification: FV3 2-D grid specification file with latitude and longitude of each grid point
+# **Forecast:** FV3 3-D history file with physics and dynamics tendencies.
 #
-#  **Location:** All the input data required for this use case can be
-#  found in the met_test sample data tarball. Click here to access the METplus
-#  releases page and download sample data for the appropriate release:
-#  https://github.com/dtcenter/METplus/releases
-#  The tarball should be unpacked into the directory that you will set
-#  the value of INPUT_BASE. See the "Running METplus" section below for more
-#  information.
-
+# **Grid specification:** FV3 2-D grid specification file with latitude and longitude of each grid point.
+#
+# **Observation:** None
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # External Dependencies 
 # ---------------------
+#
 # You will need to use a compatible version of Python (for this METplus
 # version) that has the following packages
 # installed:
@@ -70,8 +76,6 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planv
 #  * shapely
 #  * xarray
 
-
-
 ##############################################################################
 # METplus Components
 # ------------------
@@ -82,7 +86,15 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planv
 ##############################################################################
 # METplus Workflow
 # ----------------
-# 
+#
+# **Beginning time (VALID_BEG):** 2019
+#
+# **End time (VALID_END):** None
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** None
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
 # This use case does not loop but plots physics tendency data that has been
 # subsetted to one date: 2019-06-15.
 
@@ -92,7 +104,7 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planv
 #
 # METplus first loads all of the configuration files found in
 # parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
+# then it loads any configuration files passed to METplus via the command line,
 # i.e.
 # parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 #
@@ -104,48 +116,29 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planv
 # -----------------
 #
 # No MET tools are used in this use case.
-#
-# METplus sets environment variables based on user settings in the METplus
-# configuration file. 
-# See :ref:`How METplus controls MET config file settings<metplus-control-met>`
-# for more details. 
 
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run in the following way: 
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
-# then a user-specific system configuration file::
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf  /path/to/user_system.conf
 #
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf  /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in
-# UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf::
-#
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
-#
-# The former method is recommended. Whether you add them to a user-specific
-# configuration file or modify the metplus_config files, the following
-# variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are
-#   unpacked (See Datasets section to obtain tarballs). This is not required
-#   to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must
-#   be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-# **NOTE:** All of these items must be found under the [dir] section.
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

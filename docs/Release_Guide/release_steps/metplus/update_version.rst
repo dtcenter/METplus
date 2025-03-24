@@ -1,21 +1,22 @@
 Update Version Number for Release
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. note::
+.. dropdown:: If creating a betaN release
 
-  These instructions only apply when creating a **beta**
-  (betaN) development release. Skip this section for
-  release candidate (rcN) development releases.
+  Remove **-dev** from the version number:
 
-Remove **-dev** from the version number:
+  * As of METplus v4.0.0-beta2, we are naming releases with X.Y.Z format even if Z is 0.
+    As of METplus v4.0.0-beta4, the file containing the version number is located at metplus/VERSION
+    (in earlier releases, the file was located at docs/version or doc/version).
 
-* As of METplus v4.0.0-beta2, we are naming releases with X.Y.Z format even if Z is 0.
-  As of METplus v4.0.0-beta4, the file containing the version number is located at metplus/VERSION
-  (in earlier releases, the file was located at docs/version or doc/version).
+  * In the develop branch, the version should match the upcoming release with -dev
+    added to the end like X.Y.Z-betaN-dev, i.e. 4.0.0-beta1-dev
 
-* In the develop branch, the version should match the upcoming release with -dev
-  added to the end like X.Y.Z-betaN-dev, i.e. 4.0.0-beta1-dev
+  * Remove **-dev** from the version number so that it matches the release you are creating.
 
-* Remove **-dev** from the version number so that it matches the release you are creating.
+  * Commit changes and push to GitHub.
 
-* Commit changes and push to GitHub.
+
+.. dropdown:: If creating an rcN release
+
+  Continue to the next instruction.

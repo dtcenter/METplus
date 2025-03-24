@@ -28,8 +28,20 @@ model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.
 # Datasets
 # --------
 #
-#  * Forecast dataset: HRRR Surrogate Severe Data
-#  * Observation dataset: Practically Perfect from Local Storm Reports.
+# **Forecast:** HRRR Surrogate Severe Data
+#
+# **Observation:** Practically Perfect from Local Storm Reports.
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -43,20 +55,29 @@ model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (VALID_BEG):** 2020020612
+#
+# **End time (VALID_END):** 2020020612
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 86400
+#
+# | **Sequence of forecast leads to process:**
+# | LEAD_SEQ_MIN = 36
+# | LEAD_SEQ_MAX = 36
+#
 # The grid_stat tool is run for each time. This example loops by valid time.  It
 # processes 1 valid time, listed below.
 #
 # | **Valid:** 2020-02-06_12Z
 # | **Forecast lead:** 36
-# |
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
@@ -73,39 +94,32 @@ model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`GridStat MET Configuration<grid-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: GridStatConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+#   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf then a user-specific system configuration file::
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf /path/to/user_system.conf
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf -c /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf::
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-# **NOTE:** All of these items must be found under the [dir] section.
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

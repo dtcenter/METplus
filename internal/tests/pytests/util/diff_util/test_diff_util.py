@@ -1,8 +1,6 @@
 import pytest
 
-from netCDF4 import Dataset
 import os
-import shutil
 from unittest import mock
 from PIL import Image
 import numpy as np
@@ -214,7 +212,7 @@ def test_get_file_type(path, expected):
 
 
 @pytest.mark.util
-def test_get_file_type_netCDF4(dummy_nc1):
+def test_get_file_type_netcdf4(dummy_nc1):
     actual = du.get_file_type(dummy_nc1)
     assert actual == 'netcdf'
 
@@ -488,7 +486,7 @@ def test__handle_text_files(cmp_return, comp_txt_return, expected):
 
 
 @pytest.mark.parametrize(
-    'colour_A, colour_B, save_diff, expected, check_print',
+    "colour_a, colour_b, save_diff, expected, check_print",
     [
         (
             255,
@@ -515,7 +513,7 @@ def test__handle_text_files(cmp_return, comp_txt_return, expected):
 )
 @pytest.mark.util
 def test_compare_image_files(
-    capfd, tmp_path_factory, colour_A, colour_B, save_diff, expected, check_print
+    capfd, tmp_path_factory, colour_a, colour_b, save_diff, expected, check_print
 ):
     image_dir = tmp_path_factory.mktemp('images')
     image1 = image_dir / 'img1.jpg'
@@ -528,8 +526,8 @@ def test_compare_image_files(
         im.save(file_path)
         im.close()
 
-    _make_test_img(image1, colour_A)
-    _make_test_img(image2, colour_B)
+    _make_test_img(image1, colour_a)
+    _make_test_img(image2, colour_b)
 
     actual = du.compare_image_files(image1, image2, save_diff)
 

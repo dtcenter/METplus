@@ -34,13 +34,21 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 # Datasets
 # --------
 #
-# Relevant information about the datasets that would be beneficial include:
+# **Forecast:** NOAA Global Forecast System (GFS)
 #
-#  * TC-Pairs/TC-Stat Forecast dataset: ADeck modified-ATCF tropical cyclone data
-#  * Series-Analysis Forecast dataset: GFS
-#  * TC-Pairs/TC-Stat Observation dataset: BDeck modified-ATCF tropical cyclone data
-#  * Series-Analysis Observation dataset: GFS Analysis
+# **Observation:** NOAA Global Forecast System (GFS) Analysis and
+# Automated Tropical Cyclone Forecasting System (ATCF) ADeck and BDeck data
 #
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # External Dependencies
@@ -49,7 +57,6 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 # You will need to use a version of Python 3.6+ that has the following packages installed::
 #
 # * netCDF4
-#
 
 ##############################################################################
 # METplus Components
@@ -68,6 +75,14 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (INIT_BEG):** 20141214
+#
+# **End time (INIT_END):** 20141214
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 21600
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
 # The following tools are used for each run time:
 # TCPairs > RegridDataPlane, TCStat > SeriesAnalysis
 #
@@ -80,39 +95,31 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 # | **Init:** 20141214_0Z
 # | **Forecast lead:** 6
 # |
-#
 # | **Init:** 20141214_0Z
 # | **Forecast lead:** 12
 # |
-#
 # | **Init:** 20141214_0Z
 # | **Forecast lead:** 18
 # |
-#
 # | **Init:** 20141214_0Z
 # | **Forecast lead:** 24
 # |
-#
 # | **Init:** 20141214_0Z
 # | **Forecast lead:** 30
 # |
-#
 # | **Init:** 20141214_0Z
 # | **Forecast lead:** 36
 # |
-#
 # | **Init:** 20141214_0Z
 # | **Forecast lead:** 42
-# |
-#
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByInit.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByInit.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByInit.conf
@@ -129,80 +136,40 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# **TCPairsConfig_wrapped**
+# .. dropdown:: TCPairsConfig_wrapped
 #
-# .. note:: See the :ref:`TCPairs MET Configuration<tc-pairs-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+#   .. literalinclude:: ../../../../parm/met_config/TCPairsConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/TCPairsConfig_wrapped
+# .. dropdown:: TCStatConfig_wrapped
 #
-# **TCStatConfig_wrapped**
+#   .. literalinclude:: ../../../../parm/met_config/TCStatConfig_wrapped
 #
-# .. note:: See the :ref:`TCStat MET Configuration<tc-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: SeriesAnalysisConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/TCStatConfig_wrapped
+#   .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
 #
-# **SeriesAnalysisConfig_wrapped**
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
 #
-# .. note:: See the :ref:`SeriesAnalysis MET Configuration<series-analysis-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
-#
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByInit.conf then a user-specific system configuration file::
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByInit.conf /path/to/user_system.conf
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByInit.conf -c /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByInit.conf::
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByInit.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-#
-#  and for the [exe] section, you will need to define the location of
-#  NON-MET executables.  If the executable is in the user's path, METplus will find it from
-#  the name. If the executable is not in the path, specify the full
-#  path to the executable here (i.e. CONVERT = /usr/bin/convert)  The following executables are required
-#  for performing series analysis use cases:
-#
-#  If the executables are in the path:
-#
-# * **CONVERT = convert**
-#
-# **NOTE:** All of these executable items must be located under the [exe] section.
-#
-#
-# If the executables are not in the path, they need to be defined:
-#
-# * **CONVERT = /path/to/convert**
-#
-# **NOTE:** All of these executable items must be located under the [exe] section.
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y
-#
-#   [exe]
-#   CONVERT = /path/to/convert
-#
-# **NOTE:** The INPUT_BASE, OUTPUT_BASE, and MET_INSTALL_DIR must be located under the [dir] section, while the RM, CUT, TR, NCAP2, CONVERT, and NCDUMP must be located under the [exe] section.
-
-
-
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output
