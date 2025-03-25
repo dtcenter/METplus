@@ -170,7 +170,7 @@ model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 # `line plot documentation <https://metplus.readthedocs.io/projects/metplotpy/en/latest/Users_Guide/line.html>`_.
 #
 # Both UserScripts are located at::
-# 
+#
 #   parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer
 #
 # .. dropdown:: reformat_CTS_linetype.py
