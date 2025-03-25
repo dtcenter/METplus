@@ -148,23 +148,37 @@ model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 # User Scripting
 # --------------
 #
-# There are two python scripts used in this use case.  The first is 
-# reformat_CTS_linetype.py.  This script takes the aggregated output CTS linetype
-# from Stat Analysis and reformats it so that the data can be plotted.  The script
-# takes an input .yaml file, reformat_CTS.yaml.  Environment variables in the yaml
-# file are specified in the [user_env_vars] section of the GridStat_fcstGFS_obsGFS_clouds.conf
-# configuration file.
+# There are two Python UserScripts used in this use case.  These UserScripts provide an
+# interface to the functions in the METdataio, METcalcpy, and METplotpy Python modules
+# of METplus.  The functions used in these UserScripts demonstrate reformatting
+# aggregated StatAnalysis output to meet the format required by METcalcpy and METplotpy,
+# and then plotting that reformatted output using functions from METcalcpy and METplotpy.  
+# 
+# The first UserScript is called reformat_CTS_linetype.py.  This script takes the aggregated 
+# output CTS linetype from Stat Analysis and reformats it so that the data can be plotted.  
+# The script takes an input .yaml file, reformat_CTS.yaml.  Environment variables in the yaml
+# file are specified in the [user_env_vars] section of the 
+# GridStat_fcstGFS_obsGFS_cloudFracLayer.conf METplus configuration file.
 #
 # The second python script is plot_line_stats.py.  This script creates line plots for low
-# and high clouds for GSS, CSI, and Frequency bias with lead time.  Input variables to both 
-# scripts are set in the [user_env_vars] section of the .conf file.
+# and high clouds for GSS, CSI, and Frequency bias with lead time, using the YAML files
+# custom_line_CSI.yaml, custom_line_FBIAS.yaml, and custom_line_GSS.yaml  Input variables to both 
+# scripts are set in the [user_env_vars] section of the 
+# GridStat_fcstGFS_obsGFS_cloudFracLayer.conf file.
 #
-# .. dropdown:: parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer/reformat_CTS_linetype.py
+# For more information about YAML configuration options for the line plots shown here, see the METplotpy
+# `line plot documentation <https://metplus.readthedocs.io/projects/metplotpy/en/latest/Users_Guide/line.html>`_.
+#
+# Both UserScripts are located at::
+# 
+# parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer
+#
+# .. dropdown:: reformat_CTS_linetype.py
 #
 #   .. highlight:: python
 #   .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer/reformat_CTS_linetype.py
 #
-# .. dropdown:: parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer/plot_line_stats.py
+# .. dropdown:: plot_line_stats.py
 #
 #   .. highlight:: python
 #   .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer/plot_line_stats.py
