@@ -151,19 +151,20 @@ model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 # User Scripting
 # --------------
 #
-# There are two Python UserScripts used in this use case.  These UserScripts provide an
+# There are two Python scripts used in this use case, called using the "UserScript" keyword
+# in the METplus wrappers PROCESS_LIST configuration item.  These scripts provide an
 # interface to the functions in the METdataio, METcalcpy, and METplotpy Python modules
-# of METplus.  The functions used in these UserScripts demonstrate reformatting
+# of METplus.  The functions used in these scripts demonstrate reformatting
 # aggregated StatAnalysis output to meet the format required by METcalcpy and METplotpy,
 # and then plotting that reformatted output using functions from METcalcpy and METplotpy.  
 # 
-# The first UserScript is called reformat_CTS_linetype.py.  This script takes the aggregated 
+# The first Python script is called reformat_CTS_linetype.py.  This script takes the aggregated 
 # output CTS linetype from Stat Analysis and reformats it so that the data can be plotted.  
 # The script takes an input .yaml file, reformat_CTS.yaml.  Environment variables in the yaml
 # file are specified in the [user_env_vars] section of the 
 # GridStat_fcstGFS_obsGFS_cloudFracLayer.conf METplus configuration file.
 #
-# The second python script is plot_line_stats.py.  This script creates line plots for low
+# The second Python script is plot_line_stats.py.  This script creates line plots for low
 # and high clouds for GSS, CSI, and Frequency bias with lead time, using the YAML files
 # custom_line_CSI.yaml, custom_line_FBIAS.yaml, and custom_line_GSS.yaml  Input variables to both 
 # scripts are set in the [user_env_vars] section of the 
@@ -172,7 +173,7 @@ model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 # For more information about YAML configuration options for the line plots shown here, see the METplotpy
 # `line plot documentation <https://metplus.readthedocs.io/projects/metplotpy/en/latest/Users_Guide/line.html>`_.
 #
-# Both UserScripts are located at::
+# Both Python scripts are located at::
 #
 #   parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer
 #
