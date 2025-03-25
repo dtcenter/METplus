@@ -171,7 +171,7 @@ model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 #
 # Both UserScripts are located at::
 # 
-# parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer
+#   parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer
 #
 # .. dropdown:: reformat_CTS_linetype.py
 #
