@@ -51,8 +51,11 @@ model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 # ------------------
 #
 # This use case calls GenVxMask once, GridStat once, MODE three times, StatAnalysis
-# once, and UserScript twice.  Additionally, METcalcpy, METplotpy, and METdataio are 
-# required to run this use case.  The METcalcpy scripts accessed include the following:
+# once, and UserScript twice.  MODE has three entries to facilitate calling MODE
+# for three separate variables without invoking Muli-variate MODE, while GridStat is able
+# to run for three separate variables with only one process list entry.
+# Additionally, METcalcpy, METplotpy, and METdataio are required to run this use case.  
+# The METcalcpy scripts accessed include the following:
 #
 # * metcalcpy/util/read_env_vars_in_config.py
 #
