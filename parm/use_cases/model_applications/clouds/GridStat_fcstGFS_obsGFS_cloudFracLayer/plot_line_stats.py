@@ -20,7 +20,7 @@ def main():
     # Check to see that the two lists have the same number of elements
     # If they dont', error out
     if len(yaml_files) != len(plot_output_files):
-        raise Exception('The number of files in PLOTTING_YAML_CONFIG_FILE_LIST must be equal to the number of files in PLOTTING_OUTPUT_FILENAME_LIST')
+        raise RuntimeError('The number of files in PLOTTING_YAML_CONFIG_FILE_LIST must be equal to the number of files in PLOTTING_OUTPUT_FILENAME_LIST')
 
 
     # Loop through data

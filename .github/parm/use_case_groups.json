@@ -50,6 +50,7 @@
     "run": false
   },
   {
+    "category": "clouds",
     "index_list": "6",
     "run": false
   },
@@ -61,7 +62,7 @@
   {
     "category": "clouds",
     "index_list": "8",
-    "run": true
+    "run": false
   },
   {
     "category": "data_assimilation",
