@@ -237,7 +237,7 @@ docker push dtcenter/metplus-envs:metplotpy.${METPLUS_ENV_VERSION}
 ```
 export METPLUS_ENV_VERSION=v6.1
 ./scripts/metplotpy_env.sh ${METPLUS_ENV_VERSION}
-/home/met_test/.conda/envs/metplotpy.${METPLUS_ENV_VERSION}/bin/cartopy_feature_download.py cultural physical
+/home/met_test/.conda/envs/metplotpy.${METPLUS_ENV_VERSION}/bin/python3 -m cartopy.feature.download cultural physical
 ```
 
 #### To install METplotpy and METcalcpy packages in environment
@@ -284,7 +284,7 @@ docker push dtcenter/metplus-envs:weatherregime.${METPLUS_ENV_VERSION}
 ```
 export METPLUS_ENV_VERSION=v6.1
 ./scripts/weatherregime_env.sh ${METPLUS_ENV_VERSION}
-/home/met_test/.conda/envs/weatherregime.${METPLUS_ENV_VERSION}/bin/cartopy_feature_download.py cultural physical
+/home/met_test/.conda/envs/weatherregime.${METPLUS_ENV_VERSION}/bin/python3 -m cartopy.feature.download cultural physical
 ```
 
 #### To install METplotpy and METcalcpy packages in environment
@@ -330,7 +330,7 @@ docker push dtcenter/metplus-envs:cycloneplotter.${METPLUS_ENV_VERSION}
 ```
 export METPLUS_ENV_VERSION=v6.1
 ./scripts/cycloneplotter_env.sh ${METPLUS_ENV_VERSION}
-/home/met_test/.conda/envs/cycloneplotter.${METPLUS_ENV_VERSION}/bin/cartopy_feature_download.py cultural physical
+/home/met_test/.conda/envs/cycloneplotter.${METPLUS_ENV_VERSION}/bin/python3 -m cartopy.feature.download cultural physical
 ```
 
 

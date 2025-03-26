@@ -1,6 +1,5 @@
 import datetime
 import multiprocessing
-import numpy as np
 import sys
 import xarray as xr
 from gfs_025_interp_funcs import interp_column
@@ -17,22 +16,39 @@ cbz_var = xr.open_dataset(model_file,engine='cfgrib',filter_by_keys={'typeOfLeve
 gph_var = xr.open_dataset(model_file,engine='cfgrib',filter_by_keys={'typeOfLevel':'isobaricInhPa','shortName':'gh'},indexpath='')
 top_var = xr.open_dataset(model_file,engine='cfgrib',filter_by_keys={'typeOfLevel':'surface','shortName':'orog'},indexpath='')
 
+if len(cbz_var.data_vars) != 1:
+    print("UNABLE TO DETERMINE CLOUD BASE HEIGHT VAR NAME IN read_interp_gfs_025.py")
+    sys.exit(1)
+
+if len(gph_var.data_vars) != 1:
+    print("UNABLE TO DETERMINE GEOPOTENTIAL HEIGHT VAR NAME IN read_interp_gfs_025.py")
+    sys.exit(1)
+
+if len(top_var.data_vars) != 1:
+    print("UNABLE TO DETERMINE OROGRAPHY VAR NAME IN read_interp_gfs_025.py")
+    sys.exit(1)
+
+cbz_var_name = list(cbz_var.data_vars)[0]
+gph_var_name = list(gph_var.data_vars)[0]
+top_var_name = list(top_var.data_vars)[0]
+
+
 # The geopotential height field is in meters above mean sea level (MSL). To convert the geopotential height field 
 # from meters MSL to meters AGL, we add the orography to the geopotential height field prior to interpolating so 
 # that the result of the interpolation is meters AGL to match the observations.
-gph_var['gh'] = gph_var['gh']+top_var['orog']
+gph_var[gph_var_name] = gph_var[gph_var_name]+top_var[top_var_name]
 
 # Stack the cloud bottom pressure to 1D where each cell is treated like a site (site ID, sid)
-cbzstack = cbz_var['pres'].stack(sid=("latitude","longitude"))
+cbzstack = cbz_var[cbz_var_name].stack(sid=("latitude","longitude"))
 
 # Stack the GPH to 1D where each "column"/grid cell is like a site (site ID, sid)
-gphstack = gph_var['gh'].stack(sid=("latitude","longitude"))
-  
+gphstack = gph_var[gph_var_name].stack(sid=("latitude","longitude"))
+
 # array to hold the results
 resstack = xr.full_like(cbzstack,-9999.).rename('lcld_alt')
   
 # Condition for masking
-mask_cond = cbzstack<=((gphstack.isobaricInhPa.max(dim='isobaricInhPa').values)*100.0)
+mask_cond = cbzstack<=(gphstack.isobaricInhPa.max(dim='isobaricInhPa').values * 100.0)
 
 # Mask the data
 cbzmask = cbzstack[mask_cond]
@@ -55,13 +71,14 @@ resstack[mask_cond] = result
 met_data = resstack.unstack() 
 met_data = met_data.values
 
-attrs = {}
-attrs['valid'] = valid.strftime('%Y%m%d_%H%M%S')
-attrs['init'] = init.strftime('%Y%m%d_%H%M%S')
-attrs['lead'] = '%02d0000' % (int(leadhours))
-attrs['accum'] = '000000'
-attrs['name'] = 'lcld_alt'
-attrs['long_name'] = 'cloud_bottom_height'
-attrs['level'] = "L0"
-attrs['units'] = 'm'
-attrs['grid'] = 'G193'
+attrs = {
+    'valid': valid.strftime('%Y%m%d_%H%M%S'),
+    'init': init.strftime('%Y%m%d_%H%M%S'),
+    'lead': '%02d0000' % (int(leadhours)),
+    'accum': '000000',
+    'name': 'lcld_alt',
+    'long_name': 'cloud_bottom_height',
+    'level': "L0",
+    'units': 'm',
+    'grid': 'G193'
+}

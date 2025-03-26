@@ -60,6 +60,11 @@
     "run": false
   },
   {
+    "category": "clouds",
+    "index_list": "8",
+    "run": false
+  },
+  {
     "category": "data_assimilation",
     "index_list": "0-1",
     "run": false
