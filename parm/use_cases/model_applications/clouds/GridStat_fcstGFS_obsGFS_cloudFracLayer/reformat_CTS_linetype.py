@@ -39,7 +39,7 @@ def main():
     rdf_obj.read_data(flags, load_files, line_types)
     end_read_data = time.perf_counter()
     time_to_read = end_read_data - beg_read_data
-    logger.info("Time to read input .stat data files using METdbLoad: "+time_to_read)
+    logger.info("Time to read input .stat data files using METdbLoad: %f", time_to_read)
     file_df = rdf_obj.stat_data
 
     # Check if the output file already exists, if so, delete it to avoid
