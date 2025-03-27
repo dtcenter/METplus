@@ -140,10 +140,10 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 # MJO indices and the generation of a phase diagram OMI plot. Variables for the OMI calculation are set 
 # in the [user_env_vars] section of the .conf file.
 #
-#  .. dropdown:: parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI/OMI_driver.py
+#  .. dropdown:: parm/use_cases/model_applications/s2s_mjo/common/OMI_driver.py
 #
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI/OMI_driver.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/common/OMI_driver.py
 
 ##############################################################################
 # Running METplus
