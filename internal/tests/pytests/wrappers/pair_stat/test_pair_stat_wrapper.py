@@ -198,11 +198,6 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
         ({'PAIR_STAT_MASK_SID': 'one, two', },
          {'METPLUS_MASK_DICT': 'mask = {sid = ["one", "two"];}'}),
 
-        ({'PAIR_STAT_OBS_WINDOW_BEGIN': '-2700',
-          'PAIR_STAT_OBS_WINDOW_END': '2700',
-          },
-         {'METPLUS_OBS_WINDOW_DICT': 'obs_window = {beg = -2700;end = 2700;}'}),
-
         ({'PAIR_STAT_CLIMO_CDF_CDF_BINS': '1', },
          {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;}'}),
 
@@ -638,6 +633,71 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir,
                                            'hour_interval = 12;}')}),
         ({'PAIR_STAT_POINT_WEIGHT_FLAG': 'SID', },
          {'METPLUS_POINT_WEIGHT_FLAG': 'point_weight_flag = SID;'}),
+        ({'PAIR_STAT_FCST_LEAD': '12, 180000', },
+         {'METPLUS_FCST_LEAD': 'fcst_lead = ["12", "180000"];'}),
+
+        ({'PAIR_STAT_OBS_LEAD': '12, 180000', },
+         {'METPLUS_OBS_LEAD': 'obs_lead = ["12", "180000"];'}),
+
+        ({'PAIR_STAT_FCST_VALID_BEG': '20250201_120800', },
+         {'METPLUS_FCST_VALID_BEG': 'fcst_valid_beg = "20250201_120800";'}),
+
+        ({'PAIR_STAT_FCST_VALID_END': '20250201_120800', },
+         {'METPLUS_FCST_VALID_END': 'fcst_valid_end = "20250201_120800";'}),
+
+        ({'PAIR_STAT_FCST_VALID_INC': '20250201_120800, 20250201_150800', },
+         {'METPLUS_FCST_VALID_INC': 'fcst_valid_inc = ["20250201_120800", "20250201_150800"];'}),
+
+        ({'PAIR_STAT_FCST_VALID_EXC': '20250201_120800, 20250201_150800', },
+         {'METPLUS_FCST_VALID_EXC': 'fcst_valid_exc = ["20250201_120800", "20250201_150800"];'}),
+
+        ({'PAIR_STAT_FCST_VALID_HOUR': '12, 18', },
+         {'METPLUS_FCST_VALID_HOUR': 'fcst_valid_hour = ["12", "18"];'}),
+
+        ({'PAIR_STAT_OBS_VALID_BEG': '20250201_120800', },
+         {'METPLUS_OBS_VALID_BEG': 'obs_valid_beg = "20250201_120800";'}),
+
+        ({'PAIR_STAT_OBS_VALID_END': '20250201_120800', },
+         {'METPLUS_OBS_VALID_END': 'obs_valid_end = "20250201_120800";'}),
+
+        ({'PAIR_STAT_OBS_VALID_INC': '20250201_120800, 20250201_150800', },
+         {'METPLUS_OBS_VALID_INC': 'obs_valid_inc = ["20250201_120800", "20250201_150800"];'}),
+
+        ({'PAIR_STAT_OBS_VALID_EXC': '20250201_120800, 20250201_150800', },
+         {'METPLUS_OBS_VALID_EXC': 'obs_valid_exc = ["20250201_120800", "20250201_150800"];'}),
+
+        ({'PAIR_STAT_OBS_VALID_HOUR': '12, 18', },
+         {'METPLUS_OBS_VALID_HOUR': 'obs_valid_hour = ["12", "18"];'}),
+
+        ({'PAIR_STAT_FCST_INIT_BEG': '20250201_120800', },
+         {'METPLUS_FCST_INIT_BEG': 'fcst_init_beg = "20250201_120800";'}),
+
+        ({'PAIR_STAT_FCST_INIT_END': '20250201_120800', },
+         {'METPLUS_FCST_INIT_END': 'fcst_init_end = "20250201_120800";'}),
+
+        ({'PAIR_STAT_FCST_INIT_INC': '20250201_120800, 20250201_150800', },
+         {'METPLUS_FCST_INIT_INC': 'fcst_init_inc = ["20250201_120800", "20250201_150800"];'}),
+
+        ({'PAIR_STAT_FCST_INIT_EXC': '20250201_120800, 20250201_150800', },
+         {'METPLUS_FCST_INIT_EXC': 'fcst_init_exc = ["20250201_120800", "20250201_150800"];'}),
+
+        ({'PAIR_STAT_FCST_INIT_HOUR': '12, 18', },
+         {'METPLUS_FCST_INIT_HOUR': 'fcst_init_hour = ["12", "18"];'}),
+
+        ({'PAIR_STAT_OBS_INIT_BEG': '20250201_120800', },
+         {'METPLUS_OBS_INIT_BEG': 'obs_init_beg = "20250201_120800";'}),
+
+        ({'PAIR_STAT_OBS_INIT_END': '20250201_120800', },
+         {'METPLUS_OBS_INIT_END': 'obs_init_end = "20250201_120800";'}),
+
+        ({'PAIR_STAT_OBS_INIT_INC': '20250201_120800, 20250201_150800', },
+         {'METPLUS_OBS_INIT_INC': 'obs_init_inc = ["20250201_120800", "20250201_150800"];'}),
+
+        ({'PAIR_STAT_OBS_INIT_EXC': '20250201_120800, 20250201_150800', },
+         {'METPLUS_OBS_INIT_EXC': 'obs_init_exc = ["20250201_120800", "20250201_150800"];'}),
+
+        ({'PAIR_STAT_OBS_INIT_HOUR': '12, 18', },
+         {'METPLUS_OBS_INIT_HOUR': 'obs_init_hour = ["12", "18"];'}),
 
     ]
 )
