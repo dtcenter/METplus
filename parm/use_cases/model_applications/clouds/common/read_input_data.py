@@ -141,7 +141,7 @@ def get_total_cloud_frac(source, data):
       print(x.min(), x.max())
    elif source == 'ERA5':
       try:    x = data[0][0,0,:,:] * 100.0
-      except: x = data[0][0,:,:] * 100.0
+      except IndexError: x = data[0][0,:,:] * 100.0
    elif source == 'MPAS':
       x = data[0][0,:,:] * 100.0
    elif source == 'SAT_WWMCA_MEAN':
@@ -169,7 +169,7 @@ def get_layer_cloud_frac(source, data, layer):
       x = data[0][0,:,:] * 100.0
    elif source == 'ERA5':
       try:    x = data[0][0,0,:,:] * 100.0
-      except: x = data[0][0,:,:] * 100.0
+      except IndexError: x = data[0][0,:,:] * 100.0
    elif source == 'MPAS':
       x = data[0][0,:,:] * 100.0
    else:
@@ -187,7 +187,7 @@ def get_cloud_top_temp(source, data):
       x = data[0][0,:,:] 
    elif source == 'ERA5':
       try:    x = data[0][0,0,:,:]
-      except: x = data[0][0,:,:]
+      except IndexError: x = data[0][0,:,:]
    else:
       x = data[0]
    return x
@@ -199,7 +199,7 @@ def get_cloud_top_pres(source, data):
       x = data[0][0,:,:] * 1.0E-2  # scaling [Pa] -> [hPa]
    elif source == 'ERA5':
       try:    x = data[0][0,0,:,:]
-      except: x = data[0][0,:,:]
+      except IndexError: x = data[0][0,:,:]
    else:
       x = data[0]
    return x
@@ -211,7 +211,7 @@ def get_cloud_top_height(source, data):
       x = data[0][0,:,:]     #TBD
    elif source == 'ERA5':
       try:    x = data[0][0,0,:,:]
-      except: x = data[0][0,:,:]
+      except IndexError: x = data[0][0,:,:]
    elif source == 'GALWEM17':
       x = data[0] * 1000.0 * 0.3048  # kilofeet -> meters
    elif source == 'MPAS':
@@ -239,7 +239,7 @@ def get_cloud_base_height(source, data):
       x = data[0][0,:,:]     #TBD
    elif source == 'ERA5':
       try:    x = data[0][0,0,:,:]
-      except: x = data[0][0,:,:]
+      except IndexError: x = data[0][0,:,:]
    elif source == 'GALWEM17':
       x = data[0] * 1000.0 * 0.3048  # kilofeet -> meters
    elif source == 'MPAS':
@@ -267,7 +267,7 @@ def get_cloud_ceiling(source, data):
       x = data[0][0,:,:]     #TBD
    elif source == 'ERA5':
       try:    x = data[0][0,0,:,:] # TBD
-      except: x = data[0][0,:,:]
+      except IndexError: x = data[0][0,:,:]
    return x
 
 # add other functions for different variables
@@ -344,7 +344,7 @@ def get_data_array(input_file, source, variable, data_source):
          read_var = nc_fid.variables[v]         # extract/copy the data
          try:
             read_missing = read_var.missing_value  # get variable attributes. Each dataset has own missing values.
-         except:
+         except AttributeError:
             read_missing = -9999. # set a default missing value. probably only need to do this for MPAS
 
       print('Reading ', v)
@@ -746,13 +746,8 @@ def point2point(source, input_dir, satellite, channel, goes_file, condition, lay
             else:
                print("condition = ",condition," not recognized.")
                sys.exit()
-            #elif condition.lower().strip() == '4x4table'.lower():
-              #if dataSource == 1:
-	      #   this_var = np.where( fcstLow >= cldfraThresh, yesLow, no )
-	      #   this_var = this_var + np.where( fcstMid >= cldfraThresh, yesMid, no )
-	      #   this_var = this_var + np.where( fcstHigh >= cldfraThresh, yesHigh, no )
+
             print('number removed = ', (qc_data==missing_values).sum())
-           #print('number passed   = ', qcData.shape[0] - (qcData==missing_values).sum())
          else:
             print('shape mismatch')
             return -99999, -99999
@@ -775,30 +770,30 @@ def point2point(source, input_dir, satellite, channel, goes_file, condition, lay
    print('Number of obs :',num_obs)
 
    # Assume all the points actually fit into a square grid. Get the side of the square (use ceil to round up)
-   if num_obs > 0:
-      l = np.ceil(np.sqrt(num_obs)).astype('int') # Length of the side of the square
-
-      # Make an array that can be reshaped into the square 
-      raw_data_1d = np.full(l*l,np.nan) # Initialize 1D array of length l**2 to np.nan
-      raw_data_1d[0:num_obs] = this_var[:] # Fill data to the extent possible. There will be some np.nan values at the end
-      raw_data = np.reshape(raw_data_1d,(l,l)) # Reshape into "square grid"
-
-      raw_data = np.where(np.isnan(raw_data), missing_values, raw_data) # replace np.nan to missing_values (for MET)
-
-      met_data=raw_data.astype(float) # Give MET this info
-
-      # Now need to tell MET the "grid" for the data
-      # Make a fake lat/lon grid going from 0.0 to 50.0 degrees, with the interval determined by number of points
-      griddedDatasets[source]['latDef'][0] = 0.0 # starting point
-      griddedDatasets[source]['latDef'][1] = np.diff(np.linspace(0,50,l)).round(6)[0] # interval (degrees)
-      griddedDatasets[source]['latDef'][2] = int(l) # number of points
-      griddedDatasets[source]['lonDef'][0:3] = griddedDatasets[source]['latDef']
-
-      grid_info = get_grid_info(source, griddedDatasets[source]['gridType']) # 'LatLon' gridType
-      return met_data, grid_info
-
-   else:
+   if num_obs <= 0:
       return -99999, -99999
+
+   l = np.ceil(np.sqrt(num_obs)).astype('int') # Length of the side of the square
+
+   # Make an array that can be reshaped into the square
+   raw_data_1d = np.full(l*l,np.nan) # Initialize 1D array of length l**2 to np.nan
+   raw_data_1d[0:num_obs] = this_var[:] # Fill data to the extent possible. There will be some np.nan values at the end
+   raw_data = np.reshape(raw_data_1d,(l,l)) # Reshape into "square grid"
+
+   raw_data = np.where(np.isnan(raw_data), missing_values, raw_data) # replace np.nan to missing_values (for MET)
+
+   met_data=raw_data.astype(float) # Give MET this info
+
+   # Now need to tell MET the "grid" for the data
+   # Make a fake lat/lon grid going from 0.0 to 50.0 degrees, with the interval determined by number of points
+   griddedDatasets[source]['latDef'][0] = 0.0 # starting point
+   griddedDatasets[source]['latDef'][1] = np.diff(np.linspace(0,50,l)).round(6)[0] # interval (degrees)
+   griddedDatasets[source]['latDef'][2] = int(l) # number of points
+   griddedDatasets[source]['lonDef'][0:3] = griddedDatasets[source]['latDef']
+
+   grid_info = get_grid_info(source, griddedDatasets[source]['gridType']) # 'LatLon' gridType
+   return met_data, grid_info
+
 
 ###########
 def get_grid_info(source, grid_type):
