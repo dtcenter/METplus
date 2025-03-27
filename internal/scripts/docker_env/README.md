@@ -237,32 +237,13 @@ docker push dtcenter/metplus-envs:metplotpy.${METPLUS_ENV_VERSION}
 ```
 export METPLUS_ENV_VERSION=v6.1
 ./scripts/metplotpy_env.sh ${METPLUS_ENV_VERSION}
-/home/met_test/.conda/envs/metplotpy.${METPLUS_ENV_VERSION}/bin/python3 -m cartopy.feature.download cultural physical
+/home/met_test/miniforge3/envs/metplotpy.${METPLUS_ENV_VERSION}/bin/python3 -m cartopy.feature.download cultural physical
 ```
 
-#### To install METplotpy and METcalcpy packages in environment
+#### To install METplus Analysis tools in environment
 
-```
-runas met_test
-
-export METPLUS_ENV_VERSION=v6.1
-
-cd /home/met_test
-
-# git clone not necessary if repo is already available
-git clone https://github.com/dtcenter/METplotpy
-git clone https://github.com/dtcenter/METcalcpy
-
-cd /home/met_test/METplotpy
-git checkout develop
-/home/met_test/.conda/envs/metplotpy.${METPLUS_ENV_VERSION}/bin/pip3 install .
-
-cd /home/met_test/METcalcpy
-git checkout develop
-/home/met_test/.conda/envs/metplotpy.${METPLUS_ENV_VERSION}/bin/pip3 install .
-
-exit
-```
+See section at bottom of this page for instructions to install the analysis
+tools in the conda environment.
 
 
 ## weatherregime.v6.1 (from metplotpy.v6.1)
@@ -284,32 +265,13 @@ docker push dtcenter/metplus-envs:weatherregime.${METPLUS_ENV_VERSION}
 ```
 export METPLUS_ENV_VERSION=v6.1
 ./scripts/weatherregime_env.sh ${METPLUS_ENV_VERSION}
-/home/met_test/.conda/envs/weatherregime.${METPLUS_ENV_VERSION}/bin/python3 -m cartopy.feature.download cultural physical
+/home/met_test/miniforge3/envs/weatherregime.${METPLUS_ENV_VERSION}/bin/python3 -m cartopy.feature.download cultural physical
 ```
 
-#### To install METplotpy and METcalcpy packages in environment
+#### To install METplus Analysis tools in environment
 
-```
-runas met_test
-
-export METPLUS_ENV_VERSION=v6.1
-
-cd /home/met_test
-
-# git clone not necessary if repo is already available
-git clone https://github.com/dtcenter/METplotpy
-git clone https://github.com/dtcenter/METcalcpy
-
-cd /home/met_test/METplotpy
-git checkout develop
-/home/met_test/.conda/envs/weatherregime.${METPLUS_ENV_VERSION}/bin/pip3 install .
-
-cd /home/met_test/METcalcpy
-git checkout develop
-/home/met_test/.conda/envs/weatherregime.${METPLUS_ENV_VERSION}/bin/pip3 install .
-
-exit
-```
+See section at bottom of this page for instructions to install the analysis
+tools in the conda environment.
 
 
 ## cycloneplotter.v6.1 (from metplus_base.v6.1)
@@ -330,7 +292,7 @@ docker push dtcenter/metplus-envs:cycloneplotter.${METPLUS_ENV_VERSION}
 ```
 export METPLUS_ENV_VERSION=v6.1
 ./scripts/cycloneplotter_env.sh ${METPLUS_ENV_VERSION}
-/home/met_test/.conda/envs/cycloneplotter.${METPLUS_ENV_VERSION}/bin/python3 -m cartopy.feature.download cultural physical
+/home/met_test/miniforge3/envs/cycloneplotter.${METPLUS_ENV_VERSION}/bin/python3 -m cartopy.feature.download cultural physical
 ```
 
 
@@ -455,6 +417,11 @@ export METPLUS_ENV_VERSION=v6.1
 ./scripts/mp_analysis_env.sh ${METPLUS_ENV_VERSION}
 ```
 
+#### To install METplus Analysis tools in environment
+
+See section at bottom of this page for instructions to install the analysis
+tools in the conda environment.
+
 
 ## diff.v6.1 (from netcdf4.v6.1)
 
@@ -503,4 +470,27 @@ docker push dtcenter/metplus-envs:metplus_dev.${METPLUS_ENV_VERSION}
 ```
 export METPLUS_ENV_VERSION=v6.1
 ./scripts/metplus_dev_env.sh ${METPLUS_ENV_VERSION}
+```
+
+## To install METdataio, METplotpy, and METcalcpy packages in environment
+
+```
+runas met_test
+
+export METPLUS_ENV_VERSION=v6.1
+
+repo_names=(METdataio METplotpy METcalcpy)
+env_names=(metplotpy mp_analysis weatherregime)
+
+for repo in "${repo_names[@]}"; do
+  git clone https://github.com/dtcenter/${repo} /home/met_test/${repo} || true
+  cd /home/met_test/${repo} || break
+  git checkout develop
+  git pull
+  for env_name in "${env_names[@]}"; do
+    /home/met_test/miniforge3/envs/${env_name}.${METPLUS_ENV_VERSION}/bin/pip3 install --no-deps -e .
+  done
+done
+
+exit
 ```

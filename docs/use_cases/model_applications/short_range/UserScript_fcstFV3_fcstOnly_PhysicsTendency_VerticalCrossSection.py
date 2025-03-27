@@ -136,16 +136,24 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 
 ##############################################################################
 # Expected Output
-# ---------------
+#----------------
 #
 # A successful run will output the following both to the screen and to the logfile::
 #
 #   INFO: METplus has successfully finished running.
 #
-# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# The following file will be created:
 #
-# short_range-physics_tendency_vertical_cross_section.png
+# .. note::
+#
+#   This use case **explicitly redirects the output** to the *OUTPUT_BASE* directory with the expected filename of *ugrd_28N-120E-26N-75E.png*.
+#   **By default**, the *cross_section_vert.py* script (that generates the plot) creates a file
+#   based on the variable name and specified min and max coordinates.  The resulting .png file is written to the directory where the
+#   *cross_section_vert.py* script was invoked.
+#
+# The following file will be created in the directory from where the use command was issued:
+#
+# ugrd_28N-120E-26N-75E.png
+#
 
 ##############################################################################
 # Keywords

@@ -147,18 +147,63 @@ To cite this documentation in publications, please refer to the METplus User's G
 
 .. toctree::
    :hidden:
-   :caption: FOR USERS
+   :caption: Training
 
-   Users_Guide/index
-   Verification_Datasets/index
+   METplus Tutorial <https://metplus-training.readthedocs.io/en/latest/Tutorial/index.html>
+   Training Series <https://metplus-training.readthedocs.io/en/latest/Training_Series/index.html>
+   Featured Topics <https://metplus-training.readthedocs.io/en/latest/Featured_Topics/index.html>
 
 .. toctree::
    :hidden:
-   :caption: FOR CONTRIBUTORS
+   :caption: METplus
 
+   Users_Guide/index
    Contributors_Guide/index
+   Verification_Datasets/index   
    Release_Guide/index
 
+.. toctree::
+   :hidden:
+   :caption: MET
+
+   User's Guide <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/index.html>
+   Contributor's Guide <https://metplus.readthedocs.io/projects/met/en/latest/Contributors_Guide/index.html>
+
+.. toctree::
+   :hidden:
+   :caption: METexpress
+
+   User's Guide <https://metplus.readthedocs.io/projects/metexpress/en/latest/index.html>
+
+.. toctree::
+   :hidden:
+   :caption: METviewer
+
+   User's Guide <https://metplus.readthedocs.io/projects/metviewer/en/latest/Users_Guide/index.html>
+   Contributor's Guide <https://metplus.readthedocs.io/projects/metviewer/en/latest/Contributors_Guide/index.html>
+
+.. toctree::
+   :hidden:
+   :caption: METplotpy
+   
+   User's Guide <https://metplus.readthedocs.io/projects/metplotpy/en/latest/Users_Guide/index.html>
+   Contributor's Guide <https://metplus.readthedocs.io/projects/metplotpy/en/latest/Contributors_Guide/index.html>
+
+.. toctree::
+   :hidden:
+   :caption: METcalcpy
+
+   User's Guide <https://metplus.readthedocs.io/projects/metcalcpy/en/latest/Users_Guide/index.html>
+   Contributor's Guide <https://metplus.readthedocs.io/projects/metcalcpy/en/latest/Contributors_Guide/index.html>
+   
+.. toctree::
+   :hidden:
+   :caption: METdataio
+
+   User's Guide <https://metplus.readthedocs.io/projects/metdataio/en/latest/Users_Guide/index.html>
+   Contributor's Guide <https://metplus.readthedocs.io/projects/metdataio/en/latest/Contributors_Guide/index.html>
+
+   
 
 Index
 =====
