@@ -229,7 +229,7 @@ class docbase(object):
 
         @param section The conf section name
         @param inc The contents of the \@inc= option"""
-        splat=re.split('\s*,\s*',inc)
+        splat = re.split(r',\s*', inc)
         if splat and splat[0]:
             self.secinc[section]=splat
         else:
