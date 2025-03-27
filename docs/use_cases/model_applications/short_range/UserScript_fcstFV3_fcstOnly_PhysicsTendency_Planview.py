@@ -5,6 +5,7 @@ UserScript: Physics Tendency Planview Plot
 model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 
 """
+
 ##############################################################################
 # .. contents::
 #   :depth: 1
@@ -149,15 +150,20 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planv
 #
 #   INFO: METplus has successfully finished running.
 #
-# Refer to the value set for **OUTPUT_BASE** to find where the output
-# data was generated.
-# The following file will be created:
 #
-# physics_tendency_planview.png
+# .. note::
+#
+#   **By default**, the *planview_fv3.py* script (that generates the plot) creates a file
+#   based on the variable name and pressure value.  The resulting .png file is written to the directory where the
+#   *planview_fv3.py* script was invoked.
+#
+# The following file will be created in the directory from where the use case command was issued:
+#
+# tmp_500hPa.png
 
 ##############################################################################
 # Keywords
-# --------
+#---------
 #
 #
 # .. note::
