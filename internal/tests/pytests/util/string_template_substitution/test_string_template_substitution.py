@@ -9,6 +9,8 @@ from metplus.util import do_string_sub, parse_template, get_time_from_file
 from metplus.util import get_tags,format_one_time_item, format_hms
 from metplus.util import add_to_dict, populate_match_dict, get_fmt_info
 
+TEST_FILE_TEMPLATE_A = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h"
+TEST_FILE_TEMPLATE_B = "{init?fmt=%Y%m%d%H}_dog_A{lead?fmt=%HH}h"
 
 @pytest.mark.util
 def test_cycle_hour():
@@ -79,7 +81,7 @@ def test_parse_template(template, filepath, expected_valid):
 
 @pytest.mark.util
 def test_h_lead_no_pad_1_digit_sub():
-    file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h"
+    file_template = TEST_FILE_TEMPLATE_A
     init_time = datetime.datetime.strptime("1987020103", '%Y%m%d%H')
     lead_time = int("3") * 3600
     out_string = do_string_sub(file_template,
@@ -90,7 +92,7 @@ def test_h_lead_no_pad_1_digit_sub():
 
 @pytest.mark.util
 def test_h_lead_no_pad_2_digit_sub():
-    file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h"
+    file_template = TEST_FILE_TEMPLATE_A
     init_time = datetime.datetime.strptime("1987020103", '%Y%m%d%H')
     lead_time = int("12") * 3600
     out_string = do_string_sub(file_template,
@@ -101,7 +103,7 @@ def test_h_lead_no_pad_2_digit_sub():
 
 @pytest.mark.util
 def test_h_lead_no_pad_3_digit_sub():
-    file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h"
+    file_template = TEST_FILE_TEMPLATE_A
     init_time = datetime.datetime.strptime("1987020103", '%Y%m%d%H')
     lead_time = int("102") * 3600
     out_string = do_string_sub(file_template,
@@ -342,7 +344,7 @@ def test_ccpa_template():
 
 @pytest.mark.util
 def test_filename_matches_template():
-    template = "{init?fmt=%Y%m%d%H}_dog_A{lead?fmt=%HH}h"
+    template = TEST_FILE_TEMPLATE_B
     filepath = "1987020103_dog_A03h"
     out = parse_template(template, filepath)
     ftime = out['valid'].strftime('%Y%m%d%H%M')
@@ -351,7 +353,7 @@ def test_filename_matches_template():
 
 @pytest.mark.util
 def test_filename_does_not_match_template():
-    template = "{init?fmt=%Y%m%d%H}_dog_A{lead?fmt=%HH}h"
+    template = TEST_FILE_TEMPLATE_B
     filepath = "1987020103_cat_A03h"
     out = parse_template(template, filepath)
     assert out is None
@@ -359,7 +361,7 @@ def test_filename_does_not_match_template():
 
 @pytest.mark.util
 def test_filename_does_not_match_template_end():
-    template = "{init?fmt=%Y%m%d%H}_dog_A{lead?fmt=%HH}h"
+    template = TEST_FILE_TEMPLATE_B
     filepath = "1987020103_dog_A03d"
     out = parse_template(template, filepath)
     assert out is None
@@ -521,7 +523,7 @@ def test_add_to_dict(match, match_dict, full_str, new_len, expected_result):
          'file.2019020112.f03.out',
          None,
          None),
-        # TODO: test TypeError if valid time has 2 different shift values
+        # test TypeError if valid time has 2 different shift values
         ('file.{valid?fmt=%Y%m%d%H?shift=-30}.{valid?fmt=%Y?shift=60}.out',
          'file.2019020112.2019.out',
          None,
