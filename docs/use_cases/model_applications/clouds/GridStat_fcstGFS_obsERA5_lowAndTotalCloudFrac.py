@@ -129,10 +129,10 @@ model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.conf
 # Finally, the valid and initialization times that were passed at runtime are used to finalize the attrs dictionary
 # and the dataset is passed back to METplus for evaluation.
 #
-# .. dropdown:: parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac/read_input_data.py
+# .. dropdown:: parm/use_cases/model_applications/clouds/common/read_input_data.py
 #
 #   .. highlight:: bash
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac/read_input_data.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/common/read_input_data.py
 #
 # For more information on the basic requirements to utilize Python Embedding in METplus, 
 # please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_ 

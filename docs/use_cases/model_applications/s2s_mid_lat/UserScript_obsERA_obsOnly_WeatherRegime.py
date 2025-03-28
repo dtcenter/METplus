@@ -148,10 +148,10 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.py
 # for each cluster to give the most common weather regimes.  Then, the time frequency computes the 
 # frequency of each weather regime over a user specified time frame.
 #
-# .. dropdown:: parm/use_cases/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime/WeatherRegime_driver.py
+# .. dropdown:: parm/use_cases/model_applications/s2s_mid_lat/common/WeatherRegime_driver.py
 #
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime/WeatherRegime_driver.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mid_lat/common/WeatherRegime_driver.py
 
 ##############################################################################
 # Running METplus

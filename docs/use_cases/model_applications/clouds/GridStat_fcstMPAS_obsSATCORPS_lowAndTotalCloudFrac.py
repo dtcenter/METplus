@@ -129,10 +129,10 @@ model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.con
 # Finally, the valid and initialization times that were passed at runtime are used to finalize the attrs dictionary
 # and the dataset is passed back to METplus for evaluation.
 #
-# .. dropdown:: parm/use_cases/model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac/read_input_data.py
+# .. dropdown:: parm/use_cases/model_applications/clouds/common/read_input_data.py
 #
 #   .. highlight:: bash
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac/read_input_data.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/clouds/common/read_input_data.py
 
 ##############################################################################
 # User Scripting
