@@ -80,14 +80,16 @@ def usage():
           f"Example: {os.path.basename(__file__)} v5.0")
     sys.exit(1)
 
-def main(new_version):
-    match = re.match(r'^v([0-9]+)\.([0-9]+)', new_version)
+def get_major_minor(version):
+    match = re.match(r'^v(\d+)\.(\d+)', version)
     if not match:
-        print(f"ERROR: Version does not match vX.Y format: {new_version}")
+        print(f"ERROR: Version does not match vX.Y format: {version}")
         usage()
 
-    major = int(match.group(1))
-    minor = int(match.group(2))
+    return int(match.group(1)), int(match.group(2))
+
+def main(new_version):
+    major, minor = get_major_minor(new_version)
 
     version = f'v{major}.{minor}'
     print(f"Handling {version}")
@@ -119,11 +121,9 @@ def main(new_version):
             cur_version = f'v{cur_major}.{cur_minor}'
             print(f"Looking for {cur_version}")
             check_dir = os.path.join(DATA_DIR, cur_version)
-            if os.path.exists(check_dir):
-                if get_files_from_dir(version_dir, check_dir):
-                    print("\nSymbolic links created "
-                          f"successfully in {version_dir}")
-                    return True
+            if os.path.exists(check_dir) and get_files_from_dir(version_dir, check_dir):
+                print(f"\nSymbolic links created successfully in {version_dir}")
+                return True
 
     return False
 
