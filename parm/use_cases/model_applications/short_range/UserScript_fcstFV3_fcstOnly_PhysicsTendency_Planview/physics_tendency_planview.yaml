@@ -55,8 +55,73 @@ extent:
 standard_parallel : 38.139
 
 # color map
-cmap : "Spectral_r"
+cmap : "RdBu_r"
+
+# coordinate reference system used in cross_section_vert .metpy.assign_crs(crs).metpy.assign_y_x
+crs : null
+
+# True : more logging messages
+debug : False
 
 # resolution (dots per inch) of output
 dpi : 100
 
+# number of columns in FacetGrid
+ncols : null
+
+# Add metadata and `created by` date (for comparing images)
+fineprint : False
+
+# pressure levels in hPa to plot. Levels must be on different line
+# from pfull indicating an array, even if only one element.
+# If only one pressure level is provided, the type-of-tendency
+# argument will be ignored and all tendencies will be plotted.
+pfull :
+    - 500
+
+# compute colormap range with extremes, not 2nd and 98th percentiles
+robust : True
+
+# selection method for vertical pressure level
+# "nearest" : select the nearest level to the specified pressure level
+# "linear" : interpolate the two nearest levels to the specified pressure level
+# "loglinear" : interpolate the two nearest levels to the specified pressure level in log10(pressure)
+sel_method : "nearest"
+
+# shape file directory for mask
+shp : null
+
+# start  lat lon of vertical cross section
+startpt :
+    - 28
+    - -120
+
+# end  lat lon of vertical cross section
+endpt :
+    - 26
+    - -75
+
+statevarname : "tmp"
+
+# Accumulated tendencies were zeroed and divided by time since last output.
+tendencies_were_zeroed_and_averaged_after_every_output : True
+
+tendencytype : "pbl"
+
+# time window in hours
+twindow : 1
+
+# Valid time
+validtime : "20190615T20"
+
+# color bar minimum (overrides robust=True)
+vmin : null
+
+# color bar maximum (overrides robust=True)
+vmax : null
+
+# x-axis minimum
+xmin : -0.0002
+
+# x-axis maximum
+xmax : 0.0002
