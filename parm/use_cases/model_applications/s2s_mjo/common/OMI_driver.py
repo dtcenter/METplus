@@ -7,7 +7,6 @@ import numpy as np
 import xarray as xr
 import pandas as pd
 import datetime
-import glob
 import os
 import warnings
 
@@ -33,7 +32,6 @@ def read_omi_eofs(eof1_files, eof2_files):
     nlon = len(EOF1['lon'])
 
     for doy in range(len(eof1_files)):
-        doystr = str(doy).zfill(3)
         tmp1 = pd.read_csv(eof1_files[doy], header=None, delim_whitespace=True, names=['eof1'])
         tmp2 = pd.read_csv(eof2_files[doy], header=None, delim_whitespace=True, names=['eof2'])
         eof1 = xr.DataArray(np.reshape(tmp1.eof1.values,(nlat, nlon)),dims=['lat','lon'])
@@ -44,7 +42,7 @@ def read_omi_eofs(eof1_files, eof2_files):
     return EOF1, EOF2
 
 
-def run_omi_steps(inlabel, olr_filetxt, spd, EOF1, EOF2, oplot_dir):
+def run_omi_steps(inlabel, olr_filetxt, spd, eof1, eof2, oplot_dir):
 
     # Read the listing of EOF files
     with open(olr_filetxt) as ol:
@@ -73,14 +71,13 @@ def run_omi_steps(inlabel, olr_filetxt, spd, EOF1, EOF2, oplot_dir):
     print(olr.min(), olr.max())
 
     # project OLR onto EOFs
-    PC1, PC2 = cmi.omi(olr, time, spd, EOF1, EOF2)
+    PC1, PC2 = cmi.omi(olr, time, spd, eof1, eof2)
 
     # Get times for the PC phase diagram
     plase_plot_time_format = os.environ['PHASE_PLOT_TIME_FMT']
     phase_plot_start_time = datetime.datetime.strptime(os.environ['PHASE_PLOT_TIME_BEG'],plase_plot_time_format)
     phase_plot_end_time = datetime.datetime.strptime(os.environ['PHASE_PLOT_TIME_END'],plase_plot_time_format)
-    PC1_plot = PC1.sel(time=slice(phase_plot_start_time,phase_plot_end_time))
-    PC2_plot = PC2.sel(time=slice(phase_plot_start_time,phase_plot_end_time))
+    pc1_plot = PC1.sel(time=slice(phase_plot_start_time,phase_plot_end_time))
 
     # Get the output name and format for the PC plase diagram
     phase_plot_name = os.path.join(oplot_dir,os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_NAME',inlabel+'_OMI_comp_phase'))
@@ -88,8 +85,8 @@ def run_omi_steps(inlabel, olr_filetxt, spd, EOF1, EOF2, oplot_dir):
     phase_plot_format = os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_FORMAT','png')
 
     # plot the PC phase diagram
-    pmi.phase_diagram('OMI',PC1,PC2,np.array(PC1_plot['time'].dt.strftime("%Y-%m-%d").values),
-        np.array(PC1_plot['time.month'].values),np.array(PC1_plot['time.day'].values),
+    pmi.phase_diagram('OMI',PC1,PC2,np.array(pc1_plot['time'].dt.strftime("%Y-%m-%d").values),
+        np.array(pc1_plot['time.month'].values),np.array(pc1_plot['time.day'].values),
         phase_plot_name,phase_plot_format)
 
 
