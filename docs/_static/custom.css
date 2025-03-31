@@ -1,0 +1,30 @@
+/* ToC scrollbar */
+.wy-menu-vertical {
+    max-height: calc(100vh - 60px) !important;
+    overflow-y: auto !important;
+}
+
+/* Make the logo and search area sticky */
+.wy-side-nav-search {
+    position: fixed;
+    /* width: 300px; */ /* Adjust width as needed */
+    z-index: 1000;
+    padding-bottom: 5px; /* Add space below logo */    
+}
+
+/* Prevent the ToC from being overlapped */
+.wy-menu {
+    margin-top: 280px; /* Adjust this value based on the logo height */
+}
+
+/* scroll-margin-top ensures that when an anchor is clicked, the selected element is not hidden behind the sticky header */
+.wy-menu-vertical .current {
+    scroll-margin-top: 280px; /* Adjust based on your sticky header height */
+}
+
+/* Hide the sticky logo so that it behaves like the original (disappearing into the hamburger menu) */
+@media (max-width: 768px) {  /* Adjust the width as needed */
+    .wy-side-nav-search {
+        display: none;  /* Hide logo + search bar when screen is small */
+    }
+}
