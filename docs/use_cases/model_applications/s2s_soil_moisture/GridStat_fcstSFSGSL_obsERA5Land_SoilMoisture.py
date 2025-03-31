@@ -2,7 +2,7 @@
 GridStat: Verifying Soil moisture of SFS-GSL output against ERA5 and compute categorical statistics
 ===================================================================================================
 
-model_applications/s2s/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.conf
+model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.conf
 
 """
 ##############################################################################
@@ -54,10 +54,10 @@ model_applications/s2s/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# i.e. -c parm/use_cases/model_applications/s2s/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.conf
+# i.e. -c parm/use_cases/model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.conf
 #
 
 ##############################################################################
@@ -78,11 +78,11 @@ model_applications/s2s/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.conf
 #
 # 1) Passing in GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.conf then a user-specific system configuration file::
 #
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture /path/to/user_system.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture::
 #
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
