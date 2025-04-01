@@ -148,7 +148,7 @@ METplus Wrappers Upgrade Instructions
 
 .. note::
 
-In the METplus-6.1.0-beta2 release, METplus switched from development with
-Python 3.10.4 to development with Python 3.12.0.
-View the requirements.txt file at the top level of the repository for version
-numbers for the corresponding third-party packages.
+   In the METplus-6.1.0-beta2 release, METplus switched from development with
+   Python 3.10.4 to development with Python 3.12.0.
+   View the requirements.txt file at the top level of the repository for version
+   numbers for the corresponding third-party packages.
