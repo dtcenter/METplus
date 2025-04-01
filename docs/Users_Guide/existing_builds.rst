@@ -297,10 +297,10 @@ in the
      .. dropdown:: ORION
 
         | **NOAA MACHINE ORION (MANAGED BY MSU)**
-        | *Last updated: Month DD, YYYY*
+        | *Last updated: April 01, 2025*
 	| *Compiler and version: Intel oneAPI 2022.2.1*
 
-          * **METplus-6.1.0** (**Coming Soon**)
+          * **METplus-6.1.0-beta2**
 
             * METplus-6.1 Sample Data
 
@@ -312,9 +312,9 @@ in the
               .. code-block:: ini
 
                  module load contrib
-                 module load metplus/6.1.0
+                 module load metplus/6.1.0-beta2
 
-          * **MET-12.1.0** (**Coming Soon**)
+          * **MET-12.1.0-beta2**
 
             * MODULES:
 
@@ -322,9 +322,9 @@ in the
 
                  module load contrib
                  module load intel-oneapi-compilers/2022.2.1
-                 module load met/12.1.0
+                 module load met/12.1.0-beta2
 
-          * **METcalcpy-3.1.0 / METplotpy-3.1.0** (**Coming Soon**)
+          * **METcalcpy-3.1.0-beta2 / METplotpy-3.1.0-beta2** 
 
             * MODULES:
 
@@ -333,8 +333,8 @@ in the
                  module load contrib
                  module load intel-oneapi-compilers/2022.2.1
                  module use /apps/contrib/modulefiles
-                 module load metcalcpy/3.1.0
-                 module load metplotpy/3.1.0
+                 module load metcalcpy/3.1.0-beta2
+                 module load metplotpy/3.1.0-beta2
 
           * PIP INSTALL
 
@@ -347,7 +347,7 @@ in the
                  python -m pip install --user netcdf4
                  python -m pip install --user h5netcdf
 
-          * **METdataio-3.1.0** (**Coming Soon**)
+          * **METdataio-3.1.0-beta2**
 
             * MODULES:
 
@@ -356,7 +356,7 @@ in the
                  module load contrib
                  module load intel-oneapi-compilers/2022.2.1
                  module use /apps/contrib/modulefiles
-                 module load metdataio/3.1.0
+                 module load metdataio/3.1.0-beta2
 
      .. dropdown:: JET
 
