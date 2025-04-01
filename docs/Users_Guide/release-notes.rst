@@ -15,7 +15,7 @@ The **development timeline** for the METplus 6.1.0 Coordinated Release
 is broken down into the following development cycles for each component:
 
 1. **Beta1** releases for the METplus components occurred around 2025-01-28.
-2. **Beta2** releases for the METplus components are tentatively scheduled for 2025-03-26.
+2. **Beta2** releases for the METplus components occurred around 2025-04-01.
 3. **Release Candidate 1** for the METplus components are tentatively scheduled for 2025-05-21.
 4. **Official Release** releases are tentatively scheduled for 2025-07-02.
 
@@ -42,6 +42,56 @@ When applicable, release notes are followed by the
 `GitHub issue <https://github.com/dtcenter/METplus/issues>`__ number which
 describes the bugfix, enhancement, or new feature.
 Important issues are listed **in bold** for emphasis.
+
+METplus Version 6.1.0 Beta 2 Release Notes (2025-04-01)
+-------------------------------------------------------
+
+  .. dropdown:: Enhancements
+
+     * **Update Python from 3.10.x to 3.12.0**
+       (`#2697 <https://github.com/dtcenter/METplus/issues/2697>`_)
+     * Update the EnsembleStat_fcstICAP_obsMODIS_aod use case to create meaningful output
+       (`#2791 <https://github.com/dtcenter/METplus/issues/2791>`_)
+     * **Install METplus via Conda**
+       (`#2863 <https://github.com/dtcenter/METplus/issues/2863>`_)
+     * Support time templates in field name for SeriesAnalysis
+       (`#2880 <https://github.com/dtcenter/METplus/issues/2880>`_)
+     * Resolve findings from SonarQube
+       (`#2923 <https://github.com/dtcenter/METplus/issues/2923>`_)
+     * Update FV3 Physics Tendency use case data
+       (`#2937 <https://github.com/dtcenter/METplus/issues/2937>`_)
+     * PairStat - Add support for time filtering options
+       (`#2944 <https://github.com/dtcenter/METplus/issues/2944>`_)
+
+  .. dropdown:: Bugfix
+
+     NONE
+
+  .. dropdown:: New Wrappers
+
+     NONE
+
+  .. dropdown:: New Use Cases
+
+     * GFS cloud forecasts vs. GFS cloud analyses
+       (`#2743 <https://github.com/dtcenter/METplus/issues/2743>`_)
+     * GFS cloud forecasts vs. GOES-16 cloud products
+       (`#2744 <https://github.com/dtcenter/METplus/issues/2744>`_)
+     * GFS cloud forecasts vs. ASOS ceiolometer
+       (`#2745 <https://github.com/dtcenter/METplus/issues/2745>`_)
+
+  .. dropdown:: Documentation
+
+     * Update existing use cases to use the template
+       (`#2741 <https://github.com/dtcenter/METplus/issues/2741>`_)
+     * Use subprojects in Read The Docs
+       (`#2771 <https://github.com/dtcenter/METplus/issues/2771>`_)
+
+  .. dropdown:: Build, repository, and test
+
+     * Update the Existing Builds page and modulefiles for the 6.0.0/6.1.0 coordinated release
+       (`#2891 <https://github.com/dtcenter/METplus/issues/2891>`_)
+
 
 METplus Version 6.1.0 Beta 1 Release Notes (2025-01-28)
 -------------------------------------------------------
@@ -96,4 +146,9 @@ METplus Version 6.1.0 Beta 1 Release Notes (2025-01-28)
 METplus Wrappers Upgrade Instructions
 =====================================
 
-There are currently no upgrade instructions for 6.1.0.
+.. note::
+
+   In the METplus-6.1.0-beta2 release, METplus switched from development with
+   Python 3.10.4 to development with Python 3.12.0.
+   View the requirements.txt file at the top level of the repository for version
+   numbers for the corresponding third-party packages.

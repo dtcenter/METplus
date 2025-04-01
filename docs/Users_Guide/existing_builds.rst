@@ -525,30 +525,30 @@ in the
 
 .. dropdown:: DockerHub
 
-   | **MET** (**Coming Soon**)
-   | *Last Updated: Month DD, YYYY*
+   | **MET**
+   | *Last Updated: April 01, 2025*
 
       .. code-block:: ini
 
-          docker pull dtcenter/met:12.1.0
+          docker pull dtcenter/met:12.1.0-beta2
 
      `dtcenter/met DockerHub <https://hub.docker.com/r/dtcenter/met>`_
 
-   | **METplus** (**Coming Soon**)
-   | *Last Updated: Month DD, YYYY*
+   | **METplus**
+   | *Last Updated: April 01, 2025*
 
       .. code-block:: ini
 
-          docker pull dtcenter/metplus:6.1.0
+          docker pull dtcenter/metplus:6.1.0-beta2
 
      `dtcenter/metplus DockerHub <https://hub.docker.com/r/dtcenter/metplus>`_
 
-   | **METplus Analysis** (**Coming Soon**)
-   | *Last Updated: Month DD, YYYY*
+   | **METplus Analysis**
+   | *Last Updated: April 01, 2025*
 
       .. code-block:: ini
 
-          docker pull dtcenter/metplus-analysis:6.1.0
+          docker pull dtcenter/metplus-analysis:6.1.0-beta2
 
      `dtcenter/metplus-analysis DockerHub <https://hub.docker.com/r/dtcenter/metplus-analysis>`_
 
