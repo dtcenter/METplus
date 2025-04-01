@@ -89,7 +89,7 @@ METplus Version 6.1.0 Beta 2 Release Notes (2025-04-01)
 
   .. dropdown:: Build, repository, and test
 
-     * Update the Existing Builds page and modulefiles for the 6.0.0 coordinated release
+     * Update the Existing Builds page and modulefiles for the 6.0.0/6.1.0 coordinated release
        (`#2891 <https://github.com/dtcenter/METplus/issues/2891>`_)
 
 
