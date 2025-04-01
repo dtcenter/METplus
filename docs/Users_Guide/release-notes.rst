@@ -43,7 +43,7 @@ When applicable, release notes are followed by the
 describes the bugfix, enhancement, or new feature.
 Important issues are listed **in bold** for emphasis.
 
-METplus Version 6.1.0 Beta 2 Release Notes (2025-03-31)
+METplus Version 6.1.0 Beta 2 Release Notes (2025-04-01)
 -------------------------------------------------------
 
   .. dropdown:: Enhancements
