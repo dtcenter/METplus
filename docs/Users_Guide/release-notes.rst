@@ -146,4 +146,9 @@ METplus Version 6.1.0 Beta 1 Release Notes (2025-01-28)
 METplus Wrappers Upgrade Instructions
 =====================================
 
-There are currently no upgrade instructions for 6.1.0.
+.. note::
+
+In the METplus-6.1.0-beta2 release, METplus switched from development with
+Python 3.10.4 to development with Python 3.12.0.
+View the requirements.txt file at the top level of the repository for version
+numbers for the corresponding third-party packages.
