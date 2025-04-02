@@ -321,7 +321,7 @@ in the
               .. code-block:: ini
 
                  module load contrib
-                 module load intel-oneapi-compilers/2022.2.1
+                 module load intel-oneapi-compilers/2024.1.0
                  module load met/12.1.0-beta2
 
           * **METcalcpy-3.1.0-beta2 / METplotpy-3.1.0-beta2** 
@@ -331,7 +331,7 @@ in the
               .. code-block:: ini
 
                  module load contrib
-                 module load intel-oneapi-compilers/2022.2.1
+                 module load intel-oneapi-compilers/2024.1.0
                  module use /apps/contrib/modulefiles
                  module load metcalcpy/3.1.0-beta2
                  module load metplotpy/3.1.0-beta2
@@ -354,7 +354,7 @@ in the
               .. code-block:: ini
 
                  module load contrib
-                 module load intel-oneapi-compilers/2022.2.1
+                 module load intel-oneapi-compilers/2024.1.0
                  module use /apps/contrib/modulefiles
                  module load metdataio/3.1.0-beta2
 
