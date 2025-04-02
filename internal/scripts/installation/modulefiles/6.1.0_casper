@@ -12,4 +12,4 @@ module load met/12.1.0
 module load nco
 
 setenv METPLUS_PATH /glade/work/dtcrt/METplus/casper/components/METplus/installations/METplus-6.1.0
-prepend-path PATH /glade/work/dtcrt/METplus/casper/components/METplus/installations/METplus-6.1.0/ush:/glade/work/dtcrt/METplus/casper/miniconda/miniconda3/envs/metplus_v5.1_py3.10/bin
+prepend-path PATH /glade/work/dtcrt/METplus/casper/components/METplus/installations/METplus-6.1.0/ush:/glade/work/dtcrt/METplus/casper/miniconda/miniconda3/envs/metplus_v6.1_py3.12/bin
