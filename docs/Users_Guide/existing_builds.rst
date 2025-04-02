@@ -30,16 +30,16 @@ in the
 
        | **NCAR MACHINE CASPER** (see 
           `Casper Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/casper/>`_)
-       | *Last Updated: Month DD, YYYY*
+       | *Last Updated: April 2, 2025*
        | *Compiler and version: Intel oneAPI 2024.2.1*
 
-       * METplus-6.1.0 (**Coming Soon**)
+       * METplus-6.1.0-beta2
 
-          * METplus-6.1.0 Installation: 
+          * METplus-6.1.0-beta2 Installation: 
 
             * /glade/work/dtcrt/METplus/casper/components/METplus/installation
 
-       * METplus-6.1 Sample Data: (**Coming Soon**)
+       * METplus-6.1 Sample Data: 
 
           * /glade/work/dtcrt/METplus/data/components/METplus/METplus-6.1_sample_data
 
@@ -52,9 +52,9 @@ in the
 
              export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
              module use $TOP_DIR/METplus/installations/modulefiles
-             module load metplus/6.1.0
+             module load metplus/6.1.0-beta2
 
-       * MET-12.1.0 (**Coming Soon**)
+       * MET-12.1.0-beta2
 
          * MODULES:
 
@@ -62,9 +62,9 @@ in the
 
                export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
                module use $TOP_DIR/MET/installations/modulefiles
-               module load met/12.1.0
+               module load met/12.1.0-beta2
 
-       * METdataio-3.1.0 (**Coming Soon**)
+       * METdataio-3.1.0-beta2
 
          * MODULES:
 
@@ -72,9 +72,9 @@ in the
 
                export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
                module use $TOP_DIR/METdataio/installations/modulefiles
-               module load metdataio/3.1.0
+               module load metdataio/3.1.0-beta2
 	       
-       * METcalcpy-3.1.0 (**Coming Soon**)
+       * METcalcpy-3.1.0-beta2
       
          * MODULES:
 
@@ -82,9 +82,9 @@ in the
 
                export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
                module use $TOP_DIR/METcalcpy/installations/modulefiles
-               module load metcalcpy/3.1.0
+               module load metcalcpy/3.1.0-beta2
 
-       * METplotpy-3.1.0 (**Coming Soon**)
+       * METplotpy-3.1.0-beta2
 
          * MODULES:
 
@@ -92,7 +92,7 @@ in the
 
                export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
                module use $TOP_DIR/METplotpy/installations/modulefiles
-               module load metplotpy/3.1.0
+               module load metplotpy/3.1.0-beta2
 
     .. dropdown:: DERECHO
 
