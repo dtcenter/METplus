@@ -20,7 +20,7 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 #
 # | **Forecast:** 30 SFS-GSL Ensemble files, 0-1m Soil Moisture fields Units: mm
 #
-# | **Observations:** post processed ERA5, 0-1m Soil Moisture field Units: mm
+# | **Observations:** post processed ERA5-Land, 0-1m Soil Moisture field Units: mm
 #
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
@@ -136,5 +136,5 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/s2s-GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.png'
+# sphinx_gallery_thumbnail_path = '_static/s2s_soil_moisture-GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.png'
 
