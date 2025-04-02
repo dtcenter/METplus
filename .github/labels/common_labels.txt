@@ -25,6 +25,7 @@
 {"name": "reporting: DTC NCAR Base","color": "fbca04","description": "NCAR Base DTC Project"}
 {"name": "reporting: DTC NOAA BASE","color": "fbca04","description": "NOAA Office of Atmospheric Research DTC Project"}
 {"name": "reporting: DTC NOAA Base RRFS","color": "fbca04","description": "NOAA Base RRFS DTC Project"}
+{"name": "reporting: DTC NOAA EPIC","color": "fbca04","description": "NOAA Earth Prediction Innovation Center Project"}
 {"name": "reporting: DTC NOAA OAR","color": "fbca04","description": "NOAA Office of Atmospheric Research DTC Project"}
 {"name": "reporting: DTC NOAA R2O","color": "fbca04","description": "NOAA Research to Operations DTC Project"}
 {"name": "reporting: DTC R2O RRFS","color": "fbca04","description": "Research to Operations RRFS DTC Project"}
@@ -51,6 +52,7 @@
 {"name": "requestor: NCAR/SIMA","color": "3101c1","description": "NCAR System for Integrated Modeling of the Atmosphere"}
 {"name": "requestor: NOAA/CPC","color": "3101c1","description": "NOAA Climate Prediction Center"}
 {"name": "requestor: NOAA/EMC","color": "3101c1","description": "NOAA Environmental Modeling Center"}
+{"name": "requestor: NOAA/EPIC","color": "3101c1","description": "NOAA Earth Prediction Innovation Center"}
 {"name": "requestor: NOAA/GSL","color": "3101c1","description": "NOAA Global Systems Laboratory"}
 {"name": "requestor: NOAA/HFIP","color": "3101c1","description": "NOAA Hurricane Forecast Improvement Project"}
 {"name": "requestor: NOAA/MDL","color": "3101c1","description": "NOAA Meteorological Development Laboratory"}
