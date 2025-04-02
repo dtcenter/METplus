@@ -297,8 +297,8 @@ in the
      .. dropdown:: ORION
 
         | **NOAA MACHINE ORION (MANAGED BY MSU)**
-        | *Last updated: April 01, 2025*
-	| *Compiler and version: Intel oneAPI 2022.2.1*
+        | *Last updated: April 02, 2025*
+	| *Compiler and version: Intel oneAPI 2024.1.0*
 
           * **METplus-6.1.0-beta2**
 
