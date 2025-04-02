@@ -885,6 +885,9 @@ class RuntimeFreqWrapper(CommandBuilder):
         if not file_list:
             return
 
+        # add quotation marks around the file path if there is a space
+        file_list = [f'"{item}"' if ' ' in item else item for item in file_list]
+
         # Dictionary to map data types to their corresponding commands
         data_type_handlers = {
             'CTRL': lambda files: self.infiles.append(f'-ctrl {files[0]}'),
