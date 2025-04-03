@@ -106,9 +106,9 @@ class PyEmbedIngestWrapper(LoopTimesWrapper):
                         'REGRID_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS',
                         c_dict['SKIP_IF_OUTPUT_EXISTS'])
 
+        self.config.set('config', 'RDP_SKIP_RUN_CHECK', True)
         c_dict['regrid_data_plane'] = (
-            RegridDataPlaneWrapper(self.config,
-                                   instance=instance)
+            RegridDataPlaneWrapper(self.config, instance=instance)
         )
         c_dict['FIND_FILES'] = False
         return c_dict
