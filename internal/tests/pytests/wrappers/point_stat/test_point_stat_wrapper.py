@@ -828,6 +828,9 @@ def test_met_dictionary_in_var_options(metplus_config, fcst_and_obs_data):
          {'METPLUS_POINT_WEIGHT_FLAG': 'point_weight_flag = SID;'}),
         ({'POINT_STAT_OBTYPE_AS_GROUP_VAL_FLAG': 'FALSE', },
          {'METPLUS_OBTYPE_AS_GROUP_VAL_FLAG': 'obtype_as_group_val_flag = FALSE;'}),
+        ({'OBS_POINT_STAT_INPUT_TEMPLATE': 'PYTHON_NUMPY= examples/read_met_point_obs.py /met_test/out/pb2nc/sample_pb.nc',
+          'OBS_POINT_STAT_INPUT_DIR': ''}, {}),
+
     ]
 )
 @pytest.mark.wrapper_a
@@ -904,10 +907,16 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
 
     expected_cmds = []
     for index in range(0, len(inits)):
+        # handle python embedding case
+        if 'OBS_POINT_STAT_INPUT_TEMPLATE' in config_overrides and 'PYTHON' in config_overrides['OBS_POINT_STAT_INPUT_TEMPLATE']:
+            obs_file = f"\"{config_overrides['OBS_POINT_STAT_INPUT_TEMPLATE']}\""
+        else:
+            obs_file = f"{obs_dir}/{valids[index]}/obs_file"
+
         expected_cmds.append(
             f"{app_path} {verbosity} "
             f"{fcst_dir}/{inits[index]}/fcst_file_F{lead_hour_str} "
-            f"{obs_dir}/{valids[index]}/obs_file "
+            f"{obs_file} "
             f"{config_file}{extra_args[index]}-outdir {out_dir}/{valids[index]}"
         )
 
@@ -925,7 +934,7 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
 def _get_extra_args(inits, valids, config_overrides, time_fmt):
     extra_args = [' '] * len(inits)
 
-    if 'OBS_POINT_STAT_INPUT_TEMPLATE' in config_overrides:
+    if 'OBS_POINT_STAT_INPUT_TEMPLATE' in config_overrides and 'PYTHON' not in config_overrides['OBS_POINT_STAT_INPUT_TEMPLATE']:
         for index in range(0, len(inits)):
             extra_args[index] += f'-point_obs {obs_dir}/{valids[index]}/obs_file2 '
             # if obs_file3 is set, an additional point observation file is added
