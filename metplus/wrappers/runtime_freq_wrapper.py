@@ -14,7 +14,7 @@ from ..util import time_util
 from ..util import log_runtime_banner, get_lead_sequence, get_lead_sequence_groups
 from ..util import skip_time, getlist, get_start_and_end_times, get_time_prefix
 from ..util import time_generator, add_to_time_input, format_lead_seq
-from ..util import sub_var_list, add_field_info_to_time_info
+from ..util import sub_var_list, add_field_info_to_time_info, remove_quotes
 from . import CommandBuilder
 
 '''!@namespace RuntimeFreqWrapper
@@ -886,7 +886,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             return
 
         # add quotation marks around the file path if there is a space
-        file_list = [f'"{item}"' if ' ' in item else item for item in file_list]
+        file_list = [f'"{remove_quotes(item)}"' if ' ' in item else item for item in file_list]
 
         # Dictionary to map data types to their corresponding commands
         data_type_handlers = {
