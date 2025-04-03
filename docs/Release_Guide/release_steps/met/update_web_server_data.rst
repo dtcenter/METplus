@@ -16,7 +16,7 @@ For rc1 development releases, create a new testing input data directory for the 
   repository.
 
   * Navigate to the
-    `Set up next development cycle<https://metplus.readthedocs.io/projects/met/en/develop/Contributors_Guide/testing.html#setup-next-development-cycle>`_
+    `Set up next development cycle <https://metplus.readthedocs.io/projects/met/en/develop/Contributors_Guide/testing.html#setup-next-development-cycle>`_
     section of the MET Contributor's Guide allow follow the instructions.
 
   * Confirm the result at https://dtcenter.ucar.edu/dfiles/code/METplus/MET/MET_unit_test.
