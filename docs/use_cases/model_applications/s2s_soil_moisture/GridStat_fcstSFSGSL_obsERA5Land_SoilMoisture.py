@@ -1,6 +1,6 @@
 """
 GridStat: Verifying Soil moisture of SFS-GSL output against ERA5-Land and compute categorical statistics
-=================================================================
+========================================================================================================
 
 model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.conf
 
