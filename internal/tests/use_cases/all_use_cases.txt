@@ -93,7 +93,7 @@ Category: data_assimilation
 1::StatAnalysis_fcstGFS_HofX_obsIODAv2_PyEmbed::model_applications/data_assimilation/StatAnalysis_fcstGFS_HofX_obsIODAv2_PyEmbed.conf:: py_embed
 
 Category: fire
-0::GridStat_fcstWRF_obsMMA_fire_perimeter::model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf::py_embed
+0::GridStat_fcstWRF_obsMMA_fire_perimeter::model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 
 
 Category: land_surface
