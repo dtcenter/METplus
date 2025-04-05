@@ -175,10 +175,11 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 #   * GridStatToolUseCase
 #   * PythonEmbeddingFileUseCase
 #   * S2SAppUseCase
+#   * S2SSoilMoistureAppUseCase
 #   * NETCDFFileUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
 #
-# sphinx_gallery_thumbnail_path = ‘_static/s2s_soil_moisture-GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.png’
+# sphinx_gallery_thumbnail_path = '_static/s2s_soil_moisture-GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.png'
