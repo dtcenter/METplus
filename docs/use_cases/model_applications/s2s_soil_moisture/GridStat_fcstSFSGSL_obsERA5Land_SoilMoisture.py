@@ -75,7 +75,6 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 ##############################################################################
 # METplus Configuration
 # ---------------------
-# [UPDATE_SECTION_CONTENT]
 #
 # METplus first loads all of the configuration files found in parm/metplus_config, 
 # then it loads any configuration files passed to METplus via the command line, 
