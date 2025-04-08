@@ -35,4 +35,4 @@ ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge numpy==
 ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge libstdcxx-ng
 ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge opencv-python==4.10.0
 ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge libssh
-
+${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge qhull
