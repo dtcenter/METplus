@@ -92,41 +92,12 @@ def time_generator(config):
 
 
 def get_start_and_end_times(config):
-    prefix = get_time_prefix(config)
-    if not prefix:
+    times = list(time_generator(config))
+    if not times or times[0] is None:
         return None, None
 
-    # get clock time of when the run started
-    clock_dt = datetime.strptime(
-        config.getstr('config', 'CLOCK_TIME'),
-        '%Y%m%d%H%M%S'
-    )
-
-    time_format = config.getraw('config', f'{prefix}_TIME_FMT', '')
-    if not time_format:
-        config.logger.error(f'Could not read {prefix}_TIME_FMT')
-        return None, None
-
-    start_string = config.getraw('config', f'{prefix}_BEG')
-    end_string = config.getraw('config', f'{prefix}_END', start_string)
-
-    start_dt = _get_current_dt(start_string,
-                               time_format,
-                               clock_dt,
-                               config.logger)
-
-    end_dt = _get_current_dt(end_string,
-                             time_format,
-                             clock_dt,
-                             config.logger)
-
-    if not _validate_time_values(start_dt,
-                                 end_dt,
-                                 get_relativedelta('60'),
-                                 prefix,
-                                 config.logger):
-        return None, None
-
+    start_dt = times[0][times[0]['loop_by']]
+    end_dt = times[-1][times[-1]['loop_by']]
     return start_dt, end_dt
 
 

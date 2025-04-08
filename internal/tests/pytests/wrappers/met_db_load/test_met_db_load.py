@@ -160,7 +160,7 @@ def test_has_loadable_file(filenames, expected_result):
 
 
 @pytest.mark.wrapper
-def test_METDbLoadWrapper_config(metplus_config):
+def test_met_db_load_wrapper_config(metplus_config):
     config = metplus_config
     set_minimum_config_settings(config)
 
@@ -186,8 +186,6 @@ def test_METDbLoadWrapper_config(metplus_config):
     )
 
     config.set("config", "MET_DB_LOAD_INPUT_TEMPLATE", "template.file")
-    wrapper = METDbLoadWrapper(config)
-
     config.set("config", "MET_DB_LOAD_MV_HOST", "")
     wrapper = METDbLoadWrapper(config)
     wrapper.logger.error.assert_any_call(MatchSubstring("Must set MET_DB_LOAD_MV_HOST"))
@@ -200,7 +198,7 @@ def test_METDbLoadWrapper_config(metplus_config):
 
 
 @pytest.mark.wrapper
-def test_METDbLoadWrapper(tmp_path_factory, metplus_config):
+def test_met_db_load_wrapper(tmp_path_factory, metplus_config):
     config = metplus_config
     set_minimum_config_settings(config)
 
@@ -245,10 +243,9 @@ def test_METDbLoadWrapper(tmp_path_factory, metplus_config):
         assert wrapper.run_at_time_once(time_info) == None
 
     with mock.patch.dict(wrapper.c_dict, {"XML_TEMPLATE": False}):
-        # wrapper.c_dict['XML_TEMPLATE'] = None
         assert wrapper.replace_values_in_xml(time_info) == False
 
-    # check handelling other times
+    # check handling other times
     time_info["lead"] = 3600
     assert wrapper.run_at_time_once(time_info) == True
 

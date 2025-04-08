@@ -1,30 +1,34 @@
 Clone the Project Repository
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Create and work in a new directory to ensure a fresh environment:
+Clone the repository onto your local machine.
 
-.. parsed-literal::
+.. dropdown:: Instructions
 
-    mkdir release-X.Y.Z
-    cd release-X.Y.Z
+  * Create and work in a new directory to ensure a fresh environment:
 
-* Run the clone command to obtain the repository.
+  .. parsed-literal::
 
-Using SSH:
+      mkdir release-X.Y.Z
+      cd release-X.Y.Z
 
-.. parsed-literal::
+  * Run the clone command to obtain the repository.
 
-    git clone git@github.com:dtcenter/|projectRepo|
+  Using SSH:
 
-Using HTTP:
+  .. parsed-literal::
 
-.. parsed-literal::
+      git clone git@github.com:dtcenter/|projectRepo|
 
-    git clone https://github.com/dtcenter/|projectRepo|
+  Using HTTP:
 
-* Enter the project repository directory:
+  .. parsed-literal::
 
-.. parsed-literal::
+      git clone https://github.com/dtcenter/|projectRepo|
 
-    cd |projectRepo|
+  * Enter the project repository directory:
+
+  .. parsed-literal::
+
+      cd |projectRepo|
 

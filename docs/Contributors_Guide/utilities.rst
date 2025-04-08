@@ -219,4 +219,44 @@ Generate Release Notes
 
 **internal/scripts/dev_tools/generate_release_notes.py**
 
-**MORE INFO COMING SOON**
+This script queries METplus GitHub repositories and returns a formatted
+list of GitHub issues that were closed after the date provided.
+Note that this list may not correspond exactly to the issues from the
+latest development cycle, but it is a good start.
+The script also parses certain keywords from the beginning of the issue title
+and puts the issues under those section headings. If none of the keywords
+from the script can be parsed, the issues will be put under a catch-all group
+at the end. Developers should rearrange these issues as appropriate.
+
+This script must be run using a version of Python that has the github Python
+package installed::
+
+    conda install -c conda-forge pygithub
+
+OR::
+
+    mamba install pygithub
+
+To run the script, first obtain a
+`GitHub personal access token <https://github.com/settings/tokens>`_.
+Set the environment variable GITHUB_TOKEN with this value::
+
+    export GITHUB_TOKEN=gha_...
+
+Call the script, passing as arguments the name of the release, e.g. 6.0.0-rc1,
+and the date when the development cycle started, e.g. 20241019::
+
+    ~/METplus/internal/scripts/dev_tools/generate_release_notes.py 6.0.0-rc1 20241019
+
+To parse issues from a repository other than METplus, provide the repository
+name using the -r argument::
+
+    ~/METplus/internal/scripts/dev_tools/generate_release_notes.py 12.0.0-rc1 20241019 -r MET
+
+Please note that additional review and cleanup of the generated content may be
+necessary.
+
+The script will also output formatted table entries for the
+METplus Release Acceptance Testing GitHub Discussion. This content will need
+to be modified to include a description, assignee (if applicable), and updates
+to the status.

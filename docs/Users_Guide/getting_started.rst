@@ -463,9 +463,21 @@ METplus in Apptainer
 Apptainer (formerly Singularity) can also be used to run METplus.
 Images can be pulled from DockerHub using Apptainer commands.
 
-If running on the NCAR Casper cluster, be sure to first load the Apptainer module via::
+If running on the NCAR Casper cluster,
+be sure to first load the Apptainer module via::
 
     module load apptainer
+
+It is recommended to set the **APPTAINER_TMPDIR** environment variable to a
+directory where the user has write permissions to prevent issues with temporary
+files exceeding the size of the /tmp directory.
+See the
+`Apptainer documentation <https://apptainer.org/docs/user/1.0/build_env.html#temporary-folders>`_
+for more information.
+
+Example::
+
+    export APPTAINER_TMP_DIR=/d1/${USER}/apptainer_tmp
 
 Navigate to a working directory and pull an image from DockerHub, e.g.::
 

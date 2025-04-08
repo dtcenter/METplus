@@ -30,7 +30,8 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 # directory as the METPLUS_BASE directory so that the METplus and
 # METplotpy directories are under the same base directory (i.e. if the METPLUS_BASE directory is
 # /home/username/working/METplus, then clone the METplotpy source
-# code into the /home/username/working directory).  
+# code into the /home/username/working directory).
+#
 
 ##############################################################################
 # Version Added
@@ -42,8 +43,10 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 # Datasets
 # --------
 #
-#  * Forecast dataset: FV3 3-D history file with physics and dynamics tendencies
-#  * Grid specification: FV3 2-D grid specification file with latitude and longitude of each grid point
+# **Forecast:** FV3 3-D history file with physics and dynamics tendencies
+#
+# **Grid specification:** FV3 2-D grid specification file with latitude and longitude of each grid point
+#
 #  * Mid-CONUS Shapefiles: 
 #
 #    * MID_CONUS.cpg
@@ -53,16 +56,23 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #    * MID_CONUS.shp
 #    * MID_CONUS.shx
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# **Observation:** None
 #
-
-
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # External Dependencies 
 # ---------------------
-# You will need to use a versio of Python 3.86 that has the following packages
+# You will need to use a version of Python 3.8.6 that has the following packages
 # installed:
 #
 #  * cartopy (0.20.3 only)
@@ -72,34 +82,35 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #  * pandas
 #  * shapely
 #  * xarray
-#
-
-
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
 # This use case runs the METplotpy vert_profile_fv3.py script to generate the vertical profile plot.
-#
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (VALID_BEG):** 2019
 #
-# | This use case does not loop but plots physics tendency data that has been
-# | subsetted to one date: 2019-06-15.
-# |
-
+# **End time (VALID_END):** None
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** None
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
+# This use case does not loop but plots physics tendency data that has been
+# subsetted to one date: 2019-06-15.
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# i.e.  parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalProfile.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalProfile.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalProfile.conf
@@ -107,45 +118,32 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # No MET tools are used in this use case.
+
+##############################################################################
+# Python Embedding
+# ----------------
 #
-# METplus sets environment variables based on user settings in the METplus configuration file. 
-# See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
 #
-# .. note:: See the :ref:`MODE MET Configuration<mode-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
-#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run in the following way: 
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalProfile.conf then a user-specific system configuration file::
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalProfile.conf  /path/to/user_system.conf
 #
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalProfile.conf  /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalProfile.conf::
-#
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalProfile.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-# **NOTE:** All of these items must be found under the [dir] section.
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output
@@ -155,14 +153,19 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #
 #   INFO: METplus has successfully finished running.
 #
-# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# The following file will be created:
 #
-# short_range-physics_tendency_vertical_profile.png
+# .. note::
+#
+#   **By default**, the *vert_profile_fv3.py* script (that generates the plot) creates a file
+#   based on the variable name and plot type.  The resulting .png file is written to the directory where the
+#   *vert_profile_fv3.py* script was invoked.
+#
+# The following file will be created in the directory from where the use case command was issued:
+#
+# ugrd.vert_profile.png
 #
 #
-
-
+#
 
 ##############################################################################
 # Keywords

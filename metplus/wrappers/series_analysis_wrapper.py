@@ -28,7 +28,7 @@ from ..util import get_lead_sequence, get_lead_sequence_groups
 from ..util import ti_get_hours_from_lead, ti_get_seconds_from_lead
 from ..util import ti_get_lead_string
 from ..util import parse_var_list
-from ..util import add_to_time_input, is_single_run_time
+from ..util import add_to_time_input
 from ..util import field_read_prob_info, add_field_info_to_time_info
 from .plot_data_plane_wrapper import PlotDataPlaneWrapper
 from . import RuntimeFreqWrapper
@@ -38,7 +38,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
     """!  Performs series analysis with filtering options
     """
     RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_PER_INIT_OR_VALID'
-    RUNTIME_FREQ_SUPPORTED = 'ALL'
+    RUNTIME_FREQ_SUPPORTED = [
+        'RUN_ONCE',
+        'RUN_ONCE_PER_INIT_OR_VALID',
+        'RUN_ONCE_PER_LEAD',
+    ]
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
@@ -64,6 +68,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         'METPLUS_OBS_CAT_THRESH',
         'METPLUS_CLIMO_CDF_DICT',
         'METPLUS_MASK_DICT',
+        'METPLUS_GRADIENT_DICT',
     ]
 
     # deprecated env vars that are no longer supported in the wrapped MET conf
@@ -96,6 +101,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         'pstd',
         'pjc',
         'prc',
+        'grad',
     ]
 
     def __init__(self, config, instance=None):
@@ -148,6 +154,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         self.handle_mask(single_value=True)
 
+        self.add_met_config_dict('gradient', {
+            'dx': ('list', 'remove_quotes'),
+            'dy': ('list', 'remove_quotes'),
+        })
+
         c_dict['PAIRED'] = self.config.getbool('config',
                                                'SERIES_ANALYSIS_IS_PAIRED',
                                                False)
@@ -158,13 +169,14 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                              data_types=('FCST', 'OBS'),
                              app_name=self.app_name)
 
-        self.get_input_templates(c_dict, {
+        input_info = {
             'FCST': {'prefix': 'FCST_SERIES_ANALYSIS', 'required': False},
             'OBS': {'prefix': 'OBS_SERIES_ANALYSIS', 'required': False},
             'BOTH': {'prefix': 'BOTH_SERIES_ANALYSIS', 'required': False},
             'TC_STAT': {'prefix': 'SERIES_ANALYSIS_TC_STAT', 'required': False},
             'AGGR': {'prefix': 'SERIES_ANALYSIS_AGGR', 'required': False},
-        })
+        }
+        self.get_input_templates(c_dict, input_info)
 
         self._handle_fcst_obs_or_both_c_dict(c_dict)
 
@@ -299,8 +311,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                 extra_args={'remove_quotes': True}
             )
 
-        c_dict['USING_BOTH'] = (c_dict['BOTH_INPUT_TEMPLATE'] or
-                                c_dict.get('BOTH_INPUT_FILE_LIST'))
+        c_dict['USING_BOTH'] = bool(c_dict['BOTH_INPUT_TEMPLATE'] or
+                                    c_dict.get('BOTH_INPUT_FILE_LIST'))
 
         if c_dict['USING_BOTH']:
 
@@ -461,7 +473,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         for lead in leads:
             current_input_dict['lead'] = lead
             new_files = self.get_all_files_for_lead(current_input_dict)
-            all_files.extend(new_files)
+            self._update_list_with_new_files(new_files, all_files)
+
         return all_files
 
     def run_at_time_once(self, time_info, lead_group=None):
@@ -563,7 +576,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             file_dict = {'time_info': time_info.copy()}
             if self.c_dict['USING_BOTH']:
                 fcst_files = self.find_input_files(time_info, 'BOTH')
-                obs_files = fcst_files
+                obs_files = fcst_files.copy()
             else:
                 fcst_files = self.find_input_files(time_info, 'FCST')
                 obs_files = self.find_input_files(time_info, 'OBS')
@@ -575,6 +588,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
             file_dict[fcst_key] = fcst_files
             file_dict[obs_key] = obs_files
+            file_dict['input_time_info'] = [time_info.copy()]
             file_dict_list.append(file_dict)
 
         return file_dict_list
@@ -1076,16 +1090,15 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         # if there are no time tags (init/valid/lead) in the field level
         # or if init, valid, and lead have values in time_info,
         # get field info for a single field to pass to the MET config file
-        if (not self._has_time_tag(var_info[f'{data_type}_level']) or
-                is_single_run_time(time_info)):
+        if (not self._has_time_tag(var_info[f'{data_type}_level']) and
+                not self._has_time_tag(var_info[f'{data_type}_name'])):
             return self._get_field_sub_level(data_type, var_info, time_info)
 
         field_list = []
 
         # loop through fcst/obs files to read time info
         # for each file apply time info to field info and add to list
-        for file_dict in self.c_dict['ALL_FILES']:
-            file_time_info = file_dict['time_info']
+        for file_time_info in self.c_dict['ALL_FILES'][0].get('input_time_info', []):
             field = self._get_field_sub_level(data_type, var_info, file_time_info)
             if field:
                 field_list.extend(field)
@@ -1113,48 +1126,12 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         @param time_dict dictionary containing time information
         @returns string with formatted field info or None
         """
+        name = do_string_sub(var_info[f'{data_type}_name'], **time_dict)
         level = do_string_sub(var_info[f'{data_type}_level'], **time_dict)
         return self.get_field_info(
             v_level=level,
             v_thresh=var_info[f'{data_type}_thresh'],
-            v_name=var_info[f'{data_type}_name'],
+            v_name=name,
             v_extra=var_info[f'{data_type}_extra'],
             d_type=data_type.upper()
         )
-
-    @staticmethod
-    def _get_times_from_file_list(file_path, templates):
-        """!Generator that yields time info dictionaries.
-        Loops through file paths found in text file and use list of filename
-        templates to parse time information from each file.
-
-        @param file_path path to file list file to parse
-        @param templates list of filename templates to use to parse time info
-        out of file paths found in file_path file
-        """
-        try:
-            with open(file_path, 'r') as file_handle:
-                file_list = file_handle.read().splitlines()[1:]
-        except FileNotFoundError:
-            return
-
-        for file_name in file_list:
-            found = False
-            file_time_info = None
-            for template in templates:
-                file_time_info = parse_template(template, file_name)
-                if file_time_info:
-                    found = True
-                    break
-            if not found:
-                continue
-            yield file_time_info
-
-    def _update_list_with_new_files(self, time_info, list_to_update):
-        new_files = self.get_files_from_time(time_info)
-        if not new_files:
-            return
-        if isinstance(new_files, list):
-            list_to_update.extend(new_files)
-        else:
-            list_to_update.append(new_files)

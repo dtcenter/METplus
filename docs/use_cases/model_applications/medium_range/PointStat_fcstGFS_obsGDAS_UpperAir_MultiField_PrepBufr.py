@@ -20,7 +20,6 @@ model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_Pr
 # the skill of the prediction.  Statistics are stored as partial sums to save
 # space and Stat-Analysis must be used to compute the Continuous Statistics.
 
-
 ##############################################################################
 # Version Added
 # -------------
@@ -31,12 +30,20 @@ model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_Pr
 # Datasets
 # --------
 #
-# | **Forecast:** GFS temperature, u-wind component, v-wind component, and height
-# | **Observation:** GDAS prepBURF data
+# **Forecast:** NOAA Global Forecast System (GFS) temperature, u-wind component, v-wind component, and height
 #
-# | **Location:** Click here for the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
-# |
+# **Observation:** Global Data Assimilation System (GDAS) prepBURF data
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -44,26 +51,31 @@ model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_Pr
 #
 # This use case utilizes the METplus PB2NC wrapper to convert PrepBUFR point observations to NetCDF format and then compare them to gridded forecast data using PointStat.
 
-
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (VALID_BEG):** 20170601
+#
+# **End time (VALID_END):** 20170603
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 86400
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0
 #
 # PB2NC and PointStat are the tools called in this example. It processes the following run times:
 #
 # | **Valid:** 2017-06-01 0Z
 # | **Valid:** 2017-06-02 0Z
 # | **Valid:** 2017-06-03 0Z
-# |
-#
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf
@@ -71,7 +83,7 @@ model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_Pr
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on user settings in the METplus configuration file. 
 # See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
@@ -81,47 +93,36 @@ model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_Pr
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# **PB2NCConfig_wrapped**
+# .. dropdown:: PB2NCConfig_wrapped
 #
-# .. note:: See the :ref:`PB2NC MET Configuration<pb2nc-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+#   .. literalinclude:: ../../../../parm/met_config/PB2NCConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/PB2NCConfig_wrapped
+# .. dropdown:: PointStatConfig_wrapped
 #
-# **PointStatConfig_wrapped**
+#   .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
 #
-# .. note:: See the :ref:`PointStat MET Configuration<point-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
 #
-# .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf then a user-specific system configuration file::
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf /path/to/user_system.conf
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf -c /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf::
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-# **NOTE:** All of these items must be found under the [dir] section.
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output
@@ -160,4 +161,4 @@ model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_Pr
 #
 #
 # sphinx_gallery_thumbnail_path = '_static/medium_range-PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.png'
-#
+

@@ -184,6 +184,7 @@ exclude_patterns = ['_build',
                     'use_cases',
                     'Release_Guide/release_steps',
                     'Verification_Datasets/datasets/template.rst',
+                    'Users_Guide/existing_builds_template.rst',
                     ]
 
 # Suppress certain warning messages
@@ -192,18 +193,18 @@ suppress_warnings = ['ref.citation']
 
 # -- Options for HTML output -------------------------------------------------
 
+# Add any paths that contain custom static files (such as style sheets) here,
+# relative to this directory. They are copied after the builtin static files,
+# so a file named "default.css" will overwrite the builtin "default.css".
+html_static_path = ['_static']
+
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
 html_theme = 'sphinx_rtd_theme'
 html_theme_path = ["_themes", ]
-html_js_files = ['pop_ver.js']
-html_css_files = ['theme_override.css']
-
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_js_files = [ ]
+html_css_files = ["theme_override.css", "custom.css"]
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
@@ -223,6 +224,10 @@ sphinx_gallery_conf = {
 
 # -- Intersphinx control ---------------------------------------------------------------
 intersphinx_mapping = {'numpy':("https://docs.scipy.org/doc/numpy/", None)}
+
+# -- Include the CSS -------------------------------------------------------------------
+def setup(app):
+    app.add_css_file("custom.css")
 
 # -- Replace values in docs ------------------------------------------------------------
 rst_epilog = f"""

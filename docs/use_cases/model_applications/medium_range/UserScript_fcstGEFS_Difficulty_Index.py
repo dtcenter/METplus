@@ -5,7 +5,6 @@ UserScript: Calculate the Difficulty Index
 model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 
 """
-
 ##############################################################################
 # .. contents::
 #   :depth: 1
@@ -51,24 +50,20 @@ model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 # Datasets
 # --------
 #
-# This use case calculates the difficulty index for wind speed using NCEP 
-# GEFS ensemble data. The data is composed of 30 ensemble members that 
-# have been compiled and compressed into one .npz file. 
-# 
-#  - Variables required to calculate the difficulty index:
-#    Levels required: 10-m
-#    #. v- component of wind
-#    #. u- component of wind
-#    #. Windspeed
-#    #. Latitude
-#    #. Longitude
-#  - Forecast dataset: NCEP GEFS 30 member Ensemble
-#    - Initialization date: 20191208
-#    - Initialization hours: 12 UTC
-#    - Lead times: 60
-#    - Format: Grib2
-#    - Resolution: 0.5 degree
+# **Forecast:** NOAA Global Ensemble Forecast System (GEFS)
 #
+# **Observation:** None
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -76,11 +71,18 @@ model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 #
 # This use case runs the UserScript wrapper tool to run a user provided script,
 # in this case, wind_difficulty_index.py.
-#
 
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (INIT_BEG):** 2020120812
+#
+# **End time (INIT_END):** 2020120812
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 12H
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
 #
 # This use case loops by process which means that each tool is run for all times before moving to the
 # next tool. The tool order is as follows:
@@ -92,18 +94,20 @@ model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 #
 # 1 initialization time will be run over 1 lead time:
 #
-# | **Init:** 20201208_12Z
-# | **Forecast lead:** 60
-# |
+# **Init:** 20201208_12Z
 #
+# **Forecast lead:** 60
+#
+# Since the data file used only contains a single lead time, the lead time is implied and not configured
+# anywhere in the use case configuration file.
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
@@ -120,58 +124,33 @@ model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 # Python Embedding
 # ----------------
 #
-# This use case uses a Python embedding script to read input data
+# This use case uses a Python embedding script to read input data.
 #
-# parm/use_cases/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index/wind_difficulty_index.py
+# .. dropdown:: parm/use_cases/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index/wind_difficulty_index.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index/wind_difficulty_index.py
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index/wind_difficulty_index.py
 #
+# For more information on the basic requirements to utilize Python Embedding in METplus, 
+# please refer to the MET User’s Guide section on
+# `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# [UPDATE CONTENT]
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in UserScript_fcstGEFS_Difficulty_Index.conf, 
-# then a user-specific system configuration file::
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf /path/to/user_system.conf
 #
-#        run_metplus.py \
-#        -c /path/to/METplus/parm/use_cases/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf \
-#        -c /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstGEFS_Difficulty_Index.conf::
-#
-#        run_metplus.py \
-#        -c /path/to/METplus/parm/use_cases/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-#  and for the [exe] section, you will need to define the location of NON-MET executables.
-#  If the executable is in the user's path, METplus will find it from the name. 
-#  If the executable is not in the path, specify the full path to the executable here (i.e. RM = /bin/rm)  
-#  The following executables are required for performing series analysis use cases:
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y
-#
-#   [exe]
-#   RM = /path/to/rm
-#   CUT = /path/to/cut
-#   TR = /path/to/tr
-#   NCAP2 = /path/to/ncap2
-#   CONVERT = /path/to/convert
-#   NCDUMP = /path/to/ncdump
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output
