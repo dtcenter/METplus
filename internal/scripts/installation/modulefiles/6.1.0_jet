@@ -15,4 +15,4 @@ prereq R/4.0.2
 prereq met/12.1.0
 
 setenv METPLUS_PATH /contrib/met/METplus/METplus-6.1.0
-prepend-path PATH /contrib/met/METplus/METplus-6.1.0/ush:/mnt/lfs1/HFIP/dtc-hurr/METplus/miniconda/miniconda3/envs/metplus_v5.1_py3.10/bin
+prepend-path PATH /contrib/met/METplus/METplus-6.1.0/ush:/mnt/lfs6/HFIP/dtc-hurr/METplus/miniconda/miniconda3/envs/metplus_v6.1_py3.12/bin

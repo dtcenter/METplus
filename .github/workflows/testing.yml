@@ -11,6 +11,7 @@ on:
       - 'bugfix_**'
     paths-ignore:
       - 'docs/**'
+      - 'internal/scripts/installation/**'
       - '.github/pull_request_template.md'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/labels/**'
@@ -24,6 +25,7 @@ on:
       - 'main_*'
     paths-ignore:
       - 'docs/**'
+      - 'internal/scripts/installation/**'
       - '.github/pull_request_template.md'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/labels/**'

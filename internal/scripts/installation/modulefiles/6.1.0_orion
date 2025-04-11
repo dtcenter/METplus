@@ -8,11 +8,11 @@ proc ModulesHelp { } {
 }
 
 module load contrib
-module load intel-oneapi-compilers/2022.2.1
+module load intel-oneapi-compilers/2024.1.0
 module load met/12.1.0
 module load nco/5.1.6
 module load wgrib2/3.1.1
 
-prepend-path PATH /work/noaa/ovp/miniconda/miniconda3/envs/metplus_v5.1_py3.10/bin
+prepend-path PATH /work/noaa/ovp/miniconda/miniconda3/envs/metplus_v6.1_py3.12/bin
 setenv METPLUS_PATH /apps/contrib/MET/METplus/METplus-6.1.0
 prepend-path PATH /apps/contrib/MET/METplus/METplus-6.1.0/ush

@@ -30,16 +30,16 @@ in the
 
        | **NCAR MACHINE CASPER** (see 
           `Casper Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/casper/>`_)
-       | *Last Updated: Month DD, YYYY*
+       | *Last Updated: April 2, 2025*
        | *Compiler and version: Intel oneAPI 2024.2.1*
 
-       * METplus-6.1.0 (**Coming Soon**)
+       * METplus-6.1.0-beta2
 
-          * METplus-6.1.0 Installation: 
+          * METplus-6.1.0-beta2 Installation: 
 
             * /glade/work/dtcrt/METplus/casper/components/METplus/installation
 
-       * METplus-6.1 Sample Data: (**Coming Soon**)
+       * METplus-6.1 Sample Data: 
 
           * /glade/work/dtcrt/METplus/data/components/METplus/METplus-6.1_sample_data
 
@@ -52,9 +52,9 @@ in the
 
              export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
              module use $TOP_DIR/METplus/installations/modulefiles
-             module load metplus/6.1.0
+             module load metplus/6.1.0-beta2
 
-       * MET-12.1.0 (**Coming Soon**)
+       * MET-12.1.0-beta2
 
          * MODULES:
 
@@ -62,9 +62,9 @@ in the
 
                export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
                module use $TOP_DIR/MET/installations/modulefiles
-               module load met/12.1.0
+               module load met/12.1.0-beta2
 
-       * METdataio-3.1.0 (**Coming Soon**)
+       * METdataio-3.1.0-beta2
 
          * MODULES:
 
@@ -72,9 +72,9 @@ in the
 
                export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
                module use $TOP_DIR/METdataio/installations/modulefiles
-               module load metdataio/3.1.0
+               module load metdataio/3.1.0-beta2
 	       
-       * METcalcpy-3.1.0 (**Coming Soon**)
+       * METcalcpy-3.1.0-beta2
       
          * MODULES:
 
@@ -82,9 +82,9 @@ in the
 
                export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
                module use $TOP_DIR/METcalcpy/installations/modulefiles
-               module load metcalcpy/3.1.0
+               module load metcalcpy/3.1.0-beta2
 
-       * METplotpy-3.1.0 (**Coming Soon**)
+       * METplotpy-3.1.0-beta2
 
          * MODULES:
 
@@ -92,7 +92,7 @@ in the
 
                export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
                module use $TOP_DIR/METplotpy/installations/modulefiles
-               module load metplotpy/3.1.0
+               module load metplotpy/3.1.0-beta2
 
     .. dropdown:: DERECHO
 
@@ -172,14 +172,14 @@ in the
      .. dropdown:: HERA
 
         | **NOAA MACHINE HERA**
-        | *Last updated: Month DD, YYYY*
+        | *Last updated: April 11, 2025*
         | *Compiler and version: Intel oneAPI 2024.2.1*
 
-          * **METplus-6.1.0** (**Coming Soon**)
+          * **METplus-6.1.0-beta2**
 
-            * METplus-6.1.0 Installation
+            * METplus-6.1.0-beta2 Installation
 
-              * /contrib/METplus/METplus-6.1.0
+              * /contrib/METplus/METplus-6.1.0-beta2
 
             * METplus-6.1 Sample Data
 
@@ -195,9 +195,9 @@ in the
 
                   module load intel/2024.2.1
                   module use /contrib/METplus/modulefiles
-                  module load metplus/6.1.0
+                  module load metplus/6.1.0-beta2
 
-          * **MET-12.1.0** (**Coming Soon**)
+          * **MET-12.1.0-beta2**
 
             * MODULES:
 
@@ -205,9 +205,9 @@ in the
 
                   module load intel/2024.2.1
                   module use -a /contrib/met/modulefiles/
-                  module load met/12.1.0
+                  module load met/12.1.0-beta2
 
-          * **METcalcpy-3.1.0 / METplotpy-3.1.0** (**Coming Soon**)
+          * **METcalcpy-3.1.0-beta2 / METplotpy-3.1.0-beta2**
 
             * MODULES:
 
@@ -215,11 +215,11 @@ in the
 
                   module load intel/2024.2.1
                   module use /contrib/METcalcpy/modulefiles
-                  module load metcalcpy/3.1.0
+                  module load metcalcpy/3.1.0-beta2
                   module use /contrib/METplotpy/modulefiles
-                  module load metplotpy/3.1.0
+                  module load metplotpy/3.1.0-beta2
 
-          * **METdataio-3.1.0** (**Coming Soon**)
+          * **METdataio-3.1.0-beta2**
 
             * MODULES:
 
@@ -227,7 +227,7 @@ in the
 
                   module load intel/2024.2.1
                   module use /contrib/METdataio/modulefiles
-                  module load metdataio/3.1.0
+                  module load metdataio/3.1.0-beta2
 
      .. dropdown:: HERCULES
 
@@ -297,10 +297,10 @@ in the
      .. dropdown:: ORION
 
         | **NOAA MACHINE ORION (MANAGED BY MSU)**
-        | *Last updated: Month DD, YYYY*
-	| *Compiler and version: Intel oneAPI 2022.2.1*
+        | *Last updated: April 02, 2025*
+	| *Compiler and version: Intel oneAPI 2024.1.0*
 
-          * **METplus-6.1.0** (**Coming Soon**)
+          * **METplus-6.1.0-beta2**
 
             * METplus-6.1 Sample Data
 
@@ -312,29 +312,29 @@ in the
               .. code-block:: ini
 
                  module load contrib
-                 module load metplus/6.1.0
+                 module load metplus/6.1.0-beta2
 
-          * **MET-12.1.0** (**Coming Soon**)
-
-            * MODULES:
-
-              .. code-block:: ini
-
-                 module load contrib
-                 module load intel-oneapi-compilers/2022.2.1
-                 module load met/12.1.0
-
-          * **METcalcpy-3.1.0 / METplotpy-3.1.0** (**Coming Soon**)
+          * **MET-12.1.0-beta2**
 
             * MODULES:
 
               .. code-block:: ini
 
                  module load contrib
-                 module load intel-oneapi-compilers/2022.2.1
+                 module load intel-oneapi-compilers/2024.1.0
+                 module load met/12.1.0-beta2
+
+          * **METcalcpy-3.1.0-beta2 / METplotpy-3.1.0-beta2** 
+
+            * MODULES:
+
+              .. code-block:: ini
+
+                 module load contrib
+                 module load intel-oneapi-compilers/2024.1.0
                  module use /apps/contrib/modulefiles
-                 module load metcalcpy/3.1.0
-                 module load metplotpy/3.1.0
+                 module load metcalcpy/3.1.0-beta2
+                 module load metplotpy/3.1.0-beta2
 
           * PIP INSTALL
 
@@ -347,34 +347,34 @@ in the
                  python -m pip install --user netcdf4
                  python -m pip install --user h5netcdf
 
-          * **METdataio-3.1.0** (**Coming Soon**)
+          * **METdataio-3.1.0-beta2**
 
             * MODULES:
 
               .. code-block:: ini
 
                  module load contrib
-                 module load intel-oneapi-compilers/2022.2.1
+                 module load intel-oneapi-compilers/2024.1.0
                  module use /apps/contrib/modulefiles
-                 module load metdataio/3.1.0
+                 module load metdataio/3.1.0-beta2
 
      .. dropdown:: JET
 
         | **NOAA MACHINE JET**
-        | *Last updated: Month DD, YYYY*
+        | *Last updated: April 11, 2025*
         | *Compiler and version: Intel oneAPI 2024.2.1*
 
-          * **METplus-6.1.0** (**Coming Soon**)
+          * **METplus-6.1.0-beta2** 
 
-            * METplus-6.1.0 Installation
+            * METplus-6.1.0-beta2 Installation
 
-              * /contrib/met/METplus/METplus-6.1.0
+              * /contrib/met/METplus/METplus-6.1.0-beta2
 
             * METplus-6.1 Sample Data
 
-              * /mnt/lfs5/HFIP/dtc-hurr/METplus/sample_data/METplus-6.1_sample_data
+              * /mnt/lfs6/HFIP/dtc-hurr/METplus/sample_data/METplus-6.1_sample_data
 
-            * To use METplus run: Create a like /mnt/lfs5/HFIP/dtc-hurr/METplus/jet.role-metplus.conf 
+            * To use METplus run: Create a like /mnt/lfs6/HFIP/dtc-hurr/METplus/jet.role-metplus.conf 
               to set a personalized INPUT_BASE and OUTPUT_BASE.
 
               .. code-block:: ini
@@ -385,11 +385,11 @@ in the
                  module load wgrib2/3.1.2_wmo
                  module load R/4.0.2
                  module use /contrib/met/modulefiles
-                 module load met/12.1.0
+                 module load met/12.1.0-beta2
                  module use /contrib/met/METplus/modulefiles
-                 module load metplus/6.1.0
+                 module load metplus/6.1.0-beta2
 
-          * **METv12.1.0** (**Coming Soon**)
+          * **METv12.1.0-beta2**
 
             * MODULES:
 
@@ -398,9 +398,9 @@ in the
                  module load intel/2024.2.1
                  module load contrib
                  module use /contrib/met/modulefiles
-                 module load met/12.1.0
+                 module load met/12.1.0-beta2
 
-          * **METcalcpy-3.1.0 / METplotpy-3.1.0** (**Coming Soon**)
+          * **METcalcpy-3.1.0-beta2 / METplotpy-3.1.0-beta2**
 
             * MODULES:
 
@@ -408,11 +408,11 @@ in the
 
                  module load intel/2024.2.1
                  module use /contrib/met/METcalcpy/modulefiles
-                 module load metcalcpy/3.1.0
+                 module load metcalcpy/3.1.0-beta2
                  module use /contrib/met/METplotpy/modulefiles
-                 module load metplotpy/3.1.0
+                 module load metplotpy/3.1.0-beta2
 
-          * **METdataio-3.1.0** (**Coming Soon**)
+          * **METdataio-3.1.0-beta2**
 
             * MODULES:
 
@@ -420,7 +420,7 @@ in the
 
                  module load intel/2024.2.1
                  module use /contrib/met/METdataio/modulefiles
-                 module load metdataio/3.1.0
+                 module load metdataio/3.1.0-beta2
 
      .. dropdown:: GAEA
 
