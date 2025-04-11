@@ -172,14 +172,14 @@ in the
      .. dropdown:: HERA
 
         | **NOAA MACHINE HERA**
-        | *Last updated: Month DD, YYYY*
+        | *Last updated: April 11, 2025*
         | *Compiler and version: Intel oneAPI 2024.2.1*
 
-          * **METplus-6.1.0** (**Coming Soon**)
+          * **METplus-6.1.0-beta2**
 
-            * METplus-6.1.0 Installation
+            * METplus-6.1.0-beta2 Installation
 
-              * /contrib/METplus/METplus-6.1.0
+              * /contrib/METplus/METplus-6.1.0-beta2
 
             * METplus-6.1 Sample Data
 
@@ -195,9 +195,9 @@ in the
 
                   module load intel/2024.2.1
                   module use /contrib/METplus/modulefiles
-                  module load metplus/6.1.0
+                  module load metplus/6.1.0-beta2
 
-          * **MET-12.1.0** (**Coming Soon**)
+          * **MET-12.1.0-beta2**
 
             * MODULES:
 
@@ -205,9 +205,9 @@ in the
 
                   module load intel/2024.2.1
                   module use -a /contrib/met/modulefiles/
-                  module load met/12.1.0
+                  module load met/12.1.0-beta2
 
-          * **METcalcpy-3.1.0 / METplotpy-3.1.0** (**Coming Soon**)
+          * **METcalcpy-3.1.0-beta2 / METplotpy-3.1.0-beta2**
 
             * MODULES:
 
@@ -215,11 +215,11 @@ in the
 
                   module load intel/2024.2.1
                   module use /contrib/METcalcpy/modulefiles
-                  module load metcalcpy/3.1.0
+                  module load metcalcpy/3.1.0-beta2
                   module use /contrib/METplotpy/modulefiles
-                  module load metplotpy/3.1.0
+                  module load metplotpy/3.1.0-beta2
 
-          * **METdataio-3.1.0** (**Coming Soon**)
+          * **METdataio-3.1.0-beta2**
 
             * MODULES:
 
@@ -227,7 +227,7 @@ in the
 
                   module load intel/2024.2.1
                   module use /contrib/METdataio/modulefiles
-                  module load metdataio/3.1.0
+                  module load metdataio/3.1.0-beta2
 
      .. dropdown:: HERCULES
 
