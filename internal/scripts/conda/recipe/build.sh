@@ -22,9 +22,6 @@ export MET_CAIROLIB="${PREFIX}/lib"
 export MET_ECKIT="${PREFIX}/lib/metview-bundle"
 export MET_ATLAS="${PREFIX}/lib/metview-bundle"
 
-# Determine the number of processors
-NUM_PROCS=$(sysctl -n hw.ncpu || grep -c ^processor /proc/cpuinfo || 1)
-
 
 ###
 # GS fonts
@@ -49,12 +46,12 @@ printf "export METPLUS_PARM_BASE=${PREFIX}/lib/python${PYTHON_VERSION}/site-pack
 ###
 
 # Update config.sub and config.guess before running configure
-curl -o ./MET/config.sub http://git.savannah.gnu.org/cgit/config.git/plain/config.sub
-curl -o ./MET/config.guess http://git.savannah.gnu.org/cgit/config.git/plain/config.guess
+cp ${BUILD_PREFIX}/share/gnuconfig/config.sub ./MET/
+cp ${BUILD_PREFIX}/share/gnuconfig/config.guess ./MET/
 
 (cd MET &&
      ./configure --prefix="${PREFIX}" --enable-all BUFRLIB_NAME=-lbufr_4 GRIB2CLIB_NAME=-lg2c &&
-     make install -j${NUM_PROCS} &&
+     make install -j${CPU_COUNT} &&
      make test)
 
 # Run sed with the proper in-place option

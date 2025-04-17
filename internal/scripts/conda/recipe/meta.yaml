@@ -25,7 +25,7 @@ source:
 
 
 build:
-  skip: True  # [win]
+  skip: True  # [win and py!=3.10]
   number: 0
   entry_points:
     - run_metplus.py = metplus.scripts.run_metplus:cli_main
@@ -41,11 +41,10 @@ requirements:
     - make
     - llvm-openmp  # [osx]
     - libgomp      # [linux]
-    - python 3.10
-    - python-configuration
+    - gnuconfig
 
   host:
-    - python 3.10
+    - python
     - pip
     - gsl
     - netcdf-cxx4
@@ -58,7 +57,6 @@ requirements:
     - proj
     - metview
     - hdfeos2
-    - libcxx
     - setuptools
     - setuptools-git-versioning >=2.0,<3
 
@@ -66,7 +64,7 @@ requirements:
     - gsl
     - netcdf-cxx4
     - libopenblas
-    - python 3.10
+    - python
     - nceplibs-bufr
     - nceplibs-g2c
     - hdf4
