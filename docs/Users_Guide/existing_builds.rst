@@ -110,10 +110,10 @@ in the
     .. dropdown:: NCAR/RAL Common Installation
 
        | **NCAR RAL MACHINES (STANDARD LOCATION)**
-       | *Last Updated: January 23, 2025*
+       | *Last Updated: April 21, 2025*
        | *Compiler and version: GNU 12.2.0*
 
-       * **METv12.0.0**
+       * **METv12.0.2**
 
          * MET BUILD: /nrit/ral/met/bin
 
