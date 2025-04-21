@@ -23,19 +23,10 @@ export MET_ECKIT="${PREFIX}/lib/metview-bundle"
 export MET_ATLAS="${PREFIX}/lib/metview-bundle"
 
 
-###
-# GS fonts
-###
-
-# Add GS fonts to the package
-mv "${SRC_DIR}/gs-fonts" "${PREFIX}/gs-fonts"
-
 # Create an activate script to set env vars:
-#  - location of GS fonts, for use by mode graphics
 #  - location of METplus parm directory to find use case config files
 
 mkdir -p "${PREFIX}/etc/conda/activate.d"
-printf "export MET_FONT_DIR=${PREFIX}/gs-fonts\n" > "${PREFIX}/etc/conda/activate.d/${PKG_NAME}-activate.sh"
 
 PYTHON_VERSION=$(${MET_PYTHON_BIN_EXE} -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
 printf "export METPLUS_PARM=${PREFIX}/lib/python${PYTHON_VERSION}/site-packages/metplus/parm\n" >> "${PREFIX}/etc/conda/activate.d/${PKG_NAME}-activate.sh"
