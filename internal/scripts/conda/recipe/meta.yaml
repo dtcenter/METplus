@@ -116,6 +116,7 @@ about:
   license_family: APACHE
   license_file:
     - LICENSE.md
+    - MET/LICENSE.md
   doc_url: https://metplus.readthedocs.io
   dev_url: https://github.com/dtcenter/METplus
 
