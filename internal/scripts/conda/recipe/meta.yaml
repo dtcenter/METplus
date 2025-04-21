@@ -24,7 +24,8 @@ build:
   number: 0
   entry_points:
     - run_metplus.py = metplus.scripts.run_metplus:cli_main
-
+  ignore_run_exports:
+    - numpy
 
 requirements:
   build:
