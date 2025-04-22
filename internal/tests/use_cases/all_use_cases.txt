@@ -169,6 +169,11 @@ Category: s2s_mjo
 4:: UserScript_obsCFSR_obsOnly_MJO_ENSO:: model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO.conf:: mp_analysis_env, metdataio
 
 
+Category: s2s_soil_moisture
+0::PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing:: model_applications/s2s_soil_moisture/PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.conf
+1::GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture:: model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.conf
+
+
 Category: s2s_stratosphere
 0:: UserScript_fcstGFS_obsERA_StratosphereBias:: model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.conf:: weatherregime_env,cartopy,metdataio
 1::UserScript_fcstGFS_obsERA_StratospherePolar:: model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.conf:: weatherregime_env,cartopy,metdataio

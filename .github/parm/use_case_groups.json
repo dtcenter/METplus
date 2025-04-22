@@ -249,6 +249,16 @@
     "run": false
   },
   {
+    "category": "s2s_soil_moisture",
+    "index_list": "0",
+    "run": false
+  },
+  {
+    "category": "s2s_soil_moisture",
+    "index_list": "1",
+    "run": false
+  },
+  {
     "category": "s2s_stratosphere",
     "index_list": "0",
     "run": false
