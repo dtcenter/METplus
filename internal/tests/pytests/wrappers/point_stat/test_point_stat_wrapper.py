@@ -6,29 +6,16 @@ import os
 from datetime import datetime, timedelta
 
 from metplus.wrappers.point_stat_wrapper import PointStatWrapper
+from internal.tests.pytests.conftest import stat_runtime_freq_test_params
 
 fcst_dir = '/some/path/fcst'
 obs_dir = '/some/path/obs'
 
-fcst_name = 'APCP'
-fcst_level = 'A03'
-obs_name = 'APCP_03'
-obs_level = '"(*,*)"'
-
-inits = ['2005080700', '2005080712']
-time_fmt = '%Y%m%d%H'
-lead_hour = 12
-lead_hour_str = str(lead_hour).zfill(3)
-valids = []
-for init in inits:
-    valid = datetime.strptime(init, time_fmt) + timedelta(hours=lead_hour)
-    valid = valid.strftime(time_fmt)
-    valids.append(valid)
-
 ugrid_config_file = '/some/path/UgridConfig_fake'
 
 
-def set_minimum_config_settings(config):
+def set_minimum_config_settings(config, fcst_and_obs_data):
+    _, _, _, _, inits, _, lead_hour, time_fmt = fcst_and_obs_data
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
     config.set('config', 'DO_NOT_RUN_EXE', True)
@@ -57,21 +44,15 @@ def set_minimum_config_settings(config):
 
 
 @pytest.mark.parametrize(
-    'once_per_field, missing, run, thresh, errors, allow_missing', [
-        (False, 6, 12, 0.5, 0, True),
-        (False, 6, 12, 0.6, 1, True),
-        (True, 12, 24, 0.5, 0, True),
-        (True, 12, 24, 0.6, 1, True),
-        (False, 6, 12, 0.5, 6, False),
-        (True, 12, 24, 0.5, 12, False),
-    ]
+    'once_per_field, missing, run, thresh, errors, allow_missing', stat_runtime_freq_test_params
 )
 @pytest.mark.wrapper_a
 def test_point_stat_missing_inputs(metplus_config, get_test_data_dir,
                                    once_per_field, missing, run, thresh, errors,
-                                   allow_missing):
+                                   allow_missing, fcst_and_obs_data):
+    fcst_name, fcst_level, obs_name, obs_level, _, _, _, _ = fcst_and_obs_data
     config = metplus_config
-    set_minimum_config_settings(config)
+    set_minimum_config_settings(config, fcst_and_obs_data)
     config.set('config', 'INPUT_MUST_EXIST', True)
     config.set('config', 'POINT_STAT_ALLOW_MISSING_INPUTS', allow_missing)
     config.set('config', 'POINT_STAT_INPUT_THRESH', thresh)
@@ -110,9 +91,9 @@ def test_point_stat_missing_inputs(metplus_config, get_test_data_dir,
 
 
 @pytest.mark.wrapper_a
-def test_met_dictionary_in_var_options(metplus_config):
+def test_met_dictionary_in_var_options(metplus_config, fcst_and_obs_data):
     config = metplus_config
-    set_minimum_config_settings(config)
+    set_minimum_config_settings(config, fcst_and_obs_data)
 
     config.set('config', 'BOTH_VAR1_NAME', 'name')
     config.set('config', 'BOTH_VAR1_LEVELS', 'level')
@@ -122,7 +103,7 @@ def test_met_dictionary_in_var_options(metplus_config):
     wrapper = PointStatWrapper(config)
     assert wrapper.isOK
 
-    all_cmds = wrapper.run_all_times()
+    wrapper.run_all_times()
 
 
 @pytest.mark.parametrize(
@@ -427,9 +408,6 @@ def test_met_dictionary_in_var_options(metplus_config):
          {
              'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {time_interp_method = NEAREST;}'}),
 
-        ({'POINT_STAT_CLIMO_MEAN_MATCH_MONTH': 'True', },
-         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {match_month = TRUE;}'}),
-
         ({'POINT_STAT_CLIMO_MEAN_DAY_INTERVAL': '30', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = 30;}'}),
 
@@ -444,7 +422,6 @@ def test_met_dictionary_in_var_options(metplus_config):
              'POINT_STAT_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5',
              'POINT_STAT_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE',
              'POINT_STAT_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST',
-             'POINT_STAT_CLIMO_MEAN_MATCH_MONTH': 'True',
              'POINT_STAT_CLIMO_MEAN_DAY_INTERVAL': '30',
              'POINT_STAT_CLIMO_MEAN_HOUR_INTERVAL': '12',
          },
@@ -454,7 +431,7 @@ def test_met_dictionary_in_var_options(metplus_config):
                                       'regrid = {method = NEAREST;width = 1;'
                                       'vld_thresh = 0.5;shape = SQUARE;}'
                                       'time_interp_method = NEAREST;'
-                                      'match_month = TRUE;day_interval = 30;'
+                                      'day_interval = 30;'
                                       'hour_interval = 12;}')}),
 
         # climo stdev
@@ -486,9 +463,6 @@ def test_met_dictionary_in_var_options(metplus_config):
          {
              'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {time_interp_method = NEAREST;}'}),
 
-        ({'POINT_STAT_CLIMO_STDEV_MATCH_MONTH': 'True', },
-         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {match_month = TRUE;}'}),
-
         ({'POINT_STAT_CLIMO_STDEV_DAY_INTERVAL': '30', },
          {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {day_interval = 30;}'}),
 
@@ -503,7 +477,6 @@ def test_met_dictionary_in_var_options(metplus_config):
              'POINT_STAT_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5',
              'POINT_STAT_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE',
              'POINT_STAT_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST',
-             'POINT_STAT_CLIMO_STDEV_MATCH_MONTH': 'True',
              'POINT_STAT_CLIMO_STDEV_DAY_INTERVAL': '30',
              'POINT_STAT_CLIMO_STDEV_HOUR_INTERVAL': '12',
          },
@@ -513,7 +486,7 @@ def test_met_dictionary_in_var_options(metplus_config):
                                        'regrid = {method = NEAREST;width = 1;'
                                        'vld_thresh = 0.5;shape = SQUARE;}'
                                        'time_interp_method = NEAREST;'
-                                       'match_month = TRUE;day_interval = 30;'
+                                       'day_interval = 30;'
                                        'hour_interval = 12;}')}),
         ({'POINT_STAT_HSS_EC_VALUE': '0.5', },
          {'METPLUS_HSS_EC_VALUE': 'hss_ec_value = 0.5;'}),
@@ -691,8 +664,6 @@ def test_met_dictionary_in_var_options(metplus_config):
          {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {shape = SQUARE;}}'}),
         ({'POINT_STAT_FCST_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST', },
          {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {time_interp_method = NEAREST;}'}),
-        ({'POINT_STAT_FCST_CLIMO_MEAN_MATCH_MONTH': 'True', },
-         {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {match_month = TRUE;}'}),
         ({'POINT_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL': '30', },
          {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = 30;}'}),
         ({'POINT_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL': 'NA', },
@@ -708,7 +679,6 @@ def test_met_dictionary_in_var_options(metplus_config):
           'POINT_STAT_FCST_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5',
           'POINT_STAT_FCST_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE',
           'POINT_STAT_FCST_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST',
-          'POINT_STAT_FCST_CLIMO_MEAN_MATCH_MONTH': 'True',
           'POINT_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL': '30',
           'POINT_STAT_FCST_CLIMO_MEAN_HOUR_INTERVAL': '12', },
          {'METPLUS_FCST_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
@@ -717,7 +687,7 @@ def test_met_dictionary_in_var_options(metplus_config):
                                            'regrid = {method = NEAREST;width = 1;'
                                            'vld_thresh = 0.5;shape = SQUARE;}'
                                            'time_interp_method = NEAREST;'
-                                           'match_month = TRUE;day_interval = 30;'
+                                           'day_interval = 30;'
                                            'hour_interval = 12;}')}),
         # fcst climo_stdev
         ({'POINT_STAT_FCST_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt', },
@@ -739,8 +709,6 @@ def test_met_dictionary_in_var_options(metplus_config):
          {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {shape = SQUARE;}}'}),
         ({'POINT_STAT_FCST_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST', },
          {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {time_interp_method = NEAREST;}'}),
-        ({'POINT_STAT_FCST_CLIMO_STDEV_MATCH_MONTH': 'True', },
-         {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {match_month = TRUE;}'}),
         ({'POINT_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL': '30', },
          {'METPLUS_FCST_CLIMO_STDEV_DICT': 'climo_stdev = {day_interval = 30;}'}),
         ({'POINT_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL': 'NA', },
@@ -756,7 +724,6 @@ def test_met_dictionary_in_var_options(metplus_config):
           'POINT_STAT_FCST_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5',
           'POINT_STAT_FCST_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE',
           'POINT_STAT_FCST_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST',
-          'POINT_STAT_FCST_CLIMO_STDEV_MATCH_MONTH': 'True',
           'POINT_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL': '30',
           'POINT_STAT_FCST_CLIMO_STDEV_HOUR_INTERVAL': '12', },
          {'METPLUS_FCST_CLIMO_STDEV_DICT': ('climo_stdev = {file_name = '
@@ -765,7 +732,7 @@ def test_met_dictionary_in_var_options(metplus_config):
                                             'regrid = {method = NEAREST;width = 1;'
                                             'vld_thresh = 0.5;shape = SQUARE;}'
                                             'time_interp_method = NEAREST;'
-                                            'match_month = TRUE;day_interval = 30;'
+                                            'day_interval = 30;'
                                             'hour_interval = 12;}')}),
         # obs climo_mean
         ({'POINT_STAT_OBS_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt', },
@@ -787,8 +754,6 @@ def test_met_dictionary_in_var_options(metplus_config):
          {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {shape = SQUARE;}}'}),
         ({'POINT_STAT_OBS_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST', },
          {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {time_interp_method = NEAREST;}'}),
-        ({'POINT_STAT_OBS_CLIMO_MEAN_MATCH_MONTH': 'True', },
-         {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {match_month = TRUE;}'}),
         ({'POINT_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL': '30', },
          {'METPLUS_OBS_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = 30;}'}),
         ({'POINT_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL': 'NA', },
@@ -804,7 +769,6 @@ def test_met_dictionary_in_var_options(metplus_config):
           'POINT_STAT_OBS_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5',
           'POINT_STAT_OBS_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE',
           'POINT_STAT_OBS_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST',
-          'POINT_STAT_OBS_CLIMO_MEAN_MATCH_MONTH': 'True',
           'POINT_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL': '30',
           'POINT_STAT_OBS_CLIMO_MEAN_HOUR_INTERVAL': '12', },
          {'METPLUS_OBS_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
@@ -813,7 +777,7 @@ def test_met_dictionary_in_var_options(metplus_config):
                                           'regrid = {method = NEAREST;width = 1;'
                                           'vld_thresh = 0.5;shape = SQUARE;}'
                                           'time_interp_method = NEAREST;'
-                                          'match_month = TRUE;day_interval = 30;'
+                                          'day_interval = 30;'
                                           'hour_interval = 12;}')}),
         # obs climo_stdev
         ({'POINT_STAT_OBS_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt', },
@@ -835,8 +799,6 @@ def test_met_dictionary_in_var_options(metplus_config):
          {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {shape = SQUARE;}}'}),
         ({'POINT_STAT_OBS_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST', },
          {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {time_interp_method = NEAREST;}'}),
-        ({'POINT_STAT_OBS_CLIMO_STDEV_MATCH_MONTH': 'True', },
-         {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {match_month = TRUE;}'}),
         ({'POINT_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL': '30', },
          {'METPLUS_OBS_CLIMO_STDEV_DICT': 'climo_stdev = {day_interval = 30;}'}),
         ({'POINT_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL': 'NA', },
@@ -852,7 +814,6 @@ def test_met_dictionary_in_var_options(metplus_config):
           'POINT_STAT_OBS_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5',
           'POINT_STAT_OBS_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE',
           'POINT_STAT_OBS_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST',
-          'POINT_STAT_OBS_CLIMO_STDEV_MATCH_MONTH': 'True',
           'POINT_STAT_OBS_CLIMO_STDEV_DAY_INTERVAL': '30',
           'POINT_STAT_OBS_CLIMO_STDEV_HOUR_INTERVAL': '12', },
          {'METPLUS_OBS_CLIMO_STDEV_DICT': ('climo_stdev = {file_name = '
@@ -861,17 +822,23 @@ def test_met_dictionary_in_var_options(metplus_config):
                                            'regrid = {method = NEAREST;width = 1;'
                                            'vld_thresh = 0.5;shape = SQUARE;}'
                                            'time_interp_method = NEAREST;'
-                                           'match_month = TRUE;day_interval = 30;'
+                                           'day_interval = 30;'
                                            'hour_interval = 12;}')}),
         ({'POINT_STAT_POINT_WEIGHT_FLAG': 'SID', },
          {'METPLUS_POINT_WEIGHT_FLAG': 'point_weight_flag = SID;'}),
         ({'POINT_STAT_OBTYPE_AS_GROUP_VAL_FLAG': 'FALSE', },
          {'METPLUS_OBTYPE_AS_GROUP_VAL_FLAG': 'obtype_as_group_val_flag = FALSE;'}),
+        ({'OBS_POINT_STAT_INPUT_TEMPLATE': 'PYTHON_NUMPY= examples/read_met_point_obs.py /met_test/out/pb2nc/sample_pb.nc',
+          'OBS_POINT_STAT_INPUT_DIR': ''}, {}),
+
     ]
 )
 @pytest.mark.wrapper_a
 def test_point_stat_all_fields(metplus_config, config_overrides,
-                               env_var_values, compare_command_and_env_vars):
+                               env_var_values, compare_command_and_env_vars,
+                               fcst_and_obs_data):
+    _, _, _, _, inits, valids, lead_hour, time_fmt = fcst_and_obs_data
+    lead_hour_str = str(lead_hour).zfill(3)
     level_no_quotes = '(*,*)'
     level_with_quotes = f'"{level_no_quotes}"'
 
@@ -881,9 +848,6 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
               {'name': 'UGRD',
                'level': 'Z10',
                'thresh': '>=5'},
-              # {'name': 'VGRD',
-              #  'level': 'Z10',
-              #  'thresh': '>=5'},
              ]
     obss = [{'name': 'TMP',
             'level': level_no_quotes,
@@ -891,9 +855,6 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
             {'name': 'UGRD',
              'level': 'Z10',
              'thresh': '>=5'},
-            # {'name': 'VGRD',
-            #  'level': 'Z10',
-            #  'thresh': '>=5'},
            ]
 
     fcst_fmts = []
@@ -914,7 +875,7 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
         obs_fmts.append(obs_fmt)
 
     config = metplus_config
-    set_minimum_config_settings(config)
+    set_minimum_config_settings(config, fcst_and_obs_data)
 
     for index, (fcst, obs) in enumerate(zip(fcsts, obss)):
         idx = index + 1
@@ -942,36 +903,20 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
 
     # add extra command line arguments
-    extra_args = [' '] * len(inits)
-
-    if 'OBS_POINT_STAT_INPUT_TEMPLATE' in config_overrides:
-        for index in range(0, len(inits)):
-            extra_args[index] += f'-point_obs {obs_dir}/{valids[index]}/obs_file2 '
-            # if obs_file3 is set, an additional point observation file is added
-            if 'obs_file3' in config_overrides['OBS_POINT_STAT_INPUT_TEMPLATE']:
-                extra_args[index] += f'-point_obs {obs_dir}/{valids[index]}/obs_file3 '
-
-    if 'POINT_STAT_UGRID_CONFIG_FILE' in config_overrides:
-        for index in range(0, len(inits)):
-            extra_args[index] += f'-ugrid_config {ugrid_config_file} '
-
-    for beg_end in ('BEG', 'END'):
-        if f'POINT_STAT_OBS_VALID_{beg_end}' in config_overrides:
-            for index in range(0, len(inits)):
-                valid_dt = datetime.strptime(valids[index], time_fmt)
-                if beg_end == 'BEG':
-                    value = valid_dt - timedelta(hours=6)
-                else:
-                    value = valid_dt + timedelta(hours=6)
-                value = value.strftime('%Y%m%d_%H')
-                extra_args[index] += f'-obs_valid_{beg_end.lower()} {value} '
+    extra_args = _get_extra_args(inits, valids, config_overrides, time_fmt)
 
     expected_cmds = []
     for index in range(0, len(inits)):
+        # handle python embedding case
+        if 'OBS_POINT_STAT_INPUT_TEMPLATE' in config_overrides and 'PYTHON' in config_overrides['OBS_POINT_STAT_INPUT_TEMPLATE']:
+            obs_file = f"\"{config_overrides['OBS_POINT_STAT_INPUT_TEMPLATE']}\""
+        else:
+            obs_file = f"{obs_dir}/{valids[index]}/obs_file"
+
         expected_cmds.append(
             f"{app_path} {verbosity} "
             f"{fcst_dir}/{inits[index]}/fcst_file_F{lead_hour_str} "
-            f"{obs_dir}/{valids[index]}/obs_file "
+            f"{obs_file} "
             f"{config_file}{extra_args[index]}-outdir {out_dir}/{valids[index]}"
         )
 
@@ -985,6 +930,32 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
     }
     compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values,
                                  wrapper, special_values)
+
+def _get_extra_args(inits, valids, config_overrides, time_fmt):
+    extra_args = [' '] * len(inits)
+
+    if 'OBS_POINT_STAT_INPUT_TEMPLATE' in config_overrides and 'PYTHON' not in config_overrides['OBS_POINT_STAT_INPUT_TEMPLATE']:
+        for index in range(0, len(inits)):
+            extra_args[index] += f'-point_obs {obs_dir}/{valids[index]}/obs_file2 '
+            # if obs_file3 is set, an additional point observation file is added
+            if 'obs_file3' in config_overrides['OBS_POINT_STAT_INPUT_TEMPLATE']:
+                extra_args[index] += f'-point_obs {obs_dir}/{valids[index]}/obs_file3 '
+
+    if 'POINT_STAT_UGRID_CONFIG_FILE' in config_overrides:
+        for index in range(0, len(inits)):
+            extra_args[index] += f'-ugrid_config {ugrid_config_file} '
+
+    time_deltas = {'BEG': -6, 'END': 6}
+    for beg_end, delta in time_deltas.items():
+        if f'POINT_STAT_OBS_VALID_{beg_end}' not in config_overrides:
+            continue
+
+        for index in range(0, len(inits)):
+            valid_dt = datetime.strptime(valids[index], time_fmt)
+            value = (valid_dt + timedelta(hours=delta)).strftime('%Y%m%d_%H')
+            extra_args[index] += f'-obs_valid_{beg_end.lower()} {value} '
+
+    return extra_args
 
 
 @pytest.mark.wrapper_a

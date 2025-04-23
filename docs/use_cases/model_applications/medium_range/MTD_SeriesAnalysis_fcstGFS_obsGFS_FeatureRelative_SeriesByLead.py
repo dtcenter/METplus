@@ -29,13 +29,20 @@ model_applicaitons/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelativ
 # Datasets
 # --------
 #
-# Relevant information about the datasets that would be beneficial include:
+# **Forecast:** NOAA Global Forecast System (GFS)
 #
-#  * MODE Time Domain Forecast dataset: GFS
-#  * Series-Analysis Forecast dataset: GFS
-#  * MODE Time Domain Observation dataset: GFS Analysis
-#  * Series-Analysis Observation dataset: GFS Analysis
+# **Observation:** NOAA Global Forecast System (GFS) analysis
 #
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -50,11 +57,18 @@ model_applicaitons/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelativ
 # are aggregated into forecast hour groupings as specified by the start and end
 # increment in the METplus configuration file, as well as labels to identify each
 # forecast hour grouping.
-#
 
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (INIT_BEG):** 2021071200
+#
+# **End time (INIT_END):** 2021071212
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 6H
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** begin_end_incr(0,30,6)
 #
 # The following tools are used for each run time:
 #
@@ -67,15 +81,11 @@ model_applicaitons/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelativ
 # | **Init:** 20210712_00Z
 # | **Forecast lead:** 6, 12, 18, 24, 30
 # |
-#
 # | **Init:** 20210712_06Z
 # | **Forecast lead:** 6, 12, 18, 24, 30
 # |
-#
 # | **Init:** 20210712_12Z
 # | **Forecast lead:** 6, 12, 18, 24, 30
-# |
-#
 
 ##############################################################################
 # METplus Configuration

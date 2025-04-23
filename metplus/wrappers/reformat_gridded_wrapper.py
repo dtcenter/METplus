@@ -35,14 +35,17 @@ class ReformatGriddedWrapper(LoopTimesWrapper):
 
         # check if FCST or OBS should be run
         app = self.app_name.upper()
+
+        # prevent error if running RegridDataPlane via PyEmbedIngest wrapper
+        c_dict['SKIP_RUN_CHECK'] = self.config.getbool('config', 'RDP_SKIP_RUN_CHECK', False)
+
         for fcst_or_obs in ('FCST', 'OBS'):
             c_dict[f'{fcst_or_obs}_RUN'] = (
                 self.config.getbool('config', f'{fcst_or_obs}_{app}_RUN', False)
             )
 
-        if not c_dict['FCST_RUN'] and not c_dict['OBS_RUN']:
+        if not c_dict.get('SKIP_RUN_CHECK', False) and not c_dict['FCST_RUN'] and not c_dict['OBS_RUN']:
             self.log_error(f'Must set either FCST_{app}_RUN or OBS_{app}_RUN')
-            return c_dict
 
         return c_dict
 

@@ -18,7 +18,7 @@ def sub_clock_time(input_cmd, clock_time):
     """
     # for 'some SUB[YYYYmmdd] other text'
     # tuple value 1 is SUB[YYYYmmdd], value 2 is YYYYmmdd
-    all_matches = re.findall(r'.*?(SUB\[(.*?)\])+.*?', input_cmd)
+    all_matches = re.findall(r'(SUB\[(.*?)])+', input_cmd)
     if not all_matches:
         return input_cmd
 

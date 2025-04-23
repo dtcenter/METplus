@@ -32,14 +32,20 @@ model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.py
 # Datasets
 # --------
 #
-# **Forecast:** [UPDATE_SECTION_CONTENT]
+# **Forecast:** None
 #
-# **Observation:** [UPDATE_SECTION_CONTENT]
+# **Observation:** ERAI
 #
-# **Climatology:** [UPDATE_SECTION_CONTENT]
+# **Climatology:** None
 #
-# **Location:** [UPDATE_SECTION_CONTENT] 
-
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -55,19 +61,21 @@ model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.py
 # METplotpy directories are under the same base directory (i.e. if the METPLUS_BASE directory is
 # /home/username/working/METplus, then clone the METcalcpy and METplotpy source
 # code into the /home/username/working directory).  
-#
-
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# This use case does not loop but plots the entire time period of data
-# 
-# 
-# This uses data from 2016-01-01 to 2016-03-31
+# **Beginning time (VALID_BEG):** None
 #
+# **End time (VALID_END):** None
 #
+# **Increment between beginning and end times (VALID_INCREMENT):** None
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
+# This use case does not loop but plots the entire time period from
+# 2016-01-01 to 2016-03-31.
 
 ##############################################################################
 # METplus Configuration

@@ -25,6 +25,7 @@ LOWER_TO_WRAPPER_NAME = {
     'mode': 'MODE',
     'mtd': 'MTD',
     'modetimedomain': 'MTD',
+    'pairstat': 'PairStat',
     'pb2nc': 'PB2NC',
     'pcpcombine': 'PCPCombine',
     'plotdataplane': 'PlotDataPlane',

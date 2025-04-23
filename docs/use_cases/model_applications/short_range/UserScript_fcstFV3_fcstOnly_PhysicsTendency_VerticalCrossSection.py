@@ -42,11 +42,22 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 # Datasets
 # --------
 #
-# | Forecast dataset: FV3 3-D history file with physics and dynamics tendencies
-# | Grid specification: FV3 2-D grid specification file with latitude and longitude of each grid point
+# **Forecast:** FV3 3-D history file with physics and dynamics tendencies
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# **Grid specification:** FV3 2-D grid specification file with latitude and longitude of each grid point
+#
+# **Observation:** None
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # External Dependencies 
@@ -72,9 +83,16 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (VALID_BEG):** 2019
+#
+# **End time (VALID_END):** None
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** None
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
 # This use case does not loop but plots physics tendency data that has been
 # subsetted to one date: 2019-06-15.
-
 
 ##############################################################################
 # METplus Configuration
@@ -118,19 +136,24 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 
 ##############################################################################
 # Expected Output
-# ---------------
+#----------------
 #
 # A successful run will output the following both to the screen and to the logfile::
 #
 #   INFO: METplus has successfully finished running.
 #
-# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# The following file will be created:
 #
-# short_range-physics_tendency_vertical_cross_section.png
+# .. note::
 #
+#   This use case **explicitly redirects the output** to the *OUTPUT_BASE* directory with the expected filename of *ugrd_28N-120E-26N-75E.png*.
+#   **By default**, the *cross_section_vert.py* script (that generates the plot) creates a file
+#   based on the variable name and specified min and max coordinates.  The resulting .png file is written to the directory where the
+#   *cross_section_vert.py* script was invoked.
 #
-
+# The following file will be created in the directory from where the use command was issued:
+#
+# ugrd_28N-120E-26N-75E.png
+#
 
 ##############################################################################
 # Keywords
@@ -151,4 +174,3 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #
 #
 # sphinx_gallery_thumbnail_path = '_static/short_range-UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalCrossSection.png'
-#

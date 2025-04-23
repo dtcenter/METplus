@@ -1,0 +1,225 @@
+alpha: 0.05
+box_avg: 'False'
+box_boxwex: 0.2
+box_notch: 'False'
+box_outline: 'True'
+box_pts: 'False'
+caption_align: 0.0
+#caption_col: '#333333'
+caption_col: '#FFFFFF'
+caption_offset: 3.0
+caption_size: 0.1
+caption_weight: 1
+cex: 1
+colors:
+- '#0000ff'
+- '#ff0000'
+#- '#55ff00'
+#- '#00aaff'
+#- '#0040ff'
+#- '#c3ff00'
+#- '#ffffff'
+con_series:
+- 1
+- 1
+#- 1
+#- 1
+#- 1
+#- 1
+create_html: 'False'
+derived_series_1: []
+derived_series_2: []
+dump_points_1: 'False'
+dump_points_2: 'False'
+event_equal: 'False'
+fcst_var_val_1:
+  LCDC:
+    - GSS
+fcst_var_val_2:
+  HCDC:
+    - GSS
+grid_col: '#cccccc'
+grid_lty: 3
+grid_lwd: 1
+grid_on: 'True'
+grid_x: listX
+indy_label:
+- '00'
+- '06'
+- '12'
+- '18'
+indy_stagger_1: 'False'
+indy_stagger_2: 'False'
+indy_vals:
+- '0'
+- '60000'
+- '120000'
+- '180000'
+indy_var: fcst_lead
+legend_box: o
+legend_inset:
+  x: 0.0
+  y: -0.25
+legend_ncol: 3
+legend_size: 1.0
+line_type: None
+list_stat_1:
+  - GSS
+list_stat_2: 
+  - GSS
+mar:
+- 8
+- 4
+- 5
+- 4
+method: bca
+mgp:
+- 1
+- 1
+- 0
+num_iterations: 1
+num_threads: -1
+#plot_caption: Caption
+plot_ci:
+- std
+- std
+#- std
+#- std
+#- std
+#- std
+plot_disp:
+- 'True'
+- 'True'
+#- 'True'
+#- 'True'
+#- 'True'
+#- 'True'
+plot_filename: !ENV '${PLOTTING_OUTPUT_FILENAME}'
+plot_height: 8.5
+plot_res: 72
+plot_stat: median
+plot_type: png
+plot_units: in
+plot_width: 11.0
+
+# Optional, uncomment and set to directory to store the .points1 file
+# that is used by METviewer (created when dump_points_1 is set to True)
+# if dump_points_1 is True and this is uncommented, the points1 file
+# will be saved in the default location (i.e. where the input data file is stored).
+points_path: !ENV '${PLOTTING_OUTPUT_DIR}'
+random_seed: null
+series_line_style:
+- '-'
+- '-'
+#- '-'
+#- '-'
+#- '-'
+#- '-'
+series_line_width:
+- 2
+- 2
+#- 1
+#- 1
+#- 1
+#- 1
+series_order:
+- 1
+- 2
+#- 3
+#- 4
+#- 5
+#- 6
+series_symbols:
+- o 
+- ^
+#- d
+#- o
+#- .
+#- ^
+series_type:
+- b
+- b
+#- b
+#- b
+#- b
+#- b
+series_val_1:
+  model:
+  - GFS
+series_val_2:
+  model:
+  - GFS
+show_nstats: 'False'
+show_signif:
+- 'False'
+- 'False'
+#- 'False'
+#- 'False'
+#- 'False'
+#- 'False'
+stat_input: !ENV '${PLOTTING_STAT_INPUT}'
+sync_yaxes: 'True'
+title: Gilbert Skill Score by Lead time for the GFS model
+title_align: 0.5
+title_offset: -2
+title_size: 1.5
+title_weight: 2.0
+user_legend: []
+variance_inflation_factor: 'False'
+vert_plot: 'False'
+x2lab_align: 0.5
+x2lab_offset: -0.5
+x2lab_size: 0.8
+x2lab_weight: 1
+x2tlab_horiz: 0.5
+x2tlab_orient: 1
+x2tlab_perp: 1
+x2tlab_size: 0.8
+xaxis: Forecast Lead Time (hr)
+xaxis_reverse: 'False'
+xlab_align: 0.5
+xlab_offset: 4
+xlab_size: 3
+xlab_weight: 1
+xlim: []
+xtlab_decim: 0
+xtlab_horiz: 0.5
+xtlab_orient: 1
+xtlab_perp: -0.75
+xtlab_size: 1
+y2lab_align: 0.5
+y2lab_offset: 1
+y2lab_size: 1
+y2lab_weight: 1
+y2lim: []
+y2tlab_horiz: 0.5
+y2tlab_orient: 1
+y2tlab_perp: 1
+y2tlab_size: 1.0
+yaxis_1: GSS
+#yaxis_2: GSS
+ylab_align: 0.5
+ylab_offset: -5
+ylab_size: 3
+ylab_weight: 1
+ylim: [0.5,1.05]
+ytlab_horiz: 0.5
+ytlab_orient: 1
+ytlab_perp: 0.5
+ytlab_size: 1
+
+
+# To save your log output to a file, specify a path and filename and uncomment the line below.  Make sure you have
+# permissions to the directory you specify.  The default, as specified in the default config file is stdout.
+log_filename: !ENV '${PLOTTING_LOG_FILENAME}'
+
+# To change the log level, specify a log level: debug, info, warning, error and uncomment the line below.
+#  Debug and info log level will produce more log output.
+log_level: debug
+show_legend:
+- 1
+- 1
+#- 1
+#- 1
+#- 1
+#- 1

@@ -42,6 +42,8 @@ model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 #
 # **Observation:** ERA Reanlaysis Outgoing Longwave Radiation, 2017 - 2018
 #
+# **Climatology:** None
+#
 # **EOFs:** Observed OMI EOF1 and EOF2 patterns from the PSL Website (https://psl.noaa.gov/mjo/mjoindex/)
 #
 # **Location:** All of the input data required for this use case can be 
@@ -144,10 +146,10 @@ model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 # MJO indices and the generation of a phase diagram OMI plot.  Separate phase diagrams are created for 
 # the model and observations.
 #
-# .. dropdown:: parm/use_cases/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI/OMI_driver.py
+# .. dropdown:: parm/use_cases/model_applications/s2s_mjo/common/OMI_driver.py
 #
 #   .. highlight:: python 
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI/OMI_driver.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/common/OMI_driver.py
 
 ##############################################################################
 # Running METplus

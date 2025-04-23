@@ -25,7 +25,7 @@ VERSION_LOOKUP = {
     },
     '6.0': {
         'metplus': '6.0.0',
-        'met': '12.0.0',
+        'met': '12.0.2',
         'metplotpy': '3.0.0',
         'metcalcpy': '3.0.0',
         'metdataio': '3.0.0',
@@ -161,10 +161,12 @@ def main():
                                  args.output_component, args.output_format,
                                  args.get_dev_version, args.rc_is_dev)
 
+def init():
+    if __name__ == "__main__":
+        out_version = main()
+        if not out_version:
+            sys.exit(1)
 
-if __name__ == "__main__":
-    out_version = main()
-    if not out_version:
-        sys.exit(1)
+        print(out_version)
 
-    print(out_version)
+init()

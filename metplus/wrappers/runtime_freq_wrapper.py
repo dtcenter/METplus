@@ -14,7 +14,7 @@ from ..util import time_util
 from ..util import log_runtime_banner, get_lead_sequence, get_lead_sequence_groups
 from ..util import skip_time, getlist, get_start_and_end_times, get_time_prefix
 from ..util import time_generator, add_to_time_input, format_lead_seq
-from ..util import sub_var_list, add_field_info_to_time_info
+from ..util import sub_var_list, add_field_info_to_time_info, remove_quotes
 from . import CommandBuilder
 
 '''!@namespace RuntimeFreqWrapper
@@ -438,7 +438,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         return self.build()
 
     def get_all_files(self, custom=None):
-        """! Get all files that can be processed with the app.
+        """!Get all files that can be processed with the app.
         @returns A dictionary where the key is the type of data that was found,
         i.e. fcst or obs, and the value is a list of files that fit in that
         category
@@ -463,23 +463,52 @@ class RuntimeFreqWrapper(CommandBuilder):
                                          time_input,
                                          wildcard_if_empty=use_wildcard)
             lead_files = self.get_all_files_from_leads(time_input, lead_seq)
-            all_files.extend(lead_files)
+            self._update_list_with_new_files(lead_files, all_files)
 
         return all_files
 
     def _check_input_files(self):
         if self.c_dict['ALL_FILES'] is True:
             return True
-        self.run_count += 1
-        if not self.c_dict['ALL_FILES'] and self.app_name != 'user_script':
-            self.missing_input_count += 1
-            msg = 'A problem occurred trying to obtain input files'
-            if self.c_dict['ALLOW_MISSING_INPUTS']:
-                self.logger.warning(msg)
-            else:
-                self.log_error(msg)
-            return False
-        return True
+
+        num_missing = 0
+
+        if self.c_dict['ALL_FILES']:
+            num_runs = len(self.c_dict['ALL_FILES'])
+        else:
+            num_runs = 1
+            num_missing = 1
+        self.run_count += num_runs
+
+        for file_dict in self.c_dict['ALL_FILES']:
+            if self._has_missing_input_files(file_dict):
+                num_missing += 1
+
+        if self.app_name == 'user_script' or not num_missing:
+            return True
+
+        self.missing_input_count += num_missing
+        msg = 'A problem occurred trying to obtain input files'
+        if self.c_dict['ALLOW_MISSING_INPUTS']:
+            self.logger.warning(msg)
+        else:
+            # increment error counter for GridDiag because it does not log error for each missing file
+            if self.app_name in ('grid_diag', 'series_analysis'):
+                self.errors += 1
+            self.logger.error(msg)
+        return False
+
+    @staticmethod
+    def _has_missing_input_files(file_dict):
+        if file_dict is None:
+            return True
+
+        for key, value in file_dict.items():
+            if key in ('var_list', 'time_info'): continue
+            if value is None or value == ['missing'] or all(item == 'missing' for item in value):
+                return True
+
+        return False
 
     def get_all_files_from_leads(self, time_input, lead_seq):
         if not self.c_dict.get('FIND_FILES', True):
@@ -497,7 +526,10 @@ class RuntimeFreqWrapper(CommandBuilder):
             if skip_time(time_info, self.c_dict):
                 continue
 
-            self._update_list_with_new_files(time_info, lead_files)
+            new_files = self.get_files_from_time(time_info)
+            if not new_files:
+                continue
+            self._update_list_with_new_files(new_files, lead_files)
 
         return lead_files
 
@@ -505,7 +537,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         if not self.c_dict.get('FIND_FILES', True):
             return True
 
-        new_files = []
+        all_files = []
         for run_time in time_generator(self.config):
             if run_time is None:
                 continue
@@ -521,91 +553,115 @@ class RuntimeFreqWrapper(CommandBuilder):
             if skip_time(time_info, self.c_dict):
                 continue
 
-            self._update_list_with_new_files(time_info, new_files)
+            new_files = self.get_files_from_time(time_info)
+            if not new_files:
+                continue
+            self._update_list_with_new_files(new_files, all_files)
 
-        return new_files
+        return all_files
 
     def get_all_files_for_each(self, time_info):
         if not self.c_dict.get('FIND_FILES', True):
             return True
 
         all_files = []
-        self._update_list_with_new_files(time_info, all_files)
+        new_files = self.get_files_from_time(time_info)
+        if not new_files:
+            return []
+        self._update_list_with_new_files(new_files, all_files)
         return all_files
 
+    def _get_var_lists(self, time_info):
+        var_list_temp = self.c_dict.get('VAR_LIST_TEMP')
+        # if VAR_LIST_TEMP was not set in c_dict, return a list with None
+        if var_list_temp is None:
+            return [None]
+
+        var_list = sub_var_list(var_list_temp, time_info)
+        # if var list was not specified, log error and return empty list
+        if not var_list:
+            self.log_error('No input fields were specified.'
+                           ' [FCST/OBS]_VAR<n>_NAME must be set.')
+            return []
+
+        # if running once per field, return a list of lists each with 1 var
+        if self.c_dict.get('ONCE_PER_FIELD', False):
+            return [[item] for item in var_list]
+
+        # if running once for all fields, return a list with 1 list of vars
+        return [var_list]
+
     def get_files_from_time(self, time_info):
-        """! Create dictionary containing time information (key time_info) and
-             any relevant files for that runtime. The parent implementation of
-             this function creates a dictionary and adds the time_info to it.
-             This wrapper gets all files for the current runtime and adds it to
-             the dictionary with keys 'FCST' and 'OBS'
+        """!Create dictionary containing time information (key time_info) and
+            any relevant files for that runtime. The parent implementation of
+            this function creates a dictionary and adds the time_info to it.
+            This wrapper gets all files for the current runtime and adds it to
+            the dictionary with keys 'FCST' and 'OBS'
 
              @param time_info dictionary containing time information
              @returns dictionary containing time_info dict and any relevant
              files with a key representing a description of that file
         """
-        var_list = [None]
-        if self.c_dict.get('ONCE_PER_FIELD', False):
-            var_list = sub_var_list(self.c_dict.get('VAR_LIST_TEMP'), time_info)
+        var_lists = self._get_var_lists(time_info)
+        if not var_lists:
+            return []
+
+        allow_missing = self.c_dict.get('ALLOW_MISSING_INPUTS', False)
 
         # create a dictionary for each field (var) with time_info and files
         file_dict_list = []
-        for var_info in var_list:
-            file_dict = {'var_info': var_info}
-            if var_info:
-                add_field_info_to_time_info(time_info, var_info)
+        for var_list in var_lists:
+            file_dict = {'var_list': var_list}
+            current_var_info = var_list[0] if var_list else None
+            if current_var_info:
+                add_field_info_to_time_info(time_info, current_var_info)
 
             input_files, offset_time_info = (
-                self.get_input_files(time_info, fill_missing=True)
+                self.get_input_files(time_info, fill_missing=allow_missing)
             )
             file_dict['time_info'] = offset_time_info.copy()
-            # only add all input files if none are missing
-            no_missing = True
             if input_files:
                 for key, value in input_files.items():
-                    if 'missing' in value:
-                        no_missing = False
                     file_dict[key] = value
-            if no_missing:
-                file_dict_list.append(file_dict)
+
+            file_dict_list.append(file_dict)
 
         return file_dict_list
 
-    def _update_list_with_new_files(self, time_info, list_to_update):
-        new_files = self.get_files_from_time(time_info)
-        if not new_files:
-            return
-
+    def _update_list_with_new_files(self, new_files, list_to_update):
         if not isinstance(new_files, list):
             new_files = [new_files]
 
         # if list to update is empty, copy new items into list
         if not list_to_update:
-            for new_file in new_files:
-                list_to_update.append(new_file.copy())
+            files_to_add = [item.copy() if item is not None else None for item in new_files]
+            list_to_update.extend(files_to_add)
             return
 
         # if list to update is not empty, add new files to each file list,
         # make sure new files correspond to the correct field (var)
         assert len(list_to_update) == len(new_files)
         for new_file, existing_item in zip(new_files, list_to_update):
-            assert new_file.get('var_info') == existing_item.get('var_info')
+            assert new_file.get('var_list') == existing_item.get('var_list')
             for key, value in new_file.items():
-                if key == 'var_info' or key == 'time_info':
+                if key == 'var_list' or key == 'time_info' or value is None:
                     continue
+
+                if existing_item[key] is None:
+                    existing_item[key] = []
                 existing_item[key].extend(value)
 
     @staticmethod
     def compare_time_info(runtime, filetime):
-        """! Compare current runtime dictionary to current file time dictionary
-             If runtime value for init, valid, or lead is not a wildcard and
-             it doesn't match the file's time value, return False. Otherwise
-             return True.
+        """!Compare current runtime dictionary to current file time dictionary
+            If runtime value for init, valid, or lead is not a wildcard and
+            it doesn't match the file's time value, return False. Otherwise
+            return True.
 
-             @param runtime dictionary containing time info for current runtime
-             @param filetime dictionary containing time info for current file
-             @returns True if file's info matches the requirements for current
-             runtime or False if not.
+            @param runtime dictionary containing time info for current runtime
+            @param filetime dictionary containing time info for current file
+            @returns True if file's info matches the requirements for current
+            runtime or False if not.
         """
         # False if init/valid is not wildcard and the file time doesn't match
         for time_val in ['init', 'valid']:
@@ -629,13 +685,13 @@ class RuntimeFreqWrapper(CommandBuilder):
         return runtime_lead == filetime_lead
 
     def get_input_files(self, time_info, fill_missing=False):
-        """! Loop over list of input templates and find files for each
+        """!Loop over list of input templates and find files for each
 
-             @param time_info time dictionary to use for string substitution
-             @param fill_missing if True, add a placeholder if a file is not
-              found. Defaults to False.
-             @returns Dictionary of key input number and value is list of
-              input file list if all files were found, None if not.
+            @param time_info time dictionary to use for string substitution
+            @param fill_missing if True, add a placeholder if a file is not
+             found. Defaults to False.
+            @returns Dictionary of key input number and value is list of
+             input file list if all files were found, None if not.
         """
         all_input_files = {}
         if not self.c_dict.get('TEMPLATE_DICT'):
@@ -663,34 +719,51 @@ class RuntimeFreqWrapper(CommandBuilder):
                                              mandatory=mandatory)
 
             if not input_files:
-                if not fill_missing:
-                    continue
-
                 # if no files are found and fill missing is set, add 'missing'
-                input_files = ['missing']
+                input_files = ['missing'] if fill_missing else None
+
+            elif label == 'FCST':
+                input_files = self._handle_fcst_inputs_for_ensemble(all_input_files, input_files)
 
             all_input_files[label] = input_files
 
         # return None if no matching input files were found
         if not all_input_files:
-            return None, None
+            return None, offset_time_info
 
         return all_input_files, offset_time_info
 
+    def _handle_fcst_inputs_for_ensemble(self, all_input_files, fcst_files):
+        # check if control file is found in ensemble list
+        ctrl_file = all_input_files.get('CTRL')
+        if ctrl_file in fcst_files:
+            # warn and remove control file if found
+            self.logger.warning(f"Control file found in ensemble list: "
+                                f"{ctrl_file}. Removing from list.")
+            fcst_files.remove(ctrl_file)
+
+        # check EnsembleStat number of files
+        if self.env_var_dict.get('METPLUS_ENS_MEMBER_IDS'):
+            self.logger.debug('Skipping logic to fill file list with MISSING')
+        elif not self._check_expected_ensembles(fcst_files):
+            fcst_files = None
+
+        return fcst_files
+
     def subset_input_files(self, time_info, output_dir=None, leads=None,
                            force_list=False):
-        """! Obtain a subset of input files from the c_dict ALL_FILES based on
-             the time information for the current run.
+        """!Obtain a subset of input files from the c_dict ALL_FILES based on
+            the time information for the current run.
 
-              @param time_info dictionary containing time information
-              @param output_dir (optional) directory to write file list files.
-               If no directory is provided, files are written to staging dir
-              @param leads (optional) list of forecast leads to consider
-              @param force_list (optional) boolean - if True, write a file list
-               text file even only 1 file was found. Defaults to False.
-              @returns dictionary with keys of the input identifier and the
-               value is the path to a ascii file containing the list of files
-               or None if could not find any files
+            @param time_info dictionary containing time information
+            @param output_dir (optional) directory to write file list files.
+             If no directory is provided, files are written to staging dir
+            @param leads (optional) list of forecast leads to consider
+            @param force_list (optional) boolean - if True, write a file list
+             text file even only 1 file was found. Defaults to False.
+            @returns dictionary with keys of the input identifier and the
+             value is the path to a ascii file containing the list of files
+             or None if could not find any files
         """
         all_input_files = {}
         if not self.c_dict.get('ALL_FILES') or self.c_dict.get('ALL_FILES') is True:
@@ -709,6 +782,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         # loop over all inputs and write a file list file for each
         list_file_dict = {}
         for identifier, input_files in all_input_files.items():
+            if identifier.endswith('time_info'): continue
             if len(input_files) == 1 and not force_list:
                 list_file_dict[identifier] = input_files[0]
                 continue
@@ -743,7 +817,7 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         for input_key in file_dict:
             # skip time info key
-            if input_key == 'time_info':
+            if input_key == 'time_info' or input_key == 'var_list':
                 continue
 
             if input_key not in all_input_files:
@@ -752,30 +826,23 @@ class RuntimeFreqWrapper(CommandBuilder):
             all_input_files[input_key].extend(file_dict[input_key])
 
     def get_list_file_name(self, time_info, identifier):
-        """! Build name of ascii file that contains a list of files to process.
-             If wildcard is set for init, valid, or lead then use the text ALL
-             in the filename.
+        """!Build name of ascii file that contains a list of files to process.
+            If wildcard is set for init, valid, or lead then use the text ALL
+            in the filename.
 
         @param time_info dictionary containing time information
         @param identifier string to identify which input is used
         @returns filename i.e.
         {app_name}_files_{identifier}_init_{init}_valid_{valid}_lead_{lead}.txt
         """
-        if time_info['init'] == '*':
-            init = 'ALL'
-        else:
-            init = time_info['init'].strftime('%Y%m%d%H%M%S')
-
-        if time_info['valid'] == '*':
-            valid = 'ALL'
-        else:
-            valid = time_info['valid'].strftime('%Y%m%d%H%M%S')
+        init = 'ALL' if time_info['init'] == '*' else time_info['init'].strftime('%Y%m%d%H%M%S')
+        valid = 'ALL' if time_info['valid'] == '*' else time_info['valid'].strftime('%Y%m%d%H%M%S')
 
         if time_info.get('lead', '*') == '*':
             lead = time_info.get('label') if time_info.get('label') else 'ALL'
         else:
-            lead = time_util.ti_get_seconds_from_lead(time_info['lead'],
-                                                      time_info['valid'])
+            lead = time_util.ti_get_seconds_from_lead(time_info['lead'], time_info['valid'])
+
         # use lead with letter if seconds cannot be computed e.g. 3m
         if lead is None:
             lead = time_util.ti_get_lead_string(time_info['lead'],
@@ -784,3 +851,66 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         return (f"{self.app_name}_files_{identifier}_"
                 f"init_{init}_valid_{valid}_lead_{lead}.txt")
+
+    def add_to_infiles(self, file_dict, time_info):
+        """!Add relevant files from the file dictionary to the input files list.
+
+        This function updates the input files list (`self.infiles`) with file paths
+        obtained from the file dictionary (`file_dict`) for the current run. It processes
+        files grouped by their data type (e.g., observation files, ensemble mean files).
+
+        @param file_dict dictionary of files categorized by data type (e.g., FCST, OBS).
+                         Each key contains lists of file paths or other file-related info.
+        @param time_info dictionary containing time information for string substitution
+                         and file identification.
+        """
+        for data_type in [item for item in file_dict.keys() if item not in ('var_list', 'time_info')]:
+            self._add_file(file_dict, time_info, data_type)
+
+
+    def _add_file(self, file_dict, time_info, data_type):
+        """!Add files of a specific data type from the file dictionary to the input list.
+
+        This function identifies files of a specific data type (e.g., OBS_GRID, CTRL) from the
+        file dictionary and processes them for inclusion in the input files list. It supports
+        directly appending files, handling grouped commands for special data types, and creating
+        file list files if multiple files are provided.
+
+        @param file_dict dictionary containing categorized file paths.
+                        The keys represent data types (e.g., CTRL, FCST, OBS_GRID).
+        @param time_info dictionary containing time-related details for file name generation.
+        @param data_type string representing the category of files to process (e.g., CTRL, ENS_MEAN).
+        """
+        file_list = file_dict.get(data_type)
+        if not file_list:
+            return
+
+        # add quotation marks around the file path if there is a space
+        file_list = [f'"{remove_quotes(item)}"' if ' ' in item else item for item in file_list]
+
+        # Dictionary to map data types to their corresponding commands
+        data_type_handlers = {
+            'CTRL': lambda files: self.infiles.append(f'-ctrl {files[0]}'),
+            'OBS_GRID': lambda files: self.infiles.extend(f'-grid_obs {file}' for file in files),
+            'OBS_POINT': lambda files: self.infiles.extend(f'-point_obs {file}' for file in files),
+            'ENS_MEAN': lambda files: self.infiles.extend(f'-ens_mean {file}' for file in files),
+            'PAIRS': lambda files: self.infiles.extend(f'-pairs {file}' for file in files),
+        }
+
+        # Handle data types using the mapping
+        if data_type in data_type_handlers:
+            data_type_handlers[data_type](file_list)
+            return
+
+        # if there is more than 1 file, create file list file
+        if not self.c_dict.get('SUPPORTS_FILE_LIST', True):
+            self.infiles.extend(file_list)
+            return
+
+        if len(file_list) > 1:
+            list_filename = self.get_list_file_name(time_info, data_type)
+            input_file = self.write_list_file(list_filename, file_list)
+        else:
+            input_file = file_list[0]
+
+        self.infiles.append(input_file)
