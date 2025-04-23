@@ -11,6 +11,7 @@ pd.set_option('display.max_rows', None)
 
 # Get the input PB2NC output filename as the input to this script
 pb2nc = sys.argv[1]
+DEBUG = False
 
 # Get the Pandas dataframe of the PB2NC data
 df = nc_point_obs(pb2nc).to_pandas()
@@ -34,8 +35,9 @@ hi = np.array([])
 # Each site will have the MET 11-column data.
 for name,group in groups:
 
-  print("")
-  print("PROCESSING SITE: %s" % (name))
+  if DEBUG:
+    print("")
+    print("PROCESSING SITE: %s" % (name))
   
   # First, make sure there is only one valid time
   timegrp = group.groupby('vld')
