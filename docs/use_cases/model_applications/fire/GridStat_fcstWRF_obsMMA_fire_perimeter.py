@@ -75,8 +75,7 @@ model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # kml shapefiles to polylines. Then, GenVxMask is run to convert the shapefile 
 # produced by UserScript to a netCDF mask, providing the observation input for GridStat. 
 # Finally, GridStat is called to compare the WRF-Fire forecast of fire area to the 
-# observation mask created using the GenVxMask tool. The GridStat call uses Python Embedding 
-# in order to read the WRF-Fire subgrid into GridStat.
+# observation mask created using the GenVxMask tool.
 
 ##############################################################################
 # METplus Configuration
@@ -113,21 +112,14 @@ model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # Python Embedding
 # ----------------
 #
-# This use case uses a Python embedding script to read the WRF-Fire forecast into GridStat. 
-# The script hard codes settings directly from WRF-Fire for the WRF-Fire netCDF variable name (FIRE_AREA) 
-# as well as the format of the WRF-Fire forecast file template. The input directory and valid time 
-# are read from the METplus script. Once the file(s) are found, the script sets attributes for 
-# initiation and valid times, variable name, level, and units in MET format and defines a grid 
-# based on the input WRF-Fire netCDF file's subgrid. The data from the FIRE_AREA variable and MET attributes 
-# are then printed to be read in by GridStat.
+# This use case does not use Python Embedding.
 #
-# .. dropdown:: parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter/read_wrfout_fire.py
-#
-#    .. highlight:: python
-#    .. literalinclude:: ../../../../parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter/read_wrfout_fire.py
-# 
-# For more information on the basic requirements to utilize Python Embedding in METplus, 
-# please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_
+# Previously, this use case used Python Embedding to read the WRF-Fire forecast
+# into GridStat. Enhancements to MET in v12.1.0 allow the WRF Fire fields that
+# are on a subgrid to be read into the MET tools natively, removing the need
+# to use Python Embedding to accomplish the read.
+# The Python Embedding script is still available in the repository for reference:
+# parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter/read_wrfout_fire.py
 
 ##############################################################################
 # User Scripting
@@ -184,7 +176,7 @@ model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # * mask/fire_perim_20180602_15_mask.nc
 # * mask/fire_perim_20180603_00_mask.nc
 #
-# Finally, six files from the GridStat tool run with Python Embedding. The .stat files contain the 
+# Finally, six files from the GridStat tool. The .stat files contain the
 # CTC and CTS line types for the FIRE_AREA variable at the given lead time (two lines total per stat file). 
 # The netCDF files contain the following five fields: lat (latitude), lon (longitude), 
 # FCST_FIRE_AREA_Z0_FULL (fire spread area from the WRF-Fire forecast), OBS_FIRE_PERIM_all_all_FULL (fire spread area from the .kml observations), 
@@ -207,7 +199,6 @@ model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 #   * UserScriptUseCase
 #   * GenVxMaskToolUseCase
 #   * GridStatToolUseCase
-#   * PythonEmbeddingFileUseCase
 #   * GRIB2FileUseCase
 #   * FireAppUseCase
 #

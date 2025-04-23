@@ -7,9 +7,9 @@ import os
 import datetime
 import metplus.wrappers.command_builder as cb_wrapper
 from metplus.wrappers.command_builder import CommandBuilder
-import metplus.util.run_util
 from metplus.util import ti_calculate, add_field_info_to_time_info
 
+TEST_OBS_INPUT_TEMPLATE = '{valid?fmt=%Y%m%d}/{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}'
 
 def get_data_dir(config):
     return os.path.join(config.getdir('METPLUS_BASE'),
@@ -45,7 +45,7 @@ def test_find_data_no_dated(metplus_config, data_type, allow_multiple):
     pcw.c_dict[f'{data_type}FILE_WINDOW_END'] = 3600
     pcw.c_dict[f'{data_type}INPUT_DIR'] = get_data_dir(pcw.config)
     pcw.c_dict[f'{data_type}INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}"
-    pcw.c_dict[f'ALLOW_MULTIPLE_FILES'] = allow_multiple
+    pcw.c_dict['ALLOW_MULTIPLE_FILES'] = allow_multiple
     add_field_info_to_time_info(time_info, var_info)
     obs_file = pcw.find_data(time_info, data_type)
     assert not isinstance(obs_file, list)
@@ -116,7 +116,7 @@ def test_find_obs_dated(metplus_config):
     pcw.c_dict['OBS_FILE_WINDOW_BEGIN'] = -3600
     pcw.c_dict['OBS_FILE_WINDOW_END'] = 3600
     pcw.c_dict['OBS_INPUT_DIR'] = get_data_dir(pcw.config)
-    pcw.c_dict['OBS_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d}/{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}'
+    pcw.c_dict['OBS_INPUT_TEMPLATE'] = TEST_OBS_INPUT_TEMPLATE
     add_field_info_to_time_info(time_info, var_info)
     obs_file = pcw.find_obs(time_info)
     assert obs_file == pcw.c_dict['OBS_INPUT_DIR']+'/20180201/20180201_0013'
@@ -173,7 +173,7 @@ def test_find_obs_dated_previous_day(metplus_config):
     time_info = ti_calculate(task_info)
 
     pcw.c_dict['OBS_INPUT_DIR'] = get_data_dir(pcw.config)
-    pcw.c_dict['OBS_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d}/{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}'
+    pcw.c_dict['OBS_INPUT_TEMPLATE'] = TEST_OBS_INPUT_TEMPLATE
     pcw.c_dict['OBS_FILE_WINDOW_BEGIN'] = -3600
     pcw.c_dict['OBS_FILE_WINDOW_END'] = 0
     add_field_info_to_time_info(time_info, var_info)
@@ -195,7 +195,7 @@ def test_find_obs_dated_next_day(metplus_config):
     time_info = ti_calculate(task_info)
 
     pcw.c_dict['OBS_INPUT_DIR'] = get_data_dir(pcw.config)
-    pcw.c_dict['OBS_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d}/{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}'
+    pcw.c_dict['OBS_INPUT_TEMPLATE'] = TEST_OBS_INPUT_TEMPLATE
     pcw.c_dict['OBS_FILE_WINDOW_BEGIN'] = 0
     pcw.c_dict['OBS_FILE_WINDOW_END'] = 3600
     add_field_info_to_time_info(time_info, var_info)
@@ -1106,7 +1106,6 @@ def test_run_command_error(metplus_config, log_metplus):
  
 @pytest.mark.wrapper
 def test_find_input_files_ensemble(metplus_config):
-    config = metplus_config
     cb = CommandBuilder(metplus_config)
 
     time_info =  ti_calculate({
@@ -1174,7 +1173,7 @@ def test_errors_and_defaults(metplus_config):
     # test handle_climo_dict errors counted correctly
     starting_errs = cb.errors
     with mock.patch.object(cb_wrapper, 'handle_climo_dict', return_value=False):
-        for x in range(2):
+        for _ in range(2):
             cb.handle_climo_dict()
     assert starting_errs + 2 == cb.errors
 

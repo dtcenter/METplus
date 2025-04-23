@@ -56,7 +56,7 @@ def write_release_date_file(docs_dir):
 def main():
     # check if release is in any command line argument
     is_release = any(['release' in arg for arg in sys.argv])
-    skip_doxygen = any(['skip-doxygen' in arg for arg in sys.argv])
+    run_doxygen = any(['run-doxygen' in arg for arg in sys.argv])
 
     # check if sphinx_gallery module is available and error/exit if not
     sphinx_gallery_spec = importlib.util.find_spec("sphinx_gallery")
@@ -105,7 +105,7 @@ def main():
     # run make to generate the documentation files
     run_command("make clean html", docs_dir)
 
-    if not skip_doxygen:
+    if run_doxygen:
         # build the doxygen documentation
         run_command("make clean all",
                     doxygen_dir)

@@ -24,6 +24,28 @@ class PairStatWrapper(CompareGriddedWrapper):
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
         'METPLUS_DESC',
+        'METPLUS_FCST_LEAD',
+        'METPLUS_OBS_LEAD',
+        'METPLUS_FCST_VALID_BEG',
+        'METPLUS_FCST_VALID_END',
+        'METPLUS_FCST_VALID_INC',
+        'METPLUS_FCST_VALID_EXC',
+        'METPLUS_FCST_VALID_HOUR',
+        'METPLUS_OBS_VALID_BEG',
+        'METPLUS_OBS_VALID_END',
+        'METPLUS_OBS_VALID_INC',
+        'METPLUS_OBS_VALID_EXC',
+        'METPLUS_OBS_VALID_HOUR',
+        'METPLUS_FCST_INIT_BEG',
+        'METPLUS_FCST_INIT_END',
+        'METPLUS_FCST_INIT_INC',
+        'METPLUS_FCST_INIT_EXC',
+        'METPLUS_FCST_INIT_HOUR',
+        'METPLUS_OBS_INIT_BEG',
+        'METPLUS_OBS_INIT_END',
+        'METPLUS_OBS_INIT_INC',
+        'METPLUS_OBS_INIT_EXC',
+        'METPLUS_OBS_INIT_HOUR',
         'METPLUS_FCST_FIELD',
         'METPLUS_FCST_FILE_TYPE',
         'METPLUS_FCST_CLIMO_MEAN_DICT',
@@ -49,7 +71,6 @@ class PairStatWrapper(CompareGriddedWrapper):
         'METPLUS_CLIMO_MEAN_DICT',
         'METPLUS_CLIMO_STDEV_DICT',
         'METPLUS_CLIMO_CDF_DICT',
-        'METPLUS_OBS_WINDOW_DICT',
         'METPLUS_MASK_DICT',
         'METPLUS_CI_ALPHA',
         'METPLUS_BOOT_DICT',
@@ -124,6 +145,17 @@ class PairStatWrapper(CompareGriddedWrapper):
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file('PairStatConfig_wrapped')
 
+        # handle [FCST/OBS]_[VALID/INIT]_[BEG/END/INC/EXC/HOUR]
+        for data_type in ('fcst', 'obs'):
+            self.add_met_config(name=f'{data_type}_lead', data_type='list')
+            for valid_init in ('valid', 'init'):
+                for ext in ('beg', 'end'):
+                    name=f'{data_type}_{valid_init}_{ext}'
+                    self.add_met_config(name=name, data_type='string')
+                for ext in ('inc', 'exc', 'hour'):
+                    name=f'{data_type}_{valid_init}_{ext}'
+                    self.add_met_config(name=name, data_type='list')
+
         self.add_met_config(name='censor_thresh', data_type='list',
                             extra_args={'remove_quotes': True})
 
@@ -163,7 +195,6 @@ class PairStatWrapper(CompareGriddedWrapper):
         self.add_met_config(name='message_type_group_map', data_type='list',
                             extra_args={'remove_quotes': True})
 
-        self.add_met_config_window('obs_window')
         self.handle_mask(get_point=True)
 
         self.add_met_config(name='ci_alpha',

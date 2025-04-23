@@ -44,6 +44,57 @@ obs = {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+//fcst_lead =
+${METPLUS_FCST_LEAD}
+//obs_lead =
+${METPLUS_OBS_LEAD}
+
+//fcst_valid_beg =
+${METPLUS_FCST_VALID_BEG}
+//fcst_valid_end =
+${METPLUS_FCST_VALID_END}
+//fcst_valid_inc =
+${METPLUS_FCST_VALID_INC}
+//fcst_valid_exc =
+${METPLUS_FCST_VALID_EXC}
+//fcst_valid_hour =
+${METPLUS_FCST_VALID_HOUR}
+
+//obs_valid_beg =
+${METPLUS_OBS_VALID_BEG}
+//obs_valid_end =
+${METPLUS_OBS_VALID_END}
+//obs_valid_inc =
+${METPLUS_OBS_VALID_INC}
+//obs_valid_exc =
+${METPLUS_OBS_VALID_EXC}
+//obs_valid_hour =
+${METPLUS_OBS_VALID_HOUR}
+
+//fcst_init_beg =
+${METPLUS_FCST_INIT_BEG}
+//fcst_init_end =
+${METPLUS_FCST_INIT_END}
+//fcst_init_inc =
+${METPLUS_FCST_INIT_INC}
+//fcst_init_exc =
+${METPLUS_FCST_INIT_EXC}
+//fcst_init_hour =
+${METPLUS_FCST_INIT_HOUR}
+
+//obs_init_beg =
+${METPLUS_OBS_INIT_BEG}
+//obs_init_end =
+${METPLUS_OBS_INIT_END}
+//obs_init_inc =
+${METPLUS_OBS_INIT_INC}
+//obs_init_exc =
+${METPLUS_OBS_INIT_EXC}
+ //obs_init_hour =
+${METPLUS_OBS_INIT_HOUR}
+
+////////////////////////////////////////////////////////////////////////////////
+
 //
 // Forecast and observation data censoring, thresholding, and filtering options
 // May be set separately in each "fcst.pairs" or "obs.pairs" entry
@@ -106,15 +157,6 @@ ${METPLUS_CLIMO_STDEV_DICT}
 //
 //climo_cdf = {
 ${METPLUS_CLIMO_CDF_DICT}
-
-////////////////////////////////////////////////////////////////////////////////
-
-//
-// Point observation time window
-// May be set separately in each "obs.pairs" entry
-//
-//obs_window = {
-${METPLUS_OBS_WINDOW_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 

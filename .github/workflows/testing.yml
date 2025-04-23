@@ -11,6 +11,7 @@ on:
       - 'bugfix_**'
     paths-ignore:
       - 'docs/**'
+      - 'internal/scripts/installation/**'
       - '.github/pull_request_template.md'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/labels/**'
@@ -24,6 +25,7 @@ on:
       - 'main_*'
     paths-ignore:
       - 'docs/**'
+      - 'internal/scripts/installation/**'
       - '.github/pull_request_template.md'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/labels/**'
@@ -139,6 +141,7 @@ jobs:
     needs: [job_control]
     if: ${{ needs.job_control.outputs.run_unit_tests == 'true' }}
     strategy:
+      fail-fast: false
       matrix:
         python_version: ["3.10", "3.12"]
     steps:
@@ -152,7 +155,7 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install -r internal/tests/pytests/requirements_${{ matrix.python_version }}.txt
       - name: Install ImageMagick convert
-        run: sudo apt install imagemagick
+        run: sudo apt update && sudo apt install imagemagick
       - name: Run Pytests
         run: coverage run -m pytest internal/tests/pytests
         env:

@@ -13498,16 +13498,6 @@ METplus Configuration Glossary
 
      | *Used by:* PairStat
 
-   PAIR_STAT_OBS_WINDOW_BEG
-     Specify the value for 'obs_window.beg' in the MET configuration file for PairStat.
-
-     | *Used by:* PairStat
-
-   PAIR_STAT_OBS_WINDOW_END
-     Specify the value for 'obs_window.end' in the MET configuration file for PairStat.
-
-     | *Used by:* PairStat
-
    PAIR_STAT_MASK_GRID
      Specify the value for 'mask.grid' in the MET configuration file for PairStat.
 
@@ -14050,3 +14040,113 @@ METplus Configuration Glossary
      Specify the value for 'gradient.dy' in the MET configuration file for SeriesAnalysis.
 
      | *Used by:* SeriesAnalysis
+
+   PAIR_STAT_FCST_LEAD
+     Specify the value for 'fcst_lead' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_LEAD
+     Specify the value for 'obs_lead' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_VALID_BEG
+     Specify the value for 'fcst_valid_beg' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_VALID_END
+     Specify the value for 'fcst_valid_end' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_VALID_INC
+     Specify the value for 'fcst_valid_inc' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_VALID_EXC
+     Specify the value for 'fcst_valid_exc' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_VALID_HOUR
+     Specify the value for 'fcst_valid_hour' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_VALID_BEG
+     Specify the value for 'obs_valid_beg' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_VALID_END
+     Specify the value for 'obs_valid_end' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_VALID_INC
+     Specify the value for 'obs_valid_inc' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_VALID_EXC
+     Specify the value for 'obs_valid_exc' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_VALID_HOUR
+     Specify the value for 'obs_valid_hour' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_INIT_BEG
+     Specify the value for 'fcst_init_beg' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_INIT_END
+     Specify the value for 'fcst_init_end' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_INIT_INC
+     Specify the value for 'fcst_init_inc' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_INIT_EXC
+     Specify the value for 'fcst_init_exc' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_INIT_HOUR
+     Specify the value for 'fcst_init_hour' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_INIT_BEG
+     Specify the value for 'obs_init_beg' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_INIT_END
+     Specify the value for 'obs_init_end' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_INIT_INC
+     Specify the value for 'obs_init_inc' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_INIT_EXC
+     Specify the value for 'obs_init_exc' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_INIT_HOUR
+     Specify the value for 'obs_init_hour' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat

@@ -183,10 +183,10 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py
 # There are many input variables that can be changed for the driver script and blocking calculation.  
 # These can be changed and are described in the [user_env_vars] section of the configuration file.
 #
-# .. dropdown:: parm/use_cases/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking/Blocking_driver.py
+# .. dropdown:: parm/use_cases/model_applications/s2s_mid_lat/common/Blocking_driver.py
 #
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking/Blocking_driver.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mid_lat/common/Blocking_driver.py
 
 ##############################################################################
 # Running METplus

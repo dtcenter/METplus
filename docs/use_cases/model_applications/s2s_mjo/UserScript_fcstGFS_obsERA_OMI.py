@@ -146,10 +146,10 @@ model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 # MJO indices and the generation of a phase diagram OMI plot.  Separate phase diagrams are created for 
 # the model and observations.
 #
-# .. dropdown:: parm/use_cases/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI/OMI_driver.py
+# .. dropdown:: parm/use_cases/model_applications/s2s_mjo/common/OMI_driver.py
 #
 #   .. highlight:: python 
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI/OMI_driver.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/common/OMI_driver.py
 
 ##############################################################################
 # Running METplus

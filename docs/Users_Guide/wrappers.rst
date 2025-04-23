@@ -5931,6 +5931,28 @@ Configuration
 | :term:`PAIR_STAT_CONFIG_FILE`
 | :term:`MODEL`
 | :term:`PAIR_STAT_DESC`
+| :term:`PAIR_STAT_FCST_LEAD`
+| :term:`PAIR_STAT_OBS_LEAD`
+| :term:`PAIR_STAT_FCST_VALID_BEG`
+| :term:`PAIR_STAT_FCST_VALID_END`
+| :term:`PAIR_STAT_FCST_VALID_INC`
+| :term:`PAIR_STAT_FCST_VALID_EXC`
+| :term:`PAIR_STAT_FCST_VALID_HOUR`
+| :term:`PAIR_STAT_OBS_VALID_BEG`
+| :term:`PAIR_STAT_OBS_VALID_END`
+| :term:`PAIR_STAT_OBS_VALID_INC`
+| :term:`PAIR_STAT_OBS_VALID_EXC`
+| :term:`PAIR_STAT_OBS_VALID_HOUR`
+| :term:`PAIR_STAT_FCST_INIT_BEG`
+| :term:`PAIR_STAT_FCST_INIT_END`
+| :term:`PAIR_STAT_FCST_INIT_INC`
+| :term:`PAIR_STAT_FCST_INIT_EXC`
+| :term:`PAIR_STAT_FCST_INIT_HOUR`
+| :term:`PAIR_STAT_OBS_INIT_BEG`
+| :term:`PAIR_STAT_OBS_INIT_END`
+| :term:`PAIR_STAT_OBS_INIT_INC`
+| :term:`PAIR_STAT_OBS_INIT_EXC`
+| :term:`PAIR_STAT_OBS_INIT_HOUR`
 | :term:`PAIR_STAT_CENSOR_THRESH`
 | :term:`PAIR_STAT_CENSOR_VAL`
 | :term:`PAIR_STAT_CAT_THRESH`
@@ -6007,8 +6029,6 @@ Configuration
 | :term:`PAIR_STAT_CLIMO_CDF_CENTER_BINS`
 | :term:`PAIR_STAT_CLIMO_CDF_WRITE_BINS`
 | :term:`PAIR_STAT_CLIMO_CDF_DIRECT_PROB`
-| :term:`PAIR_STAT_OBS_WINDOW_BEG`
-| :term:`PAIR_STAT_OBS_WINDOW_END`
 | :term:`PAIR_STAT_MASK_GRID`
 | :term:`PAIR_STAT_MASK_POLY`
 | :term:`PAIR_STAT_MASK_SID`
@@ -6285,6 +6305,270 @@ ${METPLUS_OBS_CLIMO_STDEV_DICT}
    * - :term:`PAIR_STAT_OBS_CLIMO_STDEV_HOUR_INTERVAL`
      - obs.climo_stdev.hour_interval
 
+${METPLUS_FCST_LEAD}
+^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_FCST_LEAD`
+     - fcst_lead
+
+${METPLUS_OBS_LEAD}
+^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_OBS_LEAD`
+     - obs_lead
+
+${METPLUS_FCST_VALID_BEG}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_FCST_VALID_BEG`
+     - fcst_valid_beg
+
+${METPLUS_FCST_VALID_END}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_FCST_VALID_END`
+     - fcst_valid_end
+
+${METPLUS_FCST_VALID_INC}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_FCST_VALID_INC`
+     - fcst_valid_inc
+
+${METPLUS_FCST_VALID_EXC}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_FCST_VALID_EXC`
+     - fcst_valid_exc
+
+${METPLUS_FCST_VALID_HOUR}
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_FCST_VALID_HOUR`
+     - fcst_valid_hour
+
+${METPLUS_OBS_VALID_BEG}
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_OBS_VALID_BEG`
+     - obs_valid_beg
+
+${METPLUS_OBS_VALID_END}
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_OBS_VALID_END`
+     - obs_valid_end
+
+${METPLUS_OBS_VALID_INC}
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_OBS_VALID_INC`
+     - obs_valid_inc
+
+${METPLUS_OBS_VALID_EXC}
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_OBS_VALID_EXC`
+     - obs_valid_exc
+
+${METPLUS_OBS_VALID_HOUR}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_OBS_VALID_HOUR`
+     - obs_valid_hour
+
+${METPLUS_FCST_INIT_BEG}
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_FCST_INIT_BEG`
+     - fcst_init_beg
+
+${METPLUS_FCST_INIT_END}
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_FCST_INIT_END`
+     - fcst_init_end
+
+${METPLUS_FCST_INIT_INC}
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_FCST_INIT_INC`
+     - fcst_init_inc
+
+${METPLUS_FCST_INIT_EXC}
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_FCST_INIT_EXC`
+     - fcst_init_exc
+
+${METPLUS_FCST_INIT_HOUR}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_FCST_INIT_HOUR`
+     - fcst_init_hour
+
+${METPLUS_OBS_INIT_BEG}
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_OBS_INIT_BEG`
+     - obs_init_beg
+
+${METPLUS_OBS_INIT_END}
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_OBS_INIT_END`
+     - obs_init_end
+
+${METPLUS_OBS_INIT_INC}
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_OBS_INIT_INC`
+     - obs_init_inc
+
+${METPLUS_OBS_INIT_EXC}
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_OBS_INIT_EXC`
+     - obs_init_exc
+
+${METPLUS_OBS_INIT_HOUR}
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_OBS_INIT_HOUR`
+     - obs_init_hour
+
 ${METPLUS_CENSOR_THRESH}
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -6526,20 +6810,6 @@ ${METPLUS_CLIMO_CDF_DICT}
      - climo_cdf.write_bins
    * - :term:`PAIR_STAT_CLIMO_CDF_DIRECT_PROB`
      - climo_cdf.direct_prob
-
-${METPLUS_OBS_WINDOW_DICT}
-""""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`OBS_WINDOW_BEGIN`
-     - obs_window.beg
-   * - :term:`OBS_WINDOW_END`
-     - obs_window.end
 
 ${METPLUS_MASK_DICT}
 """"""""""""""""""""
