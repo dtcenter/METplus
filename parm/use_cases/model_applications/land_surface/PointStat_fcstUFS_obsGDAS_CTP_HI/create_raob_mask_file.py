@@ -17,6 +17,9 @@ pb2nc = sys.argv[1]
 # Get the output filename for this script
 outfile = sys.argv[2]
 
+# Get the list of WMO site digits to include
+sites_to_include = [x for x in sys.argv[3].split(",")]
+
 # Make the output directory if it doesn't exist
 if not os.path.exists(os.path.dirname(outfile)):
   os.makedirs(os.path.dirname(outfile))
@@ -33,7 +36,7 @@ point_data = groups.first().reset_index()[['sid','typ','vld','lat','lon','elv']]
 
 # Filter out stations to not process here
 point_data['site_digit'] = point_data['sid'].astype('str').str[0]
-point_data = point_data[point_data['site_digit'].isin(['7'])]
+point_data = point_data[point_data['site_digit'].isin(sites_to_include)]
 point_data = point_data.drop(['site_digit'],axis=1)
 
 # Subset to only sid/lat/lon for unique sid's
