@@ -11,7 +11,8 @@ pd.set_option('display.max_rows', None)
 
 # Get the input PB2NC output filename as the input to this script
 pb2nc = sys.argv[1]
-DEBUG = False
+DEBUG = sys.argv[2]
+DEBUG = True if DEBUG in ['True','yes','true','Yes','YES','TRUE'] else False
 
 # Get the Pandas dataframe of the PB2NC data
 df = nc_point_obs(pb2nc).to_pandas()
@@ -42,8 +43,9 @@ for name,group in groups:
   # First, make sure there is only one valid time
   timegrp = group.groupby('vld')
   if timegrp.ngroups>1:
-    print("INFO: FOUND MULTIPLE SOUNDINGS FOR THIS SITE.")
-    print("USING THE FIRST")
+    if DEBUG:
+      print("INFO: FOUND MULTIPLE SOUNDINGS FOR THIS SITE.")
+      print("USING THE FIRST")
     timegrp_name = [sg_name for sg_name,sg_df in timegrp]
     prof = timegrp.get_group(timegrp_name[0])
   else:
