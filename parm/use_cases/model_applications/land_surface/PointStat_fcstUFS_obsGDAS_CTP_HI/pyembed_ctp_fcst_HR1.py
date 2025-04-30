@@ -93,7 +93,9 @@ resstack = xr.full_like(mskstack,-9999.).rename('ctp')
 prs_mask = prsstack[:,mskstack>0]
 tmp_mask = tmpstack[:,mskstack>0]
 
+print("")
 print("COMPUTING CTP FOR %10d CELLS." % (int(tmpstack[:,mskstack>0].sizes['sid'])))
+print("")
 result = mp.starmap(calc_ctp,([prs_mask,tmp_mask,sidx] for sidx in list(range(0,tmp_mask.sizes['sid']))))
 result = [x.m for x in result]
 
