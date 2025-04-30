@@ -10,28 +10,6 @@ from metpy.calc import dewpoint_from_specific_humidity
 
 print("\nSTARTING pyembed_hi_fcst_HR1.py\n")
 
-# Function for unpacking results in a single vector back to a 2D N-D array
-def unpack_results(res,nx,ny):
-  ret = np.empty([ny,nx])
-  for r,xy in tuple(zip(res,get_iter())):
-    ret[xy[0],xy[1]] = r
-  return ret
-
-# Function to return an iterator for looping over all possible i/j combinations in a 2D grid
-def get_iter(nx,ny):
-  return itertools.product(range(0,ny),range(0,nx))
-
-# Functions to facilitate using starmap/multiprocessing with kwargs
-# From here: https://stackoverflow.com/a/53173433
-def starmap_with_kwargs(pool, fn, args_iter, kwargs_iter):
-  args_for_starmap = zip(repeat(fn), args_iter, kwargs_iter)
-  print("ARGS_FOR_STARMAP OK")
-  return pool.starmap(apply_args_and_kwargs, args_for_starmap)
-
-def apply_args_and_kwargs(fn, args, kwargs):
-  print("APPLYING ARGS USING ARGS/KWARGS")
-  return fn(*args, **kwargs)
-
 # Obtain the command line arguments
 input_file = sys.argv[1]
 tmpvarname = sys.argv[2]
