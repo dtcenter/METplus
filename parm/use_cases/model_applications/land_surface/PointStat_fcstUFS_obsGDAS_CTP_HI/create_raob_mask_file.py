@@ -29,7 +29,7 @@ df = nc_point_obs(pb2nc).to_pandas()
 
 # Group the 11-column data by station. This will effectively create "soundings" for each site
 groups = df.groupby('sid')
-print("FOUND %04d SITES TO PROCESS" % (int(groups.ngroups)))
+print(f"FOUND {groups.ngroups} SITES TO PROCESS in create_raob_mask_file.py")
 
 # The first row of each group contains the metadata we want to retain
 point_data = groups.first().reset_index()[['sid','typ','vld','lat','lon','elv']]
@@ -41,7 +41,7 @@ point_data = point_data.drop(['site_digit'],axis=1)
 
 # Subset to only sid/lat/lon for unique sid's
 point_data = point_data[point_data['sid'].isin(point_data['sid'].unique())]
-print("TOTAL OF %04d UNIQUE SITES" % (int(len(point_data))))
+print(f"TOTAL OF {len(point_data)} UNIQUE SITES in create_raob_mask_file.py")
 
 # Join the lat/lon as another column
 point_data['latlon'] = point_data['lat'].astype('str')+' '+point_data['lon'].astype('str')
