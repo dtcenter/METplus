@@ -18,7 +18,7 @@ df = nc_point_obs(pb2nc).to_pandas()
 
 # Group the 11-column data by station. This will effectively create "soundings" for each site
 groups = df.groupby('sid')
-print("FOUND %04d SITES TO PROCESS" % (int(groups.ngroups)))
+print(f"FOUND {groups.ngroups} SITES TO PROCESS")
 
 # The first row of each group contains the metadata we want to retain
 point_data = groups.first().reset_index()[['sid','typ','vld','lat','lon','elv']]
@@ -37,7 +37,7 @@ for name,group in groups:
 
   if DEBUG:
     print("")
-    print("PROCESSING SITE: %s" % (name))
+    print(f"PROCESSING SITE: {name}")
   
   # First, make sure there is only one valid time
   timegrp = group.groupby('vld')
@@ -63,8 +63,9 @@ for name,group in groups:
 
   # If there is no TMP or DPT data, skip this site.
   if (ntmp==0) or (ndew==0):
-    print("ERROR! NO TMP OR DPT DATA!")
-    print("UNABLE TO COMPUTE HI FOR SID: %s" % (name))
+    if DEBUG:
+      print("ERROR! NO TMP OR DPT DATA!")
+      print(f"UNABLE TO COMPUTE HI FOR SID: {name}")
     hi = np.append(hi,-9999.)
     continue
 
@@ -72,19 +73,19 @@ for name,group in groups:
   tmparr = tmpsub['obs'].astype('float').values*units('degK')
   dewarr = dewsub['obs'].astype('float').values*units('degK')
   prsarr = tmpsub['lvl'].astype('float').values*units('hPa')
-  tmpqc = tmpsub['qc'].astype('int').values
-  dewqc = dewsub['qc'].astype('int').values
   
   # The pressures must exceed 300 hPa above the lowest in the sounding
-  if max(prsarr.m)<= min(prsarr.m+300.0):
-    print("ERROR! SOUNDING TOP PRESSURE DOES NOT EXCEED 300 hPa ABOVE THE LOWEST PRESSURE.")
-    print("UNABLE TO COMPUTE HI FOR SID: %s" % (name))
+  if np.max(prsarr.m)<= np.min(prsarr.m+300.0):
+    if DEBUG:
+      print("ERROR! SOUNDING TOP PRESSURE DOES NOT EXCEED 300 hPa ABOVE THE LOWEST PRESSURE.")
+      print(f"UNABLE TO COMPUTE HI FOR SID: {name}")
     hi = np.append(hi,-9999.)
   elif not len(prsarr)==len(tmparr)==len(dewarr):
-    print("ERROR! UNEQUAL LENGTH DATA.")
-    print("UNABLE TO COMPUTE HI FOR SID: %s" % (name))
-    print("FOUND %04d TMP OBS" % (ntmp))
-    print("FOUND %04d DEW OBS" % (ndew))
+    if DEBUG:
+      print("ERROR! UNEQUAL LENGTH DATA.")
+      print(f"UNABLE TO COMPUTE HI FOR SID: {name}")
+      print(f"FOUND {ntmp} TMP OBS")
+      print(f"FOUND {ndew} DEW OBS")
     hi = np.append(hi,-9999.)
   else:
     # Append the HI value
