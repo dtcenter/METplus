@@ -18,7 +18,7 @@ df = nc_point_obs(pb2nc).to_pandas()
 
 # Group the 11-column data by station. This will effectively create "soundings" for each site
 groups = df.groupby('sid')
-print("FOUND %04d SITES TO PROCESS" % (int(groups.ngroups)))
+print(f"FOUND {groups.ngroups} SITES TO PROCESS")
 
 # The first row of each group contains the metadata we want to retain
 point_data = groups.first().reset_index()[['sid','typ','vld','lat','lon','elv']]
@@ -37,7 +37,7 @@ for name,group in groups:
 
   if DEBUG:
     print("")
-    print("PROCESSING SITE: %s" % (name))
+    print(f"PROCESSING SITE: {name}")
   
   # First, make sure there is only one valid time
   timegrp = group.groupby('vld')
@@ -59,8 +59,9 @@ for name,group in groups:
 
   # Ensure the temperature subset has data
   if len(sub)==0:
-    print("ERROR! NO TMP DATA.")
-    print("UNABLE TO COMPUTE CTP FOR SID: %s" % (name))
+    if DEBUG:
+      print("ERROR! NO TMP DATA.")
+      print(f"UNABLE TO COMPUTE CTP FOR SID: {name}")
     ctp = np.append(ctp,-9999.)
     continue
 
@@ -72,8 +73,9 @@ for name,group in groups:
 
   # The pressures must exceed 300 hPa above the lowest in the sounding
   if max(prssub.m)<= min(prssub.m+300.0):
-    print("ERROR! SOUNDING TOP PRESSURE DOES NOT EXCEED 300 hPa ABOVE THE LOWEST PRESSURE.")
-    print("UNABLE TO COMPUTE CTP FOR SID: %s" % (name))
+    if DEBUG:
+      print("ERROR! SOUNDING TOP PRESSURE DOES NOT EXCEED 300 hPa ABOVE THE LOWEST PRESSURE.")
+      print(f"UNABLE TO COMPUTE CTP FOR SID: {name}")
     ctp = np.append(ctp,-9999.)
   else:
     # Append the CTP value
