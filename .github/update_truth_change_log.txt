@@ -26,3 +26,4 @@
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #2938 - #2938 modified 3 use cases
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #2954, #2956, dtcenter/METplotpy#505 - #2954 added 2 s2s_soil_moisture use cases, #2956 slightly modified fire use case output, dtcenter/METplotpy#505 changed images for clouds:8 and s2s:2
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] no PR - One of the clouds use cases started producing diffs in the reformatted data (using METdataio). The output plots produce no differences 
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] dtcenter/MET#3152 - Adds unit and description strings for observations derived by PB2NC.
