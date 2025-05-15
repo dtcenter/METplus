@@ -98,6 +98,7 @@ Category: fire
 
 Category: land_surface
 0::PointStat_fcstCESM_obsFLUXNET2015_TCI:: model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf:: metplotpy_env, py_embed
+1::PointStat_fcstUFS_obsGDAS_CTP_HI:: model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI.conf:: metcalcpy, metplotpy_env, py_embed
 
 
 Category: marine_and_cryosphere
