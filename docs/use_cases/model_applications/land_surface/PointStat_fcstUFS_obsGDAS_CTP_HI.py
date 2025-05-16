@@ -161,10 +161,18 @@ model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 # include more digits. By default, this is set to only 7 in order to decrease the total run time of
 # the use case for testing and demonstration.
 #
+# A second user script is used to plot matched forecast and observation pairs (MPR) from PointStat MPR
+# text files in order to visualize the two metrics in the same space.
+#
 # .. dropdown:: parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI/create_raob_mask_file.py
 # 
 #   .. highlight:: python
 #   .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI/create_raob_mask_file.py
+#
+# .. dropdown:: parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI/plot_2panel_ctp_hi.py
+# 
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI/plot_2panel_ctp_hi.py
 
 ##############################################################################
 # Running METplus
