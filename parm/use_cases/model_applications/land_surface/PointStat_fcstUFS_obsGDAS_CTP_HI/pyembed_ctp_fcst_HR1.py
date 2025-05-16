@@ -26,7 +26,7 @@ else:
 
 # Determine the input dims
 indims = ds.sizes
-if not ('grid_xt' in ds.coords) or not ('grid_yt' in ds.coords):
+if ('grid_xt' not in ds.coords) or ('grid_yt' not in ds.coords):
   print("FATAL! unexpected dimension names in FCST file.")
   sys.exit(1)
 else:
