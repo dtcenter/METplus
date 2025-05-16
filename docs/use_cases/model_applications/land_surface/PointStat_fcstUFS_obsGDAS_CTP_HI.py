@@ -90,7 +90,7 @@ model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 # i.e. parm/use_cases/model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 
 ##############################################################################
 # MET Configuration
