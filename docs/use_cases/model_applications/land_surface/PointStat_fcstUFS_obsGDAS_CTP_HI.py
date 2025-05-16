@@ -36,7 +36,8 @@ model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 # [UPDATE_SECTION_CONTENT]
 # **Forecast:** Global Forecast System (GFS) 25km resolution, 2m temperature
 #
-# **Observation:** ECMWF Reanalysis v5 (ERA5) 5 degree resolution, 2m temperature
+# **Observation:** Upper air radiosonde observations from the 
+# Global Data Assimilation System (GDAS) in PREPBUFR format.
 #
 # **Climatology:** None
 #
@@ -210,4 +211,4 @@ model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
-# sphinx_gallery_thumbnail_path = '_static/short-range-MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.png'
+# sphinx_gallery_thumbnail_path = '_static/land_surface-PointStat_fcstUFS_obsGDAS_CTP_HI.png'
