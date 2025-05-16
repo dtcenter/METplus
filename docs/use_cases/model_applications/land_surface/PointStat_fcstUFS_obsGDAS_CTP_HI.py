@@ -198,10 +198,15 @@ model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 # {OUTPUT_BASE}/model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI 
 # and will contain the following files::
 #
-#  * CTP/point_stat_600000L_20200805_120000V_mpr.txt
-#  * CTP/point_stat_600000L_20200805_120000V.stat
-#  * HI/point_stat_600000L_20200805_120000V_mpr.txt
-#  * HI/point_stat_600000L_20200805_120000V.stat
+#  * point_stat/CTP/point_stat_600000L_20200805_120000V_mpr.txt
+#  * point_stat/CTP/point_stat_600000L_20200805_120000V.stat
+#  * point_stat/HI/point_stat_600000L_20200805_120000V_mpr.txt
+#  * point_stat/HI/point_stat_600000L_20200805_120000V.stat
+#  * compare_ctp_hi.png
+#  * gen_vx_mask/pb2nc_adpupa_latlon.txt
+#  * gen_vx_mask/raob_masks.nc
+#  * obs/netcdf/prepbufr.gdas.2020080512.nc
+ 
 #
 # Each file should contain corresponding statistics for the line type(s) requested.
 
