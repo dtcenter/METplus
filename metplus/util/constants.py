@@ -35,6 +35,7 @@ LOWER_TO_WRAPPER_NAME = {
     'pointstat': 'PointStat',
     'pyembedingest': 'PyEmbedIngest',
     'regriddataplane': 'RegridDataPlane',
+    'rmwanalysis': 'RMWAnalysis',
     'seriesanalysis': 'SeriesAnalysis',
     'statanalysis': 'StatAnalysis',
     'tcdiag': 'TCDiag',
