@@ -11,13 +11,16 @@ from . import RuntimeFreqWrapper
 
 
 class RMWAnalysisWrapper(RuntimeFreqWrapper):
-    """!  Performs RMW analysis with filtering options
-    """
+    """!Performs RMW analysis with filtering options"""
     RUNTIME_FREQ_DEFAULT = 'RUN_ONCE'
-    RUNTIME_FREQ_SUPPORTED = 'ALL'
+    RUNTIME_FREQ_SUPPORTED = [
+        'RUN_ONCE',
+        'RUN_ONCE_PER_INIT_OR_VALID',
+        'RUN_ONCE_PER_LEAD',
+    ]
 
     WRAPPER_ENV_VAR_KEYS = [
-        'METPLUS_DATA_DICT',
+        'METPLUS_DATA_FIELD',
         'METPLUS_MODEL',
         'METPLUS_BASIN',
         'METPLUS_STORM_NAME',
@@ -64,10 +67,10 @@ class RMWAnalysisWrapper(RuntimeFreqWrapper):
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file('RMWAnalysisConfig_wrapped')
 
-        c_dict['VAR_LIST'] = parse_var_list(self.config, data_type='DATA',
-                                            met_tool=self.app_name)
-        if not c_dict['VAR_LIST']:
-            self.log_error("No fields specified. Please set DATA_VAR<n>_[NAME/LEVELS]")
+        c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config, data_type='FCST',
+                                                 met_tool=self.app_name)
+        if not c_dict['VAR_LIST_TEMP']:
+            self.log_error("No fields specified. Please set BOTH_VAR<n>_[NAME/LEVELS]")
 
         self.add_met_config(name='model', data_type='string',
                             metplus_configs=['RMW_ANALYSIS_MODEL', 'MODEL'])
@@ -107,6 +110,18 @@ class RMWAnalysisWrapper(RuntimeFreqWrapper):
             self.args.append(f"-data {input_file}")
         self.args.append(f"-config {self.c_dict['CONFIG_FILE']}")
 
+
+    def set_environment_variables(self, time_info=None):
+        all_fields = []
+        for file_dict in self.c_dict['ALL_FILES']:
+            if file_dict is None: continue
+            for var_info in file_dict['var_list']:
+                fields = self.format_field_info(var_info, 'FCST')
+                if not fields: continue
+                all_fields.extend(fields)
+
+        self.env_var_dict['METPLUS_DATA_FIELD'] = f"field = [{','.join(all_fields)}];"
+        super().set_environment_variables(time_info)
 
     def get_command(self):
         return (f"{self.app_path} {' '.join(self.args)}"
