@@ -10,7 +10,7 @@ Obtaining Conda/Mamba
 If conda and/or mamba is not available on a development machine,
 follow the instructions to download **miniconda3** at
 `Miniconda/Continuum Analytics
-   website <https://docs.conda.io/en/latest/miniconda.html>`_.
+website <https://docs.conda.io/en/latest/miniconda.html>`_.
 
 .. note::
       
