@@ -12,18 +12,18 @@ follow the instructions to download **miniconda3** at
 `Miniconda/Continuum Analytics
    website <https://docs.conda.io/en/latest/miniconda.html>`_.
 
-   .. note::
+.. note::
       
-     It may be worth considering changing the default installation location
-     to a partition with more space.
+  It may be worth considering changing the default installation location
+  to a partition with more space.
 
-     From the command line, enter:
+From the command line, enter:
 
      .. code-block:: ini
 
        df -h
 
-     to see how much space is available on the disk partitions on the host.
+to see how much space is available on the disk partitions on the host.
    
 When asked to initialize Miniconda3 by running conda init, enter *yes*.
 This allows *conda* to append the user's .bashrc file so that

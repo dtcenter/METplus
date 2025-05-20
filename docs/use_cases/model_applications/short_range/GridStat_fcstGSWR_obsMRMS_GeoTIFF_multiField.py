@@ -55,7 +55,6 @@ model_applications/marine_and_cryosphere/GridStat_fcstGSWR_obsMRMS_GeoTIFF_multi
 ##############################################################################
 # METplus Workflow
 # ----------------
-# [UPDATE_SECTION_CONTENT]
 #
 # **Beginning time (INIT_BEG):** 2024-10-15
 #
@@ -65,15 +64,25 @@ model_applications/marine_and_cryosphere/GridStat_fcstGSWR_obsMRMS_GeoTIFF_multi
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** 60, 75, 90, 105, 120, 240, 300, 360, 420, and 480 minutes
 #
-# With an increment of 1 year, all January 1st’s from 1982 to 2010 are processed 
-# for a total of 29 years, with 24 members in each ensemble forecast. This use case 
-# initially runs SeriesAnalysis 24 times, once for each member of the CFSv2 ensemble 
-# across the 29 years of data. The resulting 24 outputs are read in by GenEnsProd 
-# which uses the normalize option to normalize each of the ensemble members 
-# relative to its climatology (FBAR) and standard deviation (FSTDEV). The output from 
-# GenEnsProd are 29 files containing the uncalibrated probability forecasts for 
-# the lower tercile of January for each year. The final probability verification 
-# is done across the temporal scale in SeriesAnalysis, and the spatial scale in GridStat.
+# The use case runs six instances of GridStat; one for each of the three variable fields
+# to be verified across the two different types of forecast files.  
+# In the first GridStat call, the configuration options that will not
+# change across the other instances are set, along with the initial five lead times 
+# separated by 15 minute intervals. Due to the observation dataset having irregular 
+# seconds attached to the valid time, the OBS_VAR1_OPTIONS sets the valid time
+# equal to the valid time being verified. This will ensure that the forecast
+# being evaluated is always the same valid time as the observation.
+# The irregular valid time extends to the name of the observation files as well,
+# so OBS_GRID_STAT_FILE_WINDOW has a +/- 120 seconds setting that will capture
+# the file's slight irregular offset in seconds. Once the forecast python embedding is complete,
+# the verification is completed with a regrid to the coarser forecast grid and the requested
+# line type is created. The two GridStat instances containing "adv" keep the same timing information,
+# changing only the observation file naming template and the corresponding
+# forecast file passed to the Python script, as well as slight changes to the 
+# thresholding and output location. The remaining three GridStat instances with "blend"
+# need their own LEAD_SEQ, with five different lead times incremented by one hour. 
+# These instances also update the observation input file templates, thresholding, and
+# output location.
 
 ##############################################################################
 # METplus Configuration
@@ -106,26 +115,25 @@ model_applications/marine_and_cryosphere/GridStat_fcstGSWR_obsMRMS_GeoTIFF_multi
 ##############################################################################
 # Python Embedding
 # ----------------
-# [UPDATE_SECTION_CONTENT]
 #
-# This use case calls the read_ASCAT_data.py script to read and pass to PointStat 
-# the user-requested variable. The script needs 5 inputs in the following order: 
-# a path to a directory that contains only ASCAT data of the “ascat_YYYYMMDDHHMMSS_*” 
-# string, a start time in YYYYMMDDHHMMSS, an end time in the same format, 
-# a message type to code the variables as, and a variable name to read in. 
-# Currently the script puts the same station ID to each observation, but there is 
-# space in the code describing an alternate method that may be improved upon to 
-# allow different satellites to have their own station IDs. 
-# This code currently ingests all files it finds in the directory, pulls out the 
-# requested variable, and arranges the data in a list of lists following the 
-# 11-column format for point data. This list of lists is passed back 
-# to PointStat for evaluation and the requested statistical output. The location 
-# of the code is 
+# This script is necessary to read in the forecast file, which in the unsupported
+# format of GeoTIFF. The only input required is a full path to the file to be evaluated,
+# as each file only contains one field for analysis. After checking for exactly one input,
+# two separate routines are used to extract the variable name from the filename, 
+# as well as the timing information from the file name. The data from the file
+# is extracted using another routine, followed by two final routines that extract the
+# latitude and longitude information from the file contents and preparing the data
+# to be passed back to GridStat. That final data routine also adjusts the data if 
+# the variable field in the file is VIL, which requires additional steps to change
+# the units to the expected kg/m^2. Any negative values are set to bad data (the negative values
+# are the result of pixels with no data but bad pixel data could be seen as an actual value in MET
+# if not thresholded) and finally the MET-required dictionary is constructed. 
+# The location of the code is 
 # 
-# .. dropdown:: parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds/read_ASCAT_data.py
+# .. dropdown:: parm/use_cases/model_applications/short_range/GridStat_fcstGSWR_obsMRMS_GeoTIFF_multiField/TIFF_readin.py
 #
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds/read_ASCAT_data.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GridStat_fcstGSWR_obsMRMS_GeoTIFF_multiField/TIFF_readin.py
 # 
 # For more information on the basic requirements to utilize Python Embedding in METplus, 
 # please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
@@ -139,57 +147,68 @@ model_applications/marine_and_cryosphere/GridStat_fcstGSWR_obsMRMS_GeoTIFF_multi
 ##############################################################################
 # Running METplus
 # ---------------
-# [UPDATE_SECTION_CONTENT]
 #
 # Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired::
 #
-#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds.conf /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/GridStat_fcstGSWR_obsMRMS_GeoTIFF_multiField.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output
 # ---------------
-# [UPDATE_SECTION_CONTENT]
 #
 # A successful run will output the following both to the screen and to the logfile::
 #
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
-# Output for this use case will be found in 
-# {OUTPUT_BASE}/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds 
-# and will contain the following files::
+# Output for this use case will be found in one of two directories::
 #
-#  * grid_stat_198201_000000L_19700101_000000V_pairs.nc
-#  * grid_stat_198201_000000L_19700101_000000V_pstd.txt
-#  * grid_stat_198201_000000L_19700101_000000V.stat
+#  * advected
+#  * blended
 #
-# Each file should contain corresponding statistics for the line type(s) requested.
-# For the netCDF file, five variable fields are present (not including the lat/lon fields). 
-# Those variables are::
+# Under these two directories will be three subdirectories, corresponding to the 
+# variable fields of interest::
 #
-#  * FCST_fcst_ENS_FREQ_lt-0.43_0_0_all_all_FULL(lat, lon)
-#  * OBS_tmp2m_20100101_000000_all_all_FULL(lat, lon)
-#  * CLIMO_MEAN_tmp2m_20100101_000000_all_all_FULL(lat, lon)
-#  * CLIMO_STDEV_tmp2m_20100101_000000_all_all_FULL(lat, lon)
-#  * CLIMO_CDF_tmp2m_20100101_000000_all_all_FULL(lat, lon)
+#  * echo_tops
+#  * vil
+#  * reflectivity
+#
+# Finally, each variable will have subdirectories corresponding to each of the leads that were
+# evaluated. This should look like the following for advected::
+#
+#  * 202410150200
+#  * 202410150215
+#  * 202410150230
+#  * 202410150245
+#  * 202410150300
+#
+# And for blended, the following subdirectories are present::
+#
+#  * 202410150500
+#  * 202410150600
+#  * 202410150700
+#  * 202410150800
+#  * 202410150900
+#
+# Regardless of which directory is chosen, the lowest directory will contain a netCDF file 
+# with the raw forecast and observation fields, and a stat file with CTS output.
 
 ##############################################################################
 # Keywords
 # --------
-# [UPDATE_SECTION_CONTENT]
 #
 # .. note::
 #
-#   * PointStatToolUseCase
+#   * GridStatToolUseCase
 #   * PythonEmbeddingFileUseCase
 #   * GRIB2FileUseCase
-#   * MarineAndCryosphereAppUseCase
+#   * ShortRangeAppUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/short-range-MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.png'
+# sphinx_gallery_thumbnail_path = '_static/short-range-GridStat_fcstGSWR_obsMRMS_GeoTIFF_multiField.png'
