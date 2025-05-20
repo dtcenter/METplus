@@ -116,8 +116,8 @@ model_applications/marine_and_cryosphere/GridStat_fcstGSWR_obsMRMS_GeoTIFF_multi
 # Python Embedding
 # ----------------
 #
-# This script is necessary to read in the forecast file, which in the unsupported
-# format of GeoTIFF. The only input required is a full path to the file to be evaluated,
+# This script is necessary to read in the forecast file, which is in the unsupported
+# GeoTIFF format. The only input required is a full path to the file to be evaluated,
 # as each file only contains one field for analysis. After checking for exactly one input,
 # two separate routines are used to extract the variable name from the filename, 
 # as well as the timing information from the file name. The data from the file
