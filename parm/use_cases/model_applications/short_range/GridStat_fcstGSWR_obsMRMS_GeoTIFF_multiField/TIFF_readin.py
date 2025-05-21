@@ -20,7 +20,8 @@ def get_variable_attributes(filename: str):
     sys.exit(1)
 
 def get_variable_name(filename: str):
-    return get_variable_attributes(filename)[0]
+    var_name, *_ = get_variable_attributes(filename)
+    return var_name
 
 def open_file(filename: str):
     """
