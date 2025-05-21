@@ -331,7 +331,7 @@ def skip_time(time_info, c_dict):
 
 def _found_time_match(time_info, time_dict, init_or_valid):
     run_time_dt = time_info.get(init_or_valid)
-    if not run_time_dt:
+    if not run_time_dt or run_time_dt == '*':
         return False
 
     for time_format, time_list in time_dict.items():
