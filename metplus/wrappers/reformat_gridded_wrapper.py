@@ -49,7 +49,7 @@ class ReformatGriddedWrapper(LoopTimesWrapper):
 
         return c_dict
 
-    def run_at_time(self, input_dict):
+    def run_at_init_or_valid(self, input_dict):
         """! Runs the MET application for a given run time. Processing forecast
              or observation data is determined by conf variables.
              This function loops over the list of forecast leads and runs
@@ -67,4 +67,4 @@ class ReformatGriddedWrapper(LoopTimesWrapper):
             self.logger.info("Processing {} data".format(to_run))
             self.c_dict['VAR_LIST'] = self.c_dict.get(f'VAR_LIST_{to_run}')
             self.c_dict['DATA_SRC'] = to_run
-            super().run_at_time(input_dict)
+            super().run_at_init_or_valid(input_dict)
