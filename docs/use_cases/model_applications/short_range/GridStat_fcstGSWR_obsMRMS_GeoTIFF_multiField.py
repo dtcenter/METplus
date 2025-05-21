@@ -49,7 +49,7 @@ model_applications/marine_and_cryosphere/GridStat_fcstGSWR_obsMRMS_GeoTIFF_multi
 # METplus Components
 # ------------------
 #
-# The only tool this use case calls is GridStat, with six separate instances of GridStat uesd. 
+# The only tool this use case calls is GridStat, with six separate instances of GridStat used.
 # Within GridStat a Python script is used for ingesting forecast data.
 
 ##############################################################################
@@ -136,7 +136,7 @@ model_applications/marine_and_cryosphere/GridStat_fcstGSWR_obsMRMS_GeoTIFF_multi
 #   .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GridStat_fcstGSWR_obsMRMS_GeoTIFF_multiField/TIFF_readin.py
 # 
 # For more information on the basic requirements to utilize Python Embedding in METplus, 
-# please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
+# please refer to the MET User’s Guide section on `Python Embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
 
 ##############################################################################
 # User Scripting
@@ -164,34 +164,34 @@ model_applications/marine_and_cryosphere/GridStat_fcstGSWR_obsMRMS_GeoTIFF_multi
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
-# Output for this use case will be found in one of two directories::
+# Output for this use case will be found in one of two directories:
 #
-#  * advected
-#  * blended
+# * advected
+# * blended
 #
 # Under these two directories will be three subdirectories, corresponding to the 
-# variable fields of interest::
+# variable fields of interest:
 #
-#  * echo_tops
-#  * vil
-#  * reflectivity
+# * echo_tops
+# * vil
+# * reflectivity
 #
 # Finally, each variable will have subdirectories corresponding to each of the leads that were
-# evaluated. This should look like the following for advected::
+# evaluated. This should look like the following for advected:
 #
-#  * 202410150200
-#  * 202410150215
-#  * 202410150230
-#  * 202410150245
-#  * 202410150300
+# * 202410150200
+# * 202410150215
+# * 202410150230
+# * 202410150245
+# * 202410150300
 #
-# And for blended, the following subdirectories are present::
+# And for blended, the following subdirectories are present:
 #
-#  * 202410150500
-#  * 202410150600
-#  * 202410150700
-#  * 202410150800
-#  * 202410150900
+# * 202410150500
+# * 202410150600
+# * 202410150700
+# * 202410150800
+# * 202410150900
 #
 # Regardless of which directory is chosen, the lowest directory will contain a netCDF file 
 # with the raw forecast and observation fields, and a stat file with CTS output.
