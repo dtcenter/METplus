@@ -11908,6 +11908,12 @@ METplus Configuration Glossary
 
      | *Used by:*  ASCII2NC
 
+   EXAMPLE_RUNTIME_FREQ
+     Frequency to run Example wrapper. See :ref:`Runtime_Freq` for more information.
+     Defaults to RUN_ONCE_FOR_EACH. All runtime frequencies are supported.
+
+     | *Used by:*  Example
+
    GRID_DIAG_RUNTIME_FREQ
      Frequency to run Grid-Diag. See :ref:`Runtime_Freq` for more information.
 
