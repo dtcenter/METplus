@@ -12,14 +12,13 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
+from . import RuntimeFreqWrapper
 from ..util import do_string_sub
-from . import LoopTimesWrapper
 
 
-class ExampleWrapper(LoopTimesWrapper):
-
+class ExampleWrapper(RuntimeFreqWrapper):
     RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
-    RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_FOR_EACH']
+    RUNTIME_FREQ_SUPPORTED = 'ALL'
 
     """!Wrapper can be used as a base to develop a new wrapper"""
     def __init__(self, config, instance=None):
@@ -28,19 +27,20 @@ class ExampleWrapper(LoopTimesWrapper):
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
-        # get values from config object and set them to be accessed by wrapper
-        c_dict['INPUT_TEMPLATE'] = self.config.getraw('config',
-                                                      'EXAMPLE_INPUT_TEMPLATE')
-        c_dict['INPUT_DIR'] = self.config.getdir('EXAMPLE_INPUT_DIR', '')
+        c_dict['INPUT_MUST_EXIST'] = False
+
+        self.get_input_templates(c_dict, {
+            '': {'prefix': 'EXAMPLE', 'required': False},
+        })
+
+        if not c_dict['INPUT_DIR']:
+            self.logger.debug('EXAMPLE_INPUT_DIR was not set')
 
         if not c_dict['INPUT_TEMPLATE']:
             self.logger.warning('EXAMPLE_INPUT_TEMPLATE was not set. '
                                 'You should set this variable to see how the '
                                 'runtime is substituted. '
                                 'For example: {valid?fmt=%Y%m%d%H}.ext')
-
-        if not c_dict['INPUT_DIR']:
-            self.logger.debug('EXAMPLE_INPUT_DIR was not set')
 
         full_path = os.path.join(c_dict['INPUT_DIR'], c_dict['INPUT_TEMPLATE'])
         self.logger.info(f"Input directory is {c_dict['INPUT_DIR']}")
@@ -54,15 +54,11 @@ class ExampleWrapper(LoopTimesWrapper):
 
             @param time_info dictionary with time information of current run
         """
-        # read input directory and template from config dictionary
-        full_template = os.path.join(self.c_dict['INPUT_DIR'],
-                                     self.c_dict['INPUT_TEMPLATE'])
-
-        # perform string substitution to find filename based on
-        # template and current run time
-        filename = do_string_sub(full_template, **time_info)
-        self.logger.info(f'Looking for file: {filename}')
-        if os.path.exists(filename):
-            self.logger.info(f'FOUND FILE: {filename}')
+        for file_dict in self.c_dict['ALL_FILES']:
+            files = file_dict.get('')
+            for filename in files:
+                self.logger.info(f'Looking for file: {filename}')
+                if os.path.exists(filename):
+                    self.logger.info(f'FOUND FILE: {filename}')
 
         return True
