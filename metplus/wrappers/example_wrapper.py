@@ -50,9 +50,9 @@ class ExampleWrapper(RuntimeFreqWrapper):
         return c_dict
 
     def run_at_time_once(self, time_info):
-        """! Do some processing for the current run time (init or valid)
+        """!Log files that were requested and log if a file was found on disk.
 
-            @param time_info dictionary with time information of current run
+        @param time_info dictionary with time information of the current run
         """
         for file_dict in self.c_dict['ALL_FILES']:
             files = file_dict.get('')
