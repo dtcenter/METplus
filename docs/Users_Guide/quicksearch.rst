@@ -33,6 +33,7 @@ Use Cases by MET Tool:
    | `PlotPointObs <../search.html?q=PlotPointObsToolUseCase&check_keywords=yes&area=default>`_
    | `PointStat <../search.html?q=PointStatToolUseCase&check_keywords=yes&area=default>`_
    | `RegridDataPlane <../search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_
+   | `RMWAnalysis <../search.html?q=RMWAnalysisToolUseCase&check_keywords=yes&area=default>`_
    | `SeriesAnalysis <../search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_
    | `StatAnalysis <../search.html?q=StatAnalysisToolUseCase&check_keywords=yes&area=default>`_
    | `TCDiag <../search.html?q=TCDiagToolUseCase&check_keywords=yes&area=default>`_
@@ -62,6 +63,7 @@ Use Cases by MET Tool:
    | **PlotPointObs**: *PlotPointObsToolUseCase*
    | **PointStat**: *PointStatToolUseCase*
    | **RegridDataPlane**: *RegridDataPlaneToolUseCase*
+   | **RMWAnalysis**: *RMWAnalysisToolUseCase*
    | **SeriesAnalysis**: *SeriesAnalysisUseCase*
    | **StatAnalysis**: *StatAnalysisToolUseCase*
    | **TCDiag**: *TCDiagToolUseCase*
