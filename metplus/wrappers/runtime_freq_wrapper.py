@@ -256,6 +256,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         success = True
         for time_input in time_generator(self.config):
             if time_input is None:
+                self.errors += 1
                 success = False
 
             # check if time should be skipped
@@ -386,6 +387,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         success = True
         for time_input in time_generator(self.config):
             if time_input is None:
+                self.errors += 1
                 success = False
 
             if not self._should_init_or_valid_be_run(time_input, custom):
@@ -475,6 +477,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         # loop over all init/valid times
         for time_input in time_generator(self.config):
             if time_input is None:
+                self.errors += 1
                 return []
 
             if skip_time(time_input, self.c_dict):
@@ -569,6 +572,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         all_files = []
         for run_time in time_generator(self.config):
             if run_time is None:
+                self.errors += 1
                 continue
 
             current_time_input = time_input.copy()

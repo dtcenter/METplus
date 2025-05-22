@@ -56,6 +56,7 @@ class ExampleWrapper(RuntimeFreqWrapper):
         """
         for file_dict in self.c_dict['ALL_FILES']:
             files = file_dict.get('')
+            if not files: continue
             for filename in files:
                 self.logger.info(f'Looking for file: {filename}')
                 if os.path.exists(filename):
