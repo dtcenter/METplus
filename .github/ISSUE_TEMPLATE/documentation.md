@@ -2,7 +2,7 @@
 name: Documentation
 about: Update the documentation
 title: 'Documentation: '
-labels: 'alert: NEED ACCOUNT KEY, alert: NEED MORE DEFINITION, alert: NEED CYCLE ASSIGNMENT, type: documentation'
+labels: 'alert: NEED ACCOUNT KEY, alert: NEED MORE DEFINITION, alert: NEED CYCLE ASSIGNMENT, component: documentation'
 assignees: ''
 
 ---

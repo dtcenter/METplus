@@ -10,6 +10,11 @@
     "run": false
   },
   {
+    "category": "met_tool_wrapper",
+    "index_list": "67",
+    "run": true
+  },
+  {
     "category": "air_quality_and_comp",
     "index_list": "0",
     "run": false
@@ -332,6 +337,11 @@
     "disabled": true,
     "disabled_reason": "exceeds GitHub Actions environment limits",
     "run":false
+  },
+  {
+    "category": "short_range",
+    "index_list": "16",
+    "run": false
   },
   {
     "category": "space_weather",

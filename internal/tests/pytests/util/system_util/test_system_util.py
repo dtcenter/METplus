@@ -214,7 +214,7 @@ def test_get_user_info(expected, user_err, id_err):
         with mock.patch.object(su.os, 'getuid', return_value='007', side_effect=id_err):
                 actual = su.get_user_info()
     assert actual == expected
-    
+
 
 @pytest.mark.util
 def test_write_list_to_file(tmp_path_factory):

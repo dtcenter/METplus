@@ -435,7 +435,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         self.set_environment_variables(time_info)
 
         # build command and run
-        return self.build()
+        return self.build(time_info)
 
     def get_all_files(self, custom=None):
         """!Get all files that can be processed with the app.

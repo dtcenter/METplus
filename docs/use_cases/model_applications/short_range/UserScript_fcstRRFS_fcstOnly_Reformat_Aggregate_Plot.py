@@ -2,9 +2,10 @@
 UserScript: Reformat MET .stat ECNT data, calculate aggregation statistics, and generate a spread skill plot
 ============================================================================================================
 
-model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot_ecnt_spread_skill.py
+model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.py
 
 """
+
 ##############################################################################
 # .. contents::
 #   :depth: 1
@@ -232,4 +233,4 @@ model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_P
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/short-range_UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.png'
+# sphinx_gallery_thumbnail_path = '_static/short_range_UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.png'
