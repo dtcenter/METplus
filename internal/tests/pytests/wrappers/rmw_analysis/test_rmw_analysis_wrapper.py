@@ -37,12 +37,12 @@ def set_minimum_config_settings(config):
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
         ({}, {}),
-        ({'MODEL': 'GFSO'}, {'METPLUS_MODEL': 'model = "GFSO";'}),
-        ({'RMW_ANALYSIS_MODEL': 'GFSO'}, {'METPLUS_MODEL': 'model = "GFSO";'}),
-        ({'RMW_ANALYSIS_BASIN': 'AL'}, {'METPLUS_BASIN': 'basin = "AL";'}),
-        ({'RMW_ANALYSIS_STORM_NAME': 'KATRINA'}, {'METPLUS_STORM_NAME': 'storm_name = "KATRINA";'}),
-        ({'RMW_ANALYSIS_STORM_ID': 'AL092022'}, {'METPLUS_STORM_ID': 'storm_id = "AL092022";'}),
-        ({'RMW_ANALYSIS_CYCLONE': '14'}, {'METPLUS_CYCLONE': 'cyclone = "14";'}),
+        ({'MODEL': 'GFSO, GFSA'}, {'METPLUS_MODEL': 'model = ["GFSO", "GFSA"];'}),
+        ({'RMW_ANALYSIS_MODEL': 'GFSO, GFSA'}, {'METPLUS_MODEL': 'model = ["GFSO", "GFSA"];'}),
+        ({'RMW_ANALYSIS_BASIN': 'AL,BO'}, {'METPLUS_BASIN': 'basin = ["AL", "BO"];'}),
+        ({'RMW_ANALYSIS_STORM_NAME': 'STU,JOEY'}, {'METPLUS_STORM_NAME': 'storm_name = ["STU", "JOEY"];'}),
+        ({'RMW_ANALYSIS_STORM_ID': 'AL092022,  ML082023'}, {'METPLUS_STORM_ID': 'storm_id = ["AL092022", "ML082023"];'}),
+        ({'RMW_ANALYSIS_CYCLONE': '14,43'}, {'METPLUS_CYCLONE': 'cyclone = ["14", "43"];'}),
         ({'RMW_ANALYSIS_INIT_BEG': '20220924_00', }, {'METPLUS_INIT_BEG': 'init_beg = "20220924_00";'}),
         ({'RMW_ANALYSIS_INIT_END': '20220924_00', }, {'METPLUS_INIT_END': 'init_end = "20220924_00";'}),
         ({'RMW_ANALYSIS_VALID_BEG': '20220924_00', }, {'METPLUS_VALID_BEG': 'valid_beg = "20220924_00";'}),

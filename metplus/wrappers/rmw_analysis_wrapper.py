@@ -72,12 +72,12 @@ class RMWAnalysisWrapper(RuntimeFreqWrapper):
         if not c_dict['VAR_LIST_TEMP']:
             self.log_error("No fields specified. Please set BOTH_VAR<n>_[NAME/LEVELS]")
 
-        self.add_met_config(name='model', data_type='string',
+        self.add_met_config(name='model', data_type='list',
                             metplus_configs=['RMW_ANALYSIS_MODEL', 'MODEL'])
-        self.add_met_config(name='basin', data_type='string')
-        self.add_met_config(name='storm_name', data_type='string')
-        self.add_met_config(name='storm_id', data_type='string')
-        self.add_met_config(name='cyclone', data_type='string')
+        self.add_met_config(name='basin', data_type='list')
+        self.add_met_config(name='storm_name', data_type='list')
+        self.add_met_config(name='storm_id', data_type='list')
+        self.add_met_config(name='cyclone', data_type='list')
         self.add_met_config(name='init_beg', data_type='string',
                             metplus_configs=['RMW_ANALYSIS_INIT_BEG',
                                              'RMW_ANALYSIS_INIT_BEGIN'])
