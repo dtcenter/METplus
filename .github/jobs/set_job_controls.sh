@@ -28,7 +28,14 @@ elif [ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]; then
     run_all_use_cases=true
     run_diff=true
     external_trigger=true
-# if not pull request, apply commit messages overrides
+# if -ref branch and not PR, do not run anything
+elif [ "${GITHUB_REF: -4}" == -ref ]; then
+      run_get_image=false
+      run_get_input_data=false
+      run_unit_tests=false
+      run_use_cases=false
+      run_diff=false
+# if not pull request or -ref branch, apply commit messages overrides
 else
 
   # if develop or main branch, run all use cases
