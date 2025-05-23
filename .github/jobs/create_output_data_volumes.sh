@@ -58,6 +58,7 @@ for vol_name in use_cases_*; do
 
     # remove data after it has been added to data volume
     rm -rf ${docker_data_output_dir}/$vol_name
+    rm -rf ${vol_name}
 done
 
 if [ $success != 1 ]; then
