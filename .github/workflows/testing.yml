@@ -5,9 +5,8 @@ on:
   push:
     branches:
       - develop
-      - develop-ref
       - 'feature_**'
-      - 'main_**'
+      - 'main_v[0-9]*.[0-9]*'
       - 'bugfix_**'
     paths-ignore:
       - 'docs/**'

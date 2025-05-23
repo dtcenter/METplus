@@ -29,3 +29,4 @@
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] dtcenter/MET#3152 - Adds unit and description strings for observations derived by PB2NC.
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #2985 and #2987 - #2985 added the RMWAnalysis basic use case and #2987 added a new short_range use case
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #2985 and #2987 - attempt 2 - #2985 added the RMWAnalysis basic use case and #2987 added a new short_range use case - attempt 2
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #2985 and #2987 - attempt 3 - #2985 added the RMWAnalysis basic use case and #2987 added a new short_range use case - attempt 3

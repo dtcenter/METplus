@@ -56,6 +56,11 @@ for vol_name in use_cases_*; do
     fi
     echo Push took $(( SECONDS - start_time))
 
+    # remove image locally to free up disk space
+    echo Removing image ${image_name}
+    echo docker rmi ${image_name}
+    docker rmi ${image_name}
+
     # remove data after it has been added to data volume
     rm -rf ${docker_data_output_dir}/$vol_name
     rm -rf ${vol_name}
