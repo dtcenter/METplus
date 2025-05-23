@@ -9,7 +9,6 @@ run_get_image=true
 run_get_input_data=true
 run_unit_tests=true
 run_use_cases=true
-run_save_truth_data=false
 run_all_use_cases=false
 run_diff=false
 external_trigger=false
@@ -29,11 +28,7 @@ elif [ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]; then
     run_all_use_cases=true
     run_diff=true
     external_trigger=true
-# run all use cases and save truth data if -ref branch and not PR
-elif [ "${GITHUB_REF: -4}" == -ref ]; then
-  run_all_use_cases=true
-  run_save_truth_data=true
-# if not pull request or -ref branch, apply commit messages overrides
+# if not pull request, apply commit messages overrides
 else
 
   # if develop or main branch, run all use cases
@@ -51,7 +46,6 @@ else
       run_get_input_data=false
       run_unit_tests=false
       run_use_cases=false
-      run_save_truth_data=false
       run_diff=false
     fi
 
@@ -88,7 +82,6 @@ echo "run_get_image=$run_get_image" >> $GITHUB_OUTPUT
 echo "run_get_input_data=$run_get_input_data" >> $GITHUB_OUTPUT
 echo "run_diff=$run_diff" >> $GITHUB_OUTPUT
 echo "run_unit_tests=$run_unit_tests" >> $GITHUB_OUTPUT
-echo "run_save_truth_data=$run_save_truth_data" >> $GITHUB_OUTPUT
 echo "external_trigger=$external_trigger" >> $GITHUB_OUTPUT
 
 # get branch name
@@ -102,7 +95,6 @@ echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
 # echo output variables to review in logs
 echo branch_name: $branch_name
 echo run_diff: $run_diff
-echo run_save_truth_data: $run_save_truth_data
 echo external_trigger: $external_trigger
 echo run_get_image: $run_get_image
 echo run_get_input_data: $run_get_input_data
