@@ -1,5 +1,5 @@
 FROM centos:7
-MAINTAINER George McCabe <mccabe@ucar.edu>
+LABEL maintainer="George McCabe <mccabe@ucar.edu>"
 
 RUN mkdir -p /data/truth
 
