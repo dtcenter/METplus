@@ -61,7 +61,7 @@ METplus Version 6.1.0 RC 1 Release Notes (2025-05-22)
        `#2923 <https://github.com/dtcenter/METplus/issues/2923>`_)
      * Enhance the SeriesAnalysis wrapper to compute gradient statistics
        (`#2827 <https://github.com/dtcenter/METplus/issues/2827>`_)
-     * Install METplus via Conda
+     * Add Capability for METplus to be Installed via Conda
        (`#2863 <https://github.com/dtcenter/METplus/issues/2863>`_)
      * Support time templates in field name for SeriesAnalysis
        (`#2880 <https://github.com/dtcenter/METplus/issues/2880>`_)
