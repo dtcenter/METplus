@@ -1,5 +1,4 @@
 name: Update and Upload Truth Data
-run-name: Update Truth Data for ${{ github.ref_name != '' && github.ref_name.endsWith('-ref') && github.ref_name.slice(0, -4) || github.ref_name || 'manual trigger' }}
 
 on:
   push:
