@@ -58,7 +58,7 @@ METplus Version 6.1.0 RC 1 Release Notes (2025-05-22)
        (`#2791 <https://github.com/dtcenter/METplus/issues/2791>`_)
      * Resolve findings from SonarQube for 6.1.0
        (`#2758 <https://github.com/dtcenter/METplus/issues/2758>`_,
-        `#2923 <https://github.com/dtcenter/METplus/issues/2923>`_)
+       `#2923 <https://github.com/dtcenter/METplus/issues/2923>`_)
      * Enhance the SeriesAnalysis wrapper to compute gradient statistics
        (`#2827 <https://github.com/dtcenter/METplus/issues/2827>`_)
      * Install METplus via Conda
