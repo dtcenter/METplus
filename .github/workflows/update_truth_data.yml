@@ -1,0 +1,210 @@
+name: Update and Upload Truth Data
+run-name: Update Truth Data for ${{ github.ref_name != '' && github.ref_name.endsWith('-ref') && github.ref_name.slice(0, -4) || github.ref_name || 'manual trigger' }}
+
+on:
+  push:
+    branches:
+      - develop-ref
+      - 'main_v*-ref'
+
+  workflow_dispatch:
+    inputs:
+      run_all_groups:
+        description: 'Force run all use case groups instead of only those with differences'
+        type: boolean
+        default: false
+
+jobs:
+  identify_diff_groups:
+    name: Identify Groups with Differences
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      base_branch: ${{ steps.set-base-branch.outputs.base_branch }}
+      run_some_tests: ${{ steps.set-matrix.outputs.run_some_tests }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set base branch
+        id: set-base-branch
+        run: |
+          # Remove -ref suffix from current branch
+          BASE_BRANCH=$(echo "${{ github.ref_name }}" | sed 's/-ref$//')
+          echo "base_branch=${BASE_BRANCH}" >> $GITHUB_OUTPUT
+
+      - name: Find latest workflow run for base branch
+        id: find-run
+        run: |
+          BASE_BRANCH="${{ steps.set-base-branch.outputs.base_branch }}"
+          
+          # Get the latest completed workflow run for the base branch
+          LATEST_RUN_ID=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/testing.yml/runs?branch=${BASE_BRANCH}&status=completed&per_page=1" \
+            | jq -r '.workflow_runs[0].id')
+
+          if [ "${LATEST_RUN_ID}" == "null" ]; then
+            echo "No completed workflow runs found for branch ${BASE_BRANCH}"
+            echo "run_id=none" >> $GITHUB_OUTPUT
+            echo "run_all=true" >> $GITHUB_OUTPUT
+          else
+            echo "run_id=${LATEST_RUN_ID}" >> $GITHUB_OUTPUT
+            echo "run_all=false" >> $GITHUB_OUTPUT
+            echo "Found latest workflow run ID: ${LATEST_RUN_ID} for branch ${BASE_BRANCH}"
+          fi
+
+      - name: Identify groups with differences
+        id: set-matrix
+        run: |
+          RUN_ID="${{ steps.find-run.outputs.run_id }}"
+
+          if [[ "${{ github.event.inputs.run_all_groups }}" == "true" || "${{ steps.find-run.outputs.run_all }}" == "true" ]]; then
+            echo "Running all use case groups because:"
+            if [[ "${{ github.event.inputs.run_all_groups }}" == "true" ]]; then
+              echo "- run_all_groups input parameter was set to true"
+            fi
+            if [[ "${{ steps.find-run.outputs.run_all }}" == "true" ]]; then
+              echo "- No completed workflow runs found for the base branch"
+            fi
+
+            echo "Running all use case groups as requested"
+
+            # call script to get full set of use cases to run - sets matrix and run_some_tests in GITHUB_OUTPUT
+            .github/jobs/get_use_cases_to_run.sh true true
+            exit 0
+          fi
+          
+          # Get all jobs from the workflow run
+          JOBS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/runs/${RUN_ID}/jobs?per_page=100")
+          
+          # Extract use case test jobs that failed with differences
+          DIFF_JOBS=$(echo "${JOBS}" | jq -r '.jobs[] | 
+            select(.name | startswith("Use Case Tests")) | 
+            select(.conclusion == "failure") | 
+            select(.steps[] | 
+              select(.name == "Run difference tests" and .conclusion == "failure")) | 
+            .name')
+          
+          if [ -z "${DIFF_JOBS}" ]; then
+            echo "No use case groups with differences found in the latest run"
+            echo "run_some_tests=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          echo "Found jobs with differences:"
+          echo "${DIFF_JOBS}"
+          
+          # Extract categories from job names and build matrix
+          CATEGORIES=()
+          # Save and restore IFS to handle spaces in job names
+          OLDIFS="$IFS"
+          IFS=$'\n'
+          for JOB in $(echo "$DIFF_JOBS" | tr '\n' '\0' | xargs -0 -n1 echo); do
+            echo "Processing job: $JOB"
+            
+            # Extract the full category identifier including the range/list - 
+            # matches content inside parentheses after "Use Case Tests "
+            CATEGORY_ID=$(echo "$JOB" | sed -n 's/Use Case Tests (\(.*\))/\1/p')
+            
+            if [ -n "$CATEGORY_ID" ]; then
+              CATEGORIES+=("$CATEGORY_ID")
+              echo "Found category identifier: $CATEGORY_ID"
+            fi
+          done
+          IFS="$OLDIFS"
+          
+          if [ ${#CATEGORIES[@]} -eq 0 ]; then
+            echo "Could not determine categories for jobs with differences"
+            echo "run_some_tests=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          # Format categories as JSON array
+          CATEGORIES_JSON=$(printf '"%s",' "${CATEGORIES[@]}" | sed 's/,$//')
+          MATRIX_JSON="{\"categories\":[${CATEGORIES_JSON}]}"
+          
+          echo "Found ${#CATEGORIES[@]} use case groups with differences"
+          echo "Matrix JSON: ${MATRIX_JSON}"
+          echo "matrix=${MATRIX_JSON}" >> $GITHUB_OUTPUT
+          echo "run_some_tests=true" >> $GITHUB_OUTPUT
+
+  get_image:
+    name: Docker Setup - Get METplus Image
+    runs-on: ubuntu-latest
+    needs: identify_diff_groups
+    if: ${{ needs.identify_diff_groups.outputs.run_some_tests == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Free disk space
+        run: .github/jobs/free_disk_space.sh
+      - name: Get METplus Image
+        run: .github/jobs/docker_setup.sh
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          EXTERNAL_TRIGGER: false
+
+  run_diff_use_cases:
+    name: Run Use Cases with Differences
+    runs-on: ubuntu-latest
+    needs: [get_image, identify_diff_groups]
+    if: ${{ needs.identify_diff_groups.outputs.run_some_tests == 'true' }}
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJson(needs.identify_diff_groups.outputs.matrix)}}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Free disk space
+        run: .github/jobs/free_disk_space.sh
+
+      - name: Create directories for database
+        run: .github/jobs/create_dirs_for_database.sh
+
+      - name: Create directory for artifacts
+        run: mkdir -p artifact
+
+      - name: Get artifact name
+        id: get-artifact-name
+        run: |
+          artifact_name=`.github/jobs/get_artifact_name.sh ${{ matrix.categories }}`
+          echo "artifact_name=${artifact_name}" >> $GITHUB_OUTPUT
+
+      # run use case tests - don't run difference tests as we're generating new truth data
+      - name: Run Use Cases
+        uses: ./.github/actions/run_tests
+        id: run_tests
+        with:
+          categories: ${{ matrix.categories }}
+
+      # copy output data to save as artifact
+      - name: Save output data
+        id: save-output
+        if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
+        run: .github/jobs/copy_output_to_artifact.sh ${{ steps.get-artifact-name.outputs.artifact_name }}
+
+      - name: Upload output data artifact
+        uses: actions/upload-artifact@v4
+        if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
+        with:
+          name: ${{ steps.get-artifact-name.outputs.artifact_name }}
+          path: artifact/${{ steps.get-artifact-name.outputs.artifact_name }}
+
+  create_output_data_volumes:
+    name: Create Output Docker Data Volumes
+    runs-on: ubuntu-latest
+    needs: [run_diff_use_cases]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+      - name: Free disk space before creating Docker volumes
+        run: .github/jobs/free_disk_space.sh
+      - name: Create and upload output data volumes
+        run: .github/jobs/create_output_data_volumes.sh
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
