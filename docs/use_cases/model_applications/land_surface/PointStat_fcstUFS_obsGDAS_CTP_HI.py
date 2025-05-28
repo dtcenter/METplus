@@ -168,7 +168,7 @@ model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 # A second user script is used to plot matched forecast and observation pairs (MPR) from PointStat MPR
 # text files in order to visualize the two metrics in the same space.
 #
-# # In addition to the basic package requirements for Python embedding, these Python scripts also require
+# In addition to the basic package requirements for Python embedding, these Python scripts also require
 #
 # * `MetPy <https://unidata.github.io/MetPy/latest/>`_
 # * `Matplotlib <https://matplotlib.org/stable/>`_
