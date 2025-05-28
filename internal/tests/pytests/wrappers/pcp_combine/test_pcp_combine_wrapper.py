@@ -911,3 +911,68 @@ def test_add_method_missing_input(metplus_config, get_test_data_dir, input_thres
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
         assert cmd == expected_cmd
+
+def test_pcp_combine_derive_year_lookback(metplus_config, compare_command_and_env_vars):
+    valid_times = [
+        '2020010100', '2020020100', '2020030100', '2020040100', '2020050100',
+        '2020060100', '2020070100', '2020080100', '2020090100', '2020100100',
+        '2020110100', '2020120100',
+    ]
+    valid_fmt = '%Y%m%d%H'
+    stat_list = 'mean,stdev'
+    fcst_name = 'soilm1m'
+    fcst_level = '(*,*)'
+    fcst_fmt = f'\'name="{fcst_name}"; level="{fcst_level}";\''
+    config = metplus_config
+
+    input_dir = SOME_INPUT_DIR
+    output_dir = '{OUTPUT_BASE}/PCP/derive_yearly'
+    # set config variables to prevent command from running and bypass check
+    # if input files actually exist
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+    config.set('config', 'INPUT_MUST_EXIST', False)
+
+    # set process and time config variables
+    config.set('config', 'PROCESS_LIST', 'PCPCombine')
+    config.set('config', 'LOOP_BY', 'VALID')
+    config.set('config', 'VALID_TIME_FMT', valid_fmt)
+    config.set('config', 'VALID_BEG', valid_times[0])
+    config.set('config', 'VALID_END', valid_times[-1])
+    config.set('config', 'VALID_INCREMENT', '1m')
+    config.set('config', 'LEAD_SEQ', '0')
+    config.set('config', 'OBS_PCP_COMBINE_RUN', 'True')
+    config.set('config', 'OBS_PCP_COMBINE_METHOD', 'DERIVE')
+    config.set('config', 'OBS_PCP_COMBINE_INPUT_DIR', input_dir)
+    config.set('config', 'OBS_PCP_COMBINE_INPUT_TEMPLATE',
+               'ERA5_soilm1m_1x1_mon_{valid?fmt=%Y%m}.nc')
+    config.set('config', 'OBS_PCP_COMBINE_OUTPUT_DIR', output_dir)
+    config.set('config', 'OBS_PCP_COMBINE_OUTPUT_TEMPLATE',
+               'ERA5_soilm1m_1x1_30year_1991_2020_{valid?fmt=%m}_mean_stdev.nc')
+    config.set('config', 'OBS_PCP_COMBINE_INPUT_ACCUMS', '1Y')
+    config.set('config', 'OBS_PCP_COMBINE_INPUT_NAMES', fcst_name)
+    config.set('config', 'OBS_PCP_COMBINE_INPUT_LEVELS', fcst_level)
+    config.set('config', 'OBS_PCP_COMBINE_DERIVE_LOOKBACK', '3Y')
+    config.set('config', 'OBS_PCP_COMBINE_STAT_LIST', stat_list)
+
+    wrapper = PCPCombineWrapper(config)
+    assert wrapper.isOK
+
+    app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
+    verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
+    out_dir = wrapper.c_dict.get('OBS_OUTPUT_DIR')
+    expected_cmds = []
+    for valid in valid_times:
+        valid_dt = datetime.strptime(valid, valid_fmt)
+        files = []
+        for offset in range(0, 3):
+            yymm = (valid_dt - relativedelta(years=offset)).strftime('%Y%m')
+            files.append(f'{input_dir}/ERA5_soilm1m_1x1_mon_{yymm}.nc')
+        cmd = f"{app_path} -derive {stat_list}"
+        for filename in files:
+            cmd += f" {filename} {fcst_fmt}"
+        cmd += f" {out_dir}/ERA5_soilm1m_1x1_30year_1991_2020_{valid_dt.strftime('%m')}_mean_stdev.nc"
+        cmd += f" {verbosity}"
+        expected_cmds.append(cmd)
+
+    all_cmds = wrapper.run_all_times()
+    compare_command_and_env_vars(all_cmds, expected_cmds, {}, wrapper, {})
