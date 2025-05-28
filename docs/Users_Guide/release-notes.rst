@@ -74,6 +74,8 @@ METplus Version 6.1.0 RC 1 Release Notes (2025-05-22)
 
      * Fix final log output missing when instance IDs are used in process list
        (`#2830 <https://github.com/dtcenter/METplus/issues/2830>`_)
+     * Fix error when skipping run times
+       (`#2890 <https://github.com/dtcenter/METplus/issues/2890>`_)
 
   .. dropdown:: New Wrappers
 
