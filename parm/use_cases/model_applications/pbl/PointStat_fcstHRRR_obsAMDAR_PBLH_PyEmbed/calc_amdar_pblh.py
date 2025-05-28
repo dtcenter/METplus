@@ -262,7 +262,7 @@ for airport in airports:
                 (data['longitude'] > lon0 - r0) & (data['longitude'] < lon0 + r0))
 
     # Filter tail numbers within box and remove NaNs
-    filtered_tn = np.where(mask_box, data['tailNumber'], np.nan)
+    filtered_tn = np.where(mask_box, data['tailNumber'], "nan")
     valid_tails = np.array([t for t in np.unique(filtered_tn) if isinstance(t, str) and t.lower() != "nan"])
 
     print(f"\n==Processing airport {airport} ({code}): {len(valid_tails)} flights==")
