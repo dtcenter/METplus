@@ -14,15 +14,14 @@ model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 ##############################################################################
 # Scientific Objective
 # --------------------
-# [UPDATE_SECTION_CONTENT]
 #
-# To provide statistical information on the forecast hail size compared to
-# the observed hail size from MRMS MESH data. Using objects to verify hail size
-# avoids the “unfair penalty” issue, where a CAM must first generate convection
-# to have any chance of accurately predicting the hail size. In addition, studies
-# have shown that MRMS MESH observed hail sizes do not correlate one-to-one with
-# observed sizes but can only be used to group storms into general categories.
-# Running MODE allows a user to do this.
+# This use case examines short-term land-atmosphere coupling within the UFS global forecast system (GFS).
+# The specific configuration is a GFSv17 pre-release version (HR1).  Land-atmosphere coupling is 
+# important for many processes, such as prediction of convection, convective clouds, as well as near surface 
+# sensible weather (e.g. winds, humidity, temperature).  Here the CTP-HI process diagnostic uses morning 
+# surface and lower atmosphere conditions to assess the convective coupling in wet or dry coupling phases.
+# This permits further assessment of the model near surface and lower atmosphere biases in an integrated 
+# phase space, using CTP versus HI.
 
 ##############################################################################
 # Version Added
@@ -33,8 +32,9 @@ model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 ##############################################################################
 # Datasets
 # --------
-# [UPDATE_SECTION_CONTENT]
-# **Forecast:** Global Forecast System (GFS) 25km resolution, 2m temperature
+#
+# **Forecast:** Global Forecast System (GFS) version 17 prototype.
+# Global 1-degree grid including temperature, specific humidity, and pressure.
 #
 # **Observation:** Upper air radiosonde observations from the 
 # Global Data Assimilation System (GDAS) in PREPBUFR format.
