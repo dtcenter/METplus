@@ -66,6 +66,7 @@ Category: met_tool_wrapper
 64::MADIS2NC:: met_tool_wrapper/MADIS2NC/MADIS2NC.conf
 65::SeriesAnalysis_aggr:: met_tool_wrapper/SeriesAnalysis/SeriesAnalysis_aggr.conf::netcdf4_env
 66::PairStat:: met_tool_wrapper/PairStat/PairStat.conf
+67::RMWAnalysis:: met_tool_wrapper/RMWAnalysis/RMWAnalysis.conf
 
 Category: air_quality_and_comp
 0::EnsembleStat_fcstICAP_obsMODIS_aod::model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf
@@ -93,7 +94,7 @@ Category: data_assimilation
 1::StatAnalysis_fcstGFS_HofX_obsIODAv2_PyEmbed::model_applications/data_assimilation/StatAnalysis_fcstGFS_HofX_obsIODAv2_PyEmbed.conf:: py_embed
 
 Category: fire
-0::GridStat_fcstWRF_obsMMA_fire_perimeter::model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf::py_embed
+0::GridStat_fcstWRF_obsMMA_fire_perimeter::model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 
 
 Category: land_surface
@@ -169,6 +170,11 @@ Category: s2s_mjo
 4:: UserScript_obsCFSR_obsOnly_MJO_ENSO:: model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO.conf:: mp_analysis_env, metdataio
 
 
+Category: s2s_soil_moisture
+0::PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing:: model_applications/s2s_soil_moisture/PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.conf
+1::GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture:: model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.conf
+
+
 Category: s2s_stratosphere
 0:: UserScript_fcstGFS_obsERA_StratosphereBias:: model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.conf:: weatherregime_env,cartopy,metdataio
 1::UserScript_fcstGFS_obsERA_StratospherePolar:: model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.conf:: weatherregime_env,cartopy,metdataio
@@ -192,7 +198,7 @@ Category: short_range
 13::MODEMultivar_fcstHRRR_obsMRMS_HRRRanl::model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 14::UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot::model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.conf:: metdataio, mp_analysis_env
 15::MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning::model_applications/short_range/MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.conf
-
+16::GridStat_fcstGSWR_obsMRMS_GeoTIFF_multiField::model_applications/short_range/GridStat_fcstGSWR_obsMRMS_GeoTIFF_multiField.conf:: rioxarray_env, py_embed
 
 Category: space_weather
 0::GridStat_fcstGloTEC_obsGloTEC_vx7:: model_applications/space_weather/GridStat_fcstGloTEC_obsGloTEC_vx7.conf

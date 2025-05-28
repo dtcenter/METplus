@@ -509,38 +509,22 @@ Build the Documentation Manually
 --------------------------------
 
 Build the documentation and ensure that the new use case file is
-displayed and the formatting looks correct. The Python packages sphinx,
-sphinx-gallery (0.6 or higher), and sphinx_rtd_theme are required to build.
-There is a conda environment called sphinx_env available on some of the NCAR
-development machines that can be used::
+displayed and the formatting looks correct.
+There is a conda environment called metplus_dev.vX.Y
+(where X.Y is the version of METplus that is currently in development)
+available on some of the NCAR development machines that can be used, e.g.::
 
-    conda activate /home/met_test/.conda/envs/metplus_env
+    conda activate /d1/personal/met_test/miniforge3/envs/metplus_dev.v6.1
 
-or
-
-::
-
-    conda activate /home/met_test/.conda/envs/sphinx_env
 
 .. note::
-    If conda is not already in PATH, find it and run it
-    with the full path.
+    If conda is not already in PATH, find it and run it with the full path.
 
-Or create a conda environment and install the packages::
+Or create a conda environment and install the packages from the
+**docs/requirements.txt** found in the METplus repo::
 
-    conda create --name sphinx_env python=3.6
-    conda activate sphinx_env
-    conda install sphinx
-    conda install -c conda-forge sphinx-gallery
-    pip install git+https://github.com/ESMCI/sphinx_rtd_theme@version-dropdown-with-fixes
+    conda create --name sphinx_env --file METplus/docs/requirements.txt
 
-.. note::
-    The specific version of sphinx_rtd_theme is needed to build the
-    documentation with the version selector.
-    If the docs are being built locally, this version is not
-    necessarily needed. If it is easier, run 'conda install
-    sphinx_rtd_theme' instead of the pip from git command
-    to install the package.
 
 To build the docs, run the **build_docs.py** script from the docs directory.
 Make sure the conda environment is activated or the required packages

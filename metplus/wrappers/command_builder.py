@@ -1289,12 +1289,27 @@ class CommandBuilder:
     # to call cmdrunner.run_cmd().
     # Make sure they have SET THE self.app_name in the subclasses constructor.
     # see regrid_data_plane_wrapper.py as an example of how to set.
-    def build(self):
-        """!Build and run command"""
+    def build(self, time_info=None):
+        """!Builds and executes a command.
+
+        This method is responsible for creating a command to be executed,
+        substituting time-based information into the command if provided,
+        and running the resulting command string. If the command generation
+        fails, the method logs the error and returns a failure status.
+
+        @param time_info: dict, optional
+            A dictionary containing time-related keys to substitute into the
+            command string. Defaults to None.
+
+        @returns True if the command was successfully executed, False otherwise.
+        """
         cmd = self.get_command()
         if cmd is None:
             self.log_error("Could not generate command")
             return False
+
+        if time_info:
+            cmd = do_string_sub(cmd, **time_info, skip_missing_tags=True)
 
         return self.run_command(cmd)
 

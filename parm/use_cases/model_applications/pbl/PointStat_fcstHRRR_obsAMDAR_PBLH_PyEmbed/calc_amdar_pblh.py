@@ -1,20 +1,23 @@
-'''
+"""
 This script reads AMDAR hourly netcdf files, computes PBLH, and sends 11-column ascii table to MET for point-stat
-See accompanying PointStat_python_embedding_obs_amdar_pblh.conf for settings and passing in env variables here 
-Jason M. English, May 2023
-'''
+An airport csv file is read in containing lat, lon, gnd height, and rbox for each airport
+See accompanying PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf for settings and passing in env variables here
+Jason M. English, May 2025
+"""
 
 import os
 import sys
+from pathlib import Path
 import pandas as pd
 import numpy as np
 import netCDF4 as nc
+import math
+from typing import Tuple
+from collections import defaultdict
+import warnings
 
-# silence this annoying warning about numpy bool being deprecated in favor of python bool
-from warnings import filterwarnings
-filterwarnings(action='ignore', category=DeprecationWarning, message='`np.bool` is a deprecated alias')
-
-########################################################################
+# Suppress non-critical warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 print("Python Script:\t" + repr(sys.argv[0]))
 
@@ -23,192 +26,289 @@ print("Python Script:\t" + repr(sys.argv[0]))
 ##  load the data into the numpy array
 ##
 
-loc_name = os.environ.get('AIRPORT') # "DENVER", "DALLAS", "BOSTON", "MINNEAPOLIS" # airport, not city
-sf_include = os.environ.get('SOUNDING_FLAG')  # what sounding flags to include: ASC or DESC
-pt_delta = float(os.environ.get('PT_DELTA')) #1.25  # potential temperature delta that triggers PBLH calculation (K)
-val_time = os.environ.get('VAL_TIME')  # valid time for this call (nearest hour)
-rbox = 2.0   #  +/- deg;  set bigger than you need so MET mask can cut from that later
-alt_base = 200.  # highest altitude where the alt min is looked for to get base potential temperature
-gap_max = 400.  # maximum allowable altitude gap (m) between the computed PBLH and the altitude of the data point below it (gap_max + pblh/20)
-alt_dp = 4    # minimum number of data points for the flight to be considered
-alt_adj = "yes"  # adjust minimum altitude to be >= 0 yes or no
-out_rej = 2  # number of sigmas to trigger outlier reject
+# ---------------------------------------------------------------------------
+# ENVIRONMENT VARIABLES
+# ---------------------------------------------------------------------------
+val_time = os.environ.get('VAL_TIME') #'20220701_200000' #os.environ.get('VAL_TIME')
+sf_include = os.environ.get('SOUNDING_FLAG') #'ALL' #os.environ.get('SOUNDING_FLAG') # 'ASCENTS', 'DESCENTS', or 'ALL'
+airport_file = os.environ.get('AIRPORT_FILE') # airport file template
 
-if loc_name == "DENVER":    
-   gnd0 = 5300.*0.3048   # surface elevation at location (msl);  DIA is at 5430ft but up to 300 feet lower than that within 500m of the airport
-   lat0 = 39.856
-   lon0 = -104.6764
-elif loc_name == "DALLAS":
-   gnd0 = 550.*0.3048
-   lat0 = 32.8998
-   lon0 = -97.0403
-elif loc_name == "MINNEAPOLIS":
-   gnd0 = 840.*0.3048
-   lat0 = 44.8848
-   lon0 = -93.2223
-elif loc_name == "BOSTON":
-   gnd0 = 20.*0.3048  
-   lat0 = 42.3656
-   lon0 = -71.0096
+# ---------------------------------------------------------------------------
+# CONFIGURATION & PHYSICS CONSTANTS
+# ---------------------------------------------------------------------------
+CONFIG = {
+    "alt_dp": 4,
+    "alt_adj_flag": True,
+    "pt_delta": 1.25,
+    "altmax_sfc": 200.,
+    "gap_max": 400.,
+    "gap_max_denom": 20.,
+    "cbrn": 0.5,
+    "zs": 40.,
+    "ustar": 0.3,
+    "beta": 100.,
+}
+PHYSICS = {
+    "SLP": 101325.0,
+    "GRAV": 9.80665,
+    "M_MASS": 0.0289644,
+    "R0": 8.31432,
+    "LR": 0.0065,
+    "H0": 44307.694
+}
+PHYSICS["EXPON"] = (-PHYSICS["GRAV"] * PHYSICS["M_MASS"]) / (PHYSICS["R0"] * -PHYSICS["LR"])
 
-# convert tail number array to readable character string
-def get_tn(tn):  
-  tnc = tn.astype(str)   # convert to character string
-  tnc = np.char.array(tnc)   # removes whitespace and allows vectorized string operations
-  tnc_splice = tnc[:,0]+tnc[:,1]+tnc[:,2]+tnc[:,3]+tnc[:,4]+tnc[:,5]+tnc[:,6]+tnc[:,7]+tnc[:,8]   # tail number spliced into a single string
-  return tnc_splice
- 
-if len(sys.argv) != 2:
-   print("ERROR: calc_amdar_pblh.py -> Must specify exactly one input file.")
-   sys.exit(1)
+# ---------------------------------------------------------------------------
+# UTILITY FUNCTIONS
+# ---------------------------------------------------------------------------
+def load_hourly_netcdf(filepath: Path) -> dict:
+    """ Load raw AMDAR netcdf file (1d arrays of all data that hour). """
+    with nc.Dataset(filepath, 'r') as ncf:
+        data = {
+            'tailNumber': np.array(ncf['tailNumber'][:]),
+            'altitude': np.array(ncf['altitude'][:]),
+            'latitude': np.array(ncf['latitude'][:]),
+            'longitude': np.array(ncf['longitude'][:]),
+            'temperature': np.array(ncf['temperature'][:]),
+            'windSpeed': np.array(ncf['windSpeed'][:]),
+            'windDir': np.array(ncf['windDir'][:]),
+            'timeObs': np.array(ncf['timeObs'][:]),
+            'sounding_flag': np.array(ncf['sounding_flag'][:])
+        }
+    return data
 
-# Read the input file as the first argument
-input_file = os.path.expandvars(sys.argv[1])
-try:
-   print("Input File:\t" + repr(input_file))
-   ncf = nc.Dataset(input_file)
-    
-   tn = ncf['tailNumber'][:]  
-   sf = ncf['sounding_flag'][:]  # -1=descent, 0=cruising, 1=ascent 
-   t = ncf['temperature'][:]
-   alt = ncf['altitude'][:] - gnd0   # subtract surface height to get AGL
-   lat = ncf['latitude'][:]
-   lon = ncf['longitude'][:]
-   ncf.close()
+def sf_mask(sf_value: int) -> bool:
+    """ Return sounding flag mask so we can process the desired flights. """
+    if sf_value == 0:   # discard cruising flights
+        return False
+    if sf_include == "ALL":
+        return True
+    if sf_include == "ASCENTS":
+        return sf_value == 1
+    if sf_include == "DESCENTS":
+        return sf_value == -1
 
-   # set to NaN if cruising flight (not ascent or descent)
-   t = np.where(sf == 0, np.nan, t)
-   if sf_include == "ASC":
-     t = np.where(sf == -1, np.nan, t)  # discard descents
-   if sf_include == "DESC":
-     t = np.where(sf == 1, np.nan, t)  # discard ascents
- 
-   # set to NaN if outside alt, lat/lon  bounds
-   t = np.where((lat > lat0-rbox) & (lat < lat0+rbox) & (lon > lon0-rbox ) & (lon < lon0+rbox), t, np.nan)
+def get_tail_number_string(tn_array: np.ndarray) -> np.ndarray:
+    """Convert 9-character tail number array to a concatenated string."""
+    tnc = np.char.array(tn_array.astype(str))
+    return tnc[:, 0] + tnc[:, 1] + tnc[:, 2] + tnc[:, 3] + tnc[:, 4] + tnc[:, 5] + tnc[:, 6] + tnc[:, 7] + tnc[:, 8]
 
-   # convert tail number array to readable character string
-   tns = get_tn(tn)
+def compute_pressure(alt: np.ndarray, ground_level: float) -> np.ndarray:
+    """Compute pressure (Pa) using the hypsometric formula."""
+    z = alt + ground_level
+    return PHYSICS["SLP"] * (1 - z / PHYSICS["H0"]) ** PHYSICS["EXPON"]
 
-   # set tail number array to NaN wherever temperature array is NaN
-   tns = np.where(np.isnan(t), 'nan', tns)
+def compute_potential_temperature(temp: np.ndarray, pressure: np.ndarray) -> np.ndarray:
+    """Compute potential temperature (K)."""
+    return temp * (PHYSICS["SLP"] / pressure) ** 0.286
 
-   # get unique tail numbers within the specified lat/lon range
-   tn_list = np.unique(tns)
-   nflight = tn_list.size
-   
-   # Create arrays for saving PBLH and other fields for each flight
-   pblh = np.full([nflight],np.nan)
-   pblh_o = np.full([nflight],np.nan)   #pblh interpolated with outliers excluded
-   pt_min = np.full([nflight],np.nan)  # potential temperature minimum 
-   lat_avg = np.full([nflight],np.nan)  
-   lon_avg = np.full([nflight],np.nan) 
+# ---------------------------------------------------------------------------
+# PBLH COMPUTATION METHODS
+# ---------------------------------------------------------------------------
+def compute_pblh_ti(alt: np.ndarray, pt: np.ndarray, lat: np.ndarray, lon: np.ndarray) -> Tuple[float, float, float]:
+    """ 
+    Compute PBLH via the theta increase (TI) method.
+    Returns: (pblh, lat_pblh, lon_pblh)
+    """
+    valid = alt < CONFIG["altmax_sfc"]  # To find pt_min consider only alt below altmax_sfc
+    if not np.any(valid):
+        return np.nan, np.nan, np.nan
+    pt_min = np.nanmin(np.where(valid, pt, np.nan))
+    if pt_min <= 0 or pt_min >= 3040:
+        return np.nan, np.nan, np.nan
+    try:
+        pt_min_index = np.where(pt == pt_min)[0][0]
+    except IndexError:
+        return np.nan, np.nan, np.nan
+    # now mask out the profile below pt_min, and search above it for pt_delta
+    alt_ti = alt.copy()
+    alt_ti[:pt_min_index] = np.nan
+    pt_ti = pt.copy()
+    pt_ti[:pt_min_index] = np.nan
+    pt_target = pt_min + CONFIG['pt_delta']
+    inds = np.where(pt_ti >= pt_target)[0]
+    if inds.size == 0 or inds[0] == 0:
+        return np.nan, np.nan, np.nan
+    pblh_index = inds[0]
+    # discard this PBLH value if gap between data points is too big
+    alt_gap = alt_ti[pblh_index] - alt_ti[pblh_index - 1]
+    if alt_gap > CONFIG["gap_max"] + alt_ti[pblh_index] / CONFIG["gap_max_denom"]:
+        return np.nan, np.nan, np.nan
+    i1, i0 = inds[0], inds[0] - 1
+    # interpolate between data points to get PBLH
+    pblh = float(np.interp(pt_target, pt_ti[i0:i1+1], alt_ti[i0:i1+1]))
+    lat_pblh = float(np.interp(pt_target, pt_ti[i0:i1+1], lat[i0:i1+1]))
+    lon_pblh = float(np.interp(pt_target, pt_ti[i0:i1+1], lon[i0:i1+1]))
+    return pblh, lat_pblh, lon_pblh
 
-   for i,tn_name in enumerate(tn_list):  #loop through tail numbers
+def compute_pblh_br(alt: np.ndarray, pt: np.ndarray, lat: np.ndarray, lon: np.ndarray,
+                    ws: np.ndarray, wd: np.ndarray) -> Tuple[float, float, float]:
+    """ 
+    Compute PBLH via the Critical Bulk Richardson Number (CBRN) method.
+    Returns: (pblh, lat_pblh, lon_pblh)
+    """
+    br_sfc_ind = np.argmin(np.abs(alt - CONFIG["zs"])) # Find data point closest to zs
+    if alt[br_sfc_ind] > CONFIG["altmax_sfc"]:  # Make sure it's not too far from zs
+        return np.nan, np.nan, np.nan
+    if np.isnan(ws[br_sfc_ind]) or np.isnan(pt[br_sfc_ind]) or np.isnan(wd[br_sfc_ind]):
+        return np.nan, np.nan, np.nan
+    wd_math = (270.0 - wd) % 360.0
+    u = ws * np.cos(np.radians(wd_math))
+    v = ws * np.sin(np.radians(wd_math))
+    u_sfc, v_sfc, pt_sfc = u[br_sfc_ind], v[br_sfc_ind], pt[br_sfc_ind]
+    brn_prev, alt_prev, lat_prev, lon_prev = None, None, None, None
+    for i in range(br_sfc_ind+1, len(alt)):
+        if np.isnan(ws[i]) or np.isnan(pt[i]) or np.isnan(alt[i]):
+            continue
+        brn = (PHYSICS["GRAV"] / pt_sfc) * (pt[i] - pt_sfc) * (alt[i] - CONFIG["zs"]) / ( 
+              (u[i] - u_sfc)**2 + (v[i] - v_sfc)**2 + CONFIG['beta'] * CONFIG['ustar']**2)
+        if brn > CONFIG["cbrn"]:
+            if i == 0 or brn_prev is None:
+                return alt[i], lat[i], lon[i]
+            # discard this PBLH value if gap between data points is too big
+            alt_gap = alt[i] - alt_prev
+            if alt_gap > CONFIG["gap_max"] + alt[i] / CONFIG["gap_max_denom"]:
+                return np.nan, np.nan, np.nan
+            # interpolate between data points to get PBLH
+            pblh = float(np.interp(CONFIG["cbrn"], [brn_prev, brn], [alt_prev, alt[i]]))
+            lat_pblh = float(np.interp(CONFIG["cbrn"], [brn_prev, brn], [lat_prev, lat[i]]))
+            lon_pblh = float(np.interp(CONFIG["cbrn"], [brn_prev, brn], [lon_prev, lon[i]]))
+            return pblh, lat_pblh, lon_pblh
+        brn_prev, alt_prev, lat_prev, lon_prev = brn, alt[i], lat[i], lon[i]
+    return np.nan, np.nan, np.nan
 
-      if tn_name != "nan":
-        tn_arr = np.where(tns == tn_name, tns, 'null')   # set array to null if it doesn't  this tail number
-        tn_ind = np.where(tns == tn_arr)   # get list of indices 
-      
-        # take the elements from each array ing only this flight (via the specified indices)
-        tn_i  = np.squeeze(np.take(tn_arr, tn_ind)) 
-        sf_i  = np.squeeze(np.take(sf, tn_ind)) 
-        t_i   = np.squeeze(np.take(t, tn_ind))
-        alt_i = np.squeeze(np.take(alt, tn_ind))
-        lat_i = np.squeeze(np.take(lat, tn_ind))
-        lon_i = np.squeeze(np.take(lon, tn_ind))
-      
-        # only include ascents/descents that have enough altitude/temperature data
-        if (np.amin(alt_i) < alt_base) & (np.amax(alt_i) > alt_base) & (alt_i.size >= alt_dp):
-  
-          # sort altitude and temperature arrays to be ascending
-          sort_inds = np.argsort(alt_i)
-          t_d = np.copy(t_i[sort_inds])
-          alt_d = np.copy(alt_i[sort_inds])
-          lat_d = np.copy(lat_i[sort_inds])
-          lon_d = np.copy(lon_i[sort_inds])
+# ---------------------------------------------------------------------------
+# FLIGHT PROCESSING
+# ---------------------------------------------------------------------------
+def process_flight(tail: str, indices: np.ndarray, data: dict,
+                   ground_level: float) -> dict:
+    """
+    Process one flight/tail number. Sort the data points to be ascending. Compute PBLH via TI and BR methods.
+    Returns: PBLH, lat, lon for that tail number.
+    """
+    flight_data = {k: np.take(data[k], indices, axis=0) for k in data}
+    sort_order = np.argsort(flight_data['altitude'])
+    for k in flight_data:
+        flight_data[k] = flight_data[k][sort_order]
+    alt = flight_data['altitude'] - ground_level
+    if CONFIG["alt_adj_flag"] and np.nanmin(alt) < 0:  # if minimum altitude is negative, adjust to zero
+        offset = float(np.trunc(np.nanmin(alt)))
+        alt -= offset
+    pres = compute_pressure(alt, ground_level)
+    pt = compute_potential_temperature(flight_data['temperature'], pres)
+    pblh_ti, lat_ti, lon_ti = compute_pblh_ti(alt, pt, flight_data['latitude'], flight_data['longitude'])
+    pblh_br, lat_br, lon_br = compute_pblh_br(alt, pt, flight_data['latitude'], flight_data['longitude'],
+                                               flight_data['windSpeed'], flight_data['windDir'])
+    return {'tail_number': tail,
+            'pblh_ti': pblh_ti, 'lat_ti': lat_ti, 'lon_ti': lon_ti,
+            'pblh_br': pblh_br, 'lat_br': lat_br, 'lon_br': lon_br}
 
-          # adjust altitude minimum to zero if it's negative
-          if alt_adj == "yes":
-            if np.nanmin(alt_d) < 0:
-              alt_d[:] = alt_d[:] - np.nanmin(alt_d)
+# ---------------------------------------------------------------------------
+# CREATE DATAFRAME
+# ---------------------------------------------------------------------------
+def create_dataframe(sid_all, var_all, lat_all, lon_all, elev_all, pblh_all, val_time: str) -> pd.DataFrame:
+    """ Create an 11-column dataframe in the format required by MET. """
+    #   (1)  string:  Message_Type ('ADPSFC')
+    #   (2)  string:  Station_ID (AIRPORT)
+    #   (3)  string:  Valid_Time(YYYYMMDD_HHMMSS)
+    #   (4)  numeric: Lat(Deg North)
+    #   (5)  numeric: Lon(Deg East)
+    #   (6)  numeric: Elevation(msl) 
+    #   (7)  string:  Var_Name(or GRIB_Code)
+    #   (8)  numeric: Level
+    #   (9)  numeric: Height(msl or agl)
+    #   (10) string:  QC_String
+    #   (11) numeric: Observation_Value
+    df = pd.DataFrame({
+        'typ': ['ADPSFC']*len(sid_all), 'sid': sid_all, 'vld': [val_time]*len(sid_all),
+        'lat': lat_all, 'lon': lon_all, 'elv': elev_all, 'var': var_all,
+        'lvl': [0]*len(sid_all), 'hgt': [0]*len(sid_all), 'qc': ['AMDAR']*len(sid_all), 'obs': pblh_all
+    })
+    return df[df['obs'].notna()]
 
-          # convert altitude to pressure 
-          slp = 101325.  # Sea level pressure (Pa)
-          expon = (-9.80665 *0.0289644) / (8.31432 * -0.0065)
-          p_d = slp * (1. - (alt_d + gnd0)/44307.694)**expon   # needs to be pressure altitude (add ground ht) 
-    
-          # convert temperature to potential temperature
-          pt_d = np.copy(t_d)
-          pt_d[:] = t_d[:] * (slp/p_d[:])**0.286
-  
-          # Find minimum potential temperature that occurs below the specified altitude alt_base
-          pt_min[i] = np.nanmin(np.where(alt_d < alt_base, pt_d, np.nan))
-          pt_min_ind = np.where(pt_d == pt_min[i])[0][0]  # find array indexing that value
+# ---------------------------------------------------------------------------
+# MAIN EXECUTION
+# ---------------------------------------------------------------------------
+# Load hourly AMDAR netcdf file
+infile = Path(sys.argv[1]) if len(sys.argv)>1 else Path('221822000q.cdf')  # remove the end after debugging
+data = load_hourly_netcdf(infile)
 
-          # Only move forward if minimum PT is within a reasonable range
-          if (pt_min[i] > 0) & (pt_min[i] < 3040): 
+# Convert tail 2d char array to 1d string array
+tn_str = get_tail_number_string(data['tailNumber'])
+data['tailNumber'] = tn_str
 
-          # consider only potential temperature values above where pt_min was found when searching for pblh
-            alt_d[:pt_min_ind] = np.nan
-            pt_d[:pt_min_ind] = np.nan
-            pt_dif = np.copy(pt_d)
-            pt_dif[:] = pt_d[:] - pt_min[i] 
-  
-            # determine lowest height that exceeds the specified pt_delta (K)
-            if np.nanmax(pt_d) >= (pt_min[i]+pt_delta):    # make sure it exists in this profile
-              pblh_alt = np.nanmin(np.where(pt_d >= (pt_min[i]+pt_delta),alt_d, np.nan))
-              pblh_ind = np.where(alt_d == pblh_alt)[0][0]   # altitude index where pblh is found
-  
-              # only include pblh if the altitude below it isn't too big of a gap
-              if pblh_ind.size == 1:   # make sure only 1 index was found
-                alt_gap = alt_d[pblh_ind]-alt_d[pblh_ind-1]
-  
-                if alt_gap < (gap_max + alt_d[pblh_ind]/20.):
-                  # linear interpolate PBLH between this data point and the one below it
-                  pblh[i] = np.interp((pt_min[i]+pt_delta), pt_d[pblh_ind-1:pblh_ind+1], alt_d[pblh_ind-1:pblh_ind+1]) 
-  
-                  # compute lat/lon for this flight by taking the avg lat/lon coordiantes over the flight
-                  lat_avg[i] = np.average(lat_i)
-                  lon_avg[i] = np.average(lon_i)
+# Apply sounding flag mask to the whole file (remove cruising flights, and asc/desc if specified)
+sf = data['sounding_flag']
+mask_sf = np.array([sf_mask(val) for val in sf])
+for k in data:
+    data[k] = data[k][mask_sf]
 
-          print("tn=", tn_i[0], ", sf=", sf_include, ", n=", pt_d.size, ", pt_min (K)=", np.array2string(pt_min[i]), 
-                ", pblh interp (m)=", np.array2string(pblh[i]), ", pblh closest (m)=", np.array2string(pblh[i])) 
+# Load airport csv file
+airport_df = pd.read_csv(airport_file + ".csv", index_col=0)
+airports = airport_df.index.tolist()
 
-########################################################################
+# Create empty lists to append
+sid_all, var_all, lat_all, lon_all, elev_all, pblh_all = [], [], [], [], [], []
 
-   # Now that all flights at this hour have been computed, conduct statistics and averaging on them
-   if np.count_nonzero(~np.isnan(pblh)) > 0:
-     pblh_o[:] = np.where((pblh >= np.nanmean(pblh)-float(out_rej)*np.nanstd(pblh)) & 
-                          (pblh <= np.nanmean(pblh)+float(out_rej)*np.nanstd(pblh)), pblh, np.nan)
+# Loop over airports, masking that lat/lon box for each
+for airport in airports:
+    code = airport_df.loc[airport, 'airport_code']
+    lat0 = airport_df.loc[airport, 'lat_degN']
+    lon0 = airport_df.loc[airport, 'lon_degE']
+    gnd0 = airport_df.loc[airport, 'hgt_m_MSL']
+    r0 = airport_df.loc[airport, 'airport_radius_deg']
 
-     # only include flights with a computed PBLH value
-     lat_avg[np.isnan(pblh_o)] = np.nan
-     lon_avg[np.isnan(pblh_o)] = np.nan
-     pblh_o = pblh_o[~np.isnan(pblh_o)] 
-     lat_avg= lat_avg[~np.isnan(lat_avg)] 
-     lon_avg= lon_avg[~np.isnan(lon_avg)] 
+    mask_box = ((data['latitude'] > lat0 - r0) & (data['latitude'] < lat0 + r0) &
+                (data['longitude'] > lon0 - r0) & (data['longitude'] < lon0 + r0))
 
-   # Read and format the input 11-column observations:
-   #   (1)  string:  Message_Type ('ADPSFC')
-   #   (2)  string:  Station_ID (AIRPORT)
-   #   (3)  string:  Valid_Time(YYYYMMDD_HHMMSS)
-   #   (4)  numeric: Lat(Deg North)
-   #   (5)  numeric: Lon(Deg East)
-   #   (6)  numeric: Elevation(msl) 
-   #   (7)  string:  Var_Name(or GRIB_Code)
-   #   (8)  numeric: Level
-   #   (9)  numeric: Height(msl or agl)
-   #   (10) string:  QC_String
-   #   (11) numeric: Observation_Value
+    # Filter tail numbers within box and remove NaNs
+    filtered_tn = np.where(mask_box, data['tailNumber'], "nan")
+    valid_tails = np.array([t for t in np.unique(filtered_tn) if isinstance(t, str) and t.lower() != "nan"])
 
-   point_data = pd.DataFrame({'typ':'ADPSFC', 'sid':loc_name, 'vld':val_time,
-                               'lat':lat_avg, 'lon':lon_avg, 'elv':gnd0, 'var':'HPBL',
-                               'lvl':0, 'hgt':0, 'qc':'AMDAR', 'obs':pblh_o}).values.tolist()
-     
-   print(point_data)
-   print("     point_data: Data Length:\t" + repr(len(point_data)))
-   print("     point_data: Data Type:\t" + repr(type(point_data)))
-   
-except NameError:
-    print("Can't find the input file")
-    sys.exit(1)
+    print(f"\n==Processing airport {airport} ({code}): {len(valid_tails)} flights==")
+
+    if valid_tails.size == 0:
+        continue
+
+    # Loop through all flights (tail numbers) within the lat/lon box of this airport
+    for tail in valid_tails:
+        indices = np.where(filtered_tn == tail)[0]
+        print(f"Processing flight {tail} with {len(indices)} points.")
+        if len(indices) < CONFIG["alt_dp"]:
+             print(f"Flight {tail}: insufficient data points ({len(indices)}). Skipping.")
+             continue
+
+        flight_result = process_flight(str(tail), indices, data, gnd0)
+
+        # Append dataframe row with TI method if successful
+        if not np.isnan(flight_result['pblh_ti']):
+            sid_all.append(code)
+            var_all.append('HPBL_TI')
+            elev_all.append(gnd0)
+            lat_all.append(flight_result['lat_ti'])
+            lon_all.append(flight_result['lon_ti'])
+            pblh_all.append(flight_result['pblh_ti'])
+
+        # Append dataframe row with BR method if successful
+        if not np.isnan(flight_result['pblh_br']):
+            sid_all.append(code)
+            var_all.append('HPBL_BR')
+            elev_all.append(gnd0)
+            lat_all.append(flight_result['lat_br'])
+            lon_all.append(flight_result['lon_br'])
+            pblh_all.append(flight_result['pblh_br'])
+
+point_data = create_dataframe(sid_all, var_all,
+                             lat_all, lon_all,
+                             elev_all, pblh_all,
+                             val_time)
+
+pd.set_option('display.max_rows', None)
+print(point_data)
+print("     point_data: Data Length:\t" + repr(len(point_data)))
+print("     point_data: Data Type:\t" + repr(type(point_data)))
+
+point_data = point_data.values.tolist()
+
+#except NameError:
+#    print("Can't find the input file")

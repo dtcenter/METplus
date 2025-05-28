@@ -11,13 +11,14 @@ from metplus.util import metplus_check
 #  an earlier version of python fails
 @pytest.mark.parametrize(
     'user, torf', [
-        ('3.6.3', True),  # same
+        ('3.10.4', True),  # same
         ('2.7', False),  # earlier major
-        ('3.6.2', False),  # earlier bugfix
-        ('3.6.4', True),  # later bugfix
+        ('3.10.2', False),  # earlier bugfix
+        ('3.10.5', True),  # later bugfix
         ('3.5.5', False),  # earlier minor, later bugfix
-        ('3.8.1', True),  # later minor, earlier bugfix
+        ('3.11.1', True),  # later minor, earlier bugfix
         ('4.0.0', True),  # later major
+        ('3.6.3', False), # previous minimum requirement
     ]
 )
 @pytest.mark.util

@@ -18,7 +18,7 @@ For rc1 development releases, create a new reference branch for the upcoming off
 
   * Push Reference Branch to GitHub
 
-  .. parsed-literal::
+    ::
 
       git push -u origin main_vX.Y-ref
 

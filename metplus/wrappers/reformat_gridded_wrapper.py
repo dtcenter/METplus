@@ -35,18 +35,21 @@ class ReformatGriddedWrapper(LoopTimesWrapper):
 
         # check if FCST or OBS should be run
         app = self.app_name.upper()
+
+        # prevent error if running RegridDataPlane via PyEmbedIngest wrapper
+        c_dict['SKIP_RUN_CHECK'] = self.config.getbool('config', 'RDP_SKIP_RUN_CHECK', False)
+
         for fcst_or_obs in ('FCST', 'OBS'):
             c_dict[f'{fcst_or_obs}_RUN'] = (
                 self.config.getbool('config', f'{fcst_or_obs}_{app}_RUN', False)
             )
 
-        if not c_dict['FCST_RUN'] and not c_dict['OBS_RUN']:
+        if not c_dict.get('SKIP_RUN_CHECK', False) and not c_dict['FCST_RUN'] and not c_dict['OBS_RUN']:
             self.log_error(f'Must set either FCST_{app}_RUN or OBS_{app}_RUN')
-            return c_dict
 
         return c_dict
 
-    def run_at_time(self, input_dict):
+    def run_at_init_or_valid(self, input_dict):
         """! Runs the MET application for a given run time. Processing forecast
              or observation data is determined by conf variables.
              This function loops over the list of forecast leads and runs
@@ -64,4 +67,4 @@ class ReformatGriddedWrapper(LoopTimesWrapper):
             self.logger.info("Processing {} data".format(to_run))
             self.c_dict['VAR_LIST'] = self.c_dict.get(f'VAR_LIST_{to_run}')
             self.c_dict['DATA_SRC'] = to_run
-            super().run_at_time(input_dict)
+            super().run_at_init_or_valid(input_dict)
