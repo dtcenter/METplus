@@ -233,6 +233,7 @@ The **Update Reference Branch** workflow is available to handle this step.
 * Scroll to the bottom of the pull request and click "Squash and merge."
 * Click "Confirm squash and merge." It is not necessary to wait for the
   automation checks to complete for this step.
+* Click the button to delete the *update_develop_XXXXXXXX* branch.
 * Monitor the `Update Input Test Data <https://github.com/dtcenter/METplus/actions/workflows/update_input_data.yml>`_ workflow run for the develop-ref branch and ensure that
   all of the use cases run successfully and the final step named
   "Create Output Docker Data Volumes" completed successfully.
