@@ -4,10 +4,12 @@ import pytest
 
 import os
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 from metplus.wrappers.pcp_combine_wrapper import PCPCombineWrapper
 from metplus.util import ti_calculate
 
+SOME_INPUT_DIR = '/some/input/dir'
 
 def set_minimum_config_settings(config, d_type):
     config.set('config', 'FCST_PCP_COMBINE_INPUT_ACCUMS', '6')
@@ -58,8 +60,9 @@ def test_get_accumulation_1_to_6(metplus_config, get_test_data_dir):
     data_src = "OBS"
     pcw = pcp_combine_wrapper(metplus_config, data_src)
     input_dir = get_test_data_dir('accum')
-    task_info = {}
-    task_info['valid'] = datetime.strptime("2016090418", '%Y%m%d%H')
+    task_info = {
+        'valid': datetime.strptime("2016090418", '%Y%m%d%H'),
+    }
     time_info = ti_calculate(task_info)
     # 6 hours in seconds
     accum = 6 * 3600
@@ -83,8 +86,9 @@ def test_get_accumulation_6_to_6(metplus_config, get_test_data_dir):
     data_src = "FCST"
     pcw = pcp_combine_wrapper(metplus_config, data_src)
     input_dir = get_test_data_dir('accum')
-    task_info = {}
-    task_info['valid'] = datetime.strptime("2016090418", '%Y%m%d%H')
+    task_info = {
+        'valid': datetime.strptime("2016090418", '%Y%m%d%H'),
+    }
     time_info = ti_calculate(task_info)
     accum = 6 * 3600
 
@@ -174,8 +178,9 @@ def test_get_lowest_forecast_file_yesterday(metplus_config, get_test_data_dir):
 def test_setup_add_method(metplus_config, get_test_data_dir):
     data_src = "OBS"
     pcw = pcp_combine_wrapper(metplus_config, data_src)
-    task_info = {}
-    task_info['valid'] = datetime.strptime("2016090418", '%Y%m%d%H')
+    task_info = {
+        'valid': datetime.strptime("2016090418", '%Y%m%d%H'),
+    }
     time_info = ti_calculate(task_info)
 
     input_dir = get_test_data_dir('accum')
@@ -199,12 +204,36 @@ def test_setup_add_method(metplus_config, get_test_data_dir):
 def test_setup_sum_method(metplus_config):
     data_src = "OBS"
     pcw = pcp_combine_wrapper(metplus_config, data_src)
-    task_info = {}
-    task_info['valid'] = datetime.strptime("2016090418", '%Y%m%d%H')
-    task_info['lead'] = 0
+    task_info = {
+        'valid': datetime.strptime("2016090418", '%Y%m%d%H'),
+        'lead': 0,
+    }
     time_info = ti_calculate(task_info)
     lookback = 6 * 3600
     assert pcw.setup_sum_method(time_info, lookback, data_src)
+
+def _set_subhourly_config_settings(config, fcst_name, fcst_level, fcst_input_dir, fcst_output_dir, fcst_output_name):
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+
+    # set process and time config variables
+    config.set('config', 'PROCESS_LIST', 'PCPCombine')
+    config.set('config', 'LOOP_BY', 'VALID')
+    config.set('config', 'VALID_TIME_FMT', '%Y%m%d%H%M')
+    config.set('config', 'VALID_BEG', '201908021815')
+    config.set('config', 'VALID_END', '201908021815')
+    config.set('config', 'VALID_INCREMENT', '1M')
+    config.set('config', 'LEAD_SEQ', '15M')
+    config.set('config', 'LOOP_ORDER', 'times')
+    config.set('config', 'FCST_PCP_COMBINE_RUN', 'True')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_DIR', fcst_input_dir)
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_DIR', fcst_output_dir)
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_TEMPLATE', '5min_mem00_lag00.nc')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_DATATYPE', 'GRIB')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_ACCUMS', '5M')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_NAMES', fcst_name)
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_LEVELS', fcst_level)
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_NAME', fcst_output_name)
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_ACCUM', '15M')
 
 
 @pytest.mark.parametrize(
@@ -216,9 +245,11 @@ def test_setup_sum_method(metplus_config):
 def test_setup_subtract_method(metplus_config, custom):
     data_src = "FCST"
     pcw = pcp_combine_wrapper(metplus_config, data_src)
-    task_info = {}
-    task_info['valid'] = datetime.strptime("201609050000", '%Y%m%d%H%M')
-    task_info['lead_hours'] = 9
+    task_info = {
+        'valid': datetime.strptime("201609050000", '%Y%m%d%H%M'),
+        'lead_hours': 9,
+        'custom': '',
+    }
     if custom:
         task_info['custom'] = 'file'
         temp = pcw.config.getraw('config', 'FCST_PCP_COMBINE_INPUT_TEMPLATE')
@@ -247,31 +278,10 @@ def test_pcp_combine_add_subhourly(metplus_config, get_test_data_dir):
     fcst_output_dir = '{OUTPUT_BASE}/PCP/add'
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
-    config.set('config', 'DO_NOT_RUN_EXE', True)
-
-    # set process and time config variables
-    config.set('config', 'PROCESS_LIST', 'PCPCombine')
-    config.set('config', 'LOOP_BY', 'VALID')
-    config.set('config', 'VALID_TIME_FMT', '%Y%m%d%H%M')
-    config.set('config', 'VALID_BEG', '201908021815')
-    config.set('config', 'VALID_END', '201908021815')
-    config.set('config', 'VALID_INCREMENT', '1M')
-    config.set('config', 'LEAD_SEQ', '15M')
-    config.set('config', 'LOOP_ORDER', 'times')
-    config.set('config', 'FCST_PCP_COMBINE_RUN', 'True')
+    _set_subhourly_config_settings(config, fcst_name, fcst_level, fcst_input_dir, fcst_output_dir, fcst_output_name)
     config.set('config', 'FCST_PCP_COMBINE_METHOD', 'ADD')
-    config.set('config', 'FCST_PCP_COMBINE_INPUT_DIR', fcst_input_dir)
     config.set('config', 'FCST_PCP_COMBINE_INPUT_TEMPLATE',
                '{init?fmt=%Y%m%d}_i{init?fmt=%H%M}_m0_f{valid?fmt=%H%M}.nc')
-    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_DIR', fcst_output_dir)
-    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_TEMPLATE',
-               '5min_mem00_lag00.nc')
-    config.set('config', 'FCST_PCP_COMBINE_INPUT_DATATYPE', 'GRIB')
-    config.set('config', 'FCST_PCP_COMBINE_INPUT_ACCUMS', '5M')
-    config.set('config', 'FCST_PCP_COMBINE_INPUT_NAMES', fcst_name)
-    config.set('config', 'FCST_PCP_COMBINE_INPUT_LEVELS', fcst_level)
-    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_NAME', fcst_output_name)
-    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_ACCUM', '15M')
 
     wrapper = PCPCombineWrapper(config)
     assert wrapper.isOK
@@ -381,9 +391,7 @@ def test_pcp_combine_derive(metplus_config, get_test_data_dir, config_overrides,
     config = metplus_config
 
     test_data_dir = get_test_data_dir()
-    fcst_input_dir = os.path.join(test_data_dir,
-                                  'pcp_in',
-                                  'derive')
+    fcst_input_dir = os.path.join(test_data_dir, 'pcp_in', 'derive')
     fcst_output_dir = '{OUTPUT_BASE}/PCP/derive'
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
@@ -453,9 +461,7 @@ def test_pcp_combine_loop_custom(metplus_config, get_test_data_dir):
     config = metplus_config
 
     test_data_dir = get_test_data_dir()
-    fcst_input_dir = os.path.join(test_data_dir,
-                                  'pcp_in',
-                                  'loop_custom')
+    fcst_input_dir = os.path.join(test_data_dir, 'pcp_in', 'loop_custom')
     fcst_output_dir = '{OUTPUT_BASE}/PCP/loop_custom'
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
@@ -582,31 +588,10 @@ def test_pcp_combine_sum_subhourly(metplus_config, get_test_data_dir):
     fcst_output_dir = '{OUTPUT_BASE}/PCP/sum'
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
-    config.set('config', 'DO_NOT_RUN_EXE', True)
-
-    # set process and time config variables
-    config.set('config', 'PROCESS_LIST', 'PCPCombine')
-    config.set('config', 'LOOP_BY', 'VALID')
-    config.set('config', 'VALID_TIME_FMT', '%Y%m%d%H%M')
-    config.set('config', 'VALID_BEG', '201908021815')
-    config.set('config', 'VALID_END', '201908021815')
-    config.set('config', 'VALID_INCREMENT', '1M')
-    config.set('config', 'LEAD_SEQ', '15M')
-    config.set('config', 'LOOP_ORDER', 'times')
-    config.set('config', 'FCST_PCP_COMBINE_RUN', 'True')
+    _set_subhourly_config_settings(config, fcst_name, fcst_level, fcst_input_dir, fcst_output_dir, fcst_output_name)
     config.set('config', 'FCST_PCP_COMBINE_METHOD', 'SUM')
-    config.set('config', 'FCST_PCP_COMBINE_INPUT_DIR', fcst_input_dir)
     config.set('config', 'FCST_PCP_COMBINE_INPUT_TEMPLATE',
                '{init?fmt=%Y%m%d}_i{init?fmt=%H%M}_m0_f*')
-    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_DIR', fcst_output_dir)
-    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_TEMPLATE',
-               '5min_mem00_lag00.nc')
-    config.set('config', 'FCST_PCP_COMBINE_INPUT_DATATYPE', 'GRIB')
-    config.set('config', 'FCST_PCP_COMBINE_INPUT_ACCUMS', '5M')
-    config.set('config', 'FCST_PCP_COMBINE_INPUT_NAMES', fcst_name)
-    config.set('config', 'FCST_PCP_COMBINE_INPUT_LEVELS', fcst_level)
-    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_NAME', fcst_output_name)
-    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_ACCUM', '15M')
 
     wrapper = PCPCombineWrapper(config)
     assert wrapper.isOK
@@ -722,7 +707,7 @@ def test_add_method_single_file(metplus_config):
     config.set('config', 'FCST_PCP_COMBINE_RUN', True)
     config.set('config', 'FCST_PCP_COMBINE_METHOD', 'ADD')
     config.set('config', 'FCST_PCP_COMBINE_CONSTANT_INIT', True)
-    config.set('config', 'FCST_PCP_COMBINE_INPUT_DIR', '/some/input/dir')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_DIR', SOME_INPUT_DIR)
     config.set('config', 'FCST_PCP_COMBINE_INPUT_TEMPLATE',
                '{init?fmt=%Y%m%d}_prec_1hracc_75hrfcst_e00.nc')
     config.set('config', 'FCST_PCP_COMBINE_OUTPUT_DIR', '/some/output/dir')
@@ -773,7 +758,7 @@ def test_add_method_single_file(metplus_config):
 def test_subtract_method_zero_accum(metplus_config):
     input_name = 'stratiform_rainfall_amount'
     input_level = '"(*,*)"'
-    in_dir = '/some/input/dir'
+    in_dir = SOME_INPUT_DIR
     out_dir = '/some/output/dir'
     config = metplus_config
     config.set('config', 'DO_NOT_RUN_EXE', True)
@@ -802,24 +787,25 @@ def test_subtract_method_zero_accum(metplus_config):
     config.set('config', 'FCST_PCP_COMBINE_OUTPUT_NAME', input_name)
 
     # NETCDF example should use zero accum, GRIB example should not (use -add)
-    expected_cmds_dict = {}
-    expected_cmds_dict['NETCDF'] = [
-        (f"-subtract "
-         f"{in_dir}/20191002T0000Z_pverb001.nc "
-         f"'name=\"{input_name}\"; level={input_level};' "
-         f"{in_dir}/20191002T0000Z_pverb000.nc "
-         f"'name=\"{input_name}\"; level={input_level};' "
-         f"-name \"{input_name}\" "
-         f"{out_dir}/2019100200_f001.nc"),
-    ]
-    expected_cmds_dict['GRIB'] = [
-        (f"-add "
-         f"{in_dir}/20191002T0000Z_pverb001.nc "
-         "'name=\"APCP\"; level=\"A01\";' "
-         f"-name \"{input_name}\" "
-         f"{out_dir}/2019100200_f001.nc"
-         ),
-    ]
+    expected_cmds_dict = {
+        'NETCDF': [
+            (f"-subtract "
+             f"{in_dir}/20191002T0000Z_pverb001.nc "
+             f"'name=\"{input_name}\"; level={input_level};' "
+             f"{in_dir}/20191002T0000Z_pverb000.nc "
+             f"'name=\"{input_name}\"; level={input_level};' "
+             f"-name \"{input_name}\" "
+             f"{out_dir}/2019100200_f001.nc"),
+        ],
+        'GRIB': [
+            (f"-add "
+             f"{in_dir}/20191002T0000Z_pverb001.nc "
+             "'name=\"APCP\"; level=\"A01\";' "
+             f"-name \"{input_name}\" "
+             f"{out_dir}/2019100200_f001.nc"
+             ),
+        ]
+    }
 
     for data_type in ['GRIB', 'NETCDF']:
         config.set('config', 'FCST_PCP_COMBINE_INPUT_DATATYPE', data_type)
