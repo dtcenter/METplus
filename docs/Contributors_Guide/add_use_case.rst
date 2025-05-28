@@ -1309,18 +1309,22 @@ Check that the link now points to the new tarfile that was just created::
 After the Pull Request is Approved
 ==================================
   
-Merge the pull request and ensure that all tests pass
------------------------------------------------------
+Merge the pull request and review testing workflow run
+-------------------------------------------------------
 
-Merge the pull request on GitHub. Then go to the "Actions" tab and verify that
-all of the GitHub Actions tests pass for the develop branch. A green check mark
-for the latest run that lists "develop" as the branch signifies that the run
-completed successfully.
+Merge the pull request on GitHub.
+Then go to the "Actions" tab and monitor the latest develop branch run.
+This run should "fail" with a red X.
+Ensure that the only failures are in the use case that was added and
+that the failures are only in the *Run difference tests* job.
+**Any failures in a "Run Use Cases" job suggest that something went wrong.**
+A failing use case is likely due to the develop branch data not being updated.
 
 .. figure:: figure/github_actions_develop.png
 
 If the circle on the left side is yellow, then the run has not completed yet.
-If everything ran smoothly, clean up the files on the web server.
+If you have confirmed that the only failures are due to difference in new use
+case output, then follow the instructions below to update the truth data.
 
 Consider rearranging the use case groups
 ----------------------------------------
