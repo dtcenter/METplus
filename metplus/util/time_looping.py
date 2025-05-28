@@ -30,7 +30,7 @@ def time_generator(config):
 
     time_format = config.getraw('config', f'{prefix}_TIME_FMT', '')
     if not time_format:
-        config.logger.error(f'Could not read {prefix}_TIME_FMT')
+        config.logger.error(f'Must set {prefix}_TIME_FMT if LOOP_BY={prefix}')
         yield None
         return
 
@@ -177,8 +177,6 @@ def get_time_prefix(config):
      valid time, or None if not enough information was found in the config
     """
     loop_by = config.getstr('config', 'LOOP_BY', '').upper()
-    if not loop_by:
-        return None
 
     if loop_by in ['INIT', 'RETRO']:
         return 'INIT'
@@ -331,7 +329,7 @@ def skip_time(time_info, c_dict):
 
 def _found_time_match(time_info, time_dict, init_or_valid):
     run_time_dt = time_info.get(init_or_valid)
-    if not run_time_dt:
+    if not run_time_dt or run_time_dt == '*':
         return False
 
     for time_format, time_list in time_dict.items():

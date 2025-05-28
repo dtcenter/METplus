@@ -1,4 +1,4 @@
-name: Update Truth Data
+name: Update Reference Branch
 
 on:
   workflow_dispatch:

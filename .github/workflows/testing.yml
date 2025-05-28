@@ -5,9 +5,8 @@ on:
   push:
     branches:
       - develop
-      - develop-ref
       - 'feature_**'
-      - 'main_**'
+      - 'main_v[0-9]*.[0-9]*'
       - 'bugfix_**'
     paths-ignore:
       - 'docs/**'
@@ -91,7 +90,6 @@ jobs:
       run_get_input_data: ${{ steps.job_status.outputs.run_get_input_data }}
       run_diff: ${{ steps.job_status.outputs.run_diff }}
       run_unit_tests: ${{ steps.job_status.outputs.run_unit_tests }}
-      run_save_truth_data: ${{ steps.job_status.outputs.run_save_truth_data }}
       external_trigger: ${{ steps.job_status.outputs.external_trigger }}
       branch_name: ${{ steps.job_status.outputs.branch_name }}
 
@@ -275,16 +273,3 @@ jobs:
           name: error_logs
           pattern: error_logs-*
           delete-merged: true
-
-  create_output_data_volumes:
-    name: Create Output Docker Data Volumes
-    runs-on: ubuntu-latest
-    needs: [use_case_tests]
-    if: ${{ needs.job_control.outputs.run_save_truth_data == 'true' }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-      - run: .github/jobs/create_output_data_volumes.sh
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
