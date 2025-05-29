@@ -32,3 +32,4 @@
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #2985 and #2987 - attempt 3 - #2985 added the RMWAnalysis basic use case and #2987 added a new short_range use case - attempt 3
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #2985 and #2987 - attempt 4 - #2985 added the RMWAnalysis basic use case and #2987 added a new short_range use case
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #2989 - Use case produces new output files and values.
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] dtcenter/METdataio af0bb28b - The clouds:8 use case is producing differences sporadically, so a fix to METdataio was added to sort the directory listing in an attempt to prevent these differences going forward.
