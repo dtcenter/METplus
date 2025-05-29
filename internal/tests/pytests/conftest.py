@@ -260,10 +260,14 @@ def compare_command_and_env_vars():
         print(f"ALL COMMANDS: {all_commands}")
         assert len(all_commands) == len(expected_cmds)
 
+        if hasattr(wrapper, 'WRAPPER_ENV_VAR_KEYS'):
+            wrapper_env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS
+        else:
+            wrapper_env_var_keys = []
         missing_env = [item for item in env_var_values
-                       if item not in wrapper.WRAPPER_ENV_VAR_KEYS
+                       if item not in wrapper_env_var_keys
                        and item != 'DIAG_ARG']
-        env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
+        env_var_keys = wrapper_env_var_keys + missing_env
 
         for (actual_cmd, env_vars), expected_cmd in zip(all_commands, expected_cmds):
             # ensure commands are generated as expected
