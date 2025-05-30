@@ -116,23 +116,44 @@ def format_one_time_item(item, time_str, unit):
     return str(time_str).zfill(padding)+rest
 
 
-def format_hms(fmt, obj):
-    """!Helper function for do_string_sub. For time offset values, get hour, minute, and
-        second values to format as necessary
+def format_time_offset(fmt, obj, month_len=None, year_len=None):
+    """!Helper function for do_string_sub. For time offset values, get hour,
+     minute, and second values to format as necessary.
 
-        @param fmt format to substitute, e.g. %3H or %2M or %S
-        @param obj time value in seconds to format, e.g. 3600
-        @returns Formatted time value
+     @param fmt format to substitute, e.g. %3H or %2M or %S
+     @param obj time value in seconds to format, e.g. 3600
+     @param month_len (optional) number of seconds in the month being processed
+     @param year_len (optional) number of seconds in the year being processed
+     @returns Formatted time value
     """
     out_str = ''
     fmt_split = fmt.split('%')[1:]
     # split time into days, hours, minutes, and seconds
     # time should be relative to the next highest unit if higher units are specified
     # e.g. 90 minutes %M => 90, but %H%M => 0130
+    # if length of month and/or year are available, also split using those
+    years = obj // year_len if year_len else 0
+    months = obj // month_len if month_len else 0
     days = obj // 86400
     hours = obj // 3600
     minutes = obj // 60
     seconds = obj
+
+    # if years are specified, change smaller units to relative
+    if True in ['Y' in x for x in fmt_split] and years:
+        if months:
+            months = (obj % year_len) // month_len
+            days = (obj % month_len) // 86400
+        hours = (obj % 86400) // 3600
+        minutes = (obj % 3600) // 60
+        seconds = (obj % 3600) % 60
+
+    # if months are specified, change smaller units to relative
+    if True in ['m' in x for x in fmt_split] and months:
+        days = (obj % month_len) // 86400
+        hours = (obj % 86400) // 3600
+        minutes = (obj % 3600) // 60
+        seconds = (obj % 3600) % 60
 
     # if days are specified, change hours, minutes, and seconds to relative
     if True in ['d' in x for x in fmt_split]:
@@ -151,6 +172,8 @@ def format_hms(fmt, obj):
 
     # parse format
     for item in fmt_split:
+        out_str += format_one_time_item(item, years, 'Y')
+        out_str += format_one_time_item(item, months, 'm')
         out_str += format_one_time_item(item, hours, 'H')
         out_str += format_one_time_item(item, minutes, 'M')
         out_str += format_one_time_item(item, seconds, 'S')
@@ -285,18 +308,14 @@ def handle_format_delimiter(split_string, idx, shift_seconds, truncate_seconds, 
         obj = round_time_down(obj, truncate_seconds)
         return obj.strftime(fmt)
 
-    # if input is relativedelta
+    # if input is relativedelta, it should be a forecast lead
     if isinstance(obj, relativedelta):
-        seconds = time_util.ti_get_seconds_from_relativedelta(obj)
-        if seconds is None:
-            return time_util.ti_get_lead_string(obj, letter_only=True)
-        seconds += shift_seconds
-        return format_hms(fmt, seconds)
+        return format_forecast_lead(obj, fmt, shift_seconds, kwargs)
 
     # if input is integer, format with H, M, and S
     if isinstance(obj, int):
         obj += shift_seconds
-        return format_hms(fmt, obj)
+        return format_time_offset(fmt, obj)
 
     # if string, format if possible
     if isinstance(obj, str):
@@ -305,6 +324,81 @@ def handle_format_delimiter(split_string, idx, shift_seconds, truncate_seconds, 
     raise TypeError('Could not format item {} with format {} in {}'
                     .format(obj, fmt, split_string))
 
+
+def format_forecast_lead(obj, fmt, shift_seconds, kwargs):
+    """!Formats the forecast lead time based on the given format, time shift, and additional
+    time-related attributes.
+
+    The function calculates the exact lead time in seconds, considering optional
+    attributes like months or years, by using valid or initialization time and
+    to adjust time shifts accordingly. Returns a formatted lead-time string.
+
+    @param obj relativedelta object representing the lead time
+    @param fmt: format to be applied to the lead-time string during conversion,
+     like '%H%M%S'.
+    @param shift_seconds time shift to adjust the lead time, in seconds.
+    @param kwargs dict containing additional time-related attributes, such as
+     'valid' or 'init', which provide base valid or initialization datetime information.
+    @returns str: The formatted lead-time string.
+    @raises KeyError: If required keys like 'valid' or 'init' are missing in kwargs.
+    """
+    # get valid time if valid or init is available to get the number of
+    # seconds for months or years
+    valid_time = kwargs.get('valid')
+    if valid_time is None and kwargs.get('init'):
+        valid_time = kwargs['init'] + obj
+
+    seconds = time_util.ti_get_seconds_from_relativedelta(obj, valid_time=valid_time)
+    # if we cannot compute the number of seconds
+    if seconds is None:
+        return _format_unknown_seconds_relativedelta(obj, fmt)
+
+    # if there are months, get the number of seconds in the month relative to valid
+    month_seconds = None
+    if obj.months:
+        month_seconds = (
+            time_util.ti_get_seconds_from_relativedelta(relativedelta(months=1),
+                                                        valid_time=valid_time)
+        )
+
+    # if there are years, get the number of seconds in the year relative to valid
+    year_seconds = None
+    if obj.years:
+        year_seconds = (
+            time_util.ti_get_seconds_from_relativedelta(relativedelta(years=1),
+                                                        valid_time=valid_time)
+        )
+
+    seconds += shift_seconds
+    return format_time_offset(fmt, seconds, month_seconds, year_seconds)
+
+def _format_unknown_seconds_relativedelta(obj, fmt):
+    """!Formats the lead-time string for relativedelta objects with an unknown number
+     of seconds. This is likely because it contains months or years and there is
+     no available reference time to compute the number of seconds.
+
+    @param obj: relativedelta object representing the lead time
+    @param fmt: format to be applied to the lead-time string during conversion
+    @returns str: The formatted lead-time string.
+    """
+    # if the format is just requesting month or year and the value is
+    # a month or year, use the month or year value directly
+    match = re.match(r'%(\d*)([Ym])', fmt)
+    if match:
+
+        # pad with 0's if specified by the format, minimum 2
+        padding = 2
+        if match.group(1):
+            padding = max(2, int(match.group(1)))
+
+        if obj.years and match.group(2) == 'Y':
+            return f'{obj.years}'.zfill(padding)
+
+        if obj.months and match.group(2) == 'm':
+            return f'{obj.months}'.zfill(padding)
+
+    # otherwise return lead with letter suffix
+    return time_util.ti_get_lead_string(obj, letter_only=True)
 
 def do_string_sub(tmpl,
                   skip_missing_tags=False,
