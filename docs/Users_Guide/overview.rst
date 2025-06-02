@@ -127,5 +127,6 @@ For more information about METplus, see	the
 Our goal is to continually enhance METplus and add to its capabilities.
 Because our time, resources, and talents are sometimes limited, we welcome
 contributed code for future versions of METplus. For more information
-on contributing code to METplus, please create a post in the 
-`METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions/new/choose>`_.
+on contributing code to METplus, please create a
+`new post <https://github.com/dtcenter/METplus/discussions/new/choose>`_ in the 
+METplus GitHub Discussions Forum.
