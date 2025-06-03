@@ -37,7 +37,6 @@ CSV_EXTENSIONS = [
 ]
 
 UNSUPPORTED_EXTENSIONS = [
-    '.log',
 ]
 
 # keywords to search and skip diff tests if found in file path
@@ -311,11 +310,6 @@ def _handle_image_files(filepath_a, filepath_b, save_diff):
 
 def _handle_text_files(filepath_a, filepath_b, dir_a, dir_b):
     print("Comparing text files")
-    # # temporary test to see if any .log files get compared
-    # _, file_extension = os.path.splitext(filepath)
-    # if file_extension=='.log':
-    #     print(f"ERROR: checking a .log file")
-    #     return filepath_a, filepath_b, 'Text diff', '' 
     
     if filecmp.cmp(filepath_a, filepath_b, shallow=False):
         print("No differences found from filecmp.cmp")
