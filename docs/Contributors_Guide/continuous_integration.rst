@@ -169,8 +169,8 @@ that introduce new **Vulnerabilities** or **Bugs** or increase the number of
 
 .. _cg-ci-update-truth-data:
 
-Update Truth Data (update_truth.yml)
-------------------------------------
+Update Reference Branch (update_reference_branch.yml)
+-----------------------------------------------------
 
 The METplus use case test truth data includes output from use cases that is
 used to compare with new use case test results to flag any differences.
@@ -192,7 +192,11 @@ branch and "develop-ref" as the destination branch.
 This is done so that the pull request responsible for the changes in the
 truth data can be referenced to easily track where differences occurred.
 
-The **Update Truth Data** workflow is available to handle this step.
+The **Update Reference Branch** workflow is available to handle this step.
+
+.. note::
+   **IMPORTANT: The latest develop branch testing workflow that contains output differences must be completed before running these instructions.**
+
 
 * Ensure that the develop data directory has been updated to include all of the
   new input data.
@@ -200,9 +204,9 @@ The **Update Truth Data** workflow is available to handle this step.
   confirm that the steps under :ref:`update-the-develop-data-directory` have
   been completed. If this step has not been completed, then the new use case(s)
   will fail and the new output data will not be added to the truth data set.
-* Navigate to https://github.com/dtcenter/METplus/actions/workflows/update_truth.yml
+* Navigate to https://github.com/dtcenter/METplus/actions/workflows/update_reference_branch.yml
   or from the METplus GitHub page, click on the Actions tab,
-  then click on "Update Truth Data" under menu on the left.
+  then click on "Update Reference Branch" under menu on the left.
 * Click on the "Run workflow" button on the right.
 * Click on the Branch pull down and select "develop" unless you are updating
   the truth data for a bugfix on a main_vX.Y branch.
@@ -213,7 +217,7 @@ The **Update Truth Data** workflow is available to handle this step.
 * Enter a brief summary of the changes.
   Developers can navigate to the PRs for more information.
 
-.. figure:: figure/update_truth_data.png
+.. figure:: figure/update_reference_branch.png
 
 * Click the "Run workflow" button.
 * A new workflow run should appear at the top of the list and complete quickly.
@@ -229,7 +233,8 @@ The **Update Truth Data** workflow is available to handle this step.
 * Scroll to the bottom of the pull request and click "Squash and merge."
 * Click "Confirm squash and merge." It is not necessary to wait for the
   automation checks to complete for this step.
-* Monitor the Testing automation run for the develop-ref branch and ensure that
+* Click the button to delete the *update_develop_XXXXXXXX* branch.
+* Monitor the `Update Input Test Data <https://github.com/dtcenter/METplus/actions/workflows/update_input_data.yml>`_ workflow run for the develop-ref branch and ensure that
   all of the use cases run successfully and the final step named
   "Create Output Docker Data Volumes" completed successfully.
 * If any use cases fail, check that the input data has been updated following
