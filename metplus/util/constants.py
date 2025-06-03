@@ -183,3 +183,10 @@ DEPRECATED_DICT = {
 # If any of these items are found, then an error will be reported
 DEPRECATED_MET_LIST = [
 ]
+
+# logger used to skip logging if logger was not provided to function calls
+class NullLogger:
+    def debug(self, message): pass # skip logging
+    def info(self, message): pass # skip logging
+    def warning(self, message): pass # skip logging
+    def error(self, message): pass # skip logging
