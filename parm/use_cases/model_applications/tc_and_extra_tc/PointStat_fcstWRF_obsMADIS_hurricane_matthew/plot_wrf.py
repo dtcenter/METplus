@@ -22,110 +22,74 @@ import map_funcs
 
 ADD_BARBS_STRING = '+barbs'
 
-# def main(init_dt_first, init_dt_last, init_stride_h, plot_beg_lead_time, plot_end_lead_time, plot_stride, domain, exp_name):
-def main(script_config_opts):
-    # ==============
-    # USER SETTINGS:
-    # ==============
 
-    # Default plot type selection
-    plot_type = 'png'
-    plot_subdomain = False  # Plot specified subdomain to zoom in on a defined area of interest
-    plot_stations = True     # Plot station markers & labels on the map (e.g., cities of interest)
+def setup_plot_configuration():
+    """Set up default plotting configuration and options."""
+    return {
+        'plot_type': 'png',
+        'plot_subdomain': False,
+        'plot_stations': True,
+        'plot_terrain': True,
+        'plot_t2': True,
+        'plot_rh2': True,
+        'plot_slp': True,
+        'plot_ws10': True,
+        'plot_refl': True,
+        'plot_rain': True,
+        'plot_ws100': True,
+        'plot_wind_barbs_sfc': True,
+        'plot_wind_barbs_upr': True,
+        'water_color': 'lightblue',
+        'suptitle_y': 1.00,
+        'plot_fontsize': 13,
+        'barb_thin': 10,
+        'barb_width': 0.5,
+        # Domain plotting ranges
+        'i_beg': 0, 'i_end': -1,
+        'j_beg': 0, 'j_end': -1,
+        # Station data
+        'text1_lab': ['Miami', 'Jacksonville', 'Charleston'],
+        'mark1_lat': np.array([25.7617, 30.3322, 32.7833]),
+        'mark1_lon': np.array([-80.1918, -81.6557, -79.9320]),
+        'mark1_size': 36,
+        'mark1_color': 'black',
+        'lat_labels': [16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40],
+        'lon_labels': [-62, -64, -66, -68, -70, -72, -74, -76, -78, -80, -82, -84, -86, -88],
+    }
 
-    # Which variables should be plotted?
-    plot_terrain = True     # terrain height [m]
-    plot_t2 = True          # 2-m temperature [C]
-    plot_rh2 = True         # 2-m relative humidity [%]
-    plot_slp = True         # sea level pressure [hPa] (NOTE: this requires several other variables in the wrfout file)
-    plot_ws10 = True        # 10-m wind speed [m s-1]
-    plot_refl = True        # simulated radar reflectivity [dBZ]
-    plot_rain = True        # total accumulated rainfall during the simulation [mm]
-    plot_ws100 = False       # 100-m wind speed [m s-1]
 
-    # Plot any overlays, like wind barbs?
-    plot_wind_barbs_sfc = True  # overlay 10-m wind barbs for selected plots
-    plot_wind_barbs_upr = True  # overlay upper-air wind barbs for selected plots
+def setup_plot_limits():
+    """Set up plotting limits and contour intervals for all variables."""
+    return {
+        'terrain': {'min': 0.0, 'max': 1500.1, 'int': 100.0},
+        'slp': {'min': 980.0, 'max': 1020.1, 'int': 2.0},
+        't2': {'min': 0.0, 'max': 40.1, 'int': 2.0},
+        'rh2': {'min': 0.0, 'max': 100.1, 'int': 5.0},
+        'ws10': {'min': 0.0, 'max': 35.0, 'int': 2.5},
+        'rain': {'min': 0.0, 'max': 100.1, 'int': 5.0},
+    }
 
-    # Default water color (generally use only in terrain plots)
-    water_color = 'lightblue'
 
-    # Set some other plot options
-    suptitle_y = 1.00
-    plot_fontsize = 13
-    barb_thin = 10
-    barb_width = 0.5
+def setup_constants_and_formats():
+    """Define constants, format strings, and other static values."""
+    constants = {
+        'c_to_k': 273.15,
+        'missing_val': -9999.0,
+        'mpl_ms1': r'm $\mathregular{s^{-1}}$',
+        'deg_uni': '\u00B0',
+    }
 
-    # Set some text labels for demonstration
-    if plot_stations:
-        text1_lab = ['Miami', 'Jacksonville', 'Charleston']
-        mark1_lat = np.asarray([25.7617, 30.3322, 32.7833])
-        mark1_lon = np.asarray([-80.1918, -81.6557, -79.9320])
-        text1_lat = np.asarray(mark1_lat) + np.asarray([-0.20, -0.20, -0.40])
-        text1_lon = np.asarray(mark1_lon) + np.asarray([1.50, 3.00, 2.70])
-        mark1_size = 36
-        mark1_color = 'black'
+    formats = {
+        'fmt_yyyymmdd_hh': '%Y%m%d_%H',
+        'fmt_yyyymmdd_hhmm': '%Y%m%d_%H%M',
+        'fmt_wrf_date': '%Y-%m-%d',
+        'fmt_wrf_time': '%H:%M:%S',
+        'fmt_time_plot': '%d %b %Y/%H%M UTC',
+    }
+    formats['fmt_wrf_dt'] = formats['fmt_wrf_date'] + '_' + formats['fmt_wrf_time']
+    formats['fmt_time_file'] = formats['fmt_yyyymmdd_hhmm']
 
-    # Domain plotting ranges in (i,j) space (whole domain by default)
-    i_beg, i_end = 0, -1
-    j_beg, j_end = 0, -1
-
-    if plot_subdomain:
-        # Adjust these if you want a different subdomain
-        i_beg, i_end = 10, 81
-        j_beg, j_end = 10, 90
-
-    lat_labels = [16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40]
-    lon_labels = [-62, -64, -66, -68, -70, -72, -74, -76, -78, -80, -82, -84, -86, -88]
-
-    # Set map contour plot limits
-    min_terrain = 0.0
-    max_terrain = 1500.1
-    int_terrain = 100.0
-
-    min_slp = 980.0
-    max_slp = 1020.1
-    int_slp = 2.0
-
-    min_t2 = 0.0
-    max_t2 = 40.1
-    int_t2 = 2.0
-
-    min_rh2 = 0.0
-    max_rh2 = 100.1
-    int_rh2 = 5.0
-
-    min_ws10 = 0.0
-    max_ws10 = 35.0
-    int_ws10 = 2.5
-
-    min_rain = 0.0
-    max_rain = 100.1
-    int_rain = 5.0
-
-    # =======================================
-    # CONSTANTS, FORMAT STATEMENTS, AND MORE:
-    # =======================================
-
-    c_to_k = 273.15  # additive conversion between degrees Celsius and Kelvin
-
-    missing_val = -9999.0
-
-    mpl_ms1 = r'm $\mathregular{s^{-1}}$'
-
-    deg_uni = '\u00B0'
-
-    fmt_yyyymmdd_hh = '%Y%m%d_%H'
-    fmt_yyyymmdd_hhmm = '%Y%m%d_%H%M'
-
-    fmt_wrf_date = '%Y-%m-%d'
-    fmt_wrf_time = '%H:%M:%S'
-    fmt_wrf_dt = fmt_wrf_date + '_' + fmt_wrf_time
-    fmt_time_file = fmt_yyyymmdd_hhmm
-    fmt_time_plot = '%d %b %Y/%H%M UTC'
-
-    # Define a custom colormap for radar reflectivity plots
-    # Modified to add gray for 0–5 dBZ and lightpurple for 75+ dBZ
+    # Define custom colormap for radar reflectivity
     cmap_radar = np.array([
         [200, 200, 200], [4, 233, 231], [1, 159, 244], [3, 0, 244],
         [2, 253, 2], [1, 197, 1], [0, 142, 0],
@@ -134,396 +98,561 @@ def main(script_config_opts):
         [248, 0, 253], [152, 84, 198], [228, 199, 243]], np.float32) / 255.0
     bounds_radar = np.arange(0., 75.01, 5.0)
 
-    read_zlev = False
-    if plot_ws100:
-        read_zlev = True
+    return constants, formats, {'cmap_radar': cmap_radar, 'bounds_radar': bounds_radar}
 
-    # =============
-    # MAIN PROGRAM:
-    # =============
 
-    cycle_dt_str_first = script_config_opts['cycle_dt_first']
-    cycle_dt_str_last = script_config_opts['cycle_dt_last']
-    cycle_stride_h = script_config_opts['cycle_stride_h']
-    cycle_dt_first = pd.to_datetime(cycle_dt_str_first, format=fmt_yyyymmdd_hh)
-    cycle_dt_last = pd.to_datetime(cycle_dt_str_last, format=fmt_yyyymmdd_hh)
-    cycle_dt_all = pd.date_range(start=cycle_dt_first, end=cycle_dt_last, freq=str(cycle_stride_h) + 'h')
+def adjust_subdomain_ranges(config):
+    """Adjust domain ranges if subdomain plotting is requested."""
+    if config['plot_subdomain']:
+        config['i_beg'], config['i_end'] = 10, 81
+        config['j_beg'], config['j_end'] = 10, 90
+
+
+def initialize_static_fields(ds_wrf_nc, config):
+    """Initialize static WRF fields and mapping objects (run once)."""
+    print('Initializing static fields...')
+
+    # Adjust subdomain if needed
+    adjust_subdomain_ranges(config)
+
+    # Read latitude and longitude
+    da_lat = wrf.getvar(ds_wrf_nc, 'lat', squeeze=False)
+    wrf_lats, wrf_lons = wrf.latlon_coords(da_lat)
+
+    # Setup cartopy mapping objects
+    print('Getting cartopy mapping objects')
+    cart_proj = wrf.get_cartopy(wrfin=ds_wrf_nc)
+    cart_bounds = wrf.geo_bounds(var=da_lat[0, config['j_beg']:config['j_end'], config['i_beg']:config['i_end']])
+    cart_xlim = wrf.cartopy_xlim(wrfin=ds_wrf_nc, geobounds=cart_bounds)
+    cart_ylim = wrf.cartopy_ylim(wrfin=ds_wrf_nc, geobounds=cart_bounds)
+    borders, states, oceans, lakes, _, _ = map_funcs.get_cartopy_features()
+
+    # Build base map options dictionary
+    map_opts = {
+        'cart_proj': cart_proj, 'cart_xlim': cart_xlim, 'cart_ylim': cart_ylim,
+        'borders': borders, 'states': states, 'oceans': oceans, 'lakes': lakes,
+        'lons': wrf_lons, 'lats': wrf_lats, 'suptitle': 'Hurricane Matthew Test Case',
+        'suptitle_y': config['suptitle_y'], 'lat_labels': config['lat_labels'],
+        'lon_labels': config['lon_labels'], 'fontsize': config['plot_fontsize'],
+        'map_x_thin': config['barb_thin'], 'map_y_thin': config['barb_thin'],
+        'barb_width': config['barb_width'],
+    }
+
+    # Add station markers if requested
+    if config['plot_stations']:
+        text1_lat = config['mark1_lat'] + np.array([-0.20, -0.20, -0.40])
+        text1_lon = config['mark1_lon'] + np.array([1.50, 3.00, 2.70])
+        map_opts.update({
+            'mark1_lat': config['mark1_lat'], 'mark1_lon': config['mark1_lon'],
+            'text1_lab': config['text1_lab'], 'text1_lat': text1_lat, 'text1_lon': text1_lon,
+            'mark1_size': config['mark1_size'], 'mark1_color': config['mark1_color']
+        })
+
+    return map_opts, wrf_lats, wrf_lons
+
+
+def plot_terrain(ds_wrf_nc, map_opts, config, limits, out_dir):
+    """Plot terrain height."""
+    print('   Reading terrain')
+    da_terrain = wrf.getvar(ds_wrf_nc, 'ter', squeeze=False)
+    wrf_terrain = da_terrain.values[0, :, :]
+
+    var_file = 'TERRAIN'
+    var_name = 'Terrain Height'
+    var_unit = 'm'
+
+    min_val = np.nanmin(wrf_terrain[config['j_beg']:config['j_end'], config['i_beg']:config['i_end']])
+    max_val = np.nanmax(wrf_terrain[config['j_beg']:config['j_end'], config['i_beg']:config['i_end']])
+
+    extend = 'both'
+    cmap = map_funcs.truncate_cmap(mpl.cm.terrain, minval=0.20, maxval=0.95)
+    bounds = np.arange(limits['terrain']['min'], limits['terrain']['max'], limits['terrain']['int'])
+    norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend=extend)
+
+    title_l = var_name + f'\nMin: {min_val:.1f} ' + var_unit + f', Max: {max_val:.1f} ' + var_unit
+
+    plot_opts = map_opts.copy()
+    plot_opts.update({
+        'fill_var': wrf_terrain, 'water_color': config['water_color'], 'extend': extend,
+        'cmap': cmap, 'bounds': bounds, 'norm': norm,
+        'cbar_lab': 'Model ' + var_name + ' [' + var_unit + ']',
+        'fname': out_dir.joinpath('map_wrf_' + config['wrf_dom'] + '_' + var_file + '.' + config['plot_type']),
+        'title_l': title_l, 'title_r': ''
+    })
+
+    map_funcs.map_plot(plot_opts)
+
+
+def read_surface_winds(ds_wrf_nc):
+    """Read and return 10-m wind components and speed."""
+    print('   Reading 10-m wind components (rotated to earth-relative)')
+    da_uv10 = wrf.getvar(ds_wrf_nc, 'uvmet10', squeeze=False)
+    wrf_u10 = da_uv10.values[0, 0, :, :]
+    wrf_v10 = da_uv10.values[1, 0, :, :]
+    wrf_ws10 = np.sqrt(wrf_u10 ** 2 + wrf_v10 ** 2)
+    return wrf_u10, wrf_v10, wrf_ws10
+
+
+def plot_wind_speed_10m(wrf_u10, wrf_v10, wrf_ws10, map_opts, config, limits, constants, map_suffix, out_dir):
+    """Plot 10-m wind speed with optional wind barbs."""
+    var_file = 'WS10'
+    var_name = '10-m Wind Speed'
+    var_unit = constants['mpl_ms1']
+
+    min_val = np.nanmin(wrf_ws10[config['j_beg']:config['j_end'], config['i_beg']:config['i_end']])
+    max_val = np.nanmax(wrf_ws10[config['j_beg']:config['j_end'], config['i_beg']:config['i_end']])
+
+    extend = 'max'
+    cmap = mpl.cm.BuGn
+    bounds = np.arange(limits['ws10']['min'], limits['ws10']['max'], limits['ws10']['int'])
+    norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend=extend)
+
+    # Add wind barbs if requested
+    u_var, v_var = (wrf_u10, wrf_v10) if config['plot_wind_barbs_sfc'] else (None, None)
+    if config['plot_wind_barbs_sfc']:
+        var_file += ADD_BARBS_STRING
+
+    title_l = var_name + f'\nMin: {min_val:.1f} ' + var_unit + f', Max: {max_val:.1f} ' + var_unit
+
+    plot_opts = map_opts.copy()
+    plot_opts.update({
+        'fill_var': wrf_ws10, 'water_color': 'none', 'extend': extend,
+        'cmap': cmap, 'bounds': bounds, 'norm': norm, 'u': u_var, 'v': v_var,
+        'cbar_lab': var_name + ' [' + var_unit + ']',
+        'fname': out_dir.joinpath('map_wrf_' + config['wrf_dom'] + '_' + var_file + map_suffix),
+        'title_l': title_l, 'title_r': config['title_r']
+    })
+
+    map_funcs.map_plot(plot_opts)
+
+
+def plot_sea_level_pressure(ds_wrf_nc, wrf_u10, wrf_v10, map_opts, config, limits, map_suffix, out_dir):
+    """Plot sea level pressure with optional wind barbs."""
+    print('   Reading sea level pressure')
+    da_slp = wrf.getvar(ds_wrf_nc, 'slp', squeeze=False)
+    wrf_slp = da_slp.values[0, :, :]
+
+    var_file = 'SLP'
+    var_name = 'Sea-Level Pressure'
+    var_unit = 'hPa'
+
+    min_val = np.nanmin(wrf_slp[config['j_beg']:config['j_end'], config['i_beg']:config['i_end']])
+    max_val = np.nanmax(wrf_slp[config['j_beg']:config['j_end'], config['i_beg']:config['i_end']])
+
+    extend = 'both'
+    cmap = mpl.cm.viridis
+    bounds = np.arange(limits['slp']['min'], limits['slp']['max'], limits['slp']['int'])
+    norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend=extend)
+
+    # Add wind barbs if requested
+    u_var, v_var = (wrf_u10, wrf_v10) if config['plot_wind_barbs_sfc'] else (None, None)
+    if config['plot_wind_barbs_sfc']:
+        var_file += ADD_BARBS_STRING
+
+    title_l = var_name + f'\nMin: {min_val:.1f} ' + var_unit + f', Max: {max_val:.1f} ' + var_unit
+
+    plot_opts = map_opts.copy()
+    plot_opts.update({
+        'fill_var': wrf_slp, 'water_color': 'none', 'extend': extend,
+        'cmap': cmap, 'bounds': bounds, 'norm': norm, 'u': u_var, 'v': v_var,
+        'cbar_lab': var_name + ' [' + var_unit + ']',
+        'fname': out_dir.joinpath('map_wrf_' + config['wrf_dom'] + '_' + var_file + map_suffix),
+        'title_l': title_l, 'title_r': config['title_r']
+    })
+
+    map_funcs.map_plot(plot_opts)
+
+
+def plot_temperature_2m(ds_wrf_nc, wrf_u10, wrf_v10, map_opts, config, limits, constants, map_suffix, out_dir):
+    """Plot 2-m air temperature with optional wind barbs."""
+    print('   Reading 2-m air temperature')
+    da_t2 = wrf.getvar(ds_wrf_nc, 'T2', squeeze=False)
+    if da_t2.attrs['units'] == 'K':
+        da_t2 = da_t2 - constants['c_to_k']
+        da_t2.attrs['units'] = 'degC'
+    wrf_t2 = da_t2.values[0, :, :]
+
+    var_file = 'T2'
+    var_name = '2-m Air Temperature'
+    var_unit = constants['deg_uni'] + 'C'
+
+    min_val = np.nanmin(wrf_t2[config['j_beg']:config['j_end'], config['i_beg']:config['i_end']])
+    max_val = np.nanmax(wrf_t2[config['j_beg']:config['j_end'], config['i_beg']:config['i_end']])
+
+    extend = 'both'
+    cmap = mpl.cm.rainbow
+    bounds = np.arange(limits['t2']['min'], limits['t2']['max'], limits['t2']['int'])
+    norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend=extend)
+
+    # Add wind barbs if requested
+    u_var, v_var = (wrf_u10, wrf_v10) if config['plot_wind_barbs_sfc'] else (None, None)
+    if config['plot_wind_barbs_sfc']:
+        var_file += ADD_BARBS_STRING
+
+    title_l = var_name + f'\nMin: {min_val:.1f} ' + var_unit + f', Max: {max_val:.1f} ' + var_unit
+
+    plot_opts = map_opts.copy()
+    plot_opts.update({
+        'fill_var': wrf_t2, 'water_color': 'none', 'extend': extend,
+        'cmap': cmap, 'bounds': bounds, 'norm': norm, 'u': u_var, 'v': v_var,
+        'cbar_lab': var_name + ' [' + var_unit + ']',
+        'fname': out_dir.joinpath('map_wrf_' + config['wrf_dom'] + '_' + var_file + map_suffix),
+        'title_l': title_l, 'title_r': config['title_r']
+    })
+
+    map_funcs.map_plot(plot_opts)
+
+
+def plot_humidity_2m(ds_wrf_nc, wrf_u10, wrf_v10, map_opts, config, limits, map_suffix, out_dir):
+    """Plot 2-m relative humidity with optional wind barbs."""
+    print('   Reading 2-m relative humidity')
+    da_rh2 = wrf.getvar(ds_wrf_nc, 'rh2', squeeze=False)
+    wrf_rh2 = da_rh2.values[0, :, :]
+
+    var_file = 'RH2'
+    var_name = '2-m Relative Humidity'
+    var_unit = '%'
+
+    min_val = np.nanmin(wrf_rh2[config['j_beg']:config['j_end'], config['i_beg']:config['i_end']])
+    max_val = np.nanmax(wrf_rh2[config['j_beg']:config['j_end'], config['i_beg']:config['i_end']])
+
+    extend = 'max'
+    cmap = mpl.cm.YlGnBu
+    bounds = np.arange(limits['rh2']['min'], limits['rh2']['max'], limits['rh2']['int'])
+    norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend=extend)
+
+    # Add wind barbs if requested
+    u_var, v_var = (wrf_u10, wrf_v10) if config['plot_wind_barbs_sfc'] else (None, None)
+    if config['plot_wind_barbs_sfc']:
+        var_file += ADD_BARBS_STRING
+
+    title_l = var_name + f'\nMin: {min_val:.1f}' + var_unit + f', Max: {max_val:.1f}' + var_unit
+
+    plot_opts = map_opts.copy()
+    plot_opts.update({
+        'fill_var': wrf_rh2, 'water_color': 'none', 'extend': extend,
+        'cmap': cmap, 'bounds': bounds, 'norm': norm, 'u': u_var, 'v': v_var,
+        'cbar_lab': var_name + ' [' + var_unit + ']',
+        'fname': out_dir.joinpath('map_wrf_' + config['wrf_dom'] + '_' + var_file + map_suffix),
+        'title_l': title_l, 'title_r': config['title_r']
+    })
+
+    map_funcs.map_plot(plot_opts)
+
+
+def plot_precipitation(ds_wrf_nc, wrf_u10, wrf_v10, map_opts, config, limits, constants, map_suffix, out_dir):
+    """Plot accumulated precipitation."""
+    print('   Reading accumulated rainfall')
+    da_rainc = wrf.getvar(ds_wrf_nc, 'RAINC', squeeze=False)
+    da_rainnc = wrf.getvar(ds_wrf_nc, 'RAINNC', squeeze=False)
+    wrf_rain = da_rainc.values[0, :, :] + da_rainnc.values[0, :, :]
+
+    # Mask RAIN=0.0 for plotting
+    wrf_rain_plot = np.ma.masked_equal(np.where(wrf_rain == 0.0, constants['missing_val'], wrf_rain),
+                                       constants['missing_val'])
+
+    var_file = 'RAIN'
+    var_name = 'Accumulated Precipitation'
+    var_unit = 'mm'
+
+    min_val = np.nanmin(wrf_rain[config['j_beg']:config['j_end'], config['i_beg']:config['i_end']])
+    max_val = np.nanmax(wrf_rain[config['j_beg']:config['j_end'], config['i_beg']:config['i_end']])
+
+    extend = 'max'
+    cmap = mpl.cm.GnBu
+    bounds = np.arange(limits['rain']['min'], limits['rain']['max'], limits['rain']['int'])
+    norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend=extend)
+
+    # Add wind barbs if requested
+    u_var, v_var = (wrf_u10, wrf_v10) if config['plot_wind_barbs_sfc'] else (None, None)
+    if config['plot_wind_barbs_sfc']:
+        var_file += ADD_BARBS_STRING
+
+    title_l = var_name + f'\nMin: {min_val:.1f} ' + var_unit + f', Max: {max_val:.1f} ' + var_unit
+
+    plot_opts = map_opts.copy()
+    plot_opts.update({
+        'fill_var': wrf_rain_plot, 'water_color': 'none', 'extend': extend,
+        'cmap': cmap, 'bounds': bounds, 'norm': norm, 'u': u_var, 'v': v_var,
+        'cbar_lab': var_name + ' [' + var_unit + ']',
+        'fname': out_dir.joinpath('map_wrf_' + config['wrf_dom'] + '_' + var_file + map_suffix),
+        'title_l': title_l, 'title_r': config['title_r']
+    })
+
+    map_funcs.map_plot(plot_opts)
+
+
+def plot_radar_reflectivity(ds_wrf_nc, wrf_u10, wrf_v10, map_opts, config, constants, radar_data, map_suffix, out_dir):
+    """Plot radar reflectivity with optional wind barbs."""
+    print('   Reading radar reflectivity')
+    da_refl = wrf.getvar(ds_wrf_nc, 'dbz', squeeze=False)
+    wrf_refl = da_refl.values[0, 0, :, :]
+
+    # Mask REFL <= 0.0 for plotting
+    wrf_refl_plot = np.ma.masked_equal(np.where(wrf_refl <= 0.0, constants['missing_val'], wrf_refl),
+                                       constants['missing_val'])
+
+    var_file = 'REFL'
+    var_name = 'Radar Reflectivity'
+    var_unit = 'dBZ'
+
+    min_val = np.nanmin(wrf_refl[config['j_beg']:config['j_end'], config['i_beg']:config['i_end']])
+    max_val = np.nanmax(wrf_refl[config['j_beg']:config['j_end'], config['i_beg']:config['i_end']])
+
+    extend = 'max'
+    refl_rgb = radar_data['cmap_radar']
+    bounds = radar_data['bounds_radar']
+    cmap, norm = mpl.colors.from_levels_and_colors(bounds, refl_rgb, extend=extend)
+
+    cbar_lab = var_name + ' [' + var_unit + ']'
+
+    # Add wind barbs if requested
+    u_var, v_var = (wrf_u10, wrf_v10) if config['plot_wind_barbs_sfc'] else (None, None)
+    if config['plot_wind_barbs_sfc']:
+        var_file += ADD_BARBS_STRING
+        var_name += '; 10-m Barbs'
+
+    title_l = var_name + f'\nMin: {min_val:.1f} ' + var_unit + f', Max: {max_val:.1f} ' + var_unit
+
+    plot_opts = map_opts.copy()
+    plot_opts.update({
+        'fill_var': wrf_refl_plot, 'water_color': 'none', 'extend': extend,
+        'cmap': cmap, 'bounds': bounds, 'norm': norm, 'u': u_var, 'v': v_var,
+        'cbar_lab': cbar_lab,
+        'fname': out_dir.joinpath('map_wrf_' + config['wrf_dom'] + '_' + var_file + map_suffix),
+        'title_l': title_l, 'title_r': config['title_r']
+    })
+
+    map_funcs.map_plot(plot_opts)
+
+
+def check_and_open_zlev_file(wrf_fname_zlev):
+    """Check if z-level file exists and open it."""
+    try:
+        if not wrf_fname_zlev.is_file():
+            print(f'WARNING: File {wrf_fname_zlev} does not exist. Skipping upper-level winds.')
+            return None
+    except FileNotFoundError:
+        print(f'WARNING: File {wrf_fname_zlev} does not exist. Skipping upper-level winds.')
+        return None
+
+    print(f'Reading {wrf_fname_zlev}')
+    return netCDF4.Dataset(wrf_fname_zlev, mode='r')
+
+
+def plot_upper_level_winds(wrf_fname_zlev, map_opts, config, limits, constants, map_suffix, out_dir):
+    """Plot 100-m wind speed from z-level file with optional wind barbs."""
+    ds_wrf_zlev_nc = check_and_open_zlev_file(wrf_fname_zlev)
+    if ds_wrf_zlev_nc is None:
+        return
+
+    try:
+        wrf_z_zlev = wrf.getvar(ds_wrf_zlev_nc, 'Z_ZL', squeeze=False)
+
+        # Find 100-m level
+        ind_z = np.where(wrf_z_zlev == -100)[0][0]
+        wrf_ws100 = wrf.getvar(ds_wrf_zlev_nc, 'S_ZL', squeeze=False)[0, ind_z, :, :]
+
+        var_file = 'WS100'
+        var_name = '100-m Wind Speed'
+        var_unit = constants['mpl_ms1']
+
+        min_val = np.nanmin(wrf_ws100[config['j_beg']:config['j_end'], config['i_beg']:config['i_end']])
+        max_val = np.nanmax(wrf_ws100[config['j_beg']:config['j_end'], config['i_beg']:config['i_end']])
+
+        extend = 'max'
+        cmap = mpl.cm.BuGn
+        bounds = np.arange(limits['ws10']['min'], limits['ws10']['max'], limits['ws10']['int'])
+        norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend=extend)
+
+        # Add wind barbs if requested
+        u_var, v_var = None, None
+        if config['plot_wind_barbs_upr']:
+            var_file += ADD_BARBS_STRING
+            var_name += '; Barbs'
+            wrf_u100 = wrf.getvar(ds_wrf_zlev_nc, 'U_ZL', squeeze=False).values[0, ind_z, :, :]
+            wrf_v100 = wrf.getvar(ds_wrf_zlev_nc, 'V_ZL', squeeze=False).values[0, ind_z, :, :]
+            u_var, v_var = wrf_u100, wrf_v100
+
+        title_l = var_name + f'\nMin: {min_val:.1f} ' + var_unit + f', Max: {max_val:.1f} ' + var_unit
+
+        plot_opts = map_opts.copy()
+        plot_opts.update({
+            'fill_var': wrf_ws100, 'water_color': 'none', 'extend': extend,
+            'cmap': cmap, 'bounds': bounds, 'norm': norm, 'u': u_var, 'v': v_var,
+            'cbar_lab': var_name + ' [' + var_unit + ']',
+            'fname': out_dir.joinpath('map_wrf_' + config['wrf_dom'] + '_' + var_file + map_suffix),
+            'title_l': title_l, 'title_r': config['title_r']
+        })
+
+        map_funcs.map_plot(plot_opts)
+
+    finally:
+        ds_wrf_zlev_nc.close()
+
+
+def determine_read_zlev(config):
+    """Determine if z-level file needs to be read."""
+    return config['plot_ws100']
+
+
+def parse_time_ranges(script_config_opts, formats):
+    """Parse and build time ranges for processing."""
+    cycle_dt_first = pd.to_datetime(script_config_opts['cycle_dt_first'], format=formats['fmt_yyyymmdd_hh'])
+    cycle_dt_last = pd.to_datetime(script_config_opts['cycle_dt_last'], format=formats['fmt_yyyymmdd_hh'])
+    cycle_dt_all = pd.date_range(start=cycle_dt_first, end=cycle_dt_last,
+                                 freq=str(script_config_opts['cycle_stride_h']) + 'h')
+    return cycle_dt_all
+
+
+def build_valid_times(cycle_dt, script_config_opts):
+    """Build array of valid times for a forecast cycle."""
+    beg_lead_h = int(script_config_opts['beg_lead_time'].split(':')[0])
+    beg_lead_m = int(script_config_opts['beg_lead_time'].split(':')[1])
+    end_lead_h = int(script_config_opts['end_lead_time'].split(':')[0])
+    end_lead_m = int(script_config_opts['end_lead_time'].split(':')[1])
+    valid_dt_beg = cycle_dt + dt.timedelta(hours=beg_lead_h, minutes=beg_lead_m)
+    valid_dt_end = cycle_dt + dt.timedelta(hours=end_lead_h, minutes=end_lead_m)
+    valid_dt_all = pd.date_range(start=valid_dt_beg, end=valid_dt_end,
+                                 freq=str(script_config_opts['str_lead_time']) + 'min')
+    return valid_dt_all
+
+
+def process_forecast_cycle(cycle_dt, script_config_opts, static_data, config, constants, formats, limits, radar_data):
+    """Process a single forecast cycle (all valid times)."""
+    cycle_dt_str = cycle_dt.strftime(formats['fmt_yyyymmdd_hh'])
+    cycle_dt_plot = cycle_dt.strftime(formats['fmt_time_plot'])
+    start_time_plot = 'Start: ' + cycle_dt_plot
+    wrf_dir = script_config_opts['wrf_dir_parent'].joinpath(cycle_dt_str)
+    out_dir = script_config_opts['out_dir_parent'].joinpath(cycle_dt_str, 'plots')
+
+    # Build valid time array
+    valid_dt_all = build_valid_times(cycle_dt, script_config_opts)
+    n_valid = len(valid_dt_all)
+
+    # Loop over valid times (this assumes one output time per file)
+    for vv in range(n_valid):
+        valid_dt = valid_dt_all[vv]
+        process_valid_time(valid_dt, vv, wrf_dir, out_dir, start_time_plot, static_data,
+                           config, constants, formats, limits, radar_data, script_config_opts)
+
+
+def process_valid_time(valid_dt, time_index, wrf_dir, out_dir, start_time_plot, static_data,
+                       config, constants, formats, limits, radar_data, script_config_opts):
+    """Process a single valid time within a forecast cycle."""
+    valid_dt_wrf = valid_dt.strftime(formats['fmt_wrf_dt'])
+    valid_dt_plot = valid_dt.strftime(formats['fmt_time_plot'])
+    valid_dt_file = valid_dt.strftime(formats['fmt_time_file'])
+    valid_time_plot = 'Valid: ' + valid_dt_plot
+
+    config['title_r'] = start_time_plot + '\n' + valid_time_plot
+    config['wrf_dom'] = 'd0' + script_config_opts['domain']
+    map_suffix = '_' + valid_dt_file + '.' + config['plot_type']
+
+    wrf_fname = wrf_dir.joinpath('wrfout_' + config['wrf_dom'] + '_' + valid_dt_wrf)
+    wrf_fname_zlev = wrf_dir.joinpath('wrfout_zlev_' + config['wrf_dom'] + '_' + valid_dt_wrf)
+
+    if not check_wrf_file_exists(wrf_fname):
+        return
+
+    print(f'Reading {wrf_fname}')
+    ds_wrf_nc = netCDF4.Dataset(wrf_fname, mode='r')
+
+    try:
+        # Initialize static fields on first iteration
+        if not static_data:
+            map_opts, wrf_lats, wrf_lons = initialize_static_fields(ds_wrf_nc, config)
+            static_data['map_opts'] = map_opts
+            static_data['wrf_lats'] = wrf_lats
+            static_data['wrf_lons'] = wrf_lons
+
+            # Plot terrain (only once)
+            if config['plot_terrain']:
+                plot_terrain(ds_wrf_nc, map_opts, config, limits, out_dir)
+
+        # Make the water color transparent for all subsequent plots
+        static_data['map_opts']['water_color'] = 'none'
+
+        plot_all_variables(ds_wrf_nc, wrf_fname_zlev, static_data['map_opts'], config,
+                           limits, constants, radar_data, map_suffix, out_dir, time_index)
+
+    finally:
+        ds_wrf_nc.close()
+
+
+def check_wrf_file_exists(wrf_fname):
+    """Check if WRF file exists."""
+    try:
+        if not wrf_fname.is_file():
+            print(f'WARNING: File {wrf_fname} does not exist. Continuing to the next valid time.')
+            return False
+    except FileNotFoundError:
+        print(f'WARNING: File {wrf_fname} does not exist. Continuing to the next valid time.')
+        return False
+    return True
+
+
+def plot_all_variables(ds_wrf_nc, wrf_fname_zlev, map_opts, config, limits, constants,
+                       radar_data, map_suffix, out_dir, time_index):
+    """Coordinate plotting of all requested variables."""
+    # Read surface winds if needed for any plots
+    wrf_u10, wrf_v10, wrf_ws10 = None, None, None
+    if config['plot_wind_barbs_sfc'] or config['plot_ws10']:
+        wrf_u10, wrf_v10, wrf_ws10 = read_surface_winds(ds_wrf_nc)
+
+    # Plot 10-m wind speed
+    if config['plot_ws10'] and wrf_ws10 is not None:
+        plot_wind_speed_10m(wrf_u10, wrf_v10, wrf_ws10, map_opts, config, limits, constants, map_suffix, out_dir)
+
+    # Plot sea level pressure
+    if config['plot_slp']:
+        plot_sea_level_pressure(ds_wrf_nc, wrf_u10, wrf_v10, map_opts, config, limits, map_suffix, out_dir)
+
+    # Plot 2-m temperature
+    if config['plot_t2']:
+        plot_temperature_2m(ds_wrf_nc, wrf_u10, wrf_v10, map_opts, config, limits, constants, map_suffix, out_dir)
+
+    # Plot 2-m relative humidity
+    if config['plot_rh2']:
+        plot_humidity_2m(ds_wrf_nc, wrf_u10, wrf_v10, map_opts, config, limits, map_suffix, out_dir)
+
+    # Plot precipitation (skip first time step)
+    if config['plot_rain'] and time_index > 0:
+        plot_precipitation(ds_wrf_nc, wrf_u10, wrf_v10, map_opts, config, limits, constants, map_suffix, out_dir)
+
+    # Plot radar reflectivity (skip first time step)
+    if config['plot_refl'] and time_index > 0:
+        plot_radar_reflectivity(ds_wrf_nc, wrf_u10, wrf_v10, map_opts, config, constants, radar_data, map_suffix,
+                                out_dir)
+
+    # Plot upper-level winds if requested
+    if determine_read_zlev(config):
+        plot_upper_level_winds(wrf_fname_zlev, map_opts, config, limits, constants, map_suffix, out_dir)
+
+
+def main(script_config_opts):
+    """Main function with reduced complexity."""
+    # Setup configuration and constants
+    config = setup_plot_configuration()
+    limits = setup_plot_limits()
+    constants, formats, radar_data = setup_constants_and_formats()
+
+    # Parse time ranges
+    cycle_dt_all = parse_time_ranges(script_config_opts, formats)
     n_cycles = len(cycle_dt_all)
 
-    dom_num = script_config_opts['domain']
-    wrf_dom = 'd0' + dom_num
+    # Initialize static data storage
+    static_data = {}
 
     # Loop over forecast cycles/initializations
     for cc in range(n_cycles):
         cycle_dt = cycle_dt_all[cc]
-        cycle_dt_str = cycle_dt.strftime(fmt_yyyymmdd_hh)
-        cycle_dt_plot = cycle_dt.strftime(fmt_time_plot)
-        start_time_plot = 'Start: ' + cycle_dt_plot
-        wrf_dir = script_config_opts['wrf_dir_parent'].joinpath(cycle_dt_str)
-        out_dir = script_config_opts['out_dir_parent'].joinpath(cycle_dt_str, 'plots')
-
-        # Build an array of the valid datetimes that need to be read and plotted
-        beg_lead_h = int(script_config_opts['beg_lead_time'].split(':')[0])
-        beg_lead_m = int(script_config_opts['beg_lead_time'].split(':')[1])
-        end_lead_h = int(script_config_opts['end_lead_time'].split(':')[0])
-        end_lead_m = int(script_config_opts['end_lead_time'].split(':')[1])
-        valid_dt_beg = cycle_dt + dt.timedelta(hours=beg_lead_h, minutes=beg_lead_m)
-        valid_dt_end = cycle_dt + dt.timedelta(hours=end_lead_h, minutes=end_lead_m)
-        valid_dt_all = pd.date_range(start=valid_dt_beg, end=valid_dt_end,
-                                     freq=str(script_config_opts['str_lead_time']) + 'min')
-        n_valid = len(valid_dt_all)
-
-        # Loop over valid times (this assumes one output time per file)
-        for vv in range(n_valid):
-            valid_dt = valid_dt_all[vv]
-            valid_dt_wrf = valid_dt.strftime(fmt_wrf_dt)
-            valid_dt_plot = valid_dt.strftime(fmt_time_plot)
-            valid_dt_file = valid_dt.strftime(fmt_time_file)
-            valid_time_plot = 'Valid: '+valid_dt_plot
-
-            suptitle = 'Hurricane Matthew Test Case'
-            map_prefix = 'map_wrf_' + wrf_dom + '_'
-            map_suffix = '_' + valid_dt_file + '.' + plot_type
-            title_r = start_time_plot + '\n' + valid_time_plot
-            title_r_blank = ''
-
-            wrf_fname = wrf_dir.joinpath('wrfout_' + wrf_dom + '_' + valid_dt_wrf)
-            wrf_fname_zlev = wrf_dir.joinpath('wrfout_zlev_' + wrf_dom + '_' + valid_dt_wrf)
-
-            try:
-                wrf_fname.is_file()
-            except FileNotFoundError:
-                print('WARNING: File '+str(wrf_fname) + 'does not exist. Continuing to the next valid time.')
-                continue
-            print('Reading ' + str(wrf_fname))
-            # Use NetCDF4-python to open a Dataset, as wrf-python doesn't yet take an xarray Dataset
-            # wrf.getvar will return an xarray Dataset by default, though
-            ds_wrf_nc = netCDF4.Dataset(wrf_fname, mode='r')
-
-            # Static fields only need to be read in once
-            if cc == 0 and vv == 0:
-                # Latitude, Longitude
-                da_lat = wrf.getvar(ds_wrf_nc, 'lat', squeeze=False)
-                wrf_lats, wrf_lons = wrf.latlon_coords(da_lat)
-
-                print('Getting cartopy mapping objects')
-                cart_proj = wrf.get_cartopy(wrfin=ds_wrf_nc)
-                cart_bounds = wrf.geo_bounds(var=da_lat[0, j_beg:j_end, i_beg:i_end])
-                cart_xlim = wrf.cartopy_xlim(wrfin=ds_wrf_nc, geobounds=cart_bounds)
-                cart_ylim = wrf.cartopy_ylim(wrfin=ds_wrf_nc, geobounds=cart_bounds)
-                borders, states, oceans, lakes, _, _ = map_funcs.get_cartopy_features()
-
-                # Start populating dictionary for map plotting options. Update later with other options.
-                map_opts = {
-                    'cart_proj': cart_proj, 'cart_xlim': cart_xlim, 'cart_ylim': cart_ylim,
-                    'borders': borders, 'states': states, 'oceans': oceans, 'lakes': lakes,
-                    'lons': wrf_lons, 'lats': wrf_lats, 'suptitle': suptitle, 'suptitle_y': suptitle_y,
-                    'lat_labels': lat_labels, 'lon_labels': lon_labels, 'fontsize': plot_fontsize,
-                    'map_x_thin': barb_thin, 'map_y_thin': barb_thin, 'barb_width': barb_width,
-                }
-
-                if plot_stations:
-                    map_opts['mark1_lat'] = mark1_lat
-                    map_opts['mark1_lon'] = mark1_lon
-                    map_opts['text1_lab'] = text1_lab
-                    map_opts['text1_lat'] = text1_lat
-                    map_opts['text1_lon'] = text1_lon
-                    map_opts['mark1_size'] = mark1_size
-                    map_opts['mark1_color'] = mark1_color
-
-                # Terrain
-                if plot_terrain:
-                    print('   Reading terrain')
-                    da_terrain = wrf.getvar(ds_wrf_nc, 'ter', squeeze=False)
-                    wrf_terrain = da_terrain.values[0, :, :]
-
-                    var_file = 'TERRAIN'
-                    var_name = 'Terrain Height'
-                    var_unit = 'm'
-                    wrf_var = wrf_terrain
-                    min_val = np.nanmin(wrf_var[j_beg:j_end, i_beg:i_end])
-                    max_val = np.nanmax(wrf_var[j_beg:j_end, i_beg:i_end])
-                    extend = 'both'
-                    cmap = map_funcs.truncate_cmap(mpl.cm.terrain, minval=0.20, maxval=0.95)
-                    bounds = np.arange(min_terrain, max_terrain, int_terrain)
-                    norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend=extend)
-                    title_l = var_name + f'\nMin: {min_val:.1f} ' + var_unit + f', Max: {max_val:.1f} ' + var_unit
-                    map_opts['fill_var'] = wrf_var
-                    map_opts['water_color'] = water_color
-                    map_opts['extend'] = extend
-                    map_opts['cmap'] = cmap
-                    map_opts['bounds'] = bounds
-                    map_opts['norm'] = norm
-                    map_opts['cbar_lab'] = 'Model ' + var_name + ' [' + var_unit + ']'
-                    map_opts['fname'] = out_dir.joinpath(map_prefix + var_file + '.' + plot_type)
-                    map_opts['title_l'] = title_l
-                    map_opts['title_r'] = title_r_blank
-                    map_funcs.map_plot(map_opts)
-
-            # Make the water color transparent for all subsequent plots
-            map_opts['water_color'] = 'none'
-            map_opts['title_r'] = title_r
-
-            if plot_wind_barbs_sfc or plot_ws10:
-                print('   Reading 10-m wind components (rotated to earth-relative)')
-                da_uv10 = wrf.getvar(ds_wrf_nc, 'uvmet10', squeeze=False)
-                wrf_u10 = da_uv10.values[0, 0, :, :]
-                wrf_v10 = da_uv10.values[1, 0, :, :]
-                wrf_ws10 = np.sqrt(wrf_u10**2 + wrf_v10**2)
-
-                if plot_ws10:
-                    var_file = 'WS10'
-                    var_name = '10-m Wind Speed'
-                    var_unit = mpl_ms1
-                    wrf_var = wrf_ws10
-                    min_val = np.nanmin(wrf_var[j_beg:j_end, i_beg:i_end])
-                    max_val = np.nanmax(wrf_var[j_beg:j_end, i_beg:i_end])
-                    extend = 'max'
-                    cmap = mpl.cm.BuGn
-                    bounds = np.arange(min_ws10, max_ws10, int_ws10)
-                    norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend=extend)
-                    map_opts['cbar_lab'] = var_name + ' [' + var_unit + ']'
-                    if plot_wind_barbs_sfc:
-                        var_file = var_file + ADD_BARBS_STRING
-                        map_opts['u'] = wrf_u10
-                        map_opts['v'] = wrf_v10
-                    else:
-                        map_opts['u'] = None
-                        map_opts['v'] = None
-                    title_l = var_name + f'\nMin: {min_val:.1f} ' + var_unit + f', Max: {max_val:.1f} ' + var_unit
-                    map_opts['fill_var'] = wrf_var
-                    map_opts['extend'] = extend
-                    map_opts['cmap'] = cmap
-                    map_opts['bounds'] = bounds
-                    map_opts['norm'] = norm
-                    map_opts['fname'] = out_dir.joinpath(map_prefix + var_file + map_suffix)
-                    map_opts['title_l'] = title_l
-                    map_funcs.map_plot(map_opts)
-
-            # Sea level pressuure
-            if plot_slp:
-                print('   Reading sea level pressure')
-                da_slp = wrf.getvar(ds_wrf_nc, 'slp', squeeze=False)
-                wrf_slp = da_slp.values[0, :, :]
-
-                var_file = 'SLP'
-                var_name = 'Sea-Level Pressure'
-                var_unit = 'hPa'
-                wrf_var = wrf_slp
-                min_val = np.nanmin(wrf_var[j_beg:j_end, i_beg:i_end])
-                max_val = np.nanmax(wrf_var[j_beg:j_end, i_beg:i_end])
-                extend = 'both'
-                cmap = mpl.cm.viridis
-                bounds = np.arange(min_slp, max_slp, int_slp)
-                norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend=extend)
-                map_opts['cbar_lab'] = var_name + ' [' + var_unit + ']'
-                if plot_wind_barbs_sfc:
-                    var_file = var_file + ADD_BARBS_STRING
-                    map_opts['u'] = wrf_u10
-                    map_opts['v'] = wrf_v10
-                else:
-                    map_opts['u'] = None
-                    map_opts['v'] = None
-                title_l = var_name + f'\nMin: {min_val:.1f} ' + var_unit + f', Max: {max_val:.1f} ' + var_unit
-                map_opts['fill_var'] = wrf_var
-                map_opts['extend'] = extend
-                map_opts['cmap'] = cmap
-                map_opts['bounds'] = bounds
-                map_opts['norm'] = norm
-                map_opts['fname'] = out_dir.joinpath(map_prefix + var_file + map_suffix)
-                map_opts['title_l'] = title_l
-                map_funcs.map_plot(map_opts)
-
-            # 2-m air temperature
-            if plot_t2:
-                print('   Reading 2-m air temperature')
-                da_t2 = wrf.getvar(ds_wrf_nc, 'T2', squeeze=False)
-                if da_t2.attrs['units'] == 'K':
-                    da_t2 = da_t2 - c_to_k
-                    da_t2.attrs['units'] = 'degC'
-                wrf_t2 = da_t2.values[0, :, :]
-
-                var_file = 'T2'
-                var_name = '2-m Air Temperature'
-                var_unit = deg_uni + 'C'
-                wrf_var = wrf_t2
-                min_val = np.nanmin(wrf_var[j_beg:j_end, i_beg:i_end])
-                max_val = np.nanmax(wrf_var[j_beg:j_end, i_beg:i_end])
-                extend = 'both'
-                cmap = mpl.cm.rainbow
-                bounds = np.arange(min_t2, max_t2, int_t2)
-                norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend=extend)
-                map_opts['cbar_lab'] = var_name + ' [' + var_unit + ']'
-                if plot_wind_barbs_sfc:
-                    var_file = var_file + ADD_BARBS_STRING
-                    map_opts['u'] = wrf_u10
-                    map_opts['v'] = wrf_v10
-                else:
-                    map_opts['u'] = None
-                    map_opts['v'] = None
-                title_l = var_name + f'\nMin: {min_val:.1f} ' + var_unit + f', Max: {max_val:.1f} ' + var_unit
-                map_opts['fill_var'] = wrf_var
-                map_opts['extend'] = extend
-                map_opts['cmap'] = cmap
-                map_opts['bounds'] = bounds
-                map_opts['norm'] = norm
-                map_opts['fname'] = out_dir.joinpath(map_prefix + var_file + map_suffix)
-                map_opts['title_l'] = title_l
-                map_funcs.map_plot(map_opts)
-
-            # 2-m relative humidity
-            if plot_rh2:
-                print('   Reading 2-m relative humidity')
-                da_rh2 = wrf.getvar(ds_wrf_nc, 'rh2', squeeze=False)
-                wrf_rh2 = da_rh2.values[0, :, :]
-
-                var_file = 'RH2'
-                var_name = '2-m Relative Humidity'
-                var_unit = '%'
-                wrf_var = wrf_rh2
-                min_val = np.nanmin(wrf_var[j_beg:j_end, i_beg:i_end])
-                max_val = np.nanmax(wrf_var[j_beg:j_end, i_beg:i_end])
-                extend = 'max'
-                cmap = mpl.cm.YlGnBu
-                bounds = np.arange(min_rh2, max_rh2, int_rh2)
-                norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend=extend)
-                map_opts['cbar_lab'] = var_name + ' [' + var_unit + ']'
-                if plot_wind_barbs_sfc:
-                    var_file = var_file + ADD_BARBS_STRING
-                    map_opts['u'] = wrf_u10
-                    map_opts['v'] = wrf_v10
-                else:
-                    map_opts['u'] = None
-                    map_opts['v'] = None
-                title_l = var_name + f'\nMin: {min_val:.1f}' + var_unit + f', Max: {max_val:.1f}' + var_unit
-                map_opts['fill_var'] = wrf_var
-                map_opts['extend'] = extend
-                map_opts['cmap'] = cmap
-                map_opts['bounds'] = bounds
-                map_opts['norm'] = norm
-                map_opts['fname'] = out_dir.joinpath(map_prefix + var_file + map_suffix)
-                map_opts['title_l'] = title_l
-                map_funcs.map_plot(map_opts)
-
-            # Accumulated rainfall
-            if plot_rain and vv > 0:
-                print('   Reading accumulated rainfall')
-                da_rainc = wrf.getvar(ds_wrf_nc, 'RAINC', squeeze=False)
-                da_rainnc = wrf.getvar(ds_wrf_nc, 'RAINNC', squeeze=False)
-                wrf_rain = da_rainc.values[0, :, :] + da_rainnc.values[0, :, :]
-                # Mask RAIN=0.0 for plotting
-                wrf_rain_plot = np.ma.masked_equal(np.where(wrf_rain == 0.0, missing_val, wrf_rain), missing_val)
-
-                var_file = 'RAIN'
-                var_name = 'Accumulated Precipitation'
-                var_unit = 'mm'
-                wrf_var1 = wrf_rain
-                wrf_var2 = wrf_rain_plot
-                min_val = np.nanmin(wrf_var1[j_beg:j_end, i_beg:i_end])
-                max_val = np.nanmax(wrf_var1[j_beg:j_end, i_beg:i_end])
-                extend = 'max'
-                cmap = mpl.cm.GnBu
-                bounds = np.arange(min_rain, max_rain, int_rain)
-                norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend=extend)
-                map_opts['cbar_lab'] = var_name + ' [' + var_unit + ']'
-                title_l = var_name + f'\nMin: {min_val:.1f} ' + var_unit + f', Max: {max_val:.1f} ' + var_unit
-                map_opts['fill_var'] = wrf_var2
-                map_opts['extend'] = extend
-                map_opts['cmap'] = cmap
-                map_opts['bounds'] = bounds
-                map_opts['norm'] = norm
-                map_opts['fname'] = out_dir.joinpath(map_prefix + var_file + map_suffix)
-                map_opts['title_l'] = title_l
-                map_funcs.map_plot(map_opts)
-
-            # Radar reflectivity
-            if plot_refl and vv > 0:
-                print('   Reading radar reflectivity')
-                da_refl = wrf.getvar(ds_wrf_nc, 'dbz', squeeze=False)
-                wrf_refl = da_refl.values[0, 0, :, :]
-                # Mask REFL <= 0.0 for plotting
-                wrf_refl_plot = np.ma.masked_equal(np.where(wrf_refl <= 0.0, missing_val, wrf_refl), missing_val)
-
-                var_file = 'REFL'
-                var_name = 'Radar Reflectivity'
-                var_unit = 'dBZ'
-                wrf_var1 = wrf_refl
-                wrf_var2 = wrf_refl_plot
-                min_val = np.nanmin(wrf_var1[j_beg:j_end, i_beg:i_end])
-                max_val = np.nanmax(wrf_var1[j_beg:j_end, i_beg:i_end])
-                extend = 'max'
-                refl_rgb = cmap_radar
-                bounds = bounds_radar
-                cmap, norm = mpl.colors.from_levels_and_colors(bounds, refl_rgb, extend=extend)
-                map_opts['cbar_lab'] = var_name + ' [' + var_unit + ']'
-                if plot_wind_barbs_sfc:
-                    var_file = var_file + ADD_BARBS_STRING
-                    var_name = var_name + '; 10-m Barbs'
-                    map_opts['u'] = wrf_u10
-                    map_opts['v'] = wrf_v10
-                else:
-                    map_opts['u'] = None
-                    map_opts['v'] = None
-                title_l = var_name + f'\nMin: {min_val:.1f} ' + var_unit + f', Max: {max_val:.1f} ' + var_unit
-                map_opts['fill_var'] = wrf_var2
-                map_opts['extend'] = extend
-                map_opts['cmap'] = cmap
-                map_opts['bounds'] = bounds
-                map_opts['norm'] = norm
-                map_opts['fname'] = out_dir.joinpath(map_prefix + var_file + map_suffix)
-                map_opts['title_l'] = title_l
-                map_funcs.map_plot(map_opts)
-
-            if read_zlev:
-                try:
-                    wrf_fname_zlev.is_file()
-                except FileNotFoundError:
-                    print('WARNING: File ' + str(wrf_fname_zlev) + 'does not exist. Continuing to the next valid time.')
-                    continue
-                print('Reading ' + str(wrf_fname_zlev))
-                # Use NetCDF4-python to open a Dataset, as wrf-python doesn't yet take an xarray Dataset
-                # wrf.getvar will return an xarray Dataset by default, though
-                ds_wrf_zlev_nc = netCDF4.Dataset(wrf_fname_zlev, mode='r')
-                wrf_z_zlev = wrf.getvar(ds_wrf_zlev_nc, 'Z_ZL', squeeze=False)
-
-                # 100-m wind speed
-                if plot_ws100:
-                    ind_z = np.where(wrf_z_zlev == -100)[0][0]
-                    wrf_ws100 = wrf.getvar(ds_wrf_zlev_nc, 'S_ZL', squeeze=False)[0, ind_z, :, :]
-
-                    var_file = 'WS100'
-                    var_name = '100-m Wind Speed'
-                    var_unit = mpl_ms1
-                    wrf_var = wrf_ws100
-                    min_val = np.nanmin(wrf_var[j_beg:j_end, i_beg:i_end])
-                    max_val = np.nanmax(wrf_var[j_beg:j_end, i_beg:i_end])
-                    extend = 'max'
-                    cmap = mpl.cm.BuGn
-                    bounds = np.arange(min_ws10, max_ws10, int_ws10)
-                    norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend=extend)
-                    map_opts['cbar_lab'] = var_name + ' [' + var_unit + ']'
-                    if plot_wind_barbs_upr:
-                        var_file = var_file + ADD_BARBS_STRING
-                        var_name = var_name + '; Barbs'
-                        wrf_u100 = wrf.getvar(ds_wrf_zlev_nc, 'U_ZL', squeeze=False).values[0, ind_z, :, :]
-                        wrf_v100 = wrf.getvar(ds_wrf_zlev_nc, 'V_ZL', squeeze=False).values[0, ind_z, :, :]
-                        map_opts['u'] = wrf_u100
-                        map_opts['v'] = wrf_v100
-                    else:
-                        map_opts['u'] = None
-                        map_opts['v'] = None
-                    title_l = var_name + f'\nMin: {min_val:.1f} ' + var_unit + f', Max: {max_val:.1f} ' + var_unit
-                    map_opts['fill_var'] = wrf_var
-                    map_opts['extend'] = extend
-                    map_opts['cmap'] = cmap
-                    map_opts['bounds'] = bounds
-                    map_opts['norm'] = norm
-                    map_opts['fname'] = out_dir.joinpath(map_prefix + var_file + map_suffix)
-                    map_opts['title_l'] = title_l
-                    map_funcs.map_plot(map_opts)
+        process_forecast_cycle(cycle_dt, script_config_opts, static_data, config,
+                               constants, formats, limits, radar_data)
 
 
 def parse_args():
+    """Parse command line arguments."""
     parser = argparse.ArgumentParser()
     parser.add_argument('-w', '--wrf_dir_parent', default='/data/input/wrf',
                         help='string specifying the directory path to the parent WRF output directories, '
@@ -562,46 +691,18 @@ def parse_args():
     wrf_dir_parent = pathlib.Path(wrf_dir_parent)
     out_dir_parent = pathlib.Path(out_dir_parent)
 
-    if len(cycle_dt_first) != 11:
-        print('ERROR! Incorrect length for positional argument init_dt_first. Exiting!')
-        parser.print_help()
-        sys.exit()
-    elif cycle_dt_first[8] != '_':
-        print('ERROR! Incorrect format for positional argument init_dt_first. Exiting!')
-        parser.print_help()
-        sys.exit()
+    # Validate input formats
+    validate_datetime_input(cycle_dt_first, 'init_dt_first', parser)
 
     if cycle_dt_last is not None:
-        if len(cycle_dt_last) != 11:
-            print('ERROR! Incorrect length for positional argument init_dt_last. Exiting!')
-            parser.print_help()
-            sys.exit()
-        elif cycle_dt_last[8] != '_':
-            print('ERROR! Incorrect format for positional argument init_dt_last. Exiting!')
-            parser.print_help()
-            sys.exit()
+        validate_datetime_input(cycle_dt_last, 'init_dt_last', parser)
     else:
         cycle_dt_last = cycle_dt_first
 
-    if len(beg_lead_time) != 5:
-        print('ERROR! Incorrect length for optional argument -b (beg_lead_time). Exiting!')
-        parser.print_help()
-        sys.exit()
-    elif beg_lead_time[2] != ':':
-        print('ERROR! Incorrect format for optional argument -b (beg_lead_time). Exiting!')
-        parser.print_help()
-        sys.exit()
+    validate_time_input(beg_lead_time, '-b (beg_lead_time)', parser)
+    validate_time_input(end_lead_time, '-e (end_lead_time)', parser)
 
-    if len(end_lead_time) != 5:
-        print('ERROR! Incorrect length for optional argument -e (end_lead_time). Exiting!')
-        parser.print_help()
-        sys.exit()
-    elif end_lead_time[2] != ':':
-        print('ERROR! Incorrect format for optional argument -e (end_lead_time). Exiting!')
-        parser.print_help()
-        sys.exit()
-
-    # Put all these configuration options into a dictionary, to make further development or customization easier
+    # Put all these configuration options into a dictionary
     script_config_opts = {
         'wrf_dir_parent': wrf_dir_parent,
         'out_dir_parent': out_dir_parent,
@@ -616,6 +717,31 @@ def parse_args():
 
     return script_config_opts
 
+
+def validate_datetime_input(dt_str, arg_name, parser):
+    """Validate datetime string format."""
+    if len(dt_str) != 11:
+        print(f'ERROR! Incorrect length for positional argument {arg_name}. Exiting!')
+        parser.print_help()
+        sys.exit()
+    elif dt_str[8] != '_':
+        print(f'ERROR! Incorrect format for positional argument {arg_name}. Exiting!')
+        parser.print_help()
+        sys.exit()
+
+
+def validate_time_input(time_str, arg_name, parser):
+    """Validate time string format."""
+    if len(time_str) != 5:
+        print(f'ERROR! Incorrect length for optional argument {arg_name}. Exiting!')
+        parser.print_help()
+        sys.exit()
+    elif time_str[2] != ':':
+        print(f'ERROR! Incorrect format for optional argument {arg_name}. Exiting!')
+        parser.print_help()
+        sys.exit()
+
+
 if __name__ == '__main__':
     now_time_beg = dt.datetime.now(dt.UTC)
 
@@ -627,6 +753,6 @@ if __name__ == '__main__':
     now_time_beg_str = now_time_beg.strftime('%Y-%m-%d %H:%M:%S')
     now_time_end_str = now_time_end.strftime('%Y-%m-%d %H:%M:%S')
     print('\nScript completed successfully.')
-    print('   Beg time: '+now_time_beg_str)
-    print('   End time: '+now_time_end_str)
-    print('   Run time: '+str(run_time_tot)+'\n')
+    print('   Beg time: ' + now_time_beg_str)
+    print('   End time: ' + now_time_end_str)
+    print('   Run time: ' + str(run_time_tot) + '\n')
