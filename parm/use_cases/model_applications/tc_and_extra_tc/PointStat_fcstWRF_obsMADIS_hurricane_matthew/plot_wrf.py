@@ -41,7 +41,7 @@ def main(script_config_opts):
     plot_ws10 = True        # 10-m wind speed [m s-1]
     plot_refl = True        # simulated radar reflectivity [dBZ]
     plot_rain = True        # total accumulated rainfall during the simulation [mm]
-    plot_ws100 = True       # 100-m wind speed [m s-1]
+    plot_ws100 = False       # 100-m wind speed [m s-1]
 
     # Plot any overlays, like wind barbs?
     plot_wind_barbs_sfc = True  # overlay 10-m wind barbs for selected plots
