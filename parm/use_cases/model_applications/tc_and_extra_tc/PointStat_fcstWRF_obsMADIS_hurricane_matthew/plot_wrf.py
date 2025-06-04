@@ -20,6 +20,8 @@ import matplotlib as mpl
 # Import functions from a local file
 import map_funcs
 
+ADD_BARBS_STRING = '+barbs'
+
 # def main(init_dt_first, init_dt_last, init_stride_h, plot_beg_lead_time, plot_end_lead_time, plot_stride, domain, exp_name):
 def main(script_config_opts):
     # ==============
@@ -28,7 +30,6 @@ def main(script_config_opts):
 
     # Default plot type selection
     plot_type = 'png'
-    # plot_maps = True        # Plot 2D maps
     plot_subdomain = False  # Plot specified subdomain to zoom in on a defined area of interest
     plot_stations = True     # Plot station markers & labels on the map (e.g., cities of interest)
 
@@ -41,7 +42,6 @@ def main(script_config_opts):
     plot_REFL = True        # simulated radar reflectivity [dBZ]
     plot_RAIN = True        # total accumulated rainfall during the simulation [mm]
     plot_WS100 = True       # 100-m wind speed [m s-1]
-    plot_GHT500 = True      # 500-hPa geopotential height [m]
 
     # Plot any overlays, like wind barbs?
     plot_wind_barbs_sfc = True  # overlay 10-m wind barbs for selected plots
@@ -69,7 +69,7 @@ def main(script_config_opts):
     # Domain plotting ranges in (i,j) space (whole domain by default)
     i_beg, i_end = 0, -1
     j_beg, j_end = 0, -1
-    # TODO: Implement subdomain plotting
+
     if plot_subdomain:
         # Adjust these if you want a different subdomain
         i_beg, i_end = 10, 81
@@ -107,47 +107,17 @@ def main(script_config_opts):
     # CONSTANTS, FORMAT STATEMENTS, AND MORE:
     # =======================================
 
-    G = 9.81  # graviational acceleration [m s-2]
-    PI = 3.1415926
-    DEG2RAD = PI / 180.0
-    RAD2DEG = 180.0 / PI
-    Rd = 297.048  # specific gas constant for dry air [J kg-1 K-1]
-    Rv = 461.495  # specific gas constant for water vapor [J kg-1 K-1]
     C_to_K = 273.15  # additive conversion between degrees Celsius and Kelvin
 
     missing_val = -9999.0
 
-    mpl_Wm2 = 'W $\mathregular{m^{-2}}$'
-    mpl_ms1 = 'm $\mathregular{s^{-1}}$'
-    mpl_s1 = '$\mathregular{s^{-1}}$'
-    mpl_Jkg = 'J $\mathregular{kg^{-1}}$'
-    mpl_um = u'\u03bcm'
-    mpl_gkg1 = 'g $\mathregular{kg^{-1}}$'
-    mpl_kgkg1 = 'kg $\mathregular{kg^{-1}}$'
-    mpl_gm2s1 = 'g $\mathregular{m^{-2}}$ $\mathregular{s^{-1}}$'
-    mpl_kgm2s1 = 'kg $\mathregular{m^{-2}} $\mathregular{s^{-1}}$'
-    mpl_kgm2 = 'kg $\mathregular{m^{-2}}$'
-    mpl_10m3 = '$\mathregular{10^{-3}}$'
-    mpl_10m4 = '$\mathregular{10^{-4}}$'
-    mpl_10m5 = '$\mathregular{10^{-5}}$'
-    mpl_10m6 = '$\mathregular{10^{-6}}$'
+    mpl_ms1 = r'm $\mathregular{s^{-1}}$'
 
     deg_uni = '\u00B0'
-    en_dash = u'\u2013'
-    em_dash = u'\u2014'
 
-    fmt_yyyymmdd = '%Y%m%d'
-    fmt_yyyymmddhh = '%Y%m%d%H'
     fmt_yyyymmdd_hh = '%Y%m%d_%H'
     fmt_yyyymmdd_hhmm = '%Y%m%d_%H%M'
-    fmt_dt = '%Y%m%dT%H%M%S'
-    fmt_yyyy = '%Y'
-    fmt_mm = '%m'
-    fmt_dd = '%d'
-    fmt_hh = '%H'
-    fmt_nn = '%M'
 
-    fmt_wrf_dt_no_s = '%Y-%m-%d_%H:%M'
     fmt_wrf_date = '%Y-%m-%d'
     fmt_wrf_time = '%H:%M:%S'
     fmt_wrf_dt = fmt_wrf_date + '_' + fmt_wrf_time
@@ -163,20 +133,10 @@ def main(script_config_opts):
         [253, 0, 0], [212, 0, 0], [188, 0, 0],
         [248, 0, 253], [152, 84, 198], [228, 199, 243]], np.float32) / 255.0
     bounds_radar = np.arange(0., 75.01, 5.0)
-    # Color names are approximate and only intended for assistance deciphering the RGB table above
-    colors_radar = np.array([
-        'gray', 'cyan', 'lightblue', 'darkblue',
-        'lightgreen', 'green', 'darkgreen',
-        'yellow', 'lightorange', 'orange',
-        'red', 'darkred', 'brickred',
-        'fuschia', 'violet', 'lavender'])
 
     read_zlev = False
-    read_plev = False
     if plot_WS100:
         read_zlev = True
-    if plot_GHT500:
-        read_plev = True
 
     # =============
     # MAIN PROGRAM:
@@ -221,17 +181,14 @@ def main(script_config_opts):
             valid_dt_file = valid_dt.strftime(fmt_time_file)
             valid_time_plot = 'Valid: '+valid_dt_plot
 
-            # suptitle = 'Hurricane Matthew ' + em_dash + ' Domain ' + dom_num
             suptitle = 'Hurricane Matthew Test Case'
             map_prefix = 'map_wrf_' + wrf_dom + '_'
             map_suffix = '_' + valid_dt_file + '.' + plot_type
             title_r = start_time_plot + '\n' + valid_time_plot
-            title_r_no_valid = start_time_plot
             title_r_blank = ''
 
             wrf_fname = wrf_dir.joinpath('wrfout_' + wrf_dom + '_' + valid_dt_wrf)
             wrf_fname_zlev = wrf_dir.joinpath('wrfout_zlev_' + wrf_dom + '_' + valid_dt_wrf)
-            wrf_fname_plev = wrf_dir.joinpath('wrfout_plev_' + wrf_dom + '_' + valid_dt_wrf)
 
             try:
                 wrf_fname.is_file()
@@ -247,12 +204,6 @@ def main(script_config_opts):
             if cc == 0 and vv == 0:
                 # Latitude, Longitude
                 da_lat = wrf.getvar(ds_wrf_nc, 'lat', squeeze=False)
-                da_lon = wrf.getvar(ds_wrf_nc, 'lon', squeeze=False)
-                wrf_lat = da_lat.values[0, :, :]
-                wrf_lon = da_lon.values[0, :, :]
-                n_wrf_lat = wrf_lat.shape[0]
-                n_wrf_lon = wrf_lon.shape[1]
-                n_wrf_lev = int(getattr(ds_wrf_nc, 'BOTTOM-TOP_GRID_DIMENSION'))
                 wrf_lats, wrf_lons = wrf.latlon_coords(da_lat)
 
                 print('Getting cartopy mapping objects')
@@ -260,7 +211,7 @@ def main(script_config_opts):
                 cart_bounds = wrf.geo_bounds(var=da_lat[0, j_beg:j_end, i_beg:i_end])
                 cart_xlim = wrf.cartopy_xlim(wrfin=ds_wrf_nc, geobounds=cart_bounds)
                 cart_ylim = wrf.cartopy_ylim(wrfin=ds_wrf_nc, geobounds=cart_bounds)
-                borders, states, oceans, lakes, rivers, land = map_funcs.get_cartopy_features()
+                borders, states, oceans, lakes, _, _ = map_funcs.get_cartopy_features()
 
                 # Start populating dictionary for map plotting options. Update later with other options.
                 map_opts = {
@@ -333,8 +284,7 @@ def main(script_config_opts):
                     norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend=extend)
                     map_opts['cbar_lab'] = var_name + ' [' + var_unit + ']'
                     if plot_wind_barbs_sfc:
-                        var_file = var_file + '+barbs'
-                        # var_name = var_name + '; Barbs'
+                        var_file = var_file + ADD_BARBS_STRING
                         map_opts['u'] = wrf_u10
                         map_opts['v'] = wrf_v10
                     else:
@@ -368,8 +318,7 @@ def main(script_config_opts):
                 norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend=extend)
                 map_opts['cbar_lab'] = var_name + ' [' + var_unit + ']'
                 if plot_wind_barbs_sfc:
-                    var_file = var_file + '+barbs'
-                    # var_name = var_name + '; 10-m Barbs'
+                    var_file = var_file + ADD_BARBS_STRING
                     map_opts['u'] = wrf_u10
                     map_opts['v'] = wrf_v10
                 else:
@@ -406,8 +355,7 @@ def main(script_config_opts):
                 norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend=extend)
                 map_opts['cbar_lab'] = var_name + ' [' + var_unit + ']'
                 if plot_wind_barbs_sfc:
-                    var_file = var_file + '+barbs'
-                    # var_name = var_name + '; 10-m Barbs'
+                    var_file = var_file + ADD_BARBS_STRING
                     map_opts['u'] = wrf_u10
                     map_opts['v'] = wrf_v10
                 else:
@@ -441,8 +389,7 @@ def main(script_config_opts):
                 norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend=extend)
                 map_opts['cbar_lab'] = var_name + ' [' + var_unit + ']'
                 if plot_wind_barbs_sfc:
-                    var_file = var_file + '+barbs'
-                    # var_name = var_name + '; 10-m Barbs'
+                    var_file = var_file + ADD_BARBS_STRING
                     map_opts['u'] = wrf_u10
                     map_opts['v'] = wrf_v10
                 else:
@@ -487,8 +434,6 @@ def main(script_config_opts):
                 map_opts['norm'] = norm
                 map_opts['fname'] = out_dir.joinpath(map_prefix + var_file + map_suffix)
                 map_opts['title_l'] = title_l
-                # print(wrf_var1.shape)
-                # print(wrf_var2.shape)
                 map_funcs.map_plot(map_opts)
 
             # Radar reflectivity
@@ -512,7 +457,7 @@ def main(script_config_opts):
                 cmap, norm = mpl.colors.from_levels_and_colors(bounds, refl_rgb, extend=extend)
                 map_opts['cbar_lab'] = var_name + ' [' + var_unit + ']'
                 if plot_wind_barbs_sfc:
-                    var_file = var_file + '+barbs'
+                    var_file = var_file + ADD_BARBS_STRING
                     var_name = var_name + '; 10-m Barbs'
                     map_opts['u'] = wrf_u10
                     map_opts['v'] = wrf_v10
@@ -527,8 +472,6 @@ def main(script_config_opts):
                 map_opts['norm'] = norm
                 map_opts['fname'] = out_dir.joinpath(map_prefix + var_file + map_suffix)
                 map_opts['title_l'] = title_l
-                # print(wrf_var1.shape)
-                # print(wrf_var2.shape)
                 map_funcs.map_plot(map_opts)
 
             if read_zlev:
@@ -560,7 +503,7 @@ def main(script_config_opts):
                     norm = mpl.colors.BoundaryNorm(bounds, cmap.N, extend=extend)
                     map_opts['cbar_lab'] = var_name + ' [' + var_unit + ']'
                     if plot_wind_barbs_upr:
-                        var_file = var_file + '+barbs'
+                        var_file = var_file + ADD_BARBS_STRING
                         var_name = var_name + '; Barbs'
                         wrf_u100 = wrf.getvar(ds_wrf_zlev_nc, 'U_ZL', squeeze=False).values[0, ind_z, :, :]
                         wrf_v100 = wrf.getvar(ds_wrf_zlev_nc, 'V_ZL', squeeze=False).values[0, ind_z, :, :]
@@ -578,7 +521,6 @@ def main(script_config_opts):
                     map_opts['fname'] = out_dir.joinpath(map_prefix + var_file + map_suffix)
                     map_opts['title_l'] = title_l
                     map_funcs.map_plot(map_opts)
-
 
 
 def parse_args():
@@ -601,9 +543,6 @@ def parse_args():
     parser.add_argument('-s', '--str_lead_time', default=180, type=int,
                         help='stride to create plots every N minutes (default: 180)')
     parser.add_argument('-d', '--domain', default='1', help='WRF domain number to be plotted (default: 1)')
-    # parser.add_argument('-x', '--exp_name', default=None,
-    #                     help='WRF experiment name(s), if applicable. If requesting plots for multiple experiments, '
-    #                          'separate them by commas (e.g., exp01,exp02).')
 
     args = parser.parse_args()
     wrf_dir_parent = args.wrf_dir_parent
@@ -615,12 +554,6 @@ def parse_args():
     end_lead_time = args.end_lead_time
     str_lead_time = args.str_lead_time
     domain = args.domain
-    # exp_names_inp = args.exp_name
-
-    # if exp_names_inp is None:
-    #     exp_name = None
-    # else:
-    #     exp_name = exp_names_inp.split(',')
 
     if out_dir_parent is None:
         out_dir_parent = wrf_dir_parent
@@ -638,7 +571,7 @@ def parse_args():
         parser.print_help()
         sys.exit()
 
-    if cycle_dt_last != None:
+    if cycle_dt_last is not None:
         if len(cycle_dt_last) != 11:
             print('ERROR! Incorrect length for positional argument init_dt_last. Exiting!')
             parser.print_help()
@@ -679,19 +612,17 @@ def parse_args():
         'end_lead_time': end_lead_time,
         'str_lead_time': str_lead_time,
         'domain': domain,
-        # 'exp_name': exp_name,
     }
 
     return script_config_opts
-    # return init_dt_first, init_dt_last, init_stride_h, beg_lead_time, end_lead_time, plot_stride, domain, exp_name
 
 if __name__ == '__main__':
-    now_time_beg = dt.datetime.utcnow()
-    # init_dt_first, init_dt_last, init_stride_h, plot_beg_lead_time, plot_end_lead_time, plot_stride, domain, exp_name = parse_args()
-    # main(init_dt_first, init_dt_last, init_stride_h, plot_beg_lead_time, plot_end_lead_time, plot_stride, domain, exp_name)
+    now_time_beg = dt.datetime.now(dt.UTC)
+
     script_config_opts = parse_args()
     main(script_config_opts)
-    now_time_end = dt.datetime.utcnow()
+
+    now_time_end = dt.datetime.now(dt.UTC)
     run_time_tot = now_time_end - now_time_beg
     now_time_beg_str = now_time_beg.strftime('%Y-%m-%d %H:%M:%S')
     now_time_end_str = now_time_end.strftime('%Y-%m-%d %H:%M:%S')
