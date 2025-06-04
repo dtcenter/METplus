@@ -26,6 +26,7 @@ SKIP_EXTENSIONS = [
     '.zip',
     '.gif',
     '.ix',
+    '.log',
 ]
 
 PDF_EXTENSIONS = [
