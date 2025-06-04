@@ -34,14 +34,14 @@ def main(script_config_opts):
     plot_stations = True     # Plot station markers & labels on the map (e.g., cities of interest)
 
     # Which variables should be plotted?
-    plot_TERRAIN = True     # terrain height [m]
-    plot_T2 = True          # 2-m temperature [C]
-    plot_RH2 = True         # 2-m relative humidity [%]
-    plot_SLP = True         # sea level pressure [hPa] (NOTE: this requires several other variables in the wrfout file)
-    plot_WS10 = True        # 10-m wind speed [m s-1]
-    plot_REFL = True        # simulated radar reflectivity [dBZ]
-    plot_RAIN = True        # total accumulated rainfall during the simulation [mm]
-    plot_WS100 = True       # 100-m wind speed [m s-1]
+    plot_terrain = True     # terrain height [m]
+    plot_t2 = True          # 2-m temperature [C]
+    plot_rh2 = True         # 2-m relative humidity [%]
+    plot_slp = True         # sea level pressure [hPa] (NOTE: this requires several other variables in the wrfout file)
+    plot_ws10 = True        # 10-m wind speed [m s-1]
+    plot_refl = True        # simulated radar reflectivity [dBZ]
+    plot_rain = True        # total accumulated rainfall during the simulation [mm]
+    plot_ws100 = True       # 100-m wind speed [m s-1]
 
     # Plot any overlays, like wind barbs?
     plot_wind_barbs_sfc = True  # overlay 10-m wind barbs for selected plots
@@ -107,7 +107,7 @@ def main(script_config_opts):
     # CONSTANTS, FORMAT STATEMENTS, AND MORE:
     # =======================================
 
-    C_to_K = 273.15  # additive conversion between degrees Celsius and Kelvin
+    c_to_k = 273.15  # additive conversion between degrees Celsius and Kelvin
 
     missing_val = -9999.0
 
@@ -135,7 +135,7 @@ def main(script_config_opts):
     bounds_radar = np.arange(0., 75.01, 5.0)
 
     read_zlev = False
-    if plot_WS100:
+    if plot_ws100:
         read_zlev = True
 
     # =============
@@ -232,7 +232,7 @@ def main(script_config_opts):
                     map_opts['mark1_color'] = mark1_color
 
                 # Terrain
-                if plot_TERRAIN:
+                if plot_terrain:
                     print('   Reading terrain')
                     da_terrain = wrf.getvar(ds_wrf_nc, 'ter', squeeze=False)
                     wrf_terrain = da_terrain.values[0, :, :]
@@ -264,14 +264,14 @@ def main(script_config_opts):
             map_opts['water_color'] = 'none'
             map_opts['title_r'] = title_r
 
-            if plot_wind_barbs_sfc or plot_WS10:
+            if plot_wind_barbs_sfc or plot_ws10:
                 print('   Reading 10-m wind components (rotated to earth-relative)')
                 da_uv10 = wrf.getvar(ds_wrf_nc, 'uvmet10', squeeze=False)
                 wrf_u10 = da_uv10.values[0, 0, :, :]
                 wrf_v10 = da_uv10.values[1, 0, :, :]
                 wrf_ws10 = np.sqrt(wrf_u10**2 + wrf_v10**2)
 
-                if plot_WS10:
+                if plot_ws10:
                     var_file = 'WS10'
                     var_name = '10-m Wind Speed'
                     var_unit = mpl_ms1
@@ -301,7 +301,7 @@ def main(script_config_opts):
                     map_funcs.map_plot(map_opts)
 
             # Sea level pressuure
-            if plot_SLP:
+            if plot_slp:
                 print('   Reading sea level pressure')
                 da_slp = wrf.getvar(ds_wrf_nc, 'slp', squeeze=False)
                 wrf_slp = da_slp.values[0, :, :]
@@ -335,11 +335,11 @@ def main(script_config_opts):
                 map_funcs.map_plot(map_opts)
 
             # 2-m air temperature
-            if plot_T2:
+            if plot_t2:
                 print('   Reading 2-m air temperature')
                 da_t2 = wrf.getvar(ds_wrf_nc, 'T2', squeeze=False)
                 if da_t2.attrs['units'] == 'K':
-                    da_t2 = da_t2 - C_to_K
+                    da_t2 = da_t2 - c_to_k
                     da_t2.attrs['units'] = 'degC'
                 wrf_t2 = da_t2.values[0, :, :]
 
@@ -372,7 +372,7 @@ def main(script_config_opts):
                 map_funcs.map_plot(map_opts)
 
             # 2-m relative humidity
-            if plot_RH2:
+            if plot_rh2:
                 print('   Reading 2-m relative humidity')
                 da_rh2 = wrf.getvar(ds_wrf_nc, 'rh2', squeeze=False)
                 wrf_rh2 = da_rh2.values[0, :, :]
@@ -406,7 +406,7 @@ def main(script_config_opts):
                 map_funcs.map_plot(map_opts)
 
             # Accumulated rainfall
-            if plot_RAIN and vv > 0:
+            if plot_rain and vv > 0:
                 print('   Reading accumulated rainfall')
                 da_rainc = wrf.getvar(ds_wrf_nc, 'RAINC', squeeze=False)
                 da_rainnc = wrf.getvar(ds_wrf_nc, 'RAINNC', squeeze=False)
@@ -437,7 +437,7 @@ def main(script_config_opts):
                 map_funcs.map_plot(map_opts)
 
             # Radar reflectivity
-            if plot_REFL and vv > 0:
+            if plot_refl and vv > 0:
                 print('   Reading radar reflectivity')
                 da_refl = wrf.getvar(ds_wrf_nc, 'dbz', squeeze=False)
                 wrf_refl = da_refl.values[0, 0, :, :]
@@ -487,7 +487,7 @@ def main(script_config_opts):
                 wrf_z_zlev = wrf.getvar(ds_wrf_zlev_nc, 'Z_ZL', squeeze=False)
 
                 # 100-m wind speed
-                if plot_WS100:
+                if plot_ws100:
                     ind_z = np.where(wrf_z_zlev == -100)[0][0]
                     wrf_ws100 = wrf.getvar(ds_wrf_zlev_nc, 'S_ZL', squeeze=False)[0, ind_z, :, :]
 
