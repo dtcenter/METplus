@@ -120,6 +120,7 @@ def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
         return [result]
 
     diff_files = []
+    n_files_compared = 0
     for filepath_a in _get_files(dir_a):
         filepath_b = filepath_a.replace(dir_a, dir_b)
         print("\n# # # # # # # # # # # # # # # # # # # # # # # # # # "
@@ -133,6 +134,7 @@ def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
                                    dir_a=dir_a,
                                    dir_b=dir_b,
                                    save_diff=save_diff)
+            n_files_compared += 1
         except Exception as err:
             print(f"ERROR: Exception occurred in diff logic: {err}")
             result = filepath_a, filepath_b, 'Exception in diff logic', ''
@@ -154,9 +156,10 @@ def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
             continue
         print(f"ERROR: File does not exist: {filepath_a}")
         diff_files.append(('', filepath_b, 'file not found (new output)', ''))
+        n_files_compared += 1
 
     print('::endgroup::')
-
+    print(f"\n\nNumber of files compared = {n_files_compared}")
     _print_dir_summary(diff_files)
     return diff_files
 
@@ -189,7 +192,7 @@ def _get_files(search_dir):
 def _print_dir_summary(diff_files):
     print("\n\n**************************************************\nSummary:\n")
     if diff_files:
-        print("\nERROR: Some differences were found")
+        print(f"ERROR: Differences were found with {len(diff_files)} files\n")
         for filepath_a, filepath_b, reason, diff_file in diff_files:
             print(f"{reason}\n  A:{filepath_a}\n  B:{filepath_b}")
             if diff_file:
