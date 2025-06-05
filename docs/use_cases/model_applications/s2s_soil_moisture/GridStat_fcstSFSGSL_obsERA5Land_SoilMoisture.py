@@ -50,8 +50,8 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 # METplus Components
 # ------------------
 #
-# This use case calls a Python script 30 times, once for each year of data of the SFS-GSL ensemble.
-# GridStat processes the forecast and observation fields, and outputs the requested line types.
+# This use case calls a GridStat 30 times, once for each year of data of the SFS-GSL ensemble.
+# It also calls UserScript twice and makes one call to Series-Analysis.
 
 ##############################################################################
 # METplus Workflow
@@ -70,7 +70,11 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 # initially reads the SFS GSL 5 member ensemble monthly forecast data,
 # and compute ensemble means for each month. 
 # The resulting 30 outputs and ERA5-Land monthly analysis are read in by GridStat
-# to compute statistics for Global and over CONUS.  
+# to compute statistics for Global and over CONUS.
+#
+# Then, two UserScripts are each run once, one to reformat data and another to plot
+# data.  Finally, Series-Analysis is run once to compute statistics for June over 
+# the 30 year time period.
 
 ##############################################################################
 # METplus Configuration
@@ -99,6 +103,10 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 # .. dropdown:: GridStatConfig_wrapped
 #
 #   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+#
+# .. dropdown:: GridStatConfig_wrapped
+#
+#   .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
 
 ##############################################################################
 # Python Embedding
