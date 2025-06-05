@@ -1,0 +1,271 @@
+alpha: 0.05
+box_avg: 'False'
+box_boxwex: 0.2
+box_notch: 'False'
+box_outline: 'True'
+box_pts: 'False'
+caption_align: 0.0
+#caption_col: '#333333'
+caption_col: '#FFFFFF'
+caption_offset: 3.0
+caption_size: 0.1
+caption_weight: 1
+cex: 1
+colors:
+#- '#0000ff'
+- '#ff0000'
+#- '#55ff00'
+#- '#00aaff'
+#- '#0040ff'
+#- '#c3ff00'
+#- '#ffffff'
+con_series:
+- 1
+#- 1
+#- 1
+#- 1
+#- 1
+#- 1
+create_html: 'False'
+derived_series_1: []
+derived_series_2: []
+dump_points_1: 'False'
+dump_points_2: 'False'
+event_equal: 'False'
+fcst_var_val_1:
+  Soil_moisture:
+    - RMSE
+fixed_vars_vals_input:
+    vx_mask:
+      - 'CONUS'
+grid_col: '#cccccc'
+grid_lty: 3
+grid_lwd: 1
+grid_on: 'True'
+grid_x: listX
+indy_label:
+- '1991'
+- ''
+- '1993'
+- ''
+- '1995'
+- ''
+- '1997'
+- ''
+- '1999'
+- ''
+- '2001'
+- ''
+- '2003'
+- ''
+- '2005'
+- ''
+- '2007'
+- ''
+- '2009'
+- ''
+- '2011'
+- ''
+- '2013'
+- ''
+- '2015'
+- ''
+- '2017'
+- ''
+- '2019'
+- ''
+indy_stagger_1: 'False'
+indy_stagger_2: 'False'
+indy_vals:
+- '1991-06-01'
+- '1992-06-01'
+- '1993-06-01'
+- '1994-06-01'
+- '1995-06-01'
+- '1996-06-01'
+- '1997-06-01'
+- '1998-06-01'
+- '1999-06-01'
+- '2000-06-01'
+- '2001-06-01'
+- '2002-06-01'
+- '2003-06-01'
+- '2004-06-01'
+- '2005-06-01'
+- '2006-06-01'
+- '2007-06-01'
+- '2008-06-01'
+- '2009-06-01'
+- '2010-06-01'
+- '2011-06-01'
+- '2012-06-01'
+- '2013-06-01'
+- '2014-06-01'
+- '2015-06-01'
+- '2016-06-01'
+- '2017-06-01'
+- '2018-06-01'
+- '2019-06-01'
+- '2020-06-01'
+indy_var: fcst_valid_beg
+legend_box: o
+legend_inset:
+  x: 0.0
+  y: -0.25
+legend_ncol: 3
+legend_size: 1.0
+line_type: None
+list_stat_1:
+  - RMSE
+mar:
+- 8
+- 4
+- 5
+- 4
+method: bca
+mgp:
+- 1
+- 1
+- 0
+num_iterations: 1
+num_threads: -1
+#plot_caption: Caption
+plot_ci:
+- std
+#- std
+#- std
+#- std
+#- std
+#- std
+plot_disp:
+- 'True'
+#- 'True'
+#- 'True'
+#- 'True'
+#- 'True'
+#- 'True'
+plot_filename: !ENV '${PLOTTING_OUTPUT_FILENAME}'
+plot_height: 8.5
+plot_res: 72
+plot_stat: median
+plot_type: png
+plot_units: in
+plot_width: 11.0
+
+# Optional, uncomment and set to directory to store the .points1 file
+# that is used by METviewer (created when dump_points_1 is set to True)
+# if dump_points_1 is True and this is uncommented, the points1 file
+# will be saved in the default location (i.e. where the input data file is stored).
+points_path: !ENV '${PLOTTING_OUTPUT_DIR}'
+random_seed: null
+series_line_style:
+- '-'
+#- '-'
+#- '-'
+#- '-'
+#- '-'
+#- '-'
+series_line_width:
+- 2
+#- 2
+#- 1
+#- 1
+#- 1
+#- 1
+series_order:
+- 1
+#- 2
+#- 3
+#- 4
+#- 5
+#- 6
+series_symbols:
+- o 
+#- ^
+#- d
+#- o
+#- .
+#- ^
+series_type:
+- b
+#- b
+#- b
+#- b
+#- b
+#- b
+series_val_1:
+  model:
+  - SFS-GSL
+show_nstats: 'False'
+show_signif:
+- 'False'
+#- 'False'
+#- 'False'
+#- 'False'
+#- 'False'
+#- 'False'
+stat_input: !ENV '${PLOTTING_STAT_INPUT}'
+sync_yaxes: 'True'
+title: June CONUS Soil Moisture RMSE for the SFS-GSL model, 1991 - 2020
+title_align: 0.5
+title_offset: -2
+title_size: 1.5
+title_weight: 2.0
+user_legend: []
+variance_inflation_factor: 'False'
+vert_plot: 'False'
+x2lab_align: 0.5
+x2lab_offset: -0.5
+x2lab_size: 0.8
+x2lab_weight: 1
+x2tlab_horiz: 0.5
+x2tlab_orient: 1
+x2tlab_perp: 1
+x2tlab_size: 0.8
+xaxis: Valid Time (YYYY)
+xaxis_reverse: 'False'
+xlab_align: 0.5
+xlab_offset: 4
+xlab_size: 3
+xlab_weight: 1
+xlim: []
+xtlab_decim: 0
+xtlab_horiz: 0.5
+xtlab_orient: 1
+xtlab_perp: -0.75
+xtlab_size: 1
+y2lab_align: 0.5
+y2lab_offset: 1
+y2lab_size: 1
+y2lab_weight: 1
+y2lim: []
+y2tlab_horiz: 0.5
+y2tlab_orient: 1
+y2tlab_perp: 1
+y2tlab_size: 1.0
+yaxis_1: Root Mean Squared Error
+ylab_align: 0.5
+ylab_offset: -5
+ylab_size: 3
+ylab_weight: 1
+ylim: [95,155]
+ytlab_horiz: 0.5
+ytlab_orient: 1
+ytlab_perp: 0.5
+ytlab_size: 1
+
+
+# To save your log output to a file, specify a path and filename and uncomment the line below.  Make sure you have
+# permissions to the directory you specify.  The default, as specified in the default config file is stdout.
+log_filename: !ENV '${PLOTTING_LOG_FILENAME}'
+
+# To change the log level, specify a log level: debug, info, warning, error and uncomment the line below.
+#  Debug and info log level will produce more log output.
+log_level: debug
+show_legend:
+- 1
+#- 1
+#- 1
+#- 1
+#- 1
+#- 1
