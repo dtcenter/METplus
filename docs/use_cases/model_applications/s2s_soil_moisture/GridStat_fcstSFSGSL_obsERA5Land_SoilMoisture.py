@@ -14,12 +14,10 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 ##############################################################################
 # Scientific Objective
 # --------------------
-# This use case ingests 30 SFS-GSL Ensemble forecast of Soil Moisture, with all ensemble 
-# members in a single file for a given year and month (here June).
-# The python embedding script computes an ensemble mean for the given month.
-# The ensemble mean is compared to ERA5-Land dataset.
-# The ERA5-Land data contains 30 years of monthly Soil Moisture data at 1 degree resolution.
-# This use case verifies soil moisture of SFS-GSL model against ERA5-Land soil moisture analysis.
+# This use case verifies 30 years of Soil Moisture data from an ensemble for a given
+# year and month (here June).  The purpose is to evaluate the Soil Moisture ensemble
+# mean against ERA5-Land data over the CONUS and also at each grid point at a 1 degree
+# resolution.  The python embedding script computes an ensemble mean for the given month.
 
 ##############################################################################
 # Version Added
@@ -51,7 +49,23 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 # ------------------
 #
 # This use case calls a GridStat 30 times, once for each year of data of the SFS-GSL ensemble.
-# It also calls UserScript twice and makes one call to Series-Analysis.
+# It also calls UserScript twice and makes one call to Series-Analysis.  METcalcpy, METplotpy, 
+# and METdataio are required to run this use case.  The METcalcpy scripts accessed include 
+# the following:
+#
+# * metcalcpy/util/read_env_vars_in_config.py
+#
+# The METplopty scrips accessed include the following:
+#
+# * metplotpy/plots/line/line.py
+#
+# The METdataio scripts accessed include the following:
+#
+# * METdbLoad/ush/read_data_files.py
+#
+# * METdbLoad/ush/read_load_xml.py
+#
+# * METreformat/write_stat_ascii.py
 
 ##############################################################################
 # METplus Workflow
@@ -131,6 +145,45 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 # please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_ 
 
 ##############################################################################
+# User Scripting
+# --------------
+#
+# There are two Python scripts used in this use case, called using the "UserScript" keyword
+# in the METplus wrappers PROCESS_LIST configuration item.  These scripts provide an
+# interface to the functions in the METdataio, METcalcpy, and METplotpy Python modules
+# of METplus.  The functions used in these scripts demonstrate reformatting of the GridStat
+# output to meet the format required by METcalcpy and METplotpy, and then plotting that 
+# reformatted output using functions from METcalcpy and METplotpy.  
+# 
+# The first Python script is called reformat_CNT_linetype.py.  This script takes the
+# output CNT linetype from Grid Stat and reformats it so that the data can be plotted.  
+# The script takes an input .yaml file, reformat_CNT.yaml.  Environment variables in the yaml
+# file are specified in the [user_env_vars] section of the 
+# GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.conf METplus configuration file.
+#
+# The second Python script is plot_line_stats.py.  This script creates line plots for ME and RMSE
+# over time, using the YAML files custom_line_ME.yaml, and custom_line_RMSE.yaml  Input variables 
+# to both scripts are set in the [user_env_vars] section of the 
+# GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.conf file.
+#
+# For more information about YAML configuration options for the line plots shown here, see the METplotpy
+# `line plot documentation <https://metplus.readthedocs.io/projects/metplotpy/en/latest/Users_Guide/line.html>`_.
+#
+# Both Python scripts are located at::
+#
+#   parm/use_cases/model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture
+#
+# .. dropdown:: reformat_CNT_linetype.py
+#
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture/reformat_CNT_linetype.py
+#
+# .. dropdown:: plot_line_stats.py
+#
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture/plot_line_stats.py
+
+##############################################################################
 # Running METplus
 # ---------------
 #
@@ -150,13 +203,8 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
-# Output for the use case will be found in 30 folders(relative to **OUTPUT_BASE**).
-# The output will follow the time information of the run. Specifically:
-#
-#  * YYYY060100
-#
-# where YYYY will be replaced by values corresponding to each of the years (1991 through 2020).
-# Each of those folders will have the following files:
+# Output for the GridStat run will be found in the grid_stat directory (relative to **OUTPUT_BASE**) 
+# and will have the following files:
 #
 #  * grid_stat_SFS-GSL_vs_ERA5_060000L_YYYY0601_000000V_fho.txt
 #  * grid_stat_SFS-GSL_vs_ERA5_060000L_YYYY0601_000000V_pairs.nc
@@ -172,6 +220,33 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 #  * OBS_soilm1m_20200601_000000_all_all_CONUS(lat, lon) 
 #  * DIFF_Soil_moisture_0-1m_soilm1m_20200601_000000_all_all_FULL(lat, lon) 
 #  * DIFF_Soil_moisture_0-1m_soilm1m_20200601_000000_all_all_CONUS(lat, lon)
+#
+# The output from the first UserScript can be found in the reformatted directory 
+# (relative to **OUTPUT_BASE**) and will contain 1 file::
+#
+#  * reformat_CNT.data
+#
+# The output from the second UserScript will be 2 plots found in the plots directory
+# (relative to **OUTPUT_BASE**)::
+#
+#  * SoilMoisture_ME.png
+#  * SoilMoisture_RMSE.png
+#
+# The output from SeriesAnalysis will be in the series_analysis directory (relative to
+# **OUTPUT_BASE) and will contain 3 files:
+#
+#  * series_analysis_files_fcst_init_ALL_valid_ALL_lead_ALL.txt
+#  * series_analysis_files_obs_init_ALL_valid_ALL_lead_ALL.txt
+#  * SFS-GSL-SA_vs_ERA5_June.nc
+#
+# The netCDF output from SeriesAnalysis contains 5 variable fields (not including the lat/lon
+# fields).  Those variables are::
+#
+#  * series_cnt_TOTAL(lat, lon)
+#  * series_cnt_ME(lat, lon)
+#  * series_cnt_RMSE(lat, lon)
+#  * series_cnt_FBAR(lat, lon)
+#  * series_cnt_OBAR(lat, lon)
 
 ##############################################################################
 # Keywords
@@ -180,10 +255,15 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 # .. note::
 #
 #   * GridStatToolUseCase
+#   * SeriesAnalysisUseCase
+#   * UserScriptUseCase
 #   * PythonEmbeddingFileUseCase
 #   * S2SAppUseCase
 #   * S2SSoilMoistureAppUseCase
 #   * NETCDFFileUseCase
+#   * METdataioUseCase
+#   * METcalcpyUseCase
+#   * METplotpyUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
