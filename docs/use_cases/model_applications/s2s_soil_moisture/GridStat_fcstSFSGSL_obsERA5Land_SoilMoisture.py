@@ -202,22 +202,17 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 #
 #   INFO: METplus has successfully finished running.
 #
-# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for the use case will be found in 30 folders(relative to **OUTPUT_BASE**).
-# The output will follow the time information of the run. Specifically:
-#
-#  * YYYY060100
-#
-# where YYYY will be replaced by values corresponding to each of the years (1991 through 2020).
-# Each of those folders will have the following files:
+# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
+# Output for the GridStat run will be found in the grid_stat directory (relative to **OUTPUT_BASE**) 
+# and will have the following files::
 #
 #  * grid_stat_SFS-GSL_vs_ERA5_060000L_YYYY0601_000000V_fho.txt
 #  * grid_stat_SFS-GSL_vs_ERA5_060000L_YYYY0601_000000V_pairs.nc
 #  * grid_stat_SFS-GSL_vs_ERA5_060000L_YYYY0601_000000V.stat
 #
 # Each file should contain corresponding statistics for the line type(s) requested.
-# For the netCDF file, five variable fields are present (not including the lat/lon fields). 
-# Those variables are::
+# For the netCDF file output from Grid Stat, five variable fields are present (not including 
+# the lat/lon fields). Those variables are::
 #
 #  * FCST_Soil_moisture_0-1m_FULL(lat, lon) 
 #  * FCST_Soil_moisture_0-1m_CONUS(lat, lon) 
