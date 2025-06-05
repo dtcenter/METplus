@@ -220,6 +220,33 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 #  * OBS_soilm1m_20200601_000000_all_all_CONUS(lat, lon) 
 #  * DIFF_Soil_moisture_0-1m_soilm1m_20200601_000000_all_all_FULL(lat, lon) 
 #  * DIFF_Soil_moisture_0-1m_soilm1m_20200601_000000_all_all_CONUS(lat, lon)
+#
+# The output from the first UserScript can be found in the reformatted directory 
+# (relative to **OUTPUT_BASE**) and will contain 1 file::
+#
+#  * reformat_CNT.data
+#
+# The output from the second UserScript will be 2 plots found in the plots directory
+# (relative to **OUTPUT_BASE**)::
+#
+#  * SoilMoisture_ME.png
+#  * SoilMoisture_RMSE.png
+#
+# The output from SeriesAnalysis will be in the series_analysis directory (relative to
+# **OUTPUT_BASE**) and will contain 3 files::
+#
+#  * series_analysis_files_fcst_init_ALL_valid_ALL_lead_ALL.txt
+#  * series_analysis_files_obs_init_ALL_valid_ALL_lead_ALL.txt
+#  * SFS-GSL-SA_vs_ERA5_June.nc
+#
+# The netCDF output from SeriesAnalysis contains 5 variable fields (not including the lat/lon
+# fields).  Those variables are::
+#
+#  * series_cnt_TOTAL(lat, lon)
+#  * series_cnt_ME(lat, lon)
+#  * series_cnt_RMSE(lat, lon)
+#  * series_cnt_FBAR(lat, lon)
+#  * series_cnt_OBAR(lat, lon)
 
 ##############################################################################
 # Keywords
