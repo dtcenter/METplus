@@ -172,7 +172,7 @@ Category: s2s_mjo
 
 Category: s2s_soil_moisture
 0::PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing:: model_applications/s2s_soil_moisture/PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.conf
-1::GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture:: model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.conf
+1::GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture:: model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.conf:: mp_analysis_env, metdataio
 
 
 Category: s2s_stratosphere
