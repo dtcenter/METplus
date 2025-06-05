@@ -11,7 +11,7 @@ typically from WRF model output.
 import sys
 import os
 import numpy as np
-import datetime as dt
+
 import wrf
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -20,6 +20,12 @@ import cartopy
 import cartopy.crs as ccrs
 from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
 from cartopy.mpl.geoaxes import GeoAxes
+
+
+def print_error(msg):
+    print(f"ERROR: map_plot in map_funcs.py:\n{msg}\n   Exiting!")
+    sys.exit(1)
+
 
 def calc_bearing(lon1, lat1, lon2, lat2):
     """
@@ -46,6 +52,7 @@ def calc_bearing(lon1, lat1, lon2, lat2):
 
     return bearing_geog, bearing_math
 
+
 def get_cartopy_features():
     """
     Function to get some commonly used Cartopy features (borders, states, oceans, lakes, rivers, land)
@@ -65,6 +72,7 @@ def get_cartopy_features():
 
     return borders, states, oceans, lakes, rivers, land
 
+
 def truncate_cmap(cmap, minval=0.0, maxval=1.0, n=100):
     """
     Function to truncate a matplotlib colormap. Particularly useful when plotting terrain.
@@ -80,6 +88,7 @@ def truncate_cmap(cmap, minval=0.0, maxval=1.0, n=100):
     new_cmap = mpl.colors.LinearSegmentedColormap.from_list(
         'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval), cmap(np.linspace(minval, maxval, n)))
     return new_cmap
+
 
 def map_plot(opts):
     """
@@ -213,68 +222,11 @@ def map_plot(opts):
 
     # Pull everything out of the opts dict into variables for cleaner code later on
     fname = opts['fname']
-    fill_var = opts['fill_var']
-    suptitle = opts['suptitle']
-    cbar_lab = opts['cbar_lab']
-    cart_proj = opts['cart_proj']
-    cart_xlim = opts['cart_xlim']
-    cart_ylim = opts['cart_ylim']
-    lons = opts['lons']
-    lats = opts['lats']
     cmap = opts['cmap']
-    bounds = opts['bounds']
-    norm = opts['norm']
-    extend = opts['extend']
     fontsize = opts['fontsize']
     figsize = opts['figsize']
-    cbar_loc = opts['cbar_loc']
-    borders = opts['borders']
-    states = opts['states']
-    oceans = opts['oceans']
-    lakes = opts['lakes']
-    rivers = opts['rivers']
-    land = opts['land']
-    water_color = opts['water_color']
-    border_width = opts['border_width']
     lat_labels = opts['lat_labels']
     lon_labels = opts['lon_labels']
-    suptitle_y = opts['suptitle_y']
-    title_l = opts['title_l']
-    title_r = opts['title_r']
-    title_c = opts['title_c']
-    map_x_thin = opts['map_x_thin']
-    map_y_thin = opts['map_y_thin']
-    barb_width = opts['barb_width']
-    u = opts['u']
-    v = opts['v']
-    mark1_lat = opts['mark1_lat']
-    mark1_lon = opts['mark1_lon']
-    mark1_size = opts['mark1_size']
-    mark1_style = opts['mark1_style']
-    mark1_color = opts['mark1_color']
-    mark1_edgecolor = opts['mark1_edgecolor']
-    mark1_width = opts['mark1_width']
-    mark1_val_fill = opts['mark1_val_fill']
-    mark1_var = opts['mark1_var']
-    mark1_zorder = opts['mark1_zorder']
-    mark2_lat = opts['mark2_lat']
-    mark2_lon = opts['mark2_lon']
-    mark2_size = opts['mark2_size']
-    mark2_style = opts['mark2_style']
-    mark2_color = opts['mark2_color']
-    mark2_edgecolor = opts['mark2_edgecolor']
-    mark2_width = opts['mark2_width']
-    mark2_val_fill = opts['mark2_val_fill']
-    mark2_var = opts['mark2_var']
-    mark2_zorder = opts['mark2_zorder']
-    text1_lat = opts['text1_lat']
-    text1_lon = opts['text1_lon']
-    text1_lab = opts['text1_lab']
-    text1_lab_wt = opts['text1_lab_wt']
-    text2_lat = opts['text2_lat']
-    text2_lon = opts['text2_lon']
-    text2_lab = opts['text2_lab']
-    text2_lab_wt = opts['text2_lab_wt']
     lg_text = opts['lg_text']
     lg_loc = opts['lg_loc']
     lg_fontsize = opts['lg_fontsize']
@@ -293,36 +245,9 @@ def map_plot(opts):
 
     # Define the figure and axes
     fig = plt.figure()
-    ax = plt.subplot(projection=cart_proj)
+    ax = create_subplot(opts)
 
-    # If cart_xlim and cart_ylim tuples are not provided, then set plot limits from lat/lon data directly
-    if cart_xlim is not None and cart_ylim is not None:
-        ax.set_xlim(cart_xlim)
-        ax.set_ylim(cart_ylim)
-    else:
-        ax.set_extent([np.min(lons), np.max(lons), np.min(lats), np.max(lats)], crs=cart_proj)
-
-    # If lons & lats are 1D, make them into 2D arrays
-    if lons.ndim == 1 and lats.ndim == 1:
-        ll2d = np.meshgrid(lons, lats)
-        lons = ll2d[0]
-        lats = ll2d[1]
-
-    # Optional: Add various cartopy features
-    if borders != None:
-        ax.add_feature(borders, linewidth=border_width, linestyle='-', zorder=3)
-    if states != None:
-        ax.add_feature(states, linewidth=border_width/3.0, edgecolor='black', zorder=4)
-    if oceans != None:
-        # Drawing the oceans can be VERY slow with Cartopy 0.20+ for some domains, so may want to skip it
-        # Can set the facecolor for the axes to water_color instead (usually we want this 'none' except for terrain)
-        ax.add_feature(oceans, facecolor=water_color, zorder=2)
-        # ax.add_feature(oceans, facecolor='none', zorder=2)
-        # ax.set_facecolor(opts['water_color'])
-    if lakes != None:
-        # Unless facecolor='none', lakes w/ facecolor will appear above filled contour plot, which is undesirable
-        ax.add_feature(lakes, facecolor=water_color, linewidth=0.25, edgecolor='black', zorder=5)
-    ax.coastlines(zorder=6, linewidth=border_width)
+    lons, lats = get_lons_and_lats(opts)
 
     # Sometimes longitude labels show up on y-axis, and latitude labels on x-axis in older versions of Cartopy
     # Print lat/lon labels only for a specified set (determined by trial & error) to avoid this problem for now
@@ -354,165 +279,30 @@ def map_plot(opts):
     #  - This also resolves TopologyException: side location conflict errors that can occur when NaNs are present.
 
     # If the variable has the same shape as lats, then plot the filled contour field
-    if fill_var.shape == lats.shape:
-        contourf = True
-        plt.contourf(wrf.to_np(lons), wrf.to_np(lats), wrf.to_np(fill_var), bounds,
-                     cmap=cmap, norm=norm, extend=extend, transform=data_crs, transform_first=(ax, True))
-    # Otherwise, we presumably need to plot an empty map and then plot markers
-    else:
-        contourf = False
-        if mark1_lon is None or mark1_lat is None:
-            print('ERROR: map_plot in map_funcs.py:')
-            print('   var does not match the shape of lons or lats.')
-            print('   If plotting a contour map, fix the mismatch in shape between fill_var and lons/lats.')
-            print('   Otherwise, this could imply a need for a blank map with markers.')
-            print('   However, mark1_lon and/or mark1_lat are not provided either.')
-            print('   If a filled contour map is desired, ensure fill_var is the same shape as lons and lats.')
-            print('   If a blank map with markers is desired instead, provide mark1_lon and mark1_lat.')
-            print('   If the markers should be filled according to a data value, then set mark1_val_fill=True.')
-            print('   Or if a future use case is identified that requires a blank map & no markers, then modify code.')
-            print('   Exiting!')
-            sys.exit()
+    contourf = set_contour(ax, cmap, data_crs, opts, lats, lons)
 
     # Optional: Add marker set 1 to the plot
-    if mark1_lon is not None and mark1_lat is not None:
-        if mark1_lat.shape != mark1_lon.shape:
-            print('ERROR: map_plot in map_funcs.py:')
-            print(       'mark1_lat and mark1_lon do not have the same shape.')
-            print('       Exiting!')
-            sys.exit()
-        if lg_text is None:
-            lg_lab1 = None
-        else:
-            lg_lab1 = lg_text[0]
-        if mark1_val_fill:
-            # Fill markers according to their data value, cmap, and norm
-            # NOTE: If plotting markers over a blank map, must use plt.scatter, not ax.scatter, to avoid an error about
-            #       the lack of a mappable when drawing the colorbar below.
-            if mark1_var.shape == mark1_lat.shape:
-                if contourf:
-                    ax.scatter(mark1_lon, mark1_lat, c=mark1_var, marker=mark1_style, s=mark1_size,
-                               edgecolors=mark1_edgecolor, label=lg_lab1, linewidths=mark1_width,
-                               cmap=cmap, norm=norm, transform=data_crs, zorder=mark1_zorder)
-                else:
-                    plt.scatter(mark1_lon, mark1_lat, c=mark1_var, marker=mark1_style, s=mark1_size,
-                                edgecolors=mark1_edgecolor, label=lg_lab1, linewidths=mark1_width,
-                                cmap=cmap, norm=norm, transform=data_crs, zorder=mark1_zorder)
-            else:
-                print('ERROR: map_plot in map_funcs.py:')
-                print('       mark1_var, mark1_lat, and mark1_lon are not all the same shape.')
-                print('       Exiting!')
-                sys.exit()
-        # Marker set 1 not filled by any data values
-        else:
-            ax.scatter(mark1_lon, mark1_lat, marker=mark1_style, s=mark1_size, color=mark1_color,
-                       edgecolors=mark1_edgecolor, label=lg_lab1, linewidths=mark1_width,
-                       transform=data_crs, zorder=mark1_zorder)
+    add_marker_to_plot(ax, cmap, contourf, data_crs, lg_text, opts, 1)
 
     # Optional: Add marker set 2 to the plot
-    if mark2_lon is not None and mark2_lat is not None:
-        if mark2_lat.shape != mark2_lon.shape:
-            print('ERROR: map_plot in map_funcs.py:')
-            print(       'mark2_lat and mark2_lon do not have the same shape.')
-            print('       Exiting!')
-            sys.exit()
-        if lg_text is None:
-            lg_lab2 = None
-        else:
-            lg_lab2 = lg_text[1]
-        # Marker set 2 filled by data values
-        if mark2_val_fill:
-            # Fill markers according to their data value, cmap, and norm
-            # NOTE: If plotting markers over a blank map, must use plt.scatter, not ax.scatter, to avoid an error about
-            #       the lack of a mappable when drawing the colorbar below.
-            if mark2_var.shape == mark2_lat.shape:
-                if contourf:
-                    ax.scatter(mark2_lon, mark2_lat, c=mark2_var, marker=mark2_style, s=mark2_size,
-                               edgecolors=mark2_edgecolor, label=lg_lab2, linewidths=mark2_width,
-                               cmap=cmap, norm=norm, transform=data_crs, zorder=mark2_zorder)
-                else:
-                    plt.scatter(mark2_lon, mark2_lat, c=mark2_var, marker=mark2_style, s=mark2_size,
-                                edgecolors=mark2_edgecolor, label=lg_lab2, linewidths=mark2_width,
-                                cmap=cmap, norm=norm, transform=data_crs, zorder=mark2_zorder)
-            else:
-                print('ERROR: map_plot in map_funcs.py:')
-                print('       mark2_var, mark2_lat, and mark2_lon are not all the same shape.')
-                print('       Exiting!')
-                sys.exit()
-        # Marker set 2 not filled by data values
-        else:
-            ax.scatter(mark2_lon, mark2_lat, marker=mark2_style, s=mark2_size, color=mark2_color,
-                       edgecolors=mark2_edgecolor, label=lg_lab2, linewidths=mark2_width,
-                       transform=data_crs, zorder=mark1_zorder)
+    add_marker_to_plot(ax, cmap, contourf, data_crs, lg_text, opts, 2)
 
-    # Draw the colorbar
-    # Credit: https://stackoverflow.com/questions/30030328/correct-placement-of-colorbar-relative-to-geo-axes-cartopy
-    # Create colorbar axes (temporarily) anywhere
-    cax = fig.add_axes([0, 0, 0.1, 0.1])
-    # Find the location of the main plot axes
-    posn = ax.get_position()
-    # Adjust the positioning and orientation of the colorbar, and then draw it
-    # The colorbar will inherit the norm/extend attributes from the plt.contourf or plt.scatter call above
-    if cbar_loc == 'bottom':
-        cax.set_position([posn.x0, posn.y0-0.09, posn.width, 0.05])
-        plt.colorbar(cax=cax, orientation='horizontal', label=cbar_lab)
-    elif cbar_loc == 'right':
-        cax.set_position([posn.x0+posn.width+0.05, posn.y0, 0.04, posn.height])
-        plt.colorbar(cax=cax, orientation='vertical', label=cbar_lab)
-    elif cbar_loc == 'top' or cbar_loc == 'left':
-        print('WARNING: cbar_loc=' + cbar_loc + ' requested. Unsupported option. Colorbar will not be drawn.')
-        print('   Add directives in map_funcs.map_plot to handle that option and draw the colorbar.')
+    draw_colorbar(ax, fig, opts)
 
     # Add the overall plot title
-    plt.suptitle(suptitle, y=suptitle_y)
+    plt.suptitle(opts['suptitle'], y=opts['suptitle_y'])
 
     # Optional: Add titles to the subplot
-    if title_l is not None:
-        ax.set_title(title_l, fontsize=fontsize, loc='left')
-    if title_r is not None:
-        ax.set_title(title_r, fontsize=fontsize, loc='right')
-    if title_c is not None:
-        ax.set_title(title_c, fontsize=fontsize, loc='center')
+    set_titles(ax, opts, fontsize)
 
     # Optional: Add set 1 of text labels to the plot
-    if text1_lab is not None and text1_lat is not None and text1_lon is not None:
-        if len(text1_lab) != len(text1_lat) or len(text1_lab) != len(text1_lon):
-            print('ERROR: map_plot in map_funcs.py:')
-            print('       text1_lab, text1_lat, and text1_lon do not all have the same length.')
-            print('       Exiting!')
-            sys.exit()
-        n_text = len(text1_lab)
-        for xx in range(n_text):
-            ax.text(text1_lon[xx], text1_lat[xx], text1_lab[xx], horizontalalignment='center',
-                    transform=data_crs, size=fontsize, zorder=13, weight=text1_lab_wt)
+    add_text_labels(ax, data_crs, fontsize, opts, 1, 13)
 
     # Optional: Add set 2 of text labels to the plot
-    if text2_lab is not None and text2_lat is not None and text2_lon is not None:
-        if len(text2_lab) != len(text2_lat) or len(text2_lab) != len(text2_lon):
-            print('ERROR: map_plot in map_funcs.py:')
-            print('       text2_lab, text2_lat, and text2_lon do not all have the same length.')
-            print('       Exiting!')
-            sys.exit()
-        n_text = len(text2_lab)
-        for xx in range(n_text):
-            ax.text(text2_lon[xx], text2_lat[xx], text2_lab[xx], horizontalalignment='center',
-                    transform=data_crs, size=fontsize, zorder=14, weight=text2_lab_wt)
+    add_text_labels(ax, data_crs, fontsize, opts, 2, 14)
 
     # Optional: Draw wind barbs
-    if u is not None and v is not None:
-        if isinstance(lons, np.ndarray):
-            x_thin = lons[::map_y_thin, ::map_x_thin]
-        else:
-            x_thin = lons[::map_y_thin, ::map_x_thin].values
-        if isinstance(lats, np.ndarray):
-            y_thin = lats[::map_y_thin, ::map_x_thin]
-        else:
-            y_thin = lats[::map_y_thin, ::map_x_thin].values
-        u_thin = u[::map_y_thin, ::map_x_thin]
-        v_thin = v[::map_y_thin, ::map_x_thin]
-        # Assume winds input to here are in m/s instead of kts, so reduce the barb_increments from 5/10/50 to 2.5/5/25
-        ax.barbs(x_thin, y_thin, u_thin, v_thin, length=5, transform=data_crs, linewidth=barb_width,
-                 barb_increments={'half': 2.5, 'full': 5, 'flag': 25})
+    draw_wind_barbs(ax, opts, data_crs, lats, lons)
 
     # Optional: Add a legend (most useful if 2+ sets of markers)
     if lg_text is not None:
@@ -524,3 +314,215 @@ def map_plot(opts):
     # Save and close the figure
     plt.savefig(fname)
     plt.close()
+
+
+def draw_colorbar(ax, fig, opts):
+    cbar_lab = opts['cbar_lab']
+    cbar_loc = opts['cbar_loc']
+
+    # Draw the colorbar
+    # Credit: https://stackoverflow.com/questions/30030328/correct-placement-of-colorbar-relative-to-geo-axes-cartopy
+    # Create colorbar axes (temporarily) anywhere
+    cax = fig.add_axes([0, 0, 0.1, 0.1])
+    # Find the location of the main plot axes
+    posn = ax.get_position()
+    # Adjust the positioning and orientation of the colorbar, and then draw it
+    # The colorbar will inherit the norm/extend attributes from the plt.contourf or plt.scatter call above
+    if cbar_loc == 'bottom':
+        cax.set_position([posn.x0, posn.y0 - 0.09, posn.width, 0.05])
+        plt.colorbar(cax=cax, orientation='horizontal', label=cbar_lab)
+    elif cbar_loc == 'right':
+        cax.set_position([posn.x0 + posn.width + 0.05, posn.y0, 0.04, posn.height])
+        plt.colorbar(cax=cax, orientation='vertical', label=cbar_lab)
+    elif cbar_loc == 'top' or cbar_loc == 'left':
+        print('WARNING: cbar_loc=' + cbar_loc + ' requested. Unsupported option. Colorbar will not be drawn.')
+        print('   Add directives in map_funcs.map_plot to handle that option and draw the colorbar.')
+
+
+def draw_wind_barbs(ax, opts, data_crs, lats, lons):
+    u = opts['u']
+    v = opts['v']
+
+    if u is None or v is None:
+        return
+
+    barb_width = opts['barb_width']
+    map_x_thin = opts['map_x_thin']
+    map_y_thin = opts['map_y_thin']
+
+    if isinstance(lons, np.ndarray):
+        x_thin = lons[::map_y_thin, ::map_x_thin]
+    else:
+        x_thin = lons[::map_y_thin, ::map_x_thin].values
+
+    if isinstance(lats, np.ndarray):
+        y_thin = lats[::map_y_thin, ::map_x_thin]
+    else:
+        y_thin = lats[::map_y_thin, ::map_x_thin].values
+
+    u_thin = u[::map_y_thin, ::map_x_thin]
+    v_thin = v[::map_y_thin, ::map_x_thin]
+    # Assume winds input to here are in m/s instead of kts, so reduce the barb_increments from 5/10/50 to 2.5/5/25
+    ax.barbs(x_thin, y_thin, u_thin, v_thin, length=5, transform=data_crs, linewidth=barb_width,
+             barb_increments={'half': 2.5, 'full': 5, 'flag': 25})
+
+
+def set_titles(ax, opts, fontsize):
+    title_l = opts['title_l']
+    title_r = opts['title_r']
+    title_c = opts['title_c']
+
+    if title_l is not None:
+        ax.set_title(title_l, fontsize=fontsize, loc='left')
+    if title_r is not None:
+        ax.set_title(title_r, fontsize=fontsize, loc='right')
+    if title_c is not None:
+        ax.set_title(title_c, fontsize=fontsize, loc='center')
+
+
+def create_subplot(opts):
+    cart_proj = opts['cart_proj']
+    lats = opts['lats']
+    lons = opts['lons']
+    cart_xlim = opts['cart_xlim']
+    cart_ylim = opts['cart_ylim']
+    borders = opts['borders']
+    border_width = opts['border_width']
+    states = opts['states']
+    oceans = opts['oceans']
+    water_color = opts['water_color']
+    lakes = opts['lakes']
+
+    ax = plt.subplot(projection=cart_proj)
+
+    # If cart_xlim and cart_ylim tuples are not provided, then set plot limits from lat/lon data directly
+    if cart_xlim is not None and cart_ylim is not None:
+        ax.set_xlim(cart_xlim)
+        ax.set_ylim(cart_ylim)
+    else:
+        ax.set_extent([np.min(lons), np.max(lons), np.min(lats), np.max(lats)], crs=cart_proj)
+
+    # Optional: Add various cartopy features
+    if borders is not None:
+        ax.add_feature(borders, linewidth=border_width, linestyle='-', zorder=3)
+
+    if states is not None:
+        ax.add_feature(states, linewidth=border_width/3.0, edgecolor='black', zorder=4)
+
+    if oceans is not None:
+        # Drawing the oceans can be VERY slow with Cartopy 0.20+ for some domains, so may want to skip it
+        # Can set the facecolor for the axes to water_color instead (usually we want this 'none' except for terrain)
+        ax.add_feature(oceans, facecolor=water_color, zorder=2)
+
+    if lakes is not None:
+        # Unless facecolor='none', lakes w/ facecolor will appear above filled contour plot, which is undesirable
+        ax.add_feature(lakes, facecolor=water_color, linewidth=0.25, edgecolor='black', zorder=5)
+
+    ax.coastlines(zorder=6, linewidth=border_width)
+
+    return ax
+
+
+def get_lons_and_lats(opts):
+    lons = opts['lons']
+    lats = opts['lats']
+
+    # If lons & lats are 1D, make them into 2D arrays
+    if lons.ndim == 1 and lats.ndim == 1:
+        ll2d = np.meshgrid(lons, lats)
+        lons = ll2d[0]
+        lats = ll2d[1]
+
+    return lons, lats
+
+
+def set_contour(ax, cmap, data_crs, opts, lats, lons):
+    extend = opts['extend']
+    fill_var = opts['fill_var']
+    mark1_lon = opts['mark1_lon']
+    mark1_lat = opts['mark1_lat']
+    norm = opts['norm']
+    bounds = opts['bounds']
+
+    if fill_var.shape == lats.shape:
+        contourf = True
+        plt.contourf(wrf.to_np(lons), wrf.to_np(lats), wrf.to_np(fill_var), bounds,
+                     cmap=cmap, norm=norm, extend=extend, transform=data_crs, transform_first=(ax, True))
+    # Otherwise, we presumably need to plot an empty map and then plot markers
+    else:
+        contourf = False
+        if mark1_lon is None or mark1_lat is None:
+            print_error(
+                '   var does not match the shape of lons or lats.\n'
+                '   If plotting a contour map, fix the mismatch in shape between fill_var and lons/lats.\n'
+                '   Otherwise, this could imply a need for a blank map with markers.\n'
+                '   However, mark1_lon and/or mark1_lat are not provided either.\n'
+                '   If a filled contour map is desired, ensure fill_var is the same shape as lons and lats.\n'
+                '   If a blank map with markers is desired instead, provide mark1_lon and mark1_lat.\n'
+                '   If the markers should be filled according to a data value, then set mark1_val_fill=True.\n'
+                '   Or if a future use case is identified that requires a blank map & no markers, then modify code.'
+            )
+    return contourf
+
+
+def add_text_labels(ax, data_crs, fontsize, opts, set_num, zorder):
+    text_lab = opts[f'text{set_num}_lab']
+    text_lab_wt = opts[f'text{set_num}_lab_wt']
+    text_lat = opts[f'text{set_num}_lat']
+    text_lon = opts[f'text{set_num}_lon']
+
+    if text_lab is not None and text_lat is not None and text_lon is not None:
+        if len(text_lab) != len(text_lat) or len(text_lab) != len(text_lon):
+            print_error(f'   text{set_num}_lab, text{set_num}_lat, and text{set_num}_lon do not all have the same length.')
+
+        n_text = len(text_lab)
+        for xx in range(n_text):
+            ax.text(text_lon[xx], text_lat[xx], text_lab[xx], horizontalalignment='center',
+                    transform=data_crs, size=fontsize, zorder=zorder, weight=text_lab_wt)
+
+
+def add_marker_to_plot(ax, cmap, contourf, data_crs, lg_text, opts, marker_num):
+    mark_color = opts[f'mark{marker_num}_color']
+    mark_edgecolor = opts[f'mark{marker_num}_edgecolor']
+    mark_lon = opts[f'mark{marker_num}_lon']
+    mark_lat = opts[f'mark{marker_num}_lat']
+    mark_size = opts[f'mark{marker_num}_size']
+    mark_style = opts[f'mark{marker_num}_style']
+    mark_val_fill = opts[f'mark{marker_num}_val_fill']
+    mark_var = opts[f'mark{marker_num}_var']
+    mark_width = opts[f'mark{marker_num}_width']
+    mark_zorder = opts[f'mark{marker_num}_zorder']
+    norm = opts['norm']
+
+    if mark_lon is None or mark_lat is None:
+        return
+
+    if mark_lat.shape != mark_lon.shape:
+        print_error(f'   mark{marker_num}_lat and mark{marker_num}_lon do not have the same shape.')
+
+    if lg_text is None:
+        lg_lab = None
+    else:
+        lg_lab = lg_text[0]
+
+    # Marker set 1 not filled by any data values
+    if not mark_val_fill:
+        ax.scatter(mark_lon, mark_lat, marker=mark_style, s=mark_size, color=mark_color,
+                   edgecolors=mark_edgecolor, label=lg_lab, linewidths=mark_width,
+                   transform=data_crs, zorder=mark_zorder)
+        return
+
+    # Fill markers according to their data value, cmap, and norm
+    # NOTE: If plotting markers over a blank map, must use plt.scatter, not ax.scatter, to avoid an error about
+    #       the lack of a mappable when drawing the colorbar below.
+    if mark_var.shape != mark_lat.shape:
+        print_error(f'mark{marker_num}_var, mark{marker_num}_lat, and mark{marker_num}_lon are not all the same shape.')
+
+    if contourf:
+        ax.scatter(mark_lon, mark_lat, c=mark_var, marker=mark_style, s=mark_size,
+                   edgecolors=mark_edgecolor, label=lg_lab, linewidths=mark_width,
+                   cmap=cmap, norm=norm, transform=data_crs, zorder=mark_zorder)
+    else:
+        plt.scatter(mark_lon, mark_lat, c=mark_var, marker=mark_style, s=mark_size,
+                    edgecolors=mark_edgecolor, label=lg_lab, linewidths=mark_width,
+                    cmap=cmap, norm=norm, transform=data_crs, zorder=mark_zorder)
