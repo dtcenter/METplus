@@ -14,15 +14,9 @@ model_applications/tc_and_extra_tc/PointStat_fcstWRF_obsMADIS_hurricane_matthew.
 ##############################################################################
 # Scientific Objective
 # --------------------
-# [UPDATE_SECTION_CONTENT]
 #
-# To provide statistical information on the forecast hail size compared to
-# the observed hail size from MRMS MESH data. Using objects to verify hail size
-# avoids the “unfair penalty” issue, where a CAM must first generate convection
-# to have any chance of accurately predicting the hail size. In addition, studies
-# have shown that MRMS MESH observed hail sizes do not correlate one-to-one with
-# observed sizes but can only be used to group storms into general categories.
-# Running MODE allows a user to do this.
+# Perform verification of WRF data generated over Hurricane Matthew from 2016
+# using MADIS RAOB and METAR observations.
 
 ##############################################################################
 # Version Added
@@ -119,23 +113,15 @@ model_applications/tc_and_extra_tc/PointStat_fcstWRF_obsMADIS_hurricane_matthew.
 ##############################################################################
 # User Scripting
 # --------------
-# [UPDATE_SECTION_CONTENT]
 #
-# This use case uses a Python script to perform plotting, which at the time of 
-# this use case creation was not an ability METplus had. Additionally some of 
-# the plotting features used in this script are not currently slated for METplus 
-# analysis suite development.
-# In order to create the plots, the script reads in a yaml file and sets up 
-# the correct environment. Plot parameters (which are hard coded in the script) are set, 
-# and the datasets are read in from the input file. The desired variable fields 
-# are placed into arrays, which are then treated for bad data and squeezed to the 
-# appropriate dimensions. Additional basic math is completed on the resulting arrays 
-# to create the cross spectra values with the results being graphed.
+# This use case calls files from METdataio and METcalcpy to generate a line
+# plot of the point_stat output.
+# It also calls a Python script to perform plotting of WRF data.
 #
-# .. dropdown:: parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra/cross_spectra_plot.py
+# .. dropdown:: parm/use_cases/model_applications/tc_and_extra_tc/PointStat_fcstWRF_obsMADIS_hurricane_matthew/plot_wrf.py
 # 
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra/cross_spectra_plot.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/PointStat_fcstWRF_obsMADIS_hurricane_matthew/plot_wrf.py
 
 ##############################################################################
 # Running METplus
@@ -151,7 +137,6 @@ model_applications/tc_and_extra_tc/PointStat_fcstWRF_obsMADIS_hurricane_matthew.
 ##############################################################################
 # Expected Output
 # ---------------
-# [UPDATE_SECTION_CONTENT]
 #
 # A successful run will output the following both to the screen and to the logfile::
 #
@@ -159,21 +144,214 @@ model_applications/tc_and_extra_tc/PointStat_fcstWRF_obsMADIS_hurricane_matthew.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
 # Output for this use case will be found in {OUTPUT_BASE}
-# and will contain the following files::
+# and will contain the following files:
 #
-#  * grid_stat_198201_000000L_19700101_000000V_pairs.nc
-#  * grid_stat_198201_000000L_19700101_000000V_pstd.txt
-#  * grid_stat_198201_000000L_19700101_000000V.stat
+# * met_plot/cnt_reformatted.data
+# * met_plot/line_T2_RMSE_BCMSE.png
+# * point_stat/point_stat_surface_000000L_20161006_000000V.stat
+# * point_stat/point_stat_surface_000000L_20161006_000000V_cnt.txt
+# * point_stat/point_stat_surface_000000L_20161006_000000V_vcnt.txt
+# * point_stat/point_stat_surface_030000L_20161006_030000V.stat
+# * point_stat/point_stat_surface_030000L_20161006_030000V_cnt.txt
+# * point_stat/point_stat_surface_030000L_20161006_030000V_vcnt.txt
+# * point_stat/point_stat_surface_060000L_20161006_060000V.stat
+# * point_stat/point_stat_surface_060000L_20161006_060000V_cnt.txt
+# * point_stat/point_stat_surface_060000L_20161006_060000V_vcnt.txt
+# * point_stat/point_stat_surface_090000L_20161006_090000V.stat
+# * point_stat/point_stat_surface_090000L_20161006_090000V_cnt.txt
+# * point_stat/point_stat_surface_090000L_20161006_090000V_vcnt.txt
+# * point_stat/point_stat_surface_120000L_20161006_120000V.stat
+# * point_stat/point_stat_surface_120000L_20161006_120000V_cnt.txt
+# * point_stat/point_stat_surface_120000L_20161006_120000V_vcnt.txt
+# * point_stat/point_stat_surface_150000L_20161006_150000V.stat
+# * point_stat/point_stat_surface_150000L_20161006_150000V_cnt.txt
+# * point_stat/point_stat_surface_150000L_20161006_150000V_vcnt.txt
+# * point_stat/point_stat_surface_180000L_20161006_180000V.stat
+# * point_stat/point_stat_surface_180000L_20161006_180000V_cnt.txt
+# * point_stat/point_stat_surface_180000L_20161006_180000V_vcnt.txt
+# * point_stat/point_stat_surface_210000L_20161006_210000V.stat
+# * point_stat/point_stat_surface_210000L_20161006_210000V_cnt.txt
+# * point_stat/point_stat_surface_210000L_20161006_210000V_vcnt.txt
+# * point_stat/point_stat_surface_240000L_20161007_000000V.stat
+# * point_stat/point_stat_surface_240000L_20161007_000000V_cnt.txt
+# * point_stat/point_stat_surface_240000L_20161007_000000V_vcnt.txt
+# * point_stat/point_stat_surface_270000L_20161007_030000V.stat
+# * point_stat/point_stat_surface_270000L_20161007_030000V_cnt.txt
+# * point_stat/point_stat_surface_270000L_20161007_030000V_vcnt.txt
+# * point_stat/point_stat_surface_300000L_20161007_060000V.stat
+# * point_stat/point_stat_surface_300000L_20161007_060000V_cnt.txt
+# * point_stat/point_stat_surface_300000L_20161007_060000V_vcnt.txt
+# * point_stat/point_stat_surface_330000L_20161007_090000V.stat
+# * point_stat/point_stat_surface_330000L_20161007_090000V_cnt.txt
+# * point_stat/point_stat_surface_330000L_20161007_090000V_vcnt.txt
+# * point_stat/point_stat_surface_360000L_20161007_120000V.stat
+# * point_stat/point_stat_surface_360000L_20161007_120000V_cnt.txt
+# * point_stat/point_stat_surface_360000L_20161007_120000V_vcnt.txt
+# * point_stat/point_stat_surface_390000L_20161007_150000V.stat
+# * point_stat/point_stat_surface_390000L_20161007_150000V_cnt.txt
+# * point_stat/point_stat_surface_390000L_20161007_150000V_vcnt.txt
+# * point_stat/point_stat_surface_420000L_20161007_180000V.stat
+# * point_stat/point_stat_surface_420000L_20161007_180000V_cnt.txt
+# * point_stat/point_stat_surface_420000L_20161007_180000V_vcnt.txt
+# * point_stat/point_stat_surface_450000L_20161007_210000V.stat
+# * point_stat/point_stat_surface_450000L_20161007_210000V_cnt.txt
+# * point_stat/point_stat_surface_450000L_20161007_210000V_vcnt.txt
+# * point_stat/point_stat_surface_480000L_20161008_000000V.stat
+# * point_stat/point_stat_surface_480000L_20161008_000000V_cnt.txt
+# * point_stat/point_stat_surface_480000L_20161008_000000V_vcnt.txt
+# * point_stat/point_stat_upper_air_000000L_20161006_000000V.stat
+# * point_stat/point_stat_upper_air_000000L_20161006_000000V_cnt.txt
+# * point_stat/point_stat_upper_air_000000L_20161006_000000V_vcnt.txt
+# * point_stat/point_stat_upper_air_030000L_20161006_030000V.stat
+# * point_stat/point_stat_upper_air_030000L_20161006_030000V_cnt.txt
+# * point_stat/point_stat_upper_air_030000L_20161006_030000V_vcnt.txt
+# * point_stat/point_stat_upper_air_060000L_20161006_060000V.stat
+# * point_stat/point_stat_upper_air_060000L_20161006_060000V_cnt.txt
+# * point_stat/point_stat_upper_air_060000L_20161006_060000V_vcnt.txt
+# * point_stat/point_stat_upper_air_090000L_20161006_090000V.stat
+# * point_stat/point_stat_upper_air_090000L_20161006_090000V_cnt.txt
+# * point_stat/point_stat_upper_air_090000L_20161006_090000V_vcnt.txt
+# * point_stat/point_stat_upper_air_120000L_20161006_120000V.stat
+# * point_stat/point_stat_upper_air_120000L_20161006_120000V_cnt.txt
+# * point_stat/point_stat_upper_air_120000L_20161006_120000V_vcnt.txt
+# * point_stat/point_stat_upper_air_150000L_20161006_150000V.stat
+# * point_stat/point_stat_upper_air_150000L_20161006_150000V_cnt.txt
+# * point_stat/point_stat_upper_air_150000L_20161006_150000V_vcnt.txt
+# * point_stat/point_stat_upper_air_180000L_20161006_180000V.stat
+# * point_stat/point_stat_upper_air_180000L_20161006_180000V_cnt.txt
+# * point_stat/point_stat_upper_air_180000L_20161006_180000V_vcnt.txt
+# * point_stat/point_stat_upper_air_210000L_20161006_210000V.stat
+# * point_stat/point_stat_upper_air_210000L_20161006_210000V_cnt.txt
+# * point_stat/point_stat_upper_air_210000L_20161006_210000V_vcnt.txt
+# * point_stat/point_stat_upper_air_240000L_20161007_000000V.stat
+# * point_stat/point_stat_upper_air_240000L_20161007_000000V_cnt.txt
+# * point_stat/point_stat_upper_air_240000L_20161007_000000V_vcnt.txt
+# * point_stat/point_stat_upper_air_270000L_20161007_030000V.stat
+# * point_stat/point_stat_upper_air_270000L_20161007_030000V_cnt.txt
+# * point_stat/point_stat_upper_air_270000L_20161007_030000V_vcnt.txt
+# * point_stat/point_stat_upper_air_300000L_20161007_060000V.stat
+# * point_stat/point_stat_upper_air_300000L_20161007_060000V_cnt.txt
+# * point_stat/point_stat_upper_air_300000L_20161007_060000V_vcnt.txt
+# * point_stat/point_stat_upper_air_330000L_20161007_090000V.stat
+# * point_stat/point_stat_upper_air_330000L_20161007_090000V_cnt.txt
+# * point_stat/point_stat_upper_air_330000L_20161007_090000V_vcnt.txt
+# * point_stat/point_stat_upper_air_360000L_20161007_120000V.stat
+# * point_stat/point_stat_upper_air_360000L_20161007_120000V_cnt.txt
+# * point_stat/point_stat_upper_air_360000L_20161007_120000V_vcnt.txt
+# * point_stat/point_stat_upper_air_390000L_20161007_150000V.stat
+# * point_stat/point_stat_upper_air_390000L_20161007_150000V_cnt.txt
+# * point_stat/point_stat_upper_air_390000L_20161007_150000V_vcnt.txt
+# * point_stat/point_stat_upper_air_420000L_20161007_180000V.stat
+# * point_stat/point_stat_upper_air_420000L_20161007_180000V_cnt.txt
+# * point_stat/point_stat_upper_air_420000L_20161007_180000V_vcnt.txt
+# * point_stat/point_stat_upper_air_450000L_20161007_210000V.stat
+# * point_stat/point_stat_upper_air_450000L_20161007_210000V_cnt.txt
+# * point_stat/point_stat_upper_air_450000L_20161007_210000V_vcnt.txt
+# * point_stat/point_stat_upper_air_480000L_20161008_000000V.stat
+# * point_stat/point_stat_upper_air_480000L_20161008_000000V_cnt.txt
+# * point_stat/point_stat_upper_air_480000L_20161008_000000V_vcnt.txt
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RAIN+barbs_20161006_0300.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RAIN+barbs_20161006_0600.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RAIN+barbs_20161006_0900.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RAIN+barbs_20161006_1200.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RAIN+barbs_20161006_1500.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RAIN+barbs_20161006_1800.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RAIN+barbs_20161006_2100.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RAIN+barbs_20161007_0000.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RAIN+barbs_20161007_0300.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RAIN+barbs_20161007_0600.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RAIN+barbs_20161007_0900.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RAIN+barbs_20161007_1200.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RAIN+barbs_20161007_1500.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RAIN+barbs_20161007_1800.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RAIN+barbs_20161007_2100.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RAIN+barbs_20161008_0000.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_REFL+barbs_20161006_0300.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_REFL+barbs_20161006_0600.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_REFL+barbs_20161006_0900.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_REFL+barbs_20161006_1200.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_REFL+barbs_20161006_1500.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_REFL+barbs_20161006_1800.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_REFL+barbs_20161006_2100.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_REFL+barbs_20161007_0000.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_REFL+barbs_20161007_0300.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_REFL+barbs_20161007_0600.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_REFL+barbs_20161007_0900.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_REFL+barbs_20161007_1200.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_REFL+barbs_20161007_1500.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_REFL+barbs_20161007_1800.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_REFL+barbs_20161007_2100.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_REFL+barbs_20161008_0000.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RH2+barbs_20161006_0000.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RH2+barbs_20161006_0300.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RH2+barbs_20161006_0600.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RH2+barbs_20161006_0900.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RH2+barbs_20161006_1200.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RH2+barbs_20161006_1500.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RH2+barbs_20161006_1800.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RH2+barbs_20161006_2100.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RH2+barbs_20161007_0000.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RH2+barbs_20161007_0300.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RH2+barbs_20161007_0600.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RH2+barbs_20161007_0900.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RH2+barbs_20161007_1200.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RH2+barbs_20161007_1500.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RH2+barbs_20161007_1800.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RH2+barbs_20161007_2100.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_RH2+barbs_20161008_0000.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_SLP+barbs_20161006_0000.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_SLP+barbs_20161006_0300.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_SLP+barbs_20161006_0600.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_SLP+barbs_20161006_0900.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_SLP+barbs_20161006_1200.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_SLP+barbs_20161006_1500.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_SLP+barbs_20161006_1800.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_SLP+barbs_20161006_2100.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_SLP+barbs_20161007_0000.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_SLP+barbs_20161007_0300.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_SLP+barbs_20161007_0600.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_SLP+barbs_20161007_0900.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_SLP+barbs_20161007_1200.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_SLP+barbs_20161007_1500.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_SLP+barbs_20161007_1800.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_SLP+barbs_20161007_2100.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_SLP+barbs_20161008_0000.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_T2+barbs_20161006_0000.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_T2+barbs_20161006_0300.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_T2+barbs_20161006_0600.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_T2+barbs_20161006_0900.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_T2+barbs_20161006_1200.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_T2+barbs_20161006_1500.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_T2+barbs_20161006_1800.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_T2+barbs_20161006_2100.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_T2+barbs_20161007_0000.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_T2+barbs_20161007_0300.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_T2+barbs_20161007_0600.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_T2+barbs_20161007_0900.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_T2+barbs_20161007_1200.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_T2+barbs_20161007_1500.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_T2+barbs_20161007_1800.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_T2+barbs_20161007_2100.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_T2+barbs_20161008_0000.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_TERRAIN.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_WS10+barbs_20161006_0000.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_WS10+barbs_20161006_0300.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_WS10+barbs_20161006_0600.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_WS10+barbs_20161006_0900.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_WS10+barbs_20161006_1200.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_WS10+barbs_20161006_1500.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_WS10+barbs_20161006_1800.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_WS10+barbs_20161006_2100.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_WS10+barbs_20161007_0000.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_WS10+barbs_20161007_0300.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_WS10+barbs_20161007_0600.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_WS10+barbs_20161007_0900.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_WS10+barbs_20161007_1200.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_WS10+barbs_20161007_1500.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_WS10+barbs_20161007_1800.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_WS10+barbs_20161007_2100.png
+# * wrf_plot/20161006_00/plots/map_wrf_d01_WS10+barbs_20161008_0000.png
 #
-# Each file should contain corresponding statistics for the line type(s) requested.
-# For the netCDF file, five variable fields are present (not including the lat/lon fields). 
-# Those variables are::
-#
-#  * FCST_fcst_ENS_FREQ_lt-0.43_0_0_all_all_FULL(lat, lon)
-#  * OBS_tmp2m_20100101_000000_all_all_FULL(lat, lon)
-#  * CLIMO_MEAN_tmp2m_20100101_000000_all_all_FULL(lat, lon)
-#  * CLIMO_STDEV_tmp2m_20100101_000000_all_all_FULL(lat, lon)
-#  * CLIMO_CDF_tmp2m_20100101_000000_all_all_FULL(lat, lon)
 
 ##############################################################################
 # Keywords
@@ -190,7 +368,7 @@ model_applications/tc_and_extra_tc/PointStat_fcstWRF_obsMADIS_hurricane_matthew.
 #   * GRIB2FileUseCase
 #   * MADISFileUseCase
 #
-#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+# Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
 #
