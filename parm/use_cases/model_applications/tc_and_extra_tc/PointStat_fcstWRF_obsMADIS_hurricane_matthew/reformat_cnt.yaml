@@ -13,8 +13,8 @@ input_data_dir: '../point_stat'
 
 # Set to log_filename to STDOUT/stdout if no log file is to be saved
 #log_directory: !ENV '${PLOT_LOG_DIR}'
-log_directory: '.'
-log_filename: reformatting_cnt_log.txt
+log_directory: '../logs'
+log_filename: reformatting_cnt.log
 
 # most verbose is info, less verbose is error
 log_level: info
