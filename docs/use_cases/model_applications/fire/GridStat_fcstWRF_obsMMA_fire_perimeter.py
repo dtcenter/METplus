@@ -199,6 +199,7 @@ model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 #   * UserScriptUseCase
 #   * GenVxMaskToolUseCase
 #   * GridStatToolUseCase
+#   * WRFFileUseCase
 #   * GRIB2FileUseCase
 #   * FireAppUseCase
 #
