@@ -23,9 +23,10 @@ The following Python packages are required to run the tests.
 * **pytest**: Runs the tests
 * **python-dateutil**: Required to run METplus wrappers
 * **netCDF4**: Required for some METplus wrapper functionality
+* **pillow**: Required diff utility tests
+* **pdf2image**: Required for diff utility tests
+* **pandas**: Required for diff utility tests
 * **pytest-cov** (optional): Only if generating code coverage stats
-* **pillow** (optional): Only used if running diff utility tests
-* **pdf2image** (optional): Only used if running diff utility tests
 
 Running
 -------

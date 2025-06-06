@@ -9,7 +9,6 @@ from numbers import Number
 from PIL import Image, ImageChops
 from pandas import isnull
 from numpy.ma import is_masked
-from numpy.core._exceptions import UFuncTypeError
 
 IMAGE_EXTENSIONS = [
     '.jpg',
@@ -41,9 +40,7 @@ UNSUPPORTED_EXTENSIONS = [
 ]
 
 # keywords to search and skip diff tests if found in file path
-# PBL use case can be removed after dtcenter/METplus#2246 is completed
 SKIP_KEYWORDS = [
-    'PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed',
     'CyclonePlotter/cyclone/20150301.png',
     'plots/obs_elbow.png',
     'plots/fcst_elbow.png',
@@ -487,7 +484,14 @@ def _is_equal_rounded(value_a, value_b):
 def _is_number(value):
     if isinstance(value, Number):
         return True
-    return value.replace('.', '1').replace('-', '1').strip().isdigit()
+    # Handle NumPy masked constants
+    if is_masked(value):
+        return False
+    # Try to convert to string first, in case value is not a string
+    try:
+        return str(value).replace('.', '1').replace('-', '1').strip().isdigit()
+    except (AttributeError, TypeError):
+        return False
 
 
 def _truncate_float(value):
@@ -699,7 +703,7 @@ def _nc_fields_are_equal(field, nc_a, nc_b, debug=False):
     values_b = var_b[:]
     try:
         values_diff = values_a - values_b
-    except (UFuncTypeError, TypeError):
+    except TypeError:
         # handle non-numeric fields
         if not _all_values_are_equal(var_a, var_b):
             print(f"ERROR: Field ({field}) values (non-numeric) "

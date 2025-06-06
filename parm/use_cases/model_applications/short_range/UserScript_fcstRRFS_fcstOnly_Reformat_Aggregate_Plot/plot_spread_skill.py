@@ -27,7 +27,7 @@ def main():
         plot.write_output_file()
         end = perf_counter()
         execution_time = end - start
-        plot.line_logger.info(f"Finished creating line plot, execution time: {execution_time} seconds")
+        plot.logger.info(f"Finished creating line plot, execution time: {execution_time} seconds")
     except ValueError as val_er:
         print(val_er)
 

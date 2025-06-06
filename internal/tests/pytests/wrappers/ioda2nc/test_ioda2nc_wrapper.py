@@ -3,6 +3,7 @@ import pytest
 import os
 
 from metplus.wrappers.ioda2nc_wrapper import IODA2NCWrapper
+from internal.tests.pytests.conftest import obs_to_nc_runtime_freq_test_params
 
 time_fmt = '%Y%m%d%H'
 run_times = ['2020031012', '2020031100']
@@ -31,19 +32,7 @@ def set_minimum_config_settings(config):
 
 
 @pytest.mark.parametrize(
-    'missing, run, thresh, errors, allow_missing, runtime_freq', [
-        (16, 24, 0.3, 0, True, 'RUN_ONCE_FOR_EACH'),
-        (16, 24, 0.7, 1, True, 'RUN_ONCE_FOR_EACH'),
-        (16, 24, 0.3, 16, False, 'RUN_ONCE_FOR_EACH'),
-        (2, 4, 0.4, 0, True, 'RUN_ONCE_PER_INIT_OR_VALID'),
-        (2, 4, 0.6, 1, True, 'RUN_ONCE_PER_INIT_OR_VALID'),
-        (2, 4, 0.6, 2, False, 'RUN_ONCE_PER_INIT_OR_VALID'),
-        (2, 5, 0.4, 0, True, 'RUN_ONCE_PER_LEAD'),
-        (2, 5, 0.7, 1, True, 'RUN_ONCE_PER_LEAD'),
-        (2, 5, 0.4, 2, False, 'RUN_ONCE_PER_LEAD'),
-        (0, 1, 0.4, 0, True, 'RUN_ONCE'),
-        (0, 1, 0.4, 0, False, 'RUN_ONCE'),
-    ]
+    'missing, run, thresh, errors, allow_missing, runtime_freq', obs_to_nc_runtime_freq_test_params
 )
 @pytest.mark.wrapper
 def test_ioda2nc_missing_inputs(metplus_config, get_test_data_dir, missing,
@@ -230,11 +219,12 @@ def test_ioda2nc_missing_inputs(metplus_config, get_test_data_dir, missing,
           'IODA2NC_NMSG': '10',
           },
          {}, ' -iodafile *INPUT_DIR*/other/file.nc -valid_beg 20200309_12 -valid_end 20200310_12 -nmsg 10'),
+
     ]
 )
 @pytest.mark.wrapper
 def test_ioda2nc_wrapper(metplus_config, config_overrides,
-                         env_var_values, extra_args):
+                         env_var_values, extra_args, compare_command_and_env_vars):
     config = metplus_config
 
     set_minimum_config_settings(config)
@@ -264,25 +254,7 @@ def test_ioda2nc_wrapper(metplus_config, config_overrides,
     ]
 
     all_cmds = wrapper.run_all_times()
-    print(f"ALL COMMANDS: {all_cmds}")
-    assert len(all_cmds) == len(expected_cmds)
-
-    missing_env = [item for item in env_var_values
-                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
-    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
-
-    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
-        # ensure commands are generated as expected
-        assert cmd == expected_cmd
-
-        # check that environment variables were set properly
-        # including deprecated env vars (not in wrapper env var keys)
-        for env_var_key in env_var_keys:
-            match = next((item for item in env_vars if
-                          item.startswith(env_var_key)), None)
-            assert match is not None
-            actual_value = match.split('=', 1)[1]
-            assert env_var_values.get(env_var_key, '') == actual_value
+    compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values, wrapper)
 
 
 @pytest.mark.wrapper

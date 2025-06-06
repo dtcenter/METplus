@@ -2,10 +2,15 @@
 GenVxMask: Solar Altitude
 =========================
 
-model_applications/space_weather/GenVxMask_fcstGloTEC_solar
-_altitude.conf
+model_applications/space_weather/GenVxMask_fcstGloTEC_solar_altitude.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Overview
 # --------
@@ -33,7 +38,6 @@ _altitude.conf
 # maximum of 90 degrees (directly overhead) at noon at latitudes near the equator.
 # [Source: https://sciencing.com/solar-altitude-23364.html]
 
-
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -42,22 +46,31 @@ _altitude.conf
 # This use case applies a solar altitude mask (solar altitude restriction) to the
 # input grid, creating a separate masked output file for each time level of the input file.
 
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.1
 
 ##############################################################################
 # Datasets
 # --------
 #
-# | **Input Grid:** GloTEC
+# **Forecast:**  NOAA Space Weather Prediction Center (SWPC) 
+# GloTEC Total Electron Content (TEC) model run without assimilation of any COSMIC-1 RO data
 #
-# | **Masks:** Solar altitude 
+# **Observation:** None
 #
-# | **Location:** All of the input data required for this use case can be found in the sample data tarball. 
-# | Click here to download: https://github.com/dtcenter/METplus/releases/download/v3.0/sample_data-space_weather-3.0.tgz
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# **Climatology:**  None
 #
-# | **Data source:** NOAA Space Weather Prediction Center (SWPC)
-# | **Data contact:** Dominic Fuller-Rowell (dominic.fuller-rowell@noaa.gov)
-#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Use Case Contact
@@ -65,7 +78,6 @@ _altitude.conf
 #
 # | **Author:** Jonathan L. Vigh (National Center for Atmospheric Research / Research Applications Laboratory / Joint Numerical Testbed)
 # | **Last modified:** 26 May 2020
-#
 
 ##############################################################################
 # METplus Components
@@ -76,6 +88,14 @@ _altitude.conf
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (VALID_BEG):** 201503170005
+#
+# **End time (VALID_END):** 201503170015
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 600
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0
 #
 # GenVxMask is the only tool called in this example. It processes the following
 # run time:
@@ -93,48 +113,40 @@ _altitude.conf
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/space_weather/GenVxMask_fcstGloTEC_FcstOnly_solar_altitude.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/space_weather/GenVxMask_fcstGloTEC_FcstOnly_solar_altitude.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/space_weather/GenVxMask_fcstGloTEC_FcstOnly_solar_altitude.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # None. GenVxMask does not use configuration files.
+
+##############################################################################
+# Python Embedding
+# ----------------
 #
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in the use case config file then a user-specific system configuration file::
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/space_weather/GenVxMask_fcstGloTEC_FcstOnly_solar_altitude.conf /path/to/user_system.conf
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/space_weather/GenVxMask_fcstGloTEC_FcstOnly_solar_altitude.conf -c /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in the use case config file::
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/space_weather/GenVxMask_fcstGloTEC_FcstOnly_solar_altitude.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-# **NOTE:** All of these items must be found under the [dir] section.
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

@@ -6,6 +6,12 @@ model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_
 
 """
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 #
@@ -14,22 +20,32 @@ model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_
 # values are then used by the PointStat tool to verify RTOFS ocean temperature forecast at 50 m depth.
 
 ##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 5.1
+
+##############################################################################
 # Datasets
 # --------
 #
-# | **Forecast:** RTOFSv2.3 forecast data pre-processed into 0.1 degree lat-lon grid
+# **Forecast:** NOAA Global Real-Time Ocean Forecast System (RTOFS) v2.3 forecast
+# data pre-processed into 0.1 degree lat-lon grid
 #
-# | **Observations:** three netCDF files from Argo
+# **Observations:** Argo free drifting profiling floats
 #
-# | **Climatology:** two monthly climatology files from WOA23
+# **Climatology:** World Ocean Atlas 2023 (WOA23)
 #
-# | **Sea Ice Mask:** a mask file to exclude forecast grid points with sea ice concentration > 15%
+# **Sea Ice Mask:** Mask file to exclude forecast grid points with sea ice concentration > 15%
 #
-# | **Location:** All of the input data required for this use case can be found in the
-#   marine_and_cryosphere sample data tarball. Click here to the METplus releases page and download sample
-#   data for the appropriate release: https://github.com/dtcenter/METplus/releases
-#   This tarball should be unpacked into the directory that you will set the value of
-#   INPUT_BASE. See `Running METplus`_ section for more information.
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -41,6 +57,14 @@ model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (VALID_BEG):** 20230318
+#
+# **End time (VALID_END):** 20230318
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 24H
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 024
 #
 # ASCII2NC is the first tool called. It pulls in three Argo files for the Atlantic,
 # Pacific, and Indian Oceans, respectively using a Python script. These observations are converted into a netCDF
@@ -54,16 +78,15 @@ model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_
 # SAL1L2 line types are requested.
 # It processes the following run time:
 #
-# | **Valid:** 2023-03-18 00Z
+# **Valid:** 2023-03-18 00Z
 #
-# | **Forecast lead:** 24 hour
-#
+# **Forecast lead:** 24 hour
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
-# METplus first loads all of the default configuration files found in parm/metplus_config, then it loads any configuration files passed to METplus via the command line with the -c option, i.e. -c parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_temp.conf
+# METplus first loads all of the default configuration files found in parm/metplus_config, then it loads any configuration files passed to METplus via the command line, i.e. parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_temp.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_temp.conf
@@ -80,13 +103,13 @@ model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`PointStat MET Configuration<point-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: Ascii2NcConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/Ascii2NcConfig_wrapped
+#   .. literalinclude:: ../../../../parm/met_config/Ascii2NcConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
+# .. dropdown:: PointStatConfig_wrapped
+#
+#   .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
 
 ##############################################################################
 # Python Embedding
@@ -94,10 +117,20 @@ model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_
 #
 # This use case uses one Python script to read observation data.
 #
-# parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_temp/read_argo_metplus.py
+# .. dropdown:: parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_temp/read_argo_metplus.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_temp/read_argo_metplus.py
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstRTOFS_obsARGO_climoWOA23_temp/read_argo_metplus.py
+# 
+# For more information on the basic requirements to utilize Python Embedding in METplus, 
+# please refer to the MET User’s Guide section on
+# `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus

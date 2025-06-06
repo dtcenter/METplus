@@ -1,12 +1,16 @@
 """
 Grid-Stat and Series-Analysis: BMKG APIK Seasonal Forecast 
-=============================================================================
+==========================================================
 
-model_applications/s2s/GridStat_SeriesAnalysis
-_fcstNMME_obsCPC
-_seasonal_forecast.conf
+model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -98,9 +102,14 @@ _seasonal_forecast.conf
 #  coupled system.
 
 ##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.0
+
+##############################################################################
 # Datasets
 # --------
-#
 #
 # All datasets are traditionally in netCDF format. Grids are either regular gaussian
 # Latitude/Longitude grids or they are Lambert-conformal WRF grids.
@@ -116,19 +125,20 @@ _seasonal_forecast.conf
 # hindcast ensemble is identified through the year in the filename (as well as in the
 # time variable inside the netCDF file).
 #
+# **Forecast:** North American Multi-Model Ensemble (NMME)
 #
-# Forecast Datasets:
-# 
-# NMME
-# * variable of interest: pr (precipitation: cumulative monthly sum)
-# * format of precipitation variable: time,lat,lon (here dimensions: 29,181,361) with time variable representing 29 samples of same Julian Init-Time of hindcasts over past 29 years.
+# **Observation:** CPC Precipitation Reference Data
 #
-# Hindcast Datasets:
+# **Climatology:** CPC Precipitation Reference Data
 #
-# Observational Dataset:
-#
-# * CPC precipitation reference data (same format and grid)
-#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -145,11 +155,18 @@ _seasonal_forecast.conf
 # You will need to use a version of Python 3.6+ that has the following packages installed:
 #
 # * netCDF4
-#
 
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (INIT_BEG):** 198207
+#
+# **End time (INIT_END):** 201007
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 1Y
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 1m, 2m, 3m, 4m, 5m, 6m
 #
 # The following tools are used for each run time: GridStat
 #
@@ -176,8 +193,6 @@ _seasonal_forecast.conf
 # |
 # | **Init:** 2010-07
 # | **Forecast leads:** 1 month, 2 months, 3 months, 4 months, 5 months
-# |
-#
 
 ##############################################################################
 # METplus Configuration
@@ -199,49 +214,36 @@ _seasonal_forecast.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# **GridStatConfig_wrapped**
+# .. dropdown:: GridStatConfig_wrapped
 #
-# .. note:: See the :ref:`GridStat MET Configuration<grid-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+#   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+# .. dropdown:: SeriesAnalysisConfig_wrapped
 #
-# **SeriesAnalysisConfig_wrapped**
+#   .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
 #
-# .. note:: See the :ref:`SeriesAnalysis MET Configuration<series-analysis-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
-# This use case can be run two ways:
 #
-# 1) Passing in GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast.conf then a user-specific system configuration file::
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast.conf -c /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast.conf /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast.conf::
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y
-#
-# **NOTE:** All of these items must be found under the [dir] section.
-#
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

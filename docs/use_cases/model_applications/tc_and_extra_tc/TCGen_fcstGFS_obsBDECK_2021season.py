@@ -6,6 +6,12 @@ model_applications/tc_and_extra_tc/TCGen_fcstGFS_obsBDECK_2021season.conf
 
 """
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 #
@@ -15,19 +21,31 @@ model_applications/tc_and_extra_tc/TCGen_fcstGFS_obsBDECK_2021season.conf
 # line type for TC-Gen.
 
 ##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.1
+
+##############################################################################
 # Datasets
 # --------
 #
-# | **Forecast:** GFS genesis file, GFS E Deck
-# | **Observation:** B Deck, A Deck 
-# | **Warning Areas:** Shapefiles 
+# **Forecast:** GFS genesis file, GFS E Deck
 #
-# | **Location:** All of the input data required for this use case can be found in the tc_and_extra_tc sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
-# |
-# | **Data Source:** NHC ftp.noaa.gov/atcf
-# | **Data Source:** www.nhc.noaa.gov/archive/wgtwo/
-# |
+# **Observation:** Automated Tropical Cyclone Forecasting System (ATCF) B Deck, A Deck 
+#
+# **Warning Areas:** Shapefiles
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -40,27 +58,37 @@ model_applications/tc_and_extra_tc/TCGen_fcstGFS_obsBDECK_2021season.conf
 # METplus Workflow
 # ----------------
 #
-# TC-Gen is the only tool called in this example. It processes the following
-# run times:
+# **Beginning time (INIT_BEG):** 2021
+#
+# **End time (INIT_END):** None
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** None
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
+# This use case does not loop in time, and TC-Gen is the only tool called 
+# in this example. It processes data available with the following time information:
 #
 # | **Init:** 2021-05-07 00 UTC - 2021-11-13 12 UTC
 # | **Forecast lead:** 06 - 120 hours
-# |
+#
+# These timing control elements are set by various TC_GEN config items in the 
+# use case configuration file.
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/tc_and_extra_tc/TCGen_fcstGFS_obsBDECK_2021season.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/tc_and_extra_tc/TCGen_fcstGFS_obsBDECK_2021season.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/TCGen_fcstGFS_obsBDECK_2021season.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on user settings in the METplus configuration file. 
 # See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
@@ -70,40 +98,32 @@ model_applications/tc_and_extra_tc/TCGen_fcstGFS_obsBDECK_2021season.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`TC-Gen MET Configuration<tc-gen-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: TCGenConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/TCGenConfig_wrapped
+#   .. literalinclude:: ../../../../parm/met_config/TCGenConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in the use case configuration file then a user-specific system configuration file::
+#   run_metplus.py /path/to/METplus/parm/model_applications/tc_and_extra_tc/TCGen_fcstGFS_obsBDECK_2021season.conf /path/to/user_system.conf
 #
-#        run_metplus.py -c /path/to/METplus/parm/model_applications/tc_and_extra_tc/TCGen_fcstGFS_obsBDECK_2021season.conf -c /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in use case configuration file::
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/TCGen_fcstGFS_obsBDECK_2021season.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-# **NOTE:** All of these items must be found under the [dir] section.
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

@@ -2,7 +2,7 @@
 Overview
 ********
 
-Purpose and organization of the User's Guide
+Purpose and Organization of the User's Guide
 ============================================
 
 The goal of this User's Guide is to equip users with the information
@@ -49,7 +49,7 @@ The METplus Wrappers release schedule is coincident with the MET release
 schedule and the METplus Wrappers major release number is six less than
 the MET major release number (e.g. MET 8.X is released with METplus Wrappers 2.X).
 
-METplus Wrappers goals and design philosophy
+METplus Wrappers Goals and Design Philosophy
 ============================================
 
 METplus Wrappers is a Python scripting infrastructure for the MET tools.
@@ -90,7 +90,7 @@ correspond to a particular MET tool, but wrap utilities to extend
 METplus functionality.
 
     
-Future development plans
+Future Development Plans
 ========================
 
 METplus Wrappers is an evolving application. New capabilities are
@@ -105,27 +105,28 @@ Please create a post in the
 `METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_
 with any questions.
 
-Code support
+User Support
 ============
 
-Support for METplus Wrappers is provided through the
-`METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_.
-We will endeavor to respond to requests for
-help in a timely fashion. In addition, information about METplus
-Wrappers and tools that can be used with MET are provided on the
-`MET Users web page <https://dtcenter.org/community-code/model-evaluation-tools-met>`_.
+The `METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_
+is a place for questions, answers, and discussion about the Model Evaluation Tools (METplus)
+verification system, which consists of code repositories for
+`METplus <https://github.com/dtcenter/METplus>`_,
+`MET <https://github.com/dtcenter/MET>`_,
+`METdataio <https://github.com/dtcenter/METdataio>`_,
+`METcalcpy <https://github.com/dtcenter/METcalcpy>`_,
+`METplotpy <https://github.com/dtcenter/METplotpy>`_,
+and `METviewer <https://github.com/dtcenter/METviewer>`_. For more information about the
+METplus GitHub Discussions Forum, see the
+`Welcome post <https://github.com/dtcenter/METplus/discussions/939>`_, and for
+information on how to send data see the
+`How to Send Us Data post <https://github.com/dtcenter/METplus/discussions/954>`_.
+For more information about METplus, see	the
+`METplus webpage <https://dtcenter.org/community-code/metplus>`_.
 
-We welcome comments and suggestions for improvements to METplus
-Wrappers, especially information regarding errors. Comments may be
-submitted using the MET Feedback form available on the MET website. In
-addition, comments on this document would be greatly appreciated. While
-we cannot promise to incorporate all suggested changes, we will
-certainly take all suggestions into consideration.
-
-METplus Wrappers is a "living" set of wrappers and configuration files.
-Our goal is to continually enhance it and add to its capabilities.
-Because our time, resources, and talents can at times be limited, we welcome
-contributed code for future versions of METplus. These contributions may
-represent new use cases or new plotting functions. For more information
-on contributing code to METplus Wrappers, please create a post in the 
-`METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_.
+Our goal is to continually enhance METplus and add to its capabilities.
+Because our time, resources, and talents are sometimes limited, we welcome
+contributed code for future versions of METplus. For more information
+on contributing code to METplus, please create a
+`new post <https://github.com/dtcenter/METplus/discussions/new/choose>`_ in the 
+METplus GitHub Discussions Forum.

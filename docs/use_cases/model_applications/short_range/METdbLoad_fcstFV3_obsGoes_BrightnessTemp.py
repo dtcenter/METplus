@@ -2,11 +2,15 @@
 METdbLoad: Brightness Temperature
 =================================
 
-model_applications/
-short_range/
-METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
+model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -16,14 +20,29 @@ METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 # from grid_stat and mode output into a database.
 
 ##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 6.0
+
+##############################################################################
 # Datasets
 # --------
 #
-# | **Input:** MET .stat files and MODE text files
+# **Forecast:** MODE text files and MET .stat files
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to see the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
-# |
+# **Observation:** MODE text files and MET .stat files
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -39,27 +58,42 @@ METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (VALID_BEG):** 2019052100
+#
+# **End time (VALID_END):** 2019052112
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 12H
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
 # The METdbload is run once and loads data for two ensemble members, one model initialization
-# time and 2 forecast lead times, listed below.
+# time and 2 forecast lead times, listed below. These forecast lead times (i.e. LEAD_SEQ) 
+# are not set in this conf file, but rather are controlled with the conf file for other 
+# use cases that generate the output used here.
 #
 # | **Valid:** 2019-05-21_01Z
 # | **Forecast lead:** 01
 # |
-#
 # | **Valid:** 2019-05-21_02Z
 # | **Forecast lead:** 02
-# |
-
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
+# then it loads any configuration files passed to METplus via the command line, 
+# i.e. parm/use_cases/model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
+
+##############################################################################
+# MET Configuration
+# -----------------
+#
+# There are no MET tools used in this use case.
 
 ##############################################################################
 # XML Configuration
@@ -75,37 +109,33 @@ METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 #     section of the User's Guide for more information on the values
 #     substituted in the file below:
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/METdbLoad/METdbLoadConfig.xml
+# .. dropdown:: METdbLoadConfig.xml
+#
+#   .. highlight:: bash
+#   .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/METdbLoad/METdbLoadConfig.xml
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf followed by a user-specific system configuration file::
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf /path/to/user_system.conf
 #
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config and then passing in METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf::
-#
-#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path to directory where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [config]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

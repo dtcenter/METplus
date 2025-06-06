@@ -41,11 +41,11 @@ Add or update information about software releases on the website.
         "https://metplus.readthedocs.io/en/vX.Y.Z/Users_Guide/"
 
       * Add Link: Link text should be "Existing Builds and Docker" and the URL
-        should be the latest Existing Builds page, i.e.
-        https://dtcenter.org/community-code/metplus/metplus-X-Y-existing-builds
-        (If creating a new official release, be sure to add a new *Existing Builds
-        and Docker* page, if one was not already created.)
-  
+        should be the latest Existing Builds page. Beta releases can use
+        "develop" in the URL, but for rcN and official releases, please ensure
+        the link uses the branch name (e.g. main_vX.Y). For example, use
+        https://metplus.readthedocs.io/en/main_vX.Y/Users_Guide/release-notes.html#existing-builds
+
     * In the **Release Notes** text box provide a direct link to the
       *release-notes.html* file in the User's Guide.
 

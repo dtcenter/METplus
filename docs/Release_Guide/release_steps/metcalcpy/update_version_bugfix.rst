@@ -1,9 +1,10 @@
-Update Version Number for Release
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Update Version Number
+^^^^^^^^^^^^^^^^^^^^^
 
-Update the version number for the bugfix release:
+Update the software version information.
 
-* For METcalcpy, the file containing the version number is located at docs/version. 
-* If the current release is listed as X.Y.Z (major.minor.micro), the bugfix version should be X.Y.Z+1
-  (i.e. increment the micro value by 1: 1.1.0 becomes 1.1.1)
+.. dropdown:: Instructions
 
+  * In 'docs/version', update '__version__'. This value is used by setup.py. 
+
+  * In 'docs/conf.py', update the 'version', 'release_year', and 'release_date' variables for the documentation.

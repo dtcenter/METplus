@@ -8,9 +8,6 @@
       <tab type="user" visible="yes" url="@ref install" title="Installing METplus"/>
       <tab type="user" visible="yes" url="@ref confguide" title="Configuring METplus"/>
       <tab type="user" visible="yes" url="@ref run-hwrf" title="Running METplus"/>
-      <!--
-      <tab type="user" visible="yes" url="@ref hwrf_scripts_overview" title="Scripts Overview"/>
-      -->
     </tab>
     <!-- I don't think type="module"is used -->
     <tab type="modules" visible="yes" title="Modules" intro=""/>

@@ -10,11 +10,9 @@ Output Files: None
 Condition codes: 0 for success, 1 for failure
 """
 
-import os
 import re
 
-from ..util import time_util
-from ..util import do_string_sub, get_lead_sequence
+from ..util import do_string_sub
 from . import LoopTimesWrapper
 from . import RegridDataPlaneWrapper
 
@@ -108,9 +106,13 @@ class PyEmbedIngestWrapper(LoopTimesWrapper):
                         'REGRID_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS',
                         c_dict['SKIP_IF_OUTPUT_EXISTS'])
 
+        # set config variable to prevent incorrect error in RegridDataPlane
+        # RDP requires either FCST_ or OBS_ options when run directly, but
+        # PyEmbedIngest wrapper builds commands without these settings
+        self.config.set('config', 'RDP_SKIP_RUN_CHECK', True)
+
         c_dict['regrid_data_plane'] = (
-            RegridDataPlaneWrapper(self.config,
-                                   instance=instance)
+            RegridDataPlaneWrapper(self.config, instance=instance)
         )
         c_dict['FIND_FILES'] = False
         return c_dict

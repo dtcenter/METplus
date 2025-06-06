@@ -3,7 +3,6 @@
 import pytest
 
 import os
-import sys
 import datetime
 
 from metplus.wrappers.tc_stat_wrapper import TCStatWrapper
@@ -14,11 +13,9 @@ run_times = ['20150301', '20150301']
 config_init_beg = '20170705'
 config_init_end = '20170901'
 
+OUTPUT_DIR_TAG = '<output_dir>'
 
 def get_config(metplus_config):
-    # extra_configs = []
-    # extra_configs.append(os.path.join(os.path.dirname(__file__),
-    #                                   'tc_stat_conf.conf'))
     config = metplus_config
 
     # set config variables to prevent command from running and bypass check
@@ -245,7 +242,8 @@ def test_tc_stat_handle_jobs(metplus_config, config_overrides, expected_dirs,
     ]
 )
 @pytest.mark.wrapper
-def test_tc_stat_run(metplus_config, config_overrides, env_var_values):
+def test_tc_stat_run(metplus_config, config_overrides, env_var_values,
+                     compare_command_and_env_vars):
     config = get_config(metplus_config)
 
     # set config variable overrides
@@ -263,7 +261,7 @@ def test_tc_stat_run(metplus_config, config_overrides, env_var_values):
         )
 
     if 'METPLUS_INIT_HOUR' not in env_var_values:
-        env_var_values['METPLUS_INIT_HOUR'] = f'init_hour = ["00"];'
+        env_var_values['METPLUS_INIT_HOUR'] = 'init_hour = ["00"];'
 
     wrapper = TCStatWrapper(config)
     assert wrapper.isOK
@@ -286,25 +284,7 @@ def test_tc_stat_run(metplus_config, config_overrides, env_var_values):
     ]
 
     all_cmds = wrapper.run_all_times()
-    print(f"ALL COMMANDS: {all_cmds}")
-    assert len(all_cmds) == len(expected_cmds)
-
-    missing_env = [item for item in env_var_values
-                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
-    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
-
-    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
-        # ensure commands are generated as expected
-        assert cmd == expected_cmd
-
-        # check that environment variables were set properly
-        for env_var_key in env_var_keys:
-            match = next((item for item in env_vars if
-                          item.startswith(env_var_key)), None)
-            assert match is not None
-            print(f'Checking env var: {env_var_key}')
-            actual_value = match.split('=', 1)[1]
-            assert env_var_values.get(env_var_key, '') == actual_value
+    compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values, wrapper)
 
 
 @pytest.mark.parametrize(
@@ -438,16 +418,16 @@ def test_handle_jobs(metplus_config, jobs, init_dt, expected_output):
 
     wrapper.c_dict['JOBS'] = []
     for job in jobs:
-        wrapper.c_dict['JOBS'].append(job.replace('<output_dir>', output_dir))
+        wrapper.c_dict['JOBS'].append(job.replace(OUTPUT_DIR_TAG, output_dir))
 
     output = wrapper.handle_jobs(time_info)
-    assert output == expected_output.replace('<output_dir>', output_dir)
+    assert output == expected_output.replace(OUTPUT_DIR_TAG, output_dir)
 
 
 def cleanup_test_dirs(parent_dirs, output_dir):
     if parent_dirs:
         for parent_dir in parent_dirs:
-            parent_dir_sub = parent_dir.replace('<output_dir>', output_dir)
+            parent_dir_sub = parent_dir.replace(OUTPUT_DIR_TAG, output_dir)
             if os.path.exists(parent_dir_sub):
                 os.removedirs(parent_dir_sub)
 
@@ -466,7 +446,7 @@ def cleanup_test_dirs(parent_dirs, output_dir):
          None,
          'jobs = ["-job filter -dump_row <output_dir>/filt.tcst",'
          '"-job rirw -line_type TCMPR"];',
-         ['<output_dir>'],
+         [OUTPUT_DIR_TAG],
          ),
 
         # 2 jobs, time info sub, 1 parent dir
@@ -475,7 +455,7 @@ def cleanup_test_dirs(parent_dirs, output_dir):
          datetime.datetime(2019, 10, 31, 12),
          'jobs = ["-job filter -dump_row <output_dir>/2019103112.tcst",'
          '"-job rirw -line_type TCMPR"];',
-         ['<output_dir>'],
+         [OUTPUT_DIR_TAG],
          ),
 
         # 2 jobs, no time info, 2 parent dirs
@@ -524,16 +504,16 @@ def test_handle_jobs_create_parent_dir(metplus_config, jobs, init_dt,
 
     wrapper.c_dict['JOBS'] = []
     for job in jobs:
-        wrapper.c_dict['JOBS'].append(job.replace('<output_dir>', output_dir))
+        wrapper.c_dict['JOBS'].append(job.replace(OUTPUT_DIR_TAG, output_dir))
 
     output = wrapper.handle_jobs(time_info)
-    if output != expected_output.replace('<output_dir>', output_dir):
+    if output != expected_output.replace(OUTPUT_DIR_TAG, output_dir):
         assert False
 
     # check if parent dir was created
     if parent_dirs:
         for parent_dir in parent_dirs:
-            parent_dir_sub = parent_dir.replace('<output_dir>', output_dir)
+            parent_dir_sub = parent_dir.replace(OUTPUT_DIR_TAG, output_dir)
             if not os.path.exists(parent_dir_sub):
                 assert False
 

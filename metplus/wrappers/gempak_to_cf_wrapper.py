@@ -12,8 +12,7 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import do_string_sub, skip_time, get_lead_sequence
-from ..util import time_util
+from ..util import do_string_sub
 from . import LoopTimesWrapper
 
 '''!@namespace GempakToCFWrapper

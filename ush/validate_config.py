@@ -33,6 +33,9 @@ def main():
 
     # Parse arguments, options and return a config instance.
     config = config_metplus.setup(config_inputs)
+    if config is None:
+        print("ERROR: Could not parse config")
+        return False
 
     # validate configuration variables
     is_ok, sed_commands = validate_config_variables(config)
@@ -40,78 +43,65 @@ def main():
     # if everything is valid, report success and exit
     if is_ok:
         print("SUCCESS: Configuration passed all of the validation tests.")
-        sys.exit(0)
+        return True
+
+    _prompt_sed_commands(sed_commands)
+    return True
+
+
+def _prompt_sed_commands(sed_commands):
 
     # if sed commands can be run, output lines that will be changed and ask
     # user if they want to run the sed command
-    if sed_commands:
-        for cmd in sed_commands:
-            if cmd.startswith('#Add'):
-                add_line = cmd.replace('#Add ', '')
-                met_tool = None
-                for suffix in ['_REGRID_TO_GRID', '_OUTPUT_PREFIX']:
-                    if suffix in add_line:
-                        met_tool = add_line.split(suffix)[0]
-                        section = 'config'
+    if not sed_commands:
+        return
 
-                for suffix in ['_CLIMO_MEAN_INPUT_TEMPLATE']:
-                    if suffix in add_line:
-                        met_tool = add_line.split(suffix)[0]
-                        section = 'filename_templates'
+    for cmd in sed_commands:
+        # remove -i from sed command to avoid replacing in the file
+        cmd_no_inline = cmd.replace('sed -i', 'sed')
+        split_cmd = shlex.split(cmd_no_inline)
+        original_file = split_cmd[-1]
 
-                if met_tool:
-                    print(f"\nIMPORTANT: If it is not already set, add the following in the [{section}] section to "
-                          f"your METplus configuration file that sets {met_tool}_CONFIG_FILE:\n")
-                    print(add_line)
-                    input("Make this change before continuing! [OK]")
-                else:
-                    print("ERROR: Something went wrong in the validate_config.py script. Please send an email to met_help@ucar.edu.")
+        # call sed command to get result of find/replace
+        result = subprocess.check_output(split_cmd, encoding='utf-8').splitlines()
 
-                continue
+        # compare the result to the original file and show the differences
+        with open(original_file, 'r') as f:
+            original = f.read().splitlines()
 
-            # remove -i from sed command to avoid replacing in the file
-            cmd_no_inline = cmd.replace('sed -i', 'sed')
-            split_cmd = shlex.split(cmd_no_inline)
-            original_file = split_cmd[-1]
+        # if no differences, continue
+        if result == original:
+            continue
 
-            # call sed command to get result of find/replace
-            result = subprocess.check_output(split_cmd, encoding='utf-8').splitlines()
+        print(f"\nThe following replacement is suggested for {original_file}\n")
 
-            # compare the result to the original file and show the differences
-            with open(original_file, 'r') as f:
-                original = [i.replace('\n', '') for i in f.readlines()]
+        # loop over before and after files line by line and
+        for old, new in zip(original, result):
 
-            # if no differences, continue
-            if result == original:
-                continue
+            if old != new:
+                print(f"Before:\n{old}\n")
+                print(f"After:\n{new}\n")
 
-            print(f"\nThe following replacement is suggested for {original_file}\n")
+        # ask the user if they want to make the changes to their file (y/n default is no)
+        run_sed = False
+        user_answer = input(f"Would you like the make this change to {original_file}? (y/n)[n]")
 
-            # loop over before and after files line by line and 
-            for old, new in zip(original, result):
+        if user_answer and user_answer[0] == 'y':
+            run_sed = True
 
-                if old != new:
-                    print(f"Before:\n{old}\n")
-                    print(f"After:\n{new}\n")
+        # if yes, run original sed command
+        if run_sed:
+            print(f"Running command: {cmd}")
+            subprocess.run(shlex.split(cmd))
+        else:
+            print(f"Skipping sed command for {original_file}")
 
-            # ask the user if they want to make the changes to their file (y/n default is no)
-            run_sed = False
-            user_answer = input(f"Would you like the make this change to {original_file}? (y/n)[n]")
-
-            if user_answer and user_answer[0] == 'y':
-                run_sed = True
-
-            # if yes, run original sed command
-            if run_sed:
-                print(f"Running command: {cmd}")
-                subprocess.run(shlex.split(cmd))
-            else:
-                print(f"Skipping sed command for {original_file}")
-
-        print("\nFinished running sed commands.")
-        print("\nRerun this script to ensure no other deprecated variables need to be replaced.")
-        print("See METplus User's Guide for more information on how to change deprecated variables")
+    print("\nFinished running sed commands.")
+    print("\nRerun this script to ensure no other deprecated variables need to be replaced.")
+    print("See METplus User's Guide for more information on how to change deprecated variables")
 
 
 if __name__ == "__main__":
-    main()
+    status = main()
+    if not status:
+        sys.exit(1)

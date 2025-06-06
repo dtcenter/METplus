@@ -218,7 +218,7 @@ for more information.
 
 **What to bold:**
 
-  * Variables (e.g. **MET_INSTALL_DIR, INPUT_BASE, METCALCPY_HOME**, etc.)
+  * Environment Variables (e.g. **MET_INSTALL_DIR, INPUT_BASE, METCALCPY_HOME**, etc.)
   * Filenames (**line_defaults.yaml, contour_defaults.yaml, defaults.conf**, etc.)
 
 Italics
@@ -395,6 +395,20 @@ resulting in the following displayed text:
 
 See `Overleaf's Guide - Matrices <https://www.overleaf.com/learn/latex/Matrices>`_ for more information.
 
+Literal Include
+---------------
+
+This feature is used often in the Release Guide, but there are other places it could be useful.
+Using a literal include ensures only having to update the documentation in one place.
+It is important to use a relative path (i.e. "../../") to get to the correct 
+directory of the file being referenced in the literal include.  This will keep the 
+file linking to the correct version and branch.  
+
+As an example, refer to the METplus User's Guide.  See this 
+`line <https://github.com/dtcenter/METplus/blob/46f705fc2c1b861e3aa6314d030eb9b4c382d0b3/docs/use_cases/met_tool_wrapper/PointStat/PointStat.py#L55>`_ 
+in the PointStat Wrapper Use Case documentation, which uses RST's :code:`.. literalinclude::` 
+and renders the text of the referenced file in this 
+`section <https://metplus.readthedocs.io/en/develop/generated/met_tool_wrapper/PointStat/PointStat.html#metplus-configuration>`_.
 
 Literal Blocks
 --------------
@@ -423,6 +437,54 @@ See
 `Sphinx literal blocks <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#rst-literal-blocks>`_
 and
 `literal blocks <https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#literal-blocks>`_
+for more information.
+
+Substitution References
+-----------------------
+
+Substitution references are replacements in the text as defined in the :code:`rst_epilog` 
+in the **docs/conf.py** file.  For example, instead of hard coding the MET version in 
+the METplus documentation, a variable :code:`met_version` can be set to a value 
+(e.g. 12.0.0) in the **docs/conf.py** file in the following way:
+
+.. code-block:: ini
+
+  met_version = 12.0.0
+
+Then, this variable is used in the :code:`rst_epilog` to set up the substitution, 
+along with other variables.  For example, in the **docs/conf.py** 
+file the following is defined:
+
+.. code-block:: ini
+
+  rst_epilog = f"""
+  .. |copyright|    replace:: {copyright}
+  .. |author_list|  replace:: {author_list}
+  .. |release_date| replace:: {release_date}
+  .. |release_year| replace:: {release_year}
+  .. |release_info| replace:: {release_info}
+  .. |python_version| replace:: {python_version}
+  .. |met_version| replace:: {met_version}
+  """
+
+The value 12.0.0 would then be replaced in the documentation wherever 
+:code:`|met_version|` is used in .rst files.  For example:
+
+.. code-block:: ini
+
+  MET version |met_version| or above 
+
+There are some 
+`reserved substitution variables <https://www.sphinx-doc.org/en/master/usage/restructuredtext/roles.html#substitutions>`_ 
+in Sphinx.  These variables are 
+:code:`|release|`, :code:`|version|`, :code:`|today|`, and 
+:code:`|translation progress|`. Reserved substitution variables do not 
+need to be added to :code:`rst_epilog`, but other variables do.
+
+See 
+`Substitutions <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#substitutions>`_ 
+and 
+`rst_epilog <https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-rst_epilog>`_ 
 for more information.
 
 Line Blocks
@@ -1413,8 +1475,7 @@ Read the Docs supports multiple versions for each repository. For the METplus
 components, the "latest" version will point to the latest official (stable)
 release. The "develop" or "development" version will point to the most up to
 date development code. There may also be other previous versions of the
-software available in the version selector menu, which is accessible by
-clicking in the bottom left corner of the documentation pages.
+software available in the version selector menu.
 
 Automation rules allow project maintainers to automate actions on new branches
 and tags on repositories.  For the METplus components, documentation is

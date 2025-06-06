@@ -25,9 +25,10 @@ import traceback
 # add metplus directory to path so the wrappers and utilities can be found
 sys.path.insert(0, abspath(join(dirname(realpath(__file__)), pardir)))
 
-import produtil.setup
+from metplus.produtil.setup import setup as produtil_setup
 
 from metplus.util import pre_run_setup, run_metplus, post_run_cleanup
+from metplus import __version__ as metplus_version
 
 '''!@namespace run_metplus
 Main script the processes all the tasks in the PROCESS_LIST
@@ -44,12 +45,6 @@ def main():
     if not config:
         return False
 
-    # warn if calling master_metplus.py
-    if basename(__file__) == 'master_metplus.py':
-        msg = ("master_metplus.py has been renamed to run_metplus.py. "
-               "This script name will be removed in a future version.")
-        config.logger.warning(msg)
-
     total_errors = run_metplus(config)
 
     return post_run_cleanup(config, 'METplus', total_errors)
@@ -57,15 +52,12 @@ def main():
 
 def usage():
     """!How to call this script."""
-    print ('''
-Usage: %s arg1 arg2 arg3
-    -h|--help               Display this usage statement
-
-Arguments:
-/path/to/parmfile.conf -- Specify custom configuration file to use
-section.option=value -- override conf options on the command line
-
-'''%(basename(__file__)))
+    print(f"Running METplus v{metplus_version}\n"
+          f"Usage: {basename(__file__)} arg1 arg2 arg3\n"
+          "    -h|--help               Display this usage statement\n\n"
+          "Arguments:\n"
+          "/path/to/parmfile.conf -- Specify custom configuration file to use\n"
+          "section.option=value -- override conf options on the command line")
     sys.exit(2)
 
 
@@ -83,28 +75,12 @@ def get_config_inputs_from_command_line():
 
     # print usage statement and exit if help arg is found
     help_args = ('-h', '--help', '-help')
-    for help_arg in help_args:
-        if help_arg in sys.argv:
-            usage()
+    if any(arg in sys.argv for arg in help_args):
+        usage()
 
-    # pull out command line arguments
-    config_inputs = []
-    for arg in sys.argv[1:]:
-        if arg.startswith('-'):
-            # ignore -c and --config since they are now optional
-            if arg == '-c' or arg == '--config' or arg == '-config':
-                continue
-
-            # error/exit if an argument that is not supported was used
-            print('ERROR: Invalid argument: %s.' % arg)
-            usage()
-
-        # split up comma separated lists into individual items
-        # and add each to list of arguments
-        # NOTE: to support lists in a config variable override,
-        # this logic will have to be enhanced
-        # i.e. config.PROCESS_LIST=PCPCombine,GridStat
-        config_inputs.extend(arg.split(','))
+    # pull out command line arguments, removing deprecated config arguments
+    config_args = ('-c', '--config', '-config')
+    config_inputs = [arg for arg in sys.argv[1:] if arg not in config_args]
 
     # if no valid config_inputs were found, print usage and exit
     if not config_inputs:
@@ -113,12 +89,15 @@ def get_config_inputs_from_command_line():
     return config_inputs
 
 
-if __name__ == "__main__":
+def cli_main():
     try:
-        produtil.setup.setup(send_dbn=False, jobname='run-METplus')
+        produtil_setup(send_dbn=False, jobname='run-METplus')
         if not main():
             sys.exit(1)
     except Exception as exc:
         print(traceback.format_exc())
         print('ERROR: run_metplus  failed: %s' % exc)
         sys.exit(2)
+
+if __name__ == "__main__":
+    cli_main()

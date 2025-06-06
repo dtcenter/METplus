@@ -36,13 +36,14 @@ Many useful actions are provided by GitHub and external collaborators.
 Developers can also write their own custom actions to perform complex tasks
 to simplify a workflow.
 
-
 Testing (testing.yml)
 ---------------------
 
 This workflow performs a variety of tasks to ensure that changes do not break
 any existing functionality.
 See the :ref:`cg-ci-testing-workflow` for more information.
+
+.. _cg-ci-documentation:
 
 Documentation (documentation.yml)
 ---------------------------------
@@ -76,10 +77,100 @@ at the bottom of the workflow summary page when the workflow has completed.
 
 .. figure:: figure/ci-doc-artifacts.png
 
+.. _cg-ci-sonarqube:
+
+SonarQube (sonarqube.yml)
+-------------------------
+
+SonarQube is a static code analysis tool used to enhance software code quality
+and security. The METplus team acknowledges the generous funding from the
+United States Air Force to support our ongoing use of this important utility.
+
+The **sonarqube.yml** workflow is defined in all of the METplus component
+code repositories. This workflow is triggered by a **pull_request** or
+**push** to the **develop** or **main_vX.Y** branch and also by manual
+**workflow_dispatch** events. However, changes to documentation only or other
+specific infrastructure directories do not trigger this workflow.
+
+A **sonar-project.properties** file within each repository defines the
+configuration of the SonarQube scans for that code base. The SonarQube
+workflows for the Python-based METplus components are all very similar while
+the logic for the repositories with compiled code differ.
+
+The SonarQube workflows for the Python-based components (METplus, METplotpy,
+METcalcpy, and METdataio) run jobs to:
+
+* Check out the source code
+* Set up a Python environment
+* Run Pytests and create a test code coverage report
+* Configure the SonarQube properties based on the triggering event
+* Run a SonarQube scan job provided by SonarSource
+* Run a SonarQube quality gate check job provided by SonarSource
+ 
+The quality gate check job pushes the scan results, including code coverage,
+to a [SonarQube server](https://needham.rap.ucar.edu/) hosted by the METplus
+team. All memebers of the DTCenter GitHub organization can access this server
+by logging in with their GitHub credentials.
+
+The SonarQube scans for MET and METviewer require that the code be built,
+which is done inside a Docker container. However, the results of those
+Docker-based scans are also pushed to the same SonarQube server.
+
+The scan results for each repository are stored on the server in a project
+whose name matches the code repository name.
+
+The SonarQube server defines a configurable set of **Quality Gate** acceptance
+criteria. For each scan, a reference source is defined and changes are tracked
+relative to that reference. For example, a new scan of the **develop** branch
+is compared to the previous scan of **develop**, while each pull request scan
+is compared to the latest scan of the destination branch, typically
+**develop**.
+
+SonarQube scans report on the following (listed in approximate order of
+concern from a security perspective):
+
+* **Vulnerabilities** for security findings
+* **Bugs** for reliability findings
+* **Security Hotspots** for security findings to be reviewed
+* **Code Smells** for maintainability findings
+* Test code **Coverage** percentage (if provided to the scan)
+* Code **Duplication** percentage
+
+For each finding, the SonarQube scan categorizes it by type, shows its
+location in the code, and provides detailed information about the reason
+for the issue, suggestions on how to fix it, and links to additional
+information.
+
+SonarQube differentiates between **New Code** and **Overall Code** where the
+former shows findings flagged only in new files and lines modified in existing
+files and the latter shows all findings. Generally speaking, the configurable
+**Quality Gate** settings define acceptance criteria based only on findings
+in **New Code**.
+
+The **Quality Gate** check in the SonarQube workflow returns a good status
+(green checkmark) if the acceptance criteria is met or bad status (red X) if
+not. Ideally, each change to the code base would result in fewer findings,
+increased test coverage, and a lower code duplication. Pull requests should
+never add new **Vulnerabilities** or **Bugs**, and the submitter should fix
+them before their pull request is approved and merged. Introducing new
+**Code Smells** is acceptable in certain circumstances. In this case,
+developers are strongly encouraged to make additional changes that reduce the 
+total number of **Code Smells** in the **Overall Code**. While a pull request
+can add new **Code Smells** that are not easily fixed, the overall number
+should be reduced.
+
+Developers are encouaraged to manually run the SonarQube workflow with the
+GitHub **workflow_dispatch** option and check the results to confirm the
+quality of their code before submitting a pull request for review. Developers
+are encouraged to describe the SonarQube status of their proposed code changes
+in the body of each pull request. Reviewers should not approve pull requests
+that introduce new **Vulnerabilities** or **Bugs** or increase the number of
+**Code Smells** in the **Overall Code**.
+
 .. _cg-ci-update-truth-data:
 
-Update Truth Data (update_truth.yml)
-------------------------------------
+Update Reference Branch (update_reference_branch.yml)
+-----------------------------------------------------
 
 The METplus use case test truth data includes output from use cases that is
 used to compare with new use case test results to flag any differences.
@@ -101,7 +192,11 @@ branch and "develop-ref" as the destination branch.
 This is done so that the pull request responsible for the changes in the
 truth data can be referenced to easily track where differences occurred.
 
-The **Update Truth Data** workflow is available to handle this step.
+The **Update Reference Branch** workflow is available to handle this step.
+
+.. note::
+   **IMPORTANT: The latest develop branch testing workflow that contains output differences must be completed before running these instructions.**
+
 
 * Ensure that the develop data directory has been updated to include all of the
   new input data.
@@ -109,9 +204,9 @@ The **Update Truth Data** workflow is available to handle this step.
   confirm that the steps under :ref:`update-the-develop-data-directory` have
   been completed. If this step has not been completed, then the new use case(s)
   will fail and the new output data will not be added to the truth data set.
-* Navigate to https://github.com/dtcenter/METplus/actions/workflows/update_truth.yml
+* Navigate to https://github.com/dtcenter/METplus/actions/workflows/update_reference_branch.yml
   or from the METplus GitHub page, click on the Actions tab,
-  then click on "Update Truth Data" under menu on the left.
+  then click on "Update Reference Branch" under menu on the left.
 * Click on the "Run workflow" button on the right.
 * Click on the Branch pull down and select "develop" unless you are updating
   the truth data for a bugfix on a main_vX.Y branch.
@@ -122,7 +217,7 @@ The **Update Truth Data** workflow is available to handle this step.
 * Enter a brief summary of the changes.
   Developers can navigate to the PRs for more information.
 
-.. figure:: figure/update_truth_data.png
+.. figure:: figure/update_reference_branch.png
 
 * Click the "Run workflow" button.
 * A new workflow run should appear at the top of the list and complete quickly.
@@ -138,7 +233,8 @@ The **Update Truth Data** workflow is available to handle this step.
 * Scroll to the bottom of the pull request and click "Squash and merge."
 * Click "Confirm squash and merge." It is not necessary to wait for the
   automation checks to complete for this step.
-* Monitor the Testing automation run for the develop-ref branch and ensure that
+* Click the button to delete the *update_develop_XXXXXXXX* branch.
+* Monitor the `Update Input Test Data <https://github.com/dtcenter/METplus/actions/workflows/update_input_data.yml>`_ workflow run for the develop-ref branch and ensure that
   all of the use cases run successfully and the final step named
   "Create Output Docker Data Volumes" completed successfully.
 * If any use cases fail, check that the input data has been updated following
@@ -175,7 +271,6 @@ branch name text box blank and select the branch name from the pull-down menu.
 
 Verify that the workflow ran successfully and properly obtained the new data
 by reviewing the log output from the workflow run.
-
 
 Release Published (release_published.yml) - DEPRECATED
 ------------------------------------------------------
@@ -780,6 +875,8 @@ Example::
     met_tool_wrapper/GridStat/GridStat.conf,met_tool_wrapper/GridStat/GridStat_forecast.conf,met_tool_wrapper/GridStat/GridStat_observation.conf
 
 
+.. _cg-ci-dependencies:
+
 dependencies
 """"""""""""
 
@@ -799,6 +896,8 @@ Example::
 Use Case Dependencies
 ^^^^^^^^^^^^^^^^^^^^^
 
+.. _cg-ci-conda-environments:
+
 Conda Environments
 """"""""""""""""""
 
@@ -813,9 +912,10 @@ with the versions of Python packages they contain are:
 
 **py_embed_base_env**
 
-* Python 3.10.4
-* xarray 2022.3.0
-* netcdf4 1.5.8
+* Python 3.12.0
+* xarray 2025.1.2
+* netcdf4 1.7.2
+* pyyaml 6.0.2
 
 Note: Adding the py_embed_base_env keyword is not necessary if the *py_embed*
 keyword is used (see Other Keywords). A Python Embedding use case that only
@@ -826,79 +926,90 @@ environments use this environment as a base.
 
 **cfgrib_env**
 
-* Python 3.10.4
-* metpy 1.4.0
-* netcdf4 1.5.8
-* cfgrib 0.9.10.1
-* pygrib 2.1.4
+* Python 3.12.0
+* metpy 1.6.3
+* netcdf4 1.7.2
+* cfgrib 0.9.15
+* pygrib 2.1.6
 
 **cycloneplotter_env**
 
-* Python 3.10.4
-* cartopy 0.20.3
-* matplotlib 3.5.2
-* pandas 1.4.3
+* Python 3.12.0
+* cartopy 0.24.0
+* matplotlib 3.10.0
+* pandas 2.2.3
 
 **geovista_env**
 
-* geovista
-* xarray 2022.11.0
-* iris 3.3.1
+* Python 3.12.0
+* geovista 0.5.3
+* xarray 2025.1.2
+* iris 3.11.1
 
 **h5py_env**
 
 * All packages in py_embed_base_env
-* h5py 3.6.0
+* h5py 3.12.1
 
 **icecover_env**
 
 * All packages in py_embed_base_env
-* xarray 2022.3.0
-* pyresample 1.24.1
-* scikit-learn 1.1.1
-* pyproj 3.3.1
+* xarray 2025.1.2
+* pyresample 1.32.0
+* scikit-learn 1.6.1
+* pyproj 3.7.0
 
 **metdataio_env**
 
-* Python 3.10.4
-* lxml 4.9.1
-* pymysql 1.0.2
-* pandas 1.5.1
+* Python 3.12.0
+* pymysql 1.1.1
+* pyyaml 6.0.2
+* xarray 2025.1.2
+* lxml 5.3.0
+* netcdf4 1.7.2
 
 **metplotpy_env**
 
-* Python 3.10.4
-* matplotlib 3.6.3
-* scipy 1.9.3
-* plotly 5.13.0
-* xarray 2023.1.0
-* netcdf4 1.6.2
-* pyyaml 6.0
+* Python 3.12.0
+* matplotlib 3.10.0
+* scipy 1.15.1
+* plotly 6.0.0
+* xarray 2025.1.2
+* netcdf4 1.7.2
+* pyyaml 6.0.2
 * python-kaleido 0.2.1
-* imageio 2.25.0
+* imageio 2.37.0
 * imutils 0.5.4
-* scikit-image
-* pint 0.20.1
-* metpy
-* cartopy 0.21.1
+* scikit-image 0.25.1
+* pint 0.24.4
+* metpy 1.6.3
+* cartopy 0.24.0
+
+**mp_analysis_env**
+
+* All packages in metplotpy_env
+* lxml 5.3.0
+* pymysql 1.1.1
 
 **netcdf4_env**
 
-* Python 3.10.4
-* netcdf4 1.5.8
+* Python 3.12.0
+* netcdf4 1.7.2
 
 **pandac_env**
 
 * All packages in metplotpy_env
-* pygrib 2.1.4
+* pygrib 2.1.6
 
 **pygrib_env**
 
 * All packages in py_embed_base_env
-* pygrib 2.1.4
-* metpy 1.3.0
+* pygrib 2.1.6
+* metpy 1.6.3
 
 **spacetime_env**
+
+**NOTE: This env is not used because pyngl is not supported in Python 3.12.**
 
 * Python 3.10.4
 * netCDF4 1.5.8
@@ -910,30 +1021,35 @@ environments use this environment as a base.
 
 **swpc_metpy_env**
 
-* All packages in py_embed_base_env
-* metpy 1.4
+* Python 3.12.0
+* xarray 2025.1.2
+* netcdf4 1.7.2
+* pyyaml 6.0.2
+* scipy 1.15.1
+* metpy 1.6.3
 
 **weatherregime_env**
 
-* All packages in py_embed_base_env
-* scikit-learn 1.1.1
-* eofs 1.4.0
-* cmocean 2.0
+* All packages in metplotpy_env
+* scikit-learn 1.6.1
+* eofs 2.0.0
+* cmocean 4.0.3
 
 **xesmf_env**
 
-* Python 3.10.4
-* netcdf4 1.5.8
-* xarray 2022.3.0
-* xesmf 0.3.0
+* Python 3.12.0
+* netcdf4 1.7.2
+* xarray 2025.1.2
+* xesmf 0.8.8
+* esmf 8.7.0
 
 
 Example::
 
-    spacetime_env
+    mp_analysis_env
 
 The above example uses the Conda environment
-in *dtcenter/metplus-envs*:**spacetime**.vX.Y to run a user script
+in *dtcenter/metplus-envs*:**mp_analysis**.vX.Y to run a user script
 where X.Y is the version of METplus when the environment was lasted updated,
 e.g. 5.1.
 Note that only one dependency that contains the **_env** suffix can be supplied

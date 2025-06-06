@@ -26,9 +26,10 @@ assignees: ''
 - [ ] Select **engineer(s)** or **no engineer** required
 - [ ] Select **scientist(s)** or **no scientist** required
 
-### Projects and Milestone ###
-- [ ] Select **Repository** and/or **Organization** level **Project(s)** or add **alert: NEED CYCLE ASSIGNMENT** label
-- [ ] Select **Milestone** as the next official version or **Future Versions**
+### Milestone and Projects ###
+- [ ] Select **Milestone** as the next official version if updating truth data for the `develop` branch **OR** select next **METplus-Wrappers-X.Y.Z bugfix** version if updating truth data for a `main_vX.Y` branch.
+- [ ] If updating truth data for the `develop` branch, select the **METplus-Wrappers-X.Y.Z Development** project **OR** if updating truth for a `main_vX.Y` branch, select the **Coordinated METplus-X.Y Support** project
+
 
 ## Update Truth Checklist ###
 - [ ] Review the GitHub Actions workflow that was triggered by the PR merge
@@ -56,6 +57,6 @@ assignees: ''
     be updated.
 - [ ] Update the truth data.
       This should be handled by a METplus wrappers engineer.
-      See the [instructions to update the truth data](https://metplus.readthedocs.io/en/develop/Contributors_Guide/continuous_integration.html#update-truth-data-update-truth-data-yml)
+      See the [instructions to update the truth data](https://metplus.readthedocs.io/en/develop/Contributors_Guide/continuous_integration.html#update-truth-data-update-truth-yml)
       for more info.
 - [ ] Close this issue.

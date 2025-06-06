@@ -10,12 +10,9 @@ Output Files:
 Condition codes: 0 for success, 1 for failure
 """
 
-import os
-
-from ..util import do_string_sub, ti_calculate
+from ..util import do_string_sub
 from ..util import parse_var_list
-from ..util import get_lead_sequence, skip_time, sub_var_list
-from ..util import field_read_prob_info, add_field_info_to_time_info
+from ..util import field_read_prob_info
 from . import LoopTimesWrapper
 
 '''!@namespace CompareGriddedWrapper
@@ -76,7 +73,7 @@ that reformat gridded data
 
         return c_dict
 
-    def set_environment_variables(self, time_info):
+    def set_environment_variables(self, time_info=None):
         """! Set environment variables that will be set when running this tool.
             Wrappers can override this function to set wrapper-specific values,
             then call this (super) version to handle user configs and printing
@@ -91,110 +88,24 @@ that reformat gridded data
 
             @param time_info dictionary containing timing information
         """
-        var_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
-        if not var_list and not self.c_dict.get('VAR_LIST_OPTIONAL', False):
-            self.log_error('No input fields were specified.'
-                           ' [FCST/OBS]_VAR<n>_NAME must be set.')
-            return
-
-        if self.c_dict.get('ONCE_PER_FIELD', False):
-            # loop over all fields and levels (and probability thresholds) and
-            # call the app once for each
-            for var_info in var_list:
-                self.clear()
-                self.c_dict['CURRENT_VAR_INFO'] = var_info
-                add_field_info_to_time_info(time_info, var_info)
-                self.run_count += 1
-                if not self.find_input_files(time_info):
-                    self.missing_input_count += 1
-                    continue
-                self.run_at_time_one_field(time_info, var_info)
-        else:
-            # loop over all variables and all them to the field list,
-            # then call the app once
+        for file_dict in self.c_dict['ALL_FILES']:
+            if file_dict is None: continue
+            self.clear()
+            var_list = file_dict['var_list']
             if var_list:
                 self.c_dict['CURRENT_VAR_INFO'] = var_list[0]
-                add_field_info_to_time_info(time_info, var_list[0])
+            self.add_to_infiles(file_dict, time_info)
 
-            self.clear()
-            self.run_count += 1
-            if not self.find_input_files(time_info):
-                self.missing_input_count += 1
-                return
-            self.run_at_time_all_fields(time_info)
+            runtime_info = file_dict.get('time_info', time_info)
+            self.run_at_time_all_fields(runtime_info, var_list)
 
-    def find_input_files(self, time_info):
-        # get model from first var to compare
-        model_path = self.find_model(time_info,
-                                     mandatory=True,
-                                     return_list=True)
-        if not model_path:
-            return False
-
-        # if there is more than 1 file, create file list file
-        if len(model_path) > 1:
-            list_filename = (f"{time_info['init_fmt']}_"
-                             f"{time_info['lead_hours']}_"
-                             f"{self.app_name}_fcst.txt")
-            model_path = self.write_list_file(list_filename, model_path)
-        else:
-            model_path = model_path[0]
-
-        self.infiles.append(model_path)
-
-        # get observation to from first var compare
-        obs_path, time_info = self.find_obs_offset(time_info,
-                                                   mandatory=True,
-                                                   return_list=True)
-        if obs_path is None:
-            return False
-
-        # if there is more than 1 file, create file list file
-        if len(obs_path) > 1:
-            list_filename = (f"{time_info['init_fmt']}_"
-                             f"{time_info['lead_hours']}_"
-                             f"{self.app_name}_obs.txt")
-            obs_path = self.write_list_file(list_filename, obs_path)
-        else:
-            obs_path = obs_path[0]
-
-        self.infiles.append(obs_path)
-
-        return True
-
-    def run_at_time_one_field(self, time_info, var_info):
-        """! Build MET command for a single field for a given
-             init/valid time and forecast lead combination
-              Args:
-                @param time_info dictionary containing timing information
-                @param var_info object containing variable information
-        """
-        # get field info field a single field to pass to the MET config file
-        fcst_field_list = self.format_field_info(var_info=var_info,
-                                                 data_type='FCST')
-
-        obs_field_list = self.format_field_info(var_info=var_info,
-                                                data_type='OBS')
-
-        if fcst_field_list is None or obs_field_list is None:
-            return
-
-        fcst_fields = ','.join(fcst_field_list)
-        obs_fields = ','.join(obs_field_list)
-
-        self.format_field('FCST', fcst_fields)
-        self.format_field('OBS', obs_fields)
-
-        self.process_fields(time_info)
-
-    def run_at_time_all_fields(self, time_info):
+    def run_at_time_all_fields(self, time_info, var_list):
         """! Build MET command for all of the field/level combinations for a
              given init/valid time and forecast lead combination
 
              @param time_info dictionary containing timing information
+             @param var_list list of field info
         """
-        var_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
-
         # set field info
         fcst_field = self.get_all_field_info(var_list, 'FCST')
         obs_field = self.get_all_field_info(var_list, 'OBS')
@@ -248,7 +159,8 @@ that reformat gridded data
         self.set_current_field_config()
 
         # set up output dir with time info
-        if not self.find_and_check_output_file(time_info, is_directory=True):
+        is_dir = self.c_dict.get('OUTPUT_PATH_IS_DIR', True)
+        if not self.find_and_check_output_file(time_info, is_directory=is_dir):
             return
 
         # set command line arguments
@@ -278,42 +190,11 @@ that reformat gridded data
            @rtype string
            @return Returns a MET command with arguments that you can run
         """
-        if self.app_path is None:
-            self.log_error('No app path specified. You must use a subclass')
-            return None
-
-        cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
-
-        if len(self.infiles) == 0:
-            self.log_error("No input filenames specified")
-            return None
-
-        # add forecast file
-        fcst_file = self.infiles[0]
-        if fcst_file.startswith('PYTHON'):
-            fcst_file = f"'{fcst_file}'"
-        cmd += f'{fcst_file} '
-
-        # add observation file
-        obs_file = self.infiles[1]
-        if obs_file.startswith('PYTHON'):
-            obs_file = f"'{obs_file}'"
-        cmd += f'{obs_file} '
-
-        if self.param == '':
-            self.log_error('Must specify config file to run MET tool')
-            return None
-
-        cmd += self.param + ' '
-
-        for arg in self.args:
-            cmd += arg + " "
-
-        if self.outdir == "":
-            self.log_error("No output directory specified")
-            return None
-
-        cmd += '-outdir {}'.format(self.outdir)
+        cmd = (f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
+               f" {self.infiles[0]} {self.infiles[1]} {self.param}")
+        if self.args:
+            cmd += f" {' '.join(self.args)}"
+        cmd += f" -outdir {self.outdir}"
         return cmd
 
     def handle_interp_dict(self, uses_field=False):
@@ -336,3 +217,44 @@ that reformat gridded data
             items['field'] = ('string', 'remove_quotes')
 
         self.add_met_config_dict('interp', items)
+
+    def handle_land_mask(self):
+        """!Handles the configuration of the 'land_mask' dictionary in the
+         MET configuration. This function defines the structure and
+         expected types of various parameters in the 'land_mask' configuration.
+         Used by PointStat and PairStat wrappers.
+        """
+        self.add_met_config_dict('land_mask', {
+            'flag': 'bool',
+            'file_name': 'list',
+            'field': ('dict', None, {
+                'name': 'string',
+                'level': 'string',
+            }),
+            'regrid': ('dict', None, {
+                'method': ('string', 'remove_quotes'),
+                'width': 'int',
+            }),
+            'thresh': 'thresh',
+        })
+
+    def handle_topo_mask(self):
+        """!Handles the configuration of the 'topo_mask' dictionary in the
+         MET configuration. This function defines the structure and
+         expected types of various parameters in the 'topo_mask' configuration.
+         Used by PointStat and PairStat wrappers.
+        """
+        self.add_met_config_dict('topo_mask', {
+            'flag': 'bool',
+            'file_name': 'list',
+            'field': ('dict', None, {
+                'name': 'string',
+                'level': 'string',
+            }),
+            'regrid': ('dict', None, {
+                'method': ('string', 'remove_quotes'),
+                'width': 'int',
+            }),
+            'use_obs_thresh': 'thresh',
+            'interp_fcst_thresh': 'thresh',
+        })

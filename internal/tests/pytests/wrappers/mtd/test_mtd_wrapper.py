@@ -3,7 +3,6 @@
 import pytest
 
 import os
-import datetime
 
 from metplus.wrappers.mtd_wrapper import MTDWrapper
 
@@ -19,6 +18,19 @@ obs_thresh = 'gt12.7'
 fcst_fmt = f'field = {{ name="{fcst_name}"; level="{fcst_level}"; cat_thresh=[ gt12.7 ]; }};'
 obs_fmt = (f'field = {{ name="{obs_name}"; '
            f'level="{obs_level_no_quotes}"; cat_thresh=[ gt12.7 ]; }};')
+
+TEST_FCST_INPUT_TEMPLATE = "{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d}_i{init?fmt=%H}_f{lead?fmt=%.3H}_HRRRTLE_PHPT.grb2"
+TEST_OBS_INPUT_TEMPLATE = "{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A{level?fmt=%.2H}.nc"
+
+TEST_FCST_FILENAMES = {
+    'f01': '20170510_i03_f001_HRRRTLE_PHPT.grb2',
+    'f02': '20170510_i03_f002_HRRRTLE_PHPT.grb2',
+    'f03': '20170510_i03_f003_HRRRTLE_PHPT.grb2',
+    'f06': '20170510_i03_f006_HRRRTLE_PHPT.grb2',
+    'f12': '20170510_i03_f012_HRRRTLE_PHPT.grb2',
+}
+
+TEST_OBS_QPE_FILE = 'qpe_2017051003_A06.nc'
 
 
 def mtd_wrapper(metplus_config, config_overrides):
@@ -80,13 +92,13 @@ def set_minimum_config_settings(config, set_inputs=True):
         (1, 3, 0.3, 0, True, 'CHOCOLATE'),
         (1, 3, 0.3, 0, True, 'BOTH'),
         (1, 3, 0.8, 1, True, 'BOTH'),
-        (1, 3, 0.8, 1, False, 'BOTH'),
+        (1, 3, 0.8, 22, False, 'BOTH'),
         (1, 3, 0.3, 0, True, 'FCST'),
         (1, 3, 0.8, 1, True, 'FCST'),
-        (1, 3, 0.8, 1, False, 'FCST'),
+        (1, 3, 0.8, 12, False, 'FCST'),
         (1, 3, 0.3, 0, True, 'OBS'),
         (1, 3, 0.8, 1, True, 'OBS'),
-        (1, 3, 0.8, 1, False, 'OBS'),
+        (1, 3, 0.8, 10, False, 'OBS'),
     ]
 )
 @pytest.mark.wrapper_a
@@ -199,10 +211,12 @@ def test_mtd_missing_inputs(metplus_config, get_test_data_dir,
 
         ({'MTD_OUTPUT_PREFIX': 'my_output_prefix'},
          {'METPLUS_OUTPUT_PREFIX': 'output_prefix = "my_output_prefix";'}),
+
     ]
 )
 @pytest.mark.wrapper
-def test_mode_single_field(metplus_config, config_overrides, env_var_values):
+def test_mode_single_field(metplus_config, config_overrides, env_var_values,
+                           compare_command_and_env_vars):
     config = metplus_config
 
     # set config variables needed to run
@@ -230,29 +244,12 @@ def test_mode_single_field(metplus_config, config_overrides, env_var_values):
                      ]
 
     all_cmds = wrapper.run_all_times()
-    print(f"ALL COMMANDS: {all_cmds}")
-
-    missing_env = [item for item in env_var_values
-                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
-    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
-
-    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
-        # ensure commands are generated as expected
-        assert cmd == expected_cmd
-
-        # check that environment variables were set properly
-        # including deprecated env vars (not in wrapper env var keys)
-        for env_var_key in env_var_keys:
-            match = next((item for item in env_vars if
-                          item.startswith(env_var_key)), None)
-            assert match is not None
-            value = match.split('=', 1)[1]
-            if env_var_key == 'METPLUS_FCST_FIELD':
-                assert value == fcst_fmt
-            elif env_var_key == 'METPLUS_OBS_FIELD':
-                assert value == obs_fmt
-            else:
-                assert env_var_values.get(env_var_key, '') == value
+    special_values = {
+        'METPLUS_FCST_FIELD': fcst_fmt,
+        'METPLUS_OBS_FIELD': obs_fmt,
+    }
+    compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values,
+                                 wrapper, special_values)
 
 
 @pytest.mark.wrapper
@@ -263,8 +260,8 @@ def test_mtd_by_init_all_found(metplus_config, get_test_data_dir):
         'LEAD_SEQ': '1,2,3',
         'FCST_MTD_INPUT_DIR': fcst_data_dir,
         'OBS_MTD_INPUT_DIR': obs_data_dir,
-        'FCST_MTD_INPUT_TEMPLATE': "{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d}_i{init?fmt=%H}_f{lead?fmt=%.3H}_HRRRTLE_PHPT.grb2",
-        'OBS_MTD_INPUT_TEMPLATE': "{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A{level?fmt=%.2H}.nc",
+        'FCST_MTD_INPUT_TEMPLATE': TEST_FCST_INPUT_TEMPLATE,
+        'OBS_MTD_INPUT_TEMPLATE': TEST_OBS_INPUT_TEMPLATE,
         'LOOP_BY': 'INIT',
         'INIT_TIME_FMT': '%Y%m%d%H%M',
         'INIT_BEG': '201705100300'
@@ -284,9 +281,9 @@ def test_mtd_by_init_all_found(metplus_config, get_test_data_dir):
     fcst_list = fcst_list[1:]
     obs_list = obs_list[1:]
 
-    assert(fcst_list[0] == os.path.join(fcst_data_dir,'20170510', '20170510_i03_f001_HRRRTLE_PHPT.grb2') and
-           fcst_list[1] == os.path.join(fcst_data_dir,'20170510', '20170510_i03_f002_HRRRTLE_PHPT.grb2') and
-           fcst_list[2] == os.path.join(fcst_data_dir,'20170510', '20170510_i03_f003_HRRRTLE_PHPT.grb2') and
+    assert(fcst_list[0] == os.path.join(fcst_data_dir,'20170510', TEST_FCST_FILENAMES['f01']) and
+           fcst_list[1] == os.path.join(fcst_data_dir,'20170510', TEST_FCST_FILENAMES['f02']) and
+           fcst_list[2] == os.path.join(fcst_data_dir,'20170510', TEST_FCST_FILENAMES['f03']) and
            obs_list[0] == os.path.join(obs_data_dir,'20170510', 'qpe_2017051004_A06.nc') and
            obs_list[1] == os.path.join(obs_data_dir,'20170510', 'qpe_2017051005_A06.nc') and
            obs_list[2] == os.path.join(obs_data_dir,'20170510', 'qpe_2017051006_A06.nc')
@@ -301,8 +298,8 @@ def test_mtd_by_valid_all_found(metplus_config, get_test_data_dir):
         'LEAD_SEQ': '1, 2, 3',
         'FCST_MTD_INPUT_DIR': fcst_data_dir,
         'OBS_MTD_INPUT_DIR': obs_data_dir,
-        'FCST_MTD_INPUT_TEMPLATE': "{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d}_i{init?fmt=%H}_f{lead?fmt=%.3H}_HRRRTLE_PHPT.grb2",
-        'OBS_MTD_INPUT_TEMPLATE': "{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A{level?fmt=%.2H}.nc",
+        'FCST_MTD_INPUT_TEMPLATE': TEST_FCST_INPUT_TEMPLATE,
+        'OBS_MTD_INPUT_TEMPLATE': TEST_OBS_INPUT_TEMPLATE,
         'LOOP_BY': 'VALID',
         'VALID_TIME_FMT': '%Y%m%d%H%M',
         'VALID_BEG': '201705100300'
@@ -325,9 +322,9 @@ def test_mtd_by_valid_all_found(metplus_config, get_test_data_dir):
     assert(fcst_list[0] == os.path.join(fcst_data_dir,'20170510', '20170510_i02_f001_HRRRTLE_PHPT.grb2') and
            fcst_list[1] == os.path.join(fcst_data_dir,'20170510', '20170510_i01_f002_HRRRTLE_PHPT.grb2') and
            fcst_list[2] == os.path.join(fcst_data_dir,'20170510', '20170510_i00_f003_HRRRTLE_PHPT.grb2') and
-           obs_list[0] == os.path.join(obs_data_dir,'20170510', 'qpe_2017051003_A06.nc') and
-           obs_list[1] == os.path.join(obs_data_dir,'20170510', 'qpe_2017051003_A06.nc') and
-           obs_list[2] == os.path.join(obs_data_dir,'20170510', 'qpe_2017051003_A06.nc')
+           obs_list[0] == os.path.join(obs_data_dir,'20170510', TEST_OBS_QPE_FILE) and
+           obs_list[1] == os.path.join(obs_data_dir,'20170510', TEST_OBS_QPE_FILE) and
+           obs_list[2] == os.path.join(obs_data_dir,'20170510', TEST_OBS_QPE_FILE)
            )
 
 
@@ -339,8 +336,8 @@ def test_mtd_by_init_miss_fcst(metplus_config, get_test_data_dir):
         'LEAD_SEQ': '3, 6, 9, 12',
         'FCST_MTD_INPUT_DIR': fcst_data_dir,
         'OBS_MTD_INPUT_DIR': obs_data_dir,
-        'FCST_MTD_INPUT_TEMPLATE': "{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d}_i{init?fmt=%H}_f{lead?fmt=%.3H}_HRRRTLE_PHPT.grb2",
-        'OBS_MTD_INPUT_TEMPLATE': "{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A{level?fmt=%.2H}.nc",
+        'FCST_MTD_INPUT_TEMPLATE': TEST_FCST_INPUT_TEMPLATE,
+        'OBS_MTD_INPUT_TEMPLATE': TEST_OBS_INPUT_TEMPLATE,
         'LOOP_BY': 'INIT',
         'INIT_TIME_FMT': '%Y%m%d%H%M',
         'INIT_BEG': '201705100300'
@@ -360,9 +357,9 @@ def test_mtd_by_init_miss_fcst(metplus_config, get_test_data_dir):
     fcst_list = fcst_list[1:]
     obs_list = obs_list[1:]
 
-    assert(fcst_list[0] == os.path.join(fcst_data_dir,'20170510', '20170510_i03_f003_HRRRTLE_PHPT.grb2') and
-           fcst_list[1] == os.path.join(fcst_data_dir,'20170510', '20170510_i03_f006_HRRRTLE_PHPT.grb2') and
-           fcst_list[2] == os.path.join(fcst_data_dir,'20170510', '20170510_i03_f012_HRRRTLE_PHPT.grb2') and
+    assert(fcst_list[0] == os.path.join(fcst_data_dir,'20170510', TEST_FCST_FILENAMES['f03']) and
+           fcst_list[1] == os.path.join(fcst_data_dir,'20170510', TEST_FCST_FILENAMES['f06']) and
+           fcst_list[2] == os.path.join(fcst_data_dir,'20170510', TEST_FCST_FILENAMES['f12']) and
            obs_list[0] == os.path.join(obs_data_dir,'20170510', 'qpe_2017051006_A06.nc') and
            obs_list[1] == os.path.join(obs_data_dir,'20170510', 'qpe_2017051009_A06.nc') and
            obs_list[2] == os.path.join(obs_data_dir,'20170510', 'qpe_2017051015_A06.nc')
@@ -377,8 +374,8 @@ def test_mtd_by_init_miss_both(metplus_config, get_test_data_dir):
         'LEAD_SEQ': '6, 12, 18',
         'FCST_MTD_INPUT_DIR': fcst_data_dir,
         'OBS_MTD_INPUT_DIR': obs_data_dir,
-        'FCST_MTD_INPUT_TEMPLATE': "{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d}_i{init?fmt=%H}_f{lead?fmt=%.3H}_HRRRTLE_PHPT.grb2",
-        'OBS_MTD_INPUT_TEMPLATE': "{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A{level?fmt=%.2H}.nc",
+        'FCST_MTD_INPUT_TEMPLATE': TEST_FCST_INPUT_TEMPLATE,
+        'OBS_MTD_INPUT_TEMPLATE': TEST_OBS_INPUT_TEMPLATE,
         'LOOP_BY': 'INIT',
         'INIT_TIME_FMT': '%Y%m%d%H%M',
         'INIT_BEG': '201705100300'
@@ -413,7 +410,7 @@ def test_mtd_single(metplus_config, get_test_data_dir):
         'MTD_SINGLE_RUN': True,
         'MTD_SINGLE_DATA_SRC': 'FCST',
         'FCST_MTD_INPUT_DIR': fcst_data_dir,
-        'FCST_MTD_INPUT_TEMPLATE': "{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d}_i{init?fmt=%H}_f{lead?fmt=%.3H}_HRRRTLE_PHPT.grb2",
+        'FCST_MTD_INPUT_TEMPLATE': TEST_FCST_INPUT_TEMPLATE,
         'LOOP_BY': 'INIT',
         'INIT_TIME_FMT': '%Y%m%d%H%M',
         'INIT_BEG': '201705100300'
@@ -428,9 +425,9 @@ def test_mtd_single(metplus_config, get_test_data_dir):
     # remove file_list line from lists
     single_list = single_list[1:]
 
-    assert(single_list[0] == os.path.join(fcst_data_dir,'20170510', '20170510_i03_f001_HRRRTLE_PHPT.grb2') and
-           single_list[1] == os.path.join(fcst_data_dir,'20170510', '20170510_i03_f002_HRRRTLE_PHPT.grb2') and
-           single_list[2] == os.path.join(fcst_data_dir,'20170510', '20170510_i03_f003_HRRRTLE_PHPT.grb2')
+    assert(single_list[0] == os.path.join(fcst_data_dir,'20170510', TEST_FCST_FILENAMES['f01']) and
+           single_list[1] == os.path.join(fcst_data_dir,'20170510', TEST_FCST_FILENAMES['f02']) and
+           single_list[2] == os.path.join(fcst_data_dir,'20170510', TEST_FCST_FILENAMES['f03'])
            )
 
 

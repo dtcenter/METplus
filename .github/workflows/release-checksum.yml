@@ -9,6 +9,6 @@ jobs:
   add-checksum:
     runs-on: ubuntu-latest
     steps:
-      - uses: dtcenter/metplus-action-release-checksum@v1
+      - uses: dtcenter/metplus-action-release-checksum@v2
         with:
           token: ${{ secrets.METPLUS_BOT_TOKEN }}

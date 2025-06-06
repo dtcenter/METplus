@@ -209,10 +209,8 @@ METplus Wrappers Directory Structure
 The METplus Wrappers source code contains the following directory structure::
 
   METplus/
-    build_components/
     docs/
     internal/
-    manage_exernals/
     metplus/
     parm/
     produtil/
@@ -220,10 +218,6 @@ The METplus Wrappers source code contains the following directory structure::
 
 The top-level METplus Wrappers directory consists of a README.md file
 and several subdirectories.
-
-The **build_components/** directory contains scripts that use manage_externals
-and files available on dtcenter.org to download MET and start
-the build process.
 
 The **docs/** directory contains documentation for users and contributors
 (HTML) and Doxygen
@@ -236,10 +230,6 @@ contributors and is not necessary for METplus end-users.
 The **internal/** directory contains scripts that are only
 relevant to METplus developers and contributors, such as tests and files
 used with Docker.
-
-The **manage_externals/** directory contains scripts used to
-facilitate the downloading and management
-of components that METplus interacts with such as MET and METviewer.
 
 The **metplus/** directory contains the wrapper scripts and utilities.
 

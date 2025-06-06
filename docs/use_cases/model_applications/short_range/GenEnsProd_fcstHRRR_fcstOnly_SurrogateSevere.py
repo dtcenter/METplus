@@ -2,12 +2,15 @@
 Surrogate Severe Calculation: PCPCombine, GenEnsProd, and RegridDataPlane
 =========================================================================
 
-model_applications/
-short_range/
-GenEnsProd_fcstHRRR_fcstOnly
-_SurrogateSevere.conf
+model_applications/short_range/GenEnsProd_fcstHRRR_fcstOnly_SurrogateSevere.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ###################################################################################################
 # Scientific Objective
 # --------------------
@@ -25,22 +28,30 @@ _SurrogateSevere.conf
 # 
 # For more information, please reference Sobash et al. 2011 (https://journals.ametsoc.org/doi/full/10.1175/WAF-D-10-05046.1).
 
-###################################################################################################
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.1
+
+###############################################################################
 # Datasets
 # --------
 #
-# There are two dates that can be used as input data for this use case 20190518 or 20200205.
-# 
-# * Input Data: HRRR data
-#   - There should 24 grib2 files.
-#   - Variable of interest: MXUPHL; the maximum updraft helicity
-#   - Level: Z2000-5000; from 2 - 5km
-#   - Format: grib2
-#   - Projection: Lambert Conformal
+# **Forecast:** NOAA High Resolution Rapid Refresh (HRRR)
 #
-# * Location: All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
+# **Observation:** None
 #
-# * Data Source: Originally received from Burkely Gallo at the Storm Prediction Center. 
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ###################################################################################################
 # METplus Components
@@ -52,16 +63,25 @@ _SurrogateSevere.conf
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (INIT_BEG):** 2020020500
+#
+# **End time (INIT_END):** 2020020500
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 86400
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 36
+#
 # This workflow loops over the data by process, meaning that each MET tool will run over all times
 # before moving onto the tool. PCPCombine is called first, followed by GenEnsProd,
-# and then, finally, RegridDataPlane.
+# and then, finally, RegridDataPlane. Data for two dates is available, either 20200205 or 20190518.
 
 ###################################################################################################
 # METplus Configuration
 # ---------------------
 #
-# METplus first loads all of the configurations found in parm/metplus_config.
-# Then it loads any configuration files passed to METplus by the command line.
+# METplus first loads all of the configuration files found in parm/metplus_config, 
+# then it loads any configuration files passed to METplus via the command line, 
+# i.e. parm/use_cases/model_applications/short_range/GenEnsProd_fcstHRRR_fcstOnly_SurrogateSevere.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GenEnsProd_fcstHRRR_fcstOnly_SurrogateSevere.conf
@@ -78,18 +98,32 @@ _SurrogateSevere.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`GenEnsProd MET Configuration<gen-ens-prod-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: GenEnsProdConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/GenEnsProdConfig_wrapped
+#   .. literalinclude:: ../../../../parm/met_config/GenEnsProdConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ###################################################################################################
 # Running METplus
 # ---------------
 #
-# The command to run this use case is::
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-#    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/GenEnsProd_fcstHRRR_fcstOnly_SurrogateSevere.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/GenEnsProd_fcstHRRR_fcstOnly_SurrogateSevere.conf
+#
+# See :ref:`running-metplus` for more information.
 
 ###################################################################################################
 # Expected Output

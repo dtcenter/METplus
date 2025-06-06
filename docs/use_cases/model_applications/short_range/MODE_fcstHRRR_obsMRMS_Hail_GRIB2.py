@@ -1,12 +1,16 @@
 """
 MODE: Hail Verification  
-=========================================================================
+=======================
 
-model_applications/
-short_range/
-MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
+model_applications/short_range/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -20,12 +24,29 @@ MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
 # categories.  Running MODE allows a user to do this.
 
 ##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.0
+
+##############################################################################
 # Datasets
 # --------
 #
-#  * Forecast dataset: HRRRv4 data
-#  * Observation dataset: MRMS 
+# **Forecast:** HRRRv4 data
 #
+# **Observation:** MRMS
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -38,31 +59,39 @@ MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (VALID_BEG):** 2019052902
+#
+# **End time (VALID_END):** 2019052903
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 3600
+#
+# | **Sequence of forecast leads to process:**
+# | LEAD_SEQ_MIN = 12
+# | LEAD_SEQ_MAX = 36
+#
 # The MODE tool is run for each time. This example loops by valid time.  It
 # processes 2 valid times, listed below.
 #
 # | **Valid:** 2019-05-29_02Z
 # | **Forecast lead:** 26
-# |
 #
 # | **Valid:** 2019-05-29_03Z
 # | **Forecast lead:** 27
-# |
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/short_range/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/short_range/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on user settings in the METplus configuration file. 
 # See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
@@ -72,40 +101,32 @@ MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`MODE MET Configuration<mode-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: MODEConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/MODEConfig_wrapped
+#   .. literalinclude:: ../../../../parm/met_config/MODEConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in MODE_fcstHRRRE_obsMRMS_Hail_GRIB2.conf then a user-specific system configuration file::
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/short_range/MODE_fcstHRRRE_obsMRMS_Hail_GRIB2.conf /path/to/user_system.conf
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/short_range/MODE_fcstHRRRE_obsMRMS_Hail_GRIB2.conf -c /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in MODE_fcstHRRRE_obsMRMS_Hail_GRIB2.conf::
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/short_range/MODE_fcstHRRRE_obsMRMS_Hail_GRIB2.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-# **NOTE:** All of these items must be found under the [dir] section.
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

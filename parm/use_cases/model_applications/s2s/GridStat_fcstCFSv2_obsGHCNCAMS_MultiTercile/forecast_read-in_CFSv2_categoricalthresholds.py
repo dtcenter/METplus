@@ -43,7 +43,6 @@ print('YYYYMM: ' + str(year))
 #model = input_file_split[3]
 model = "CFSv2"
 init  = init_temp.replace('0100','')
-lead  = lead
 clim_per = '1982_2010'
 member = ens_mem
 variable = var_name

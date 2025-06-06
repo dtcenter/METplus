@@ -13,6 +13,9 @@ fcst_level = 'A03'
 obs_name = 'APCP_03'
 obs_level = '"(*,*)"'
 
+WIDTH_1 = '-width 1'
+GAUSSIAN_DX_2 = '-gaussian_dx 2'
+METHOD_BUDGET = '-method BUDGET'
 
 def rdp_wrapper(metplus_config):
     """! Returns a default RegridDataPlane with /path/to entries in the
@@ -304,7 +307,7 @@ def test_set_command_line_arguments(metplus_config):
     test_passed = True
     wrap = rdp_wrapper(metplus_config)
 
-    expected_args = ['-width 1',]
+    expected_args = [WIDTH_1,]
 
     wrap.set_command_line_arguments()
     if wrap.args != expected_args:
@@ -315,8 +318,8 @@ def test_set_command_line_arguments(metplus_config):
 
     wrap.c_dict['GAUSSIAN_DX'] = 2
 
-    expected_args = ['-width 1',
-                     '-gaussian_dx 2',
+    expected_args = [WIDTH_1,
+                     GAUSSIAN_DX_2,
                      ]
 
     wrap.args.clear()
@@ -332,9 +335,9 @@ def test_set_command_line_arguments(metplus_config):
 
     wrap.c_dict['METHOD'] = 'BUDGET'
 
-    expected_args = ['-method BUDGET',
-                     '-width 1',
-                     '-gaussian_dx 2',
+    expected_args = [METHOD_BUDGET,
+                     WIDTH_1,
+                     GAUSSIAN_DX_2,
                      ]
 
     wrap.set_command_line_arguments()
@@ -348,9 +351,9 @@ def test_set_command_line_arguments(metplus_config):
 
     wrap.c_dict['GAUSSIAN_RADIUS'] = 3
 
-    expected_args = ['-method BUDGET',
-                     '-width 1',
-                     '-gaussian_dx 2',
+    expected_args = [METHOD_BUDGET,
+                     WIDTH_1,
+                     GAUSSIAN_DX_2,
                      '-gaussian_radius 3',
                      ]
 
@@ -365,9 +368,9 @@ def test_set_command_line_arguments(metplus_config):
 
     wrap.c_dict['WIDTH'] = 4
 
-    expected_args = ['-method BUDGET',
+    expected_args = [METHOD_BUDGET,
                      '-width 4',
-                     '-gaussian_dx 2',
+                     GAUSSIAN_DX_2,
                      '-gaussian_radius 3',
                      ]
 

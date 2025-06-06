@@ -1,0 +1,87 @@
+#!/usr/bin/env python3
+
+import pytest
+from unittest import mock
+
+from metplus import component_versions
+
+@pytest.mark.parametrize(
+    'component, version, expected_result', [
+        ('met', '11.1.1', '5.1'),
+        ('MET', '11.1.1', '5.1'),
+        ('met', '11.1', '5.1'),
+        ('met', '11.1.Z', '5.1'),
+        ('METcalcpy', '3.0.0', '6.0'),
+        ('metcalcpy', 'main_v3.0', '6.0'),
+        ('metcalcpy', 'v3.0.0', '6.0'),
+        ('metcalcpy', 'v3.0.0-beta3', '6.0'),
+        ('metcalcpy', 'v3.0.0-rc1', '6.0'),
+        ('METplus', '6.0-latest', '6.0'),
+        ('METplus', '3.0-latest', None),
+        ('METmrPlow', '6.1.0', None),
+    ]
+)
+@pytest.mark.util
+def test_get_coordinated_version(component, version, expected_result):
+    assert component_versions.get_coordinated_version(component, version) == expected_result
+
+
+@pytest.mark.parametrize(
+    'input_component, input_version, output_component, output_format, expected_result', [
+        # get MET version for Docker dtcenter/metplus
+        ('metplus', '5.1.0', 'met', '{X}.{Y}.{Z}{N}', '11.1.1'),
+        ('metplus', '5.1.0-beta3', 'met', '{X}.{Y}.{Z}{N}', '11.1.1-beta3'),
+        ('metplus', '5.1.0-rc1', 'met', '{X}.{Y}.{Z}{N}', '11.1.1-rc1'),
+        ('metplus', '5.1-latest', 'met', '{X}.{Y}{N}', '11.1-latest'),
+        ('metplus', '5.1.0-beta3-dev', 'met', '{X}.{Y}.{Z}{N}', 'develop'),
+        # get METplus Analysis versions for Docker dtcenter/metplus-analysis
+        ('METplus', '5.1.0', 'metplotpy', 'v{X}.{Y}.{Z}{N}', 'v2.1.0'),
+        ('metplus', '5.1.0-beta3', 'METplotpy', 'v{X}.{Y}.{Z}{N}', 'v2.1.0-beta3'),
+        ('metplus', '5.1.0-dev', 'METplotpy', 'v{X}.{Y}.{Z}{N}', 'develop'),
+        ('metplus', '5.1.0-rc1', 'metplotpy', 'v{X}.{Y}.{Z}{N}', 'v2.1.0-rc1'),
+        ('metplus', '5.1.0-beta3-dev', 'metplotpy', 'v{X}.{Y}.{Z}{N}', 'develop'),
+        # get METplus main branch to trigger workflow from other repos, e.g. MET
+        ('MET', 'main_v11.1', 'METplus', 'main_v{X}.{Y}', 'main_v5.1'),
+        ('MET', 'main_v11.1-ref', 'METplus', 'main_v{X}.{Y}', 'main_v5.1'),
+        # get latest bugfix version from main branch or X.Y version
+        ('MET', 'main_v11.1', 'MET', '{X}.{Y}.{Z}{N}', '11.1.1'),
+        ('MET', '11.1.Z', 'MET', '{X}.{Y}.{Z}{N}', '11.1.1'),
+        ('METmrPlow', '11.1.Z', 'MET', '{X}.{Y}.{Z}{N}', None),
+        ('MET', '11.1.Z', 'METmrPlow', '{X}.{Y}.{Z}{N}', None),
+    ]
+)
+@pytest.mark.util
+def test_get_component_version(input_component, input_version, output_component, output_format, expected_result):
+    assert component_versions.get_component_version(input_component, input_version, output_component, output_format) == expected_result
+
+
+@pytest.mark.parametrize(
+    'input_version, get_dev, rc_is_dev, expected_result', [
+        ('5.1.0', True, False, 'v5.1.0'),
+        ('5.1.0', False, False, 'v5.1.0'),
+        ('5.1.0-beta3', True, False, 'v5.1.0-beta3'),
+        ('5.1.0-beta3', False, False, 'develop'),
+        ('5.1.0-rc1', True, False, 'v5.1.0-rc1'),
+        ('5.1.0-rc1', False, False, 'v5.1.0-rc1'),
+        ('5.1.0-rc1', True, True, 'v5.1.0-rc1'),
+        ('5.1.0-rc1', False, True, 'develop'),
+    ]
+)
+@pytest.mark.util
+def test_get_component_version_get_dev(input_version, get_dev, rc_is_dev, expected_result):
+    assert component_versions.get_component_version('METplus', input_version, 'METplus', get_dev=get_dev, rc_is_dev=rc_is_dev) == expected_result
+
+@pytest.mark.util
+def test_main():
+    with mock.patch.object(component_versions, '__name__', '__main__'):
+        with mock.patch.object(component_versions.sys, 'argv', ['component_versions.py', '-v', '6.0.0', '-o', 'METplus']):
+            assert component_versions.main() == 'v6.0.0'
+
+@pytest.mark.util
+def test_init():
+    with mock.patch.object(component_versions, 'main', return_value=None):
+        with mock.patch.object(component_versions, '__name__', '__main__'):
+            with mock.patch.object(component_versions.sys, 'argv', ['component_versions.py']):
+                with mock.patch.object(component_versions.sys, 'exit') as mock_exit:
+                    component_versions.init()
+                    assert mock_exit.call_args[0][0] == 1

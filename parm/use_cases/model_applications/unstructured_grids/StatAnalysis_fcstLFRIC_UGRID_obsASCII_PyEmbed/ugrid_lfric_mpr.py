@@ -185,7 +185,7 @@ if len(sys.argv) == 3:
                 'var_name','na','na','lead','na','na','na','na','MPR',
                 'nobs','index','station_id','obs_lat','obs_lon',
                 'level','na','fcst_value','obs_value',
-                'QC','na','na']
+                'QC','na','na','na','na','na']
         
         match_df = match_df[cols]
 

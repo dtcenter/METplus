@@ -13,9 +13,9 @@ import os
 from datetime import datetime
 import re
 
-from ..util import do_string_sub, ti_calculate, skip_time
-from ..util import get_lead_sequence, sub_var_list
-from ..util import parse_var_list, round_0p5, get_storms, prune_empty
+from ..util import do_string_sub, ti_calculate
+from ..util import sub_var_list
+from ..util import parse_var_list, round_0p5, get_storms
 from .regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from . import LoopTimesWrapper
 
@@ -234,8 +234,6 @@ class ExtractTilesWrapper(LoopTimesWrapper):
             self.use_mtd_input(storm_dict, idx_dict)
         else:
             self.use_tc_stat_input(storm_dict, idx_dict)
-
-        prune_empty(self.c_dict['OUTPUT_DIR'], self.logger)
 
     def use_tc_stat_input(self, storm_dict, idx_dict):
         """! Find storms in TCStat input file and create tiles using the storm.

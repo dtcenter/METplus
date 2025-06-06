@@ -33,7 +33,11 @@ class GridStatWrapper(CompareGriddedWrapper):
         'METPLUS_OBTYPE',
         'METPLUS_REGRID_DICT',
         'METPLUS_FCST_FIELD',
+        'METPLUS_FCST_CLIMO_MEAN_DICT',
+        'METPLUS_FCST_CLIMO_STDEV_DICT',
         'METPLUS_OBS_FIELD',
+        'METPLUS_OBS_CLIMO_MEAN_DICT',
+        'METPLUS_OBS_CLIMO_STDEV_DICT',
         'METPLUS_CLIMO_MEAN_DICT',
         'METPLUS_CLIMO_STDEV_DICT',
         'METPLUS_MASK_DICT',
@@ -59,6 +63,7 @@ class GridStatWrapper(CompareGriddedWrapper):
         'METPLUS_UGRID_DATASET',
         'METPLUS_UGRID_MAX_DISTANCE_KM',
         'METPLUS_UGRID_COORDINATES_FILE',
+        'METPLUS_GRADIENT_DICT',
     ]
 
     # deprecated env vars that are no longer supported in the wrapped MET conf
@@ -261,6 +266,11 @@ class GridStatWrapper(CompareGriddedWrapper):
             'wave_1d_end': ('list', 'remove_quotes'),
         })
 
+        self.add_met_config_dict('gradient', {
+            'dx': ('list', 'remove_quotes'),
+            'dy': ('list', 'remove_quotes'),
+        })
+
         self.add_met_config(name='censor_thresh', data_type='list',
                             extra_args={'remove_quotes': True})
 
@@ -272,6 +282,4 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         self.add_met_config(name='seeps_p1_thresh', data_type='string',
                             extra_args={'remove_quotes': True})
-        # skip RuntimeFreq input file logic - remove once integrated
-        c_dict['FIND_FILES'] = False
         return c_dict

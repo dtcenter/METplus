@@ -20,11 +20,12 @@ LOWER_TO_WRAPPER_NAME = {
     'griddiag': 'GridDiag',
     'gridstat': 'GridStat',
     'ioda2nc': 'IODA2NC',
-    'makeplots': 'MakePlots',
+    'madis2nc': 'MADIS2NC',
     'metdbload': 'METDbLoad',
     'mode': 'MODE',
     'mtd': 'MTD',
     'modetimedomain': 'MTD',
+    'pairstat': 'PairStat',
     'pb2nc': 'PB2NC',
     'pcpcombine': 'PCPCombine',
     'plotdataplane': 'PlotDataPlane',
@@ -34,6 +35,7 @@ LOWER_TO_WRAPPER_NAME = {
     'pointstat': 'PointStat',
     'pyembedingest': 'PyEmbedIngest',
     'regriddataplane': 'RegridDataPlane',
+    'rmwanalysis': 'RMWAnalysis',
     'seriesanalysis': 'SeriesAnalysis',
     'statanalysis': 'StatAnalysis',
     'tcdiag': 'TCDiag',
@@ -91,6 +93,14 @@ MULTIPLE_INPUT_WRAPPERS = (
     'MTD',
     'SeriesAnalysis',
     'GenEnsProd',
+)
+
+# wrappers that support the time_offset_warning global MET config variable
+TIME_OFFSET_WARNING_WRAPPERS = (
+    'GridStat',
+    'MODE',
+    'SeriesAnalysis',
+    'WaveletStat',
 )
 
 # configuration variables that are specific to a given run
@@ -173,3 +183,10 @@ DEPRECATED_DICT = {
 # If any of these items are found, then an error will be reported
 DEPRECATED_MET_LIST = [
 ]
+
+# logger used to skip logging if logger was not provided to function calls
+class NullLogger:
+    def debug(self, message): pass # skip logging
+    def info(self, message): pass # skip logging
+    def warning(self, message): pass # skip logging
+    def error(self, message): pass # skip logging

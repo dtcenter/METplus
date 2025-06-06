@@ -17,6 +17,7 @@ output_template = '{basin?fmt=%s}q{date?fmt=%Y%m%d%H}.gfso.{cyclone?fmt=%s}'
 time_fmt = '%Y%m%d%H'
 run_times = ['2014121318']
 
+FAKE_DIR = '/fake/dir'
 
 def set_minimum_config_settings(config, loop_by='INIT'):
     # set config variables to prevent command from running and bypass check
@@ -46,7 +47,7 @@ def set_minimum_config_settings(config, loop_by='INIT'):
 
 
 @pytest.mark.parametrize(
-    'config_overrides, isOK', [
+    "config_overrides, is_ok", [
         ({}, True),
         ({'TC_PAIRS_BASIN': 'AL, ML'}, True),
         ({'TC_PAIRS_CYCLONE': '0104'}, True),
@@ -62,7 +63,7 @@ def set_minimum_config_settings(config, loop_by='INIT'):
           'TC_PAIRS_CYCLONE': '0104'}, False),
     ]
 )
-def test_read_storm_info(metplus_config, config_overrides, isOK):
+def test_read_storm_info(metplus_config, config_overrides, is_ok):
     """! Check if error is thrown if storm_id and basin or cyclone are set """
     config = metplus_config
     set_minimum_config_settings(config)
@@ -72,7 +73,7 @@ def test_read_storm_info(metplus_config, config_overrides, isOK):
         config.set('config', key, value)
 
     wrapper = TCPairsWrapper(config)
-    assert wrapper.isOK == isOK
+    assert wrapper.isOK == is_ok
 
 
 @pytest.mark.parametrize(
@@ -187,7 +188,6 @@ def test_get_bdeck(metplus_config, get_test_data_dir, basin, cyclone, expected_f
 @pytest.mark.wrapper
 def test_get_basin_cyclone_from_bdeck(metplus_config, template, filename,
                                       other_cyclone, other_basin):
-    fake_dir = '/fake/dir'
     expected_basin = other_basin if other_basin else 'al'
     expected_cyclone = other_cyclone if other_cyclone else '1009'
     time_info = {'date': datetime(2014, 12, 31, 18)}
@@ -195,9 +195,9 @@ def test_get_basin_cyclone_from_bdeck(metplus_config, template, filename,
 
     set_minimum_config_settings(config)
     wrapper = TCPairsWrapper(config)
-    wrapper.c_dict['BDECK_DIR'] = fake_dir
+    wrapper.c_dict['BDECK_DIR'] = FAKE_DIR
     wrapper.c_dict['BDECK_TEMPLATE'] = template
-    full_filename = os.path.join(fake_dir, filename)
+    full_filename = os.path.join(FAKE_DIR, filename)
 
     for wildcard_used in [True, False]:
         if wildcard_used:
@@ -220,11 +220,11 @@ def test_get_basin_cyclone_from_bdeck(metplus_config, template, filename,
 
 @pytest.mark.wrapper
 def test_get_basin_cyclone_from_bdeck_error(metplus_config):
-    full_filename = os.path.join('/fake/dir', '20141009bal.dat')
+    full_filename = os.path.join(FAKE_DIR, '20141009bal.dat')
     config = metplus_config
     set_minimum_config_settings(config)
     wrapper = TCPairsWrapper(config)
-    wrapper.c_dict['BDECK_DIR'] = '/fake/dir'
+    wrapper.c_dict['BDECK_DIR'] = FAKE_DIR
     wrapper.c_dict['BDECK_TEMPLATE'] = '{date?fmt=%Y}{cyclone?fmt=%s}b{basin?fmt=%s}.dat'
     with mock.patch.object(tcp, 'get_tags', return_value = 50 * [0]):
         actual = wrapper._get_basin_cyclone_from_bdeck(full_filename,
@@ -298,7 +298,7 @@ def test_tc_pairs_storm_id_lists(metplus_config, get_test_data_dir, config_overr
     assert wrapper.isOK
 
     all_cmds = wrapper.run_all_times()
-    print(f"ALL COMMANDS:")
+    print("ALL COMMANDS:")
     for idx, (cmd, env_list) in enumerate(all_cmds):
         print(f"CMD{idx}: {cmd}")
         print(f"ENV{idx}: {env_list}")
@@ -606,11 +606,12 @@ def test_tc_pairs_storm_id_lists(metplus_config, get_test_data_dir, config_overr
             'TC_PAIRS_DIAG_SOURCE1': 'TCDIAG',
         },
          {'DIAG_ARG': '-diag TCDIAG <BDECK_DIR>/bmlq2014123118.gfso.0104',}),
+
     ]
 )
 @pytest.mark.wrapper
 def test_tc_pairs_run(metplus_config, get_test_data_dir, loop_by, config_overrides,
-                      env_var_values):
+                      env_var_values, compare_command_and_env_vars):
     config = metplus_config
     remove_beg = remove_end = remove_match_points = False
 
@@ -641,8 +642,8 @@ def test_tc_pairs_run(metplus_config, get_test_data_dir, loop_by, config_overrid
         )
         remove_end = True
 
-    if f'METPLUS_MATCH_POINTS' not in env_var_values:
-        env_var_values[f'METPLUS_MATCH_POINTS'] = (
+    if 'METPLUS_MATCH_POINTS' not in env_var_values:
+        env_var_values['METPLUS_MATCH_POINTS'] = (
             'match_points = TRUE;'
         )
         remove_match_points = True
@@ -677,26 +678,7 @@ def test_tc_pairs_run(metplus_config, get_test_data_dir, loop_by, config_overrid
         )
 
     all_cmds = wrapper.run_all_times()
-    print(f"ALL COMMANDS: {all_cmds}")
-    assert len(all_cmds) == len(expected_cmds)
-
-    missing_env = [item for item in env_var_values
-                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS
-                   and item != 'DIAG_ARG']
-    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
-
-    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
-        # ensure commands are generated as expected
-        assert cmd == expected_cmd
-
-        # check that environment variables were set properly
-        for env_var_key in env_var_keys:
-            match = next((item for item in env_vars if
-                          item.startswith(env_var_key)), None)
-            assert match is not None
-            print(f'Checking env var: {env_var_key}')
-            actual_value = match.split('=', 1)[1]
-            assert env_var_values.get(env_var_key, '') == actual_value
+    compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values, wrapper)
 
     if remove_beg:
         del env_var_values[f'METPLUS_{loop_by}_BEG']
@@ -855,7 +837,7 @@ def test_validate_runtime_freq_tc_pairs(metplus_config,
     # Check warn and handle deprecated TC_PAIRS_RUN_ONCE
     warn_msg = wrapper.logger.warning.call_args_list[-1][0][0]
     assert f'Setting TC_PAIRS_RUNTIME_FREQ={expected_config}.' in warn_msg
-    assert f'Please remove TC_PAIRS_RUN_ONCE' in warn_msg
+    assert 'Please remove TC_PAIRS_RUN_ONCE' in warn_msg
     assert wrapper.c_dict['RUNTIME_FREQ'] == expected_config
 
 

@@ -11,9 +11,7 @@ Condition codes: 0 for success, 1 for failure
 '''
 
 import os
-import glob
 
-from ..util import sub_var_list
 from ..util import do_string_sub, parse_var_list, PYTHON_EMBEDDING_TYPES
 from . import CompareGriddedWrapper
 
@@ -41,8 +39,12 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_VLD_THRESH',
         'METPLUS_FCST_FILE_TYPE',
         'METPLUS_FCST_FIELD',
+        'METPLUS_FCST_CLIMO_MEAN_DICT',
+        'METPLUS_FCST_CLIMO_STDEV_DICT',
         'METPLUS_OBS_FILE_TYPE',
         'METPLUS_OBS_FIELD',
+        'METPLUS_OBS_CLIMO_MEAN_DICT',
+        'METPLUS_OBS_CLIMO_STDEV_DICT',
         'METPLUS_MESSAGE_TYPE',
         'METPLUS_OBS_THRESH',
         'METPLUS_DUPLICATE_FLAG',
@@ -66,9 +68,11 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_ENS_MEMBER_IDS',
         'METPLUS_CONTROL_ID',
         'METPLUS_GRID_WEIGHT_FLAG',
+        'METPLUS_POINT_WEIGHT_FLAG',
         'METPLUS_PROB_CAT_THRESH',
         'METPLUS_PROB_PCT_THRESH',
         'METPLUS_ECLV_POINTS',
+        'METPLUS_OBTYPE_AS_GROUP_VAL_FLAG',
     ]
 
     # deprecated env vars that are no longer supported in the wrapped MET conf
@@ -165,47 +169,13 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         # fill inputs that are not found with fake path to note it is missing
         c_dict['FCST_FILL_MISSING'] = True
 
-        c_dict['OBS_POINT_INPUT_DIR'] = (
-          self.config.getdir('OBS_ENSEMBLE_STAT_POINT_INPUT_DIR', '')
-        )
-
-        c_dict['OBS_POINT_INPUT_TEMPLATE'] = (
-          self.config.getraw('config',
-                             'OBS_ENSEMBLE_STAT_POINT_INPUT_TEMPLATE')
-        )
-
-        c_dict['OBS_GRID_INPUT_DIR'] = (
-          self.config.getdir('OBS_ENSEMBLE_STAT_GRID_INPUT_DIR', '')
-        )
-
-        c_dict['OBS_GRID_INPUT_TEMPLATE'] = (
-          self.config.getraw('config',
-                             'OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE')
-        )
-
-        # The ensemble forecast files input directory and filename templates
-        c_dict['FCST_INPUT_DIR'] = (
-          self.config.getdir('FCST_ENSEMBLE_STAT_INPUT_DIR', '')
-        )
-
-        c_dict['FCST_INPUT_TEMPLATE'] = (
-            self.config.getraw('config', 'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE')
-        )
-        c_dict['FCST_INPUT_FILE_LIST'] = (
-            self.config.getraw('config', 'FCST_ENSEMBLE_STAT_INPUT_FILE_LIST')
-        )
-        if (not c_dict['FCST_INPUT_TEMPLATE'] and
-                not c_dict['FCST_INPUT_FILE_LIST']):
-            self.log_error("Must set FCST_ENSEMBLE_STAT_INPUT_TEMPLATE or "
-                           "FCST_ENSEMBLE_STAT_INPUT_FILE_LIST")
-
-        # optional -ens_mean argument path
-        c_dict['ENS_MEAN_INPUT_DIR'] = (
-          self.config.getdir('ENSEMBLE_STAT_ENS_MEAN_INPUT_DIR', ''))
-
-        c_dict['ENS_MEAN_INPUT_TEMPLATE'] = (
-            self.config.getraw('config',
-                               'ENSEMBLE_STAT_ENS_MEAN_INPUT_TEMPLATE'))
+        self.get_input_templates(c_dict, {
+            'CTRL': {'prefix': 'ENSEMBLE_STAT_CTRL', 'required': False},
+            'FCST': {'prefix': 'FCST_ENSEMBLE_STAT', 'required': True},
+            'OBS_POINT': {'prefix': 'OBS_ENSEMBLE_STAT_POINT', 'required': False},
+            'OBS_GRID': {'prefix': 'OBS_ENSEMBLE_STAT_GRID', 'required': False},
+            'ENS_MEAN': {'prefix': 'ENSEMBLE_STAT_ENS_MEAN', 'required': False},
+        })
 
         c_dict['OUTPUT_DIR'] = (
             self.config.getdir('ENSEMBLE_STAT_OUTPUT_DIR', '')
@@ -217,14 +187,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['OUTPUT_TEMPLATE'] = (
             self.config.getraw('config',
                                'ENSEMBLE_STAT_OUTPUT_TEMPLATE')
-        )
-
-        # get ctrl (control) template/dir - optional
-        c_dict['CTRL_INPUT_TEMPLATE'] = (
-            self.config.getraw('config', 'ENSEMBLE_STAT_CTRL_INPUT_TEMPLATE')
-        )
-        c_dict['CTRL_INPUT_DIR'] = (
-            self.config.getdir('ENSEMBLE_STAT_CTRL_INPUT_DIR', '')
         )
 
         # get climatology config variables
@@ -264,6 +226,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                              'ENSEMBLE_STAT_ENS_OBS_THRESH'],
                             extra_args={'remove_quotes': True,
                                         'allow_empty': True})
+
+        self.add_met_config(name='obtype_as_group_val_flag', data_type='bool')
 
         self.add_met_config(name='ens_ssvar_bin_size', data_type='float')
 
@@ -352,35 +316,26 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
 
+        self.add_met_config(name='point_weight_flag',
+                            data_type='string',
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
+
         self.add_met_config(name='prob_pct_thresh',
                             data_type='list',
                             extra_args={'remove_quotes': True})
 
-        self.add_met_config(name='eclv_points',
-                            data_type='float')
+        self.add_met_config(name='eclv_points', data_type='float')
 
         self.add_met_config(name='prob_cat_thresh',
                             data_type='list',
                             extra_args={'remove_quotes': True})
-
-        # signifies that the tool can be run without setting
-        # field information for fcst and obs
-        c_dict['VAR_LIST_OPTIONAL'] = True
-
-        # parse var list for ENS fields
-        c_dict['ENS_VAR_LIST_TEMP'] = parse_var_list(
-            self.config,
-            data_type='ENS',
-            met_tool=self.app_name
-        )
 
         # parse optional var list for FCST and/or OBS fields
         c_dict['VAR_LIST_TEMP'] = parse_var_list(
             self.config,
             met_tool=self.app_name
         )
-        # skip RuntimeFreq input file logic - remove once integrated
-        c_dict['FIND_FILES'] = False
         return c_dict
 
     def get_command(self):
@@ -390,7 +345,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         """
         return (f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
                 f" {' '.join(self.infiles)} {self.param}"
-                f" {' '.join(self.args)} -outdir {self.outdir}")
+                f"{' '.join(self.args) if self.args else ''} -outdir {self.outdir}")
 
     def find_input_files(self, time_info):
         # get ensemble model files
@@ -398,14 +353,14 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         fill_missing = not self.env_var_dict.get('METPLUS_ENS_MEMBER_IDS')
         if not self.find_input_files_ensemble(time_info,
                                               fill_missing=fill_missing):
-            return False
+            return None
 
         # get point observation file if requested
         if self.c_dict['OBS_POINT_INPUT_TEMPLATE']:
             point_obs_files = self.find_data(time_info, data_type='OBS_POINT',
                                              return_list=True)
             if point_obs_files is None:
-                return False
+                return None
 
             for point_obs_path in point_obs_files:
                 self.args.append(f'-point_obs "{point_obs_path}"')
@@ -415,7 +370,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             grid_obs_files = self.find_data(time_info, data_type='OBS_GRID',
                                             return_list=True)
             if grid_obs_files is None:
-                return False
+                return None
 
             for grid_obs_path in grid_obs_files:
                 self.args.append(f'-grid_obs "{grid_obs_path}"')
@@ -425,11 +380,11 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             ens_mean_path = self.find_data(time_info, data_type='ENS_MEAN',
                                            return_list=True)
             if ens_mean_path is None:
-                return False
+                return None
 
             self.args.append(f'-ens_mean {ens_mean_path[0]}')
 
-        return True
+        return time_info
 
     def set_environment_variables(self, time_info):
         self.add_env_var("MET_OBS_ERROR_TABLE",

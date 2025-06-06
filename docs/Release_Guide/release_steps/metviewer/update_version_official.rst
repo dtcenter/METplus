@@ -1,13 +1,16 @@
-Update Version Number for Release
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Update Version Number
+^^^^^^^^^^^^^^^^^^^^^
 
-Remove **-dev** from the version number:
+Update the software version information.
 
-* We are naming releases with X.Y.Z format even if Z is 0.
-* The file containing the version number is located at docs/version.
-* In the METviewer/build.xml file, assign the version in the 'dist' target
-* In the METviewer/vebapp/metviewer/metviewer1.jsp file, assign the version to <div id='release'> and <title>
+.. dropdown:: Instructions
 
-* Save and close the file.
+  * If necessary, in the top level file 'build.xml', update the version value for the attribute name 'Specification-Version' under the 'dist' target name.
 
-In docs/conf.py, update the version, release_year, and release_date variables for the documentation.
+  * If necessary, in the 'webapp/metviewer/metviewer1.jsp' file:
+
+    * Update the 'TITLE' version value under 'HEAD'.
+
+    * Update the version value in the :code:`span id="release"` section. 
+
+  * In 'docs/conf.py', update the 'version', 'release_year', and 'release_date' variables for the documentation.

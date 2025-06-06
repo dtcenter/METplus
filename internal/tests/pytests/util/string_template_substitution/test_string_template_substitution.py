@@ -4,11 +4,14 @@ import pytest
 
 import datetime
 import os
+from dateutil.relativedelta import relativedelta
 
 from metplus.util import do_string_sub, parse_template, get_time_from_file
-from metplus.util import get_tags,format_one_time_item, format_hms
-from metplus.util import add_to_dict, populate_match_dict, get_fmt_info
+from metplus.util import get_tags,format_one_time_item, format_time_offset
+from metplus.util import add_to_dict, populate_match_dict, get_fmt_info, format_forecast_lead
 
+TEST_FILE_TEMPLATE_A = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h"
+TEST_FILE_TEMPLATE_B = "{init?fmt=%Y%m%d%H}_dog_A{lead?fmt=%HH}h"
 
 @pytest.mark.util
 def test_cycle_hour():
@@ -79,7 +82,7 @@ def test_parse_template(template, filepath, expected_valid):
 
 @pytest.mark.util
 def test_h_lead_no_pad_1_digit_sub():
-    file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h"
+    file_template = TEST_FILE_TEMPLATE_A
     init_time = datetime.datetime.strptime("1987020103", '%Y%m%d%H')
     lead_time = int("3") * 3600
     out_string = do_string_sub(file_template,
@@ -90,7 +93,7 @@ def test_h_lead_no_pad_1_digit_sub():
 
 @pytest.mark.util
 def test_h_lead_no_pad_2_digit_sub():
-    file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h"
+    file_template = TEST_FILE_TEMPLATE_A
     init_time = datetime.datetime.strptime("1987020103", '%Y%m%d%H')
     lead_time = int("12") * 3600
     out_string = do_string_sub(file_template,
@@ -101,7 +104,7 @@ def test_h_lead_no_pad_2_digit_sub():
 
 @pytest.mark.util
 def test_h_lead_no_pad_3_digit_sub():
-    file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h"
+    file_template = TEST_FILE_TEMPLATE_A
     init_time = datetime.datetime.strptime("1987020103", '%Y%m%d%H')
     lead_time = int("102") * 3600
     out_string = do_string_sub(file_template,
@@ -342,7 +345,7 @@ def test_ccpa_template():
 
 @pytest.mark.util
 def test_filename_matches_template():
-    template = "{init?fmt=%Y%m%d%H}_dog_A{lead?fmt=%HH}h"
+    template = TEST_FILE_TEMPLATE_B
     filepath = "1987020103_dog_A03h"
     out = parse_template(template, filepath)
     ftime = out['valid'].strftime('%Y%m%d%H%M')
@@ -351,18 +354,18 @@ def test_filename_matches_template():
 
 @pytest.mark.util
 def test_filename_does_not_match_template():
-    template = "{init?fmt=%Y%m%d%H}_dog_A{lead?fmt=%HH}h"
+    template = TEST_FILE_TEMPLATE_B
     filepath = "1987020103_cat_A03h"
     out = parse_template(template, filepath)
-    assert out == None
+    assert out is None
 
 
 @pytest.mark.util
 def test_filename_does_not_match_template_end():
-    template = "{init?fmt=%Y%m%d%H}_dog_A{lead?fmt=%HH}h"
+    template = TEST_FILE_TEMPLATE_B
     filepath = "1987020103_dog_A03d"
     out = parse_template(template, filepath)
-    assert out == None
+    assert out is None
 
 
 @pytest.mark.util
@@ -379,7 +382,7 @@ def test_get_tags():
 # value is the formatted output string, like 01
 # ttype is the unit to check, i.e. 'H', 'M', 'S', 'd', 's'
 @pytest.mark.parametrize(
-    'format, key, value, ttype', [
+    'fmt, key, value, ttype', [
         ('H', 1, '01', 'H'),
         ('1H', 1, '1', 'H'),
         ('2H', 1, '01', 'H'),
@@ -418,15 +421,15 @@ def test_get_tags():
     ]
 )
 @pytest.mark.util
-def test_format_one_time_item(format, key ,value, ttype):
-    assert format_one_time_item(format, key, ttype) == value
+def test_format_one_time_item(fmt, key ,value, ttype):
+    assert format_one_time_item(fmt, key, ttype) == value
 
 
 # format is the time format to use, like, %M or %H%M
 # seconds is the integer number of seconds of the offset to use, i.e. 3601
 # value is the formatted output string, like 010001
 @pytest.mark.parametrize(
-    'format, seconds, value', [
+    'fmt, seconds, value', [
         ('%H', 1, '00'),
         ('%M', 1, '00'),
         ('%S', 1, '01'),
@@ -448,9 +451,42 @@ def test_format_one_time_item(format, key ,value, ttype):
     ]
 )
 @pytest.mark.util
-def test_format_hms(format, seconds, value):
+def test_format_time_offset(fmt, seconds, value):
     # format should be something like %M or %H%M
-    assert format_hms(format, seconds == value)
+    assert format_time_offset(fmt, seconds) == value
+
+
+# variables used in format forecast lead test
+TEST_TIME = datetime.datetime(2025, 2, 1)
+TEST_TIME_LEAP_YEAR = datetime.datetime(2024, 2, 1)
+
+@pytest.mark.parametrize(
+    'obj,fmt,shift,kwargs,value', [
+        (relativedelta(minutes=30), '%M', 0, {}, '30'),
+        (relativedelta(minutes=30), '%S', 0, {}, '1800'),
+        (relativedelta(hours=1,minutes=30,seconds=20), '%H', 0, {}, '01'),
+        (relativedelta(hours=1,minutes=30,seconds=20), '%M', 0, {}, '90'),
+        (relativedelta(hours=1,minutes=30,seconds=20), '%S', 0, {}, '5420'),
+        (relativedelta(hours=1,minutes=30,seconds=20), '%M%S', 0, {}, '9020'),
+        (relativedelta(hours=1,minutes=30,seconds=20), '%H%M', 0, {}, '0130'),
+        (relativedelta(hours=1,minutes=30,seconds=20), '%H%M%S', 0, {}, '013020'),
+        (relativedelta(months=1), '%m', 0, {}, '01'),
+        (relativedelta(months=1), '%3m', 0, {}, '001'),
+        (relativedelta(months=1), '%d', 0, {}, '1m'),
+        (relativedelta(years=1), '%Y', 0, {}, '01'),
+        (relativedelta(years=1), '%4Y', 0, {}, '0001'),
+        (relativedelta(months=1), '%m', 0, {'valid': TEST_TIME}, '01'),
+        (relativedelta(months=1), '%3m', 0, {'valid': TEST_TIME}, '001'),
+        (relativedelta(months=1), '%d', 0, {'valid': TEST_TIME}, '31'),
+        (relativedelta(months=1), '%m', 0, {'init': TEST_TIME}, '01'),
+        (relativedelta(months=1), '%d', 0, {'init': TEST_TIME}, '28'),
+        (relativedelta(months=1), '%d', 0, {'init': TEST_TIME_LEAP_YEAR}, '29'),
+    ]
+)
+@pytest.mark.util
+def test_format_forecast_lead(obj, fmt, shift, kwargs, value):
+    # format should be something like %M or %H%M
+    assert format_forecast_lead(obj, fmt, shift, kwargs) == value
 
 
 @pytest.mark.util
@@ -521,7 +557,7 @@ def test_add_to_dict(match, match_dict, full_str, new_len, expected_result):
          'file.2019020112.f03.out',
          None,
          None),
-        # TODO: test TypeError if valid time has 2 different shift values
+        # test TypeError if valid time has 2 different shift values
         ('file.{valid?fmt=%Y%m%d%H?shift=-30}.{valid?fmt=%Y?shift=60}.out',
          'file.2019020112.2019.out',
          None,
@@ -539,7 +575,6 @@ def test_populate_match_dict(template, filepath, expected_match_dict, expected_v
         elif match_dict is None:
             # if expected is not None, fail if actual is None
             assert False
-            return
 
         num_keys = len(match_dict.keys())
         expected_num_keys = len(expected_match_dict.keys())
@@ -561,8 +596,6 @@ def test_populate_match_dict(template, filepath, expected_match_dict, expected_v
         if valid_shift != expected_valid_shift:
             print(f"Incorrect valid shift. Actual {valid_shift}, Expected: {expected_valid_shift}")
             assert False
-
-        assert True
 
     except TypeError:
         assert expected_match_dict is None and expected_valid_shift is None
@@ -590,8 +623,6 @@ def test_get_fmt_info(fmt, filepath, identifier, expected_fmt_len, expected_matc
         print(f"Match Dictionary: {match_dict}")
         print(f"Expected Dictionary: {expected_match_dict}")
         assert False
-
-    assert True
 
 
 @pytest.mark.parametrize(

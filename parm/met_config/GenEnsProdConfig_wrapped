@@ -64,6 +64,9 @@ ens = {
    //field =
    ${METPLUS_ENS_FIELD}
 
+   ${METPLUS_ENS_CLIMO_MEAN_DICT}
+   ${METPLUS_ENS_CLIMO_STDEV_DICT}
+
 }
 
 //ens_member_ids =

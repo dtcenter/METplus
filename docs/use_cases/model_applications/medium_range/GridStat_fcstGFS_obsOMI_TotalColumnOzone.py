@@ -1,11 +1,16 @@
 """
 Grid-Stat: Using Python Embedding for Total Column Ozone
-================================================================================
+========================================================
 
-model_applications/medium_range/GridStat_fcstGFS_obsOMI
-_TotalColumnOzone.conf
+model_applications/medium_range/GridStat_fcstGFS_obsOMI_TotalColumnOzone.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -15,13 +20,29 @@ _TotalColumnOzone.conf
 # files (all from the same initialization time). 
 
 ##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 6.0
+
+##############################################################################
 # Datasets
 # --------
 #
-# | **Forecast:** GFS (1 degree Lat/Lon grid)
-# | **Observation:** NASA's Level-3 Aura/OMI Global Total Ozone Mapping Spectrometer-Like (TOMS-Like) Total Column Ozone gridded product OMTO3e (0.25deg Lat/Lon grid)
-# | **Location:** Click here for the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# **Forecast:** NOAA Global Forecast System (GFS) (1 degree Lat/Lon grid)
+#
+# **Observation:** NASA's Level-3 Aura/OMI Global Total Ozone Mapping Spectrometer-Like (TOMS-Like) Total Column Ozone gridded product OMTO3e (0.25deg Lat/Lon grid)
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Components
@@ -35,6 +56,14 @@ _TotalColumnOzone.conf
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (VALID_BEG):** 2023120506
+#
+# **End time (VALID_END):** 2023120506
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 21600
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 48
 #
 # The following tools are used for each run time:
 #
@@ -69,22 +98,29 @@ _TotalColumnOzone.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`GridStat MET Configuration<grid-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: GridStatConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+#   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 
 ##############################################################################
 # Python Embedding
 # ----------------
 #
-# This use case uses one Python embedding script with GridStat to read the input observation data
+# This use case uses one Python embedding script with GridStat to read the input observation data.
 #
-# parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsOMI_TotalColumnOzone/read_omi-aura_l3-omto3e.py
+# .. dropdown:: parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsOMI_TotalColumnOzone/read_omi-aura_l3-omto3e.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsOMI_TotalColumnOzone/read_omi-aura_l3-omto3e.py
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsOMI_TotalColumnOzone/read_omi-aura_l3-omto3e.py
+#
+# For more information on the basic requirements to utilize Python Embedding in METplus, 
+# please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
 
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
@@ -127,10 +163,10 @@ _TotalColumnOzone.conf
 #   * PythonEmbeddingFileUseCase
 #   * RegriddingInToolUseCase
 #   * NOAAEMCOrgUseCase
+#   * VxDataOMIAURATOMSLEV3
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
 #
 # sphinx_gallery_thumbnail_path = '_static/medium_range-GridStat_fcstGFS_obsOMI_TotalColumnOzone.png'
-#

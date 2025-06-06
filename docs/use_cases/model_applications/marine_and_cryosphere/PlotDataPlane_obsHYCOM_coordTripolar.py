@@ -6,6 +6,12 @@ model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.co
 
 """
 ##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
+##############################################################################
 # Scientific Objective
 # --------------------
 #
@@ -13,16 +19,29 @@ model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.co
 # python embedding to ingest and utilize file structures on the same coordinate system.
 
 ##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.0
+
+##############################################################################
 # Datasets
 # --------
 #
-# | **Input:** Python Embedding script/file, HYCOM observation file, coordinate system weight files (optional)
+# **Forecast:** HYbrid Coordinate Ocean Model (HYCOM)
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# **Observation:** None
 #
-# | **Data Source:** HYCOM model
-# |
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # External Dependencies
@@ -50,11 +69,18 @@ model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.co
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (VALID_BEG):** 20200127
+#
+# **End time (VALID_END):** 20200127
+#
+# **Increment between beginning and end times (VALID_INCREMENT):** 1M
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0
+#
 # PlotDataPlane is the only tool called in this example.
 # It processes the following run time:
 #
-# | **Valid:** 2020-01-27 0Z
-# |
+# **Valid:** 2020-01-27 0Z
 #
 # As it is currently set, the configuration file will pass in the path to the observation data,
 # as well as a path to the weights for the coordinate system. This is done in an effort to speed up running the use case.
@@ -67,60 +93,49 @@ model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.co
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. parm/use_cases/model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # This tool does not use a MET configuration file.
-#
 
 ##############################################################################
 # Python Embedding
 # ----------------
 #
-# This use case uses one Python script to read input data, passed through two times
+# This use case uses one Python script to read input data, passed through two times.
 #
-# parm/use_cases/model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar/read_tripolar_grid.py
+# .. dropdown:: parm/use_cases/model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar/read_tripolar_grid.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar/read_tripolar_grid.py
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar/read_tripolar_grid.py
 #
+# For more information on the basic requirements to utilize Python Embedding in METplus, 
+# please refer to the MET User’s Guide section on
+# `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# This use case can be run two ways:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# 1) Passing in PlotDataPlane_obsHYCOM_coordTripolar.conf then a user-specific system configuration file::
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.conf /path/to/user_system.conf
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.conf -c /path/to/user_system.conf
-#
-# 2) Modifying the configurations in parm/metplus_config, then passing in PlotDataPlane_obsHYCOM_coordTripolar.conf::
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-# **NOTE:** All of these items must be found under the [dir] section.
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

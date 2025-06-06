@@ -31,10 +31,19 @@ echo "TIMING: docker pull ${DOCKERHUB_TAG} took `printf '%02d' $(($duration / 60
 # set DOCKERFILE_PATH that is used by docker hook script get_met_version
 export DOCKERFILE_PATH=${GITHUB_WORKSPACE}/internal/scripts/docker/Dockerfile
 
-MET_TAG=`${GITHUB_WORKSPACE}/internal/scripts/docker/hooks/get_met_version`
+metplus_version=$(head -n 1 "${GITHUB_WORKSPACE}/metplus/VERSION")
+
+# if rc is in version number, get main_vX.Y, otherwise get X.Y-latest or develop
+if [[ "${metplus_version}" =~ rc ]]; then
+  tag_format="main_v{X}.{Y}"
+else
+  tag_format="{X}.{Y}-latest"
+fi
+
+MET_TAG=$("${GITHUB_WORKSPACE}"/metplus/component_versions.py -v "${metplus_version}" -o MET -f ${tag_format} --no-get_dev_version)
 
 MET_DOCKER_REPO=met-dev
-if [ "${MET_TAG}" != "develop" ]; then
+if [ "${MET_TAG}" != "develop" ] && ! [[ "${MET_TAG}" =~ ^main_v[0-9]+\.[0-9]+ ]]; then
     MET_DOCKER_REPO=met
 elif [ "${EXTERNAL_TRIGGER}" == "true" ]; then
     # if MET tag is develop and external repo triggered workflow

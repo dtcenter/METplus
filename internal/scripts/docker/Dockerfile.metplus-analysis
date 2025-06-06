@@ -1,0 +1,16 @@
+ARG METPLUS_BASE_REPO=metplus
+ARG METPLUS_BASE_TAG
+
+FROM dtcenter/${METPLUS_BASE_REPO}:${METPLUS_BASE_TAG}
+LABEL org.opencontainers.image.authors="mccabe@ucar.edu"
+
+ARG METDATAIO_VERSION
+ARG METCALCPY_VERSION
+ARG METPLOTPY_VERSION
+
+RUN git clone --branch "$METDATAIO_VERSION" https://github.com/dtcenter/METdataio \
+    && pip install -r METdataio/requirements.txt && pip install METdataio/. \
+    && git clone --branch "$METCALCPY_VERSION" https://github.com/dtcenter/METcalcpy \
+    && pip install -r METcalcpy/requirements.txt && pip install METcalcpy/. \
+    && git clone --branch "$METPLOTPY_VERSION" https://github.com/dtcenter/METplotpy \
+    && pip install -r METplotpy/requirements.txt && pip install METplotpy/.

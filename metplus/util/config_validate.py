@@ -17,8 +17,7 @@ def validate_config_variables(config):
 
     # check for deprecated env vars in MET config files and
     # warn user to remove/replace them
-    deprecated_met_is_ok, sed_cmds = check_for_deprecated_met_config(config)
-    all_sed_cmds.extend(sed_cmds)
+    deprecated_met_is_ok = check_for_deprecated_met_config(config)
 
     # validate configuration variables
     field_is_ok, sed_cmds = validate_field_info_configs(config)
@@ -133,7 +132,6 @@ def handle_deprecated(old, alt, depr_info, config, all_sed_cmds, e_list,
 
 
 def check_for_deprecated_met_config(config):
-    sed_cmds = []
     all_good = True
 
     # check if *_CONFIG_FILE if set in the METplus config file and check for
@@ -159,7 +157,7 @@ def check_for_deprecated_met_config(config):
                                                         met_tool):
                 all_good = False
 
-    return all_good, sed_cmds
+    return all_good
 
 
 def check_for_deprecated_met_config_file(config, met_config, met_tool):
@@ -184,31 +182,31 @@ def check_for_deprecated_met_config_file(config, met_config, met_tool):
                 continue
             error_logs.append(f"Deprecated environment variable ${{{deprecated_item}}} found")
 
-    if error_logs:
-        config.logger.error(f"Deprecated environment variables found in {met_tool}_CONFIG_FILE: {met_config}")
-        for error_log in error_logs:
-            config.logger.error(error_log)
+    if not error_logs:
+        return True
 
-        met_install_dir = config.getdir('MET_INSTALL_DIR')
-        config_dir = os.path.join(met_install_dir, 'share', 'met', 'config')
-        default_config = f"{get_wrapper_name(met_tool)}Config_default"
-        default_path = os.path.join(config_dir, default_config)
-        config.logger.error(
-            "Please set values that differ from the defaults in a METplus "
-            f"config file and unset {met_tool}_CONFIG_FILE to use the "
-            "wrapped MET config that is provided with the METplus wrappers."
-        )
-        config.logger.error(
-            f"Compare values set in {met_config} to {default_path}"
-        )
-        config.logger.error(
-            "See https://metplus.readthedocs.io/en/latest/Users_Guide/"
-            "release-notes.html#metplus-wrappers-upgrade-instructions"
-            " for more information."
-        )
-        return False
+    config.logger.error(f"Deprecated environment variables found in {met_tool}_CONFIG_FILE: {met_config}")
+    for error_log in error_logs:
+        config.logger.error(error_log)
 
-    return True
+    met_install_dir = config.getdir('MET_INSTALL_DIR')
+    config_dir = os.path.join(met_install_dir, 'share', 'met', 'config')
+    default_config = f"{get_wrapper_name(met_tool)}Config_default"
+    default_path = os.path.join(config_dir, default_config)
+    config.logger.error(
+        "Please set values that differ from the defaults in a METplus "
+        f"config file and unset {met_tool}_CONFIG_FILE to use the "
+        "wrapped MET config that is provided with the METplus wrappers."
+    )
+    config.logger.error(
+        f"Compare values set in {met_config} to {default_path}"
+    )
+    config.logger.error(
+        "See https://metplus.readthedocs.io/en/latest/Users_Guide/"
+        "release-notes.html#metplus-wrappers-upgrade-instructions"
+        " for more information."
+    )
+    return False
 
 
 def _get_deprecated_met_list(config, met_tool):

@@ -108,6 +108,8 @@ docs/doxygen/run/Doxyfile
 docs/doxygen/run/doxygenloc
 docs/doxygen/run/doxylog
 
+docs/sg_execution_times.rst
+
 # Other METplus repositories that may be obtained via manage_externals
 METcalcpy
 METplotpy

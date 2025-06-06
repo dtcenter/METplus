@@ -18,6 +18,11 @@ pp = pprint.PrettyPrinter()
 
 JOB_ARGS = '-job filter'
 
+MODEL_TEST = 'MODEL_TEST'
+MODEL_TEST_ANL = 'MODEL_TEST_ANL'
+FAKE_DATE = 'fake/20180201'
+
+
 def stat_analysis_wrapper(metplus_config):
     """! Returns a default StatAnalysisWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
@@ -36,9 +41,9 @@ def stat_analysis_wrapper(metplus_config):
     config.set('config', 'VALID_BEG', '20190101')
     config.set('config', 'VALID_END', '20190101')
     config.set('config', 'VALID_INCREMENT', '86400')
-    config.set('config', 'MODEL1', 'MODEL_TEST')
+    config.set('config', 'MODEL1', MODEL_TEST)
     config.set('config', 'MODEL1_REFERENCE_NAME', 'MODELTEST')
-    config.set('config', 'MODEL1_OBTYPE', 'MODEL_TEST_ANL')
+    config.set('config', 'MODEL1_OBTYPE', MODEL_TEST_ANL)
     config.set('config', 'STAT_ANALYSIS_CONFIG_FILE',
                '{PARM_BASE}/met_config/STATAnalysisConfig_wrapped')
     config.set('config', 'STAT_ANALYSIS_JOB_NAME', 'filter')
@@ -63,7 +68,7 @@ def _set_config_dict_values():
     config_dict['FCST_VAR'] = ''
     config_dict['FCST_LEVEL'] = ''
     config_dict['INTERP_MTHD'] = ''
-    config_dict['MODEL'] = '"MODEL_TEST"'
+    config_dict['MODEL'] = f'"{MODEL_TEST}"'
     config_dict['VX_MASK'] = ''
     config_dict['OBS_INIT_HOUR'] = ''
     config_dict['COV_THRESH'] = ''
@@ -78,7 +83,7 @@ def _set_config_dict_values():
     config_dict['DESC'] = ''
     config_dict['OBS_LEAD'] = ''
     config_dict['OBS_THRESH'] = ''
-    config_dict['OBTYPE'] = '"MODEL_TEST_ANL"'
+    config_dict['OBTYPE'] = f'"{MODEL_TEST_ANL}"'
     config_dict['OBS_VALID_HOUR'] = ''
     config_dict['ALPHA'] = ''
     config_dict['OBS_LEVEL'] = ''
@@ -172,6 +177,13 @@ def set_minimum_config_settings(config):
           'MODEL1': '{custom}',
           'MODEL_LIST': '{custom}'},
          {'METPLUS_MODEL': 'model = ["CUSTOM_MODEL"];'}),
+        # 17 - fcst_lev
+        ({'FCST_LEVEL_LIST': 'R5'},
+         {'METPLUS_FCST_LEVEL': 'fcst_lev = ["R5"];'}),
+        # 17 - obs_lev
+        ({'OBS_LEVEL_LIST': 'R7'},
+         {'METPLUS_OBS_LEVEL': 'obs_lev = ["R7"];'}),
+
     ]
 )
 @pytest.mark.wrapper_d
@@ -402,7 +414,7 @@ def test_create_c_dict(metplus_config):
     assert 'FCST_VALID_HOUR_LIST' in c_dict['LOOP_LIST_ITEMS']
     assert 'MODEL_LIST' in c_dict['LOOP_LIST_ITEMS']
     assert c_dict['VAR_LIST'] == []
-    assert c_dict['MODEL_LIST'] == ['"MODEL_TEST"']
+    assert c_dict['MODEL_LIST'] == [f'"{MODEL_TEST}"']
     assert c_dict['DESC_LIST'] == []
     assert c_dict['FCST_LEAD_LIST'] == []
     assert c_dict['OBS_LEAD_LIST'] == []
@@ -456,7 +468,7 @@ def test_set_lists_as_loop_or_group(metplus_config):
     config_dict['OBS_UNITS_LIST'] = []
     config_dict['FCST_THRESH_LIST'] = []
     config_dict['OBS_THRESH_LIST'] = []
-    config_dict['MODEL_LIST'] = ['MODEL_TEST']
+    config_dict['MODEL_LIST'] = [MODEL_TEST]
     config_dict['DESC_LIST'] = []
     config_dict['FCST_LEAD_LIST'] = []
     config_dict['OBS_LEAD_LIST'] = []
@@ -496,8 +508,8 @@ def test_set_lists_as_loop_or_group(metplus_config):
           'fcst_valid_hour_end': relativedelta(),
           'valid_hour_beg': relativedelta(),
           'valid_hour_end': relativedelta(),
-          'model': 'MODEL_TEST',
-          'obtype': 'MODEL_TEST_ANL',
+          'model': MODEL_TEST,
+          'obtype': MODEL_TEST_ANL,
           'fcst_init_hour': '000000_060000_120000_180000',
           'fcst_init_hour_beg': relativedelta(),
           'fcst_init_hour_end': relativedelta(hours=18),
@@ -690,7 +702,7 @@ def test_get_lookin_dir(metplus_config):
     config_dict['FCST_VAR'] = ''
     config_dict['FCST_LEVEL'] = ''
     config_dict['INTERP_MTHD'] = ''
-    config_dict['MODEL'] = '"MODEL_TEST"'
+    config_dict['MODEL'] = f'"{MODEL_TEST}"'
     config_dict['VX_MASK'] = ''
     config_dict['OBS_INIT_HOUR'] = ''
     config_dict['COV_THRESH'] = ''
@@ -705,7 +717,7 @@ def test_get_lookin_dir(metplus_config):
     config_dict['DESC'] = ''
     config_dict['OBS_LEAD'] = ''
     config_dict['OBS_THRESH'] = ''
-    config_dict['OBTYPE'] = '"MODEL_TEST_ANL"'
+    config_dict['OBTYPE'] = f'"{MODEL_TEST_ANL}"'
     config_dict['OBS_VALID_HOUR'] = ''
     config_dict['ALPHA'] = ''
     config_dict['OBS_LEVEL'] = ''
@@ -728,14 +740,14 @@ def test_get_lookin_dir(metplus_config):
     pytest_data_dir = os.path.join(os.path.dirname(__file__), os.pardir,
                                    os.pardir, os.pardir, 'data')
     # Test 1
-    expected_lookin_dir = os.path.join(pytest_data_dir, 'fake/20180201')
+    expected_lookin_dir = os.path.join(pytest_data_dir, FAKE_DATE)
     dir_path = os.path.join(pytest_data_dir, 'fake/*')
 
     test_lookin_dir = st._get_lookin_dir(dir_path, config_dict)
     assert expected_lookin_dir == test_lookin_dir
 
     # Test 2
-    expected_lookin_dir = os.path.join(pytest_data_dir, 'fake/20180201')
+    expected_lookin_dir = os.path.join(pytest_data_dir, FAKE_DATE)
     dir_path = os.path.join(pytest_data_dir, 'fake/{valid?fmt=%Y%m%d}')
 
     test_lookin_dir = st._get_lookin_dir(dir_path, config_dict)
@@ -749,7 +761,7 @@ def test_get_lookin_dir(metplus_config):
     assert expected_lookin_dir == test_lookin_dir
 
     # Test 4 - 2 paths, one with wildcard
-    expected_lookin_dir = os.path.join(pytest_data_dir, 'fake/20180201')
+    expected_lookin_dir = os.path.join(pytest_data_dir, FAKE_DATE)
     expected_lookin_dir = f'{expected_lookin_dir} {expected_lookin_dir}'
     dir_path = os.path.join(pytest_data_dir, 'fake/*')
     dir_path = f'{dir_path}, {dir_path}'
@@ -851,13 +863,13 @@ def test_parse_model_info(metplus_config):
     # are as expected
     st = stat_analysis_wrapper(metplus_config)
     # Test 1
-    expected_name = '"MODEL_TEST"'
-    expected_obtype = '"MODEL_TEST_ANL"'
+    expected_name = f'"{MODEL_TEST}"'
+    expected_obtype = f'"{MODEL_TEST_ANL}"'
     expected_dump_row_filename_template = (
         '{fcst_valid_hour?fmt=%H}Z/MODEL_TEST/'
         +'MODEL_TEST_{valid?fmt=%Y%m%d}.stat'
     )
-    expected_dump_row_filename_type = 'user'
+
     expected_out_stat_filename_template = (
         '{model?fmt=%s}_'
         '{obtype?fmt=%s}_valid'
@@ -865,7 +877,6 @@ def test_parse_model_info(metplus_config):
         '{fcst_init_hour?fmt=%s}.stat'
     )
 
-    expected_out_stat_filename_type = 'user'
     test_model_info_list = st._parse_model_info()
     assert test_model_info_list[0]['name'] == expected_name
     assert test_model_info_list[0]['obtype'] == expected_obtype

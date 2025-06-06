@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Must specify 3 arguments:
 #   - username
@@ -6,8 +6,7 @@
 #   - repository name
 
 if [[ $# -ne 3 ]]; then
-  echo "ERROR: `basename $0` ... must specify the GitHub username, authorization key, and repository name."
-  echo "ERROR:   repo list: metplus, met, metdataio, metcalcpy, metplotpy, metviewer, metexpress, metplus-training"
+  echo "ERROR: `basename $0` ... must specify the GitHub username, authorization key, and METplus repository name."
   exit 1
 else
   user=$1
@@ -24,7 +23,7 @@ COMMON_LABELS="`dirname $0`/common_labels.txt"
 
 # Output command file
 CMD_FILE="`dirname $0`/commands/delete_labels_${repo}_cmd.sh"
-echo "#!/bin/sh -v" > ${CMD_FILE}
+echo "#!/bin/bash -v" > ${CMD_FILE}
 
 # Get the current repo labels
 SCRIPT_DIR=`dirname $0`
@@ -48,7 +47,7 @@ while read -r line; do
   is_common=`egrep -i "\"${name}\"" ${COMMON_LABELS} | wc -l`
 
   # Check if its a custom label that beginning with component, type, or repository name
-  is_custom=`echo ${name} | egrep -r -i "component:|type:|${repo}" | wc -l`
+  is_custom=`echo ${name} | egrep -i "component:|type:|^MET" | wc -l`
 
   # Keep COMMON labels
   if [[ $is_common -gt 0 ]]; then

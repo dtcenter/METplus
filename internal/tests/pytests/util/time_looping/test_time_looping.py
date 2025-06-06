@@ -5,6 +5,95 @@ from dateutil.relativedelta import relativedelta
 
 from metplus.util import time_looping as tl
 from metplus.util.time_util import ti_calculate, ti_get_hours_from_relativedelta
+from metplus.util.time_looping import get_start_and_end_times
+
+
+@pytest.fixture
+def mock_time_generator(monkeypatch):
+    """
+    Mock the time_generator function used in get_start_and_end_times
+    to simulate various scenarios.
+    """
+
+    def mock_generator(config):
+        return config.get("mock_times", [])
+
+    monkeypatch.setattr('metplus.util.time_looping.time_generator', mock_generator)
+
+
+@pytest.mark.parametrize(
+    'config_dict, expected_output', [
+        # 1 group
+        ({'LEAD_SEQ_1': "0, 1, 2, 3",
+          'LEAD_SEQ_1_LABEL': 'Day1',
+          },  {'Day1': [relativedelta(), relativedelta(hours=+1), relativedelta(hours=+2), relativedelta(hours=+3)]}),
+        # 2 groups, no overlap
+        ({'LEAD_SEQ_1': "0, 1, 2, 3",
+          'LEAD_SEQ_1_LABEL': 'Day1',
+          'LEAD_SEQ_2': "8, 9, 10, 11",
+          'LEAD_SEQ_2_LABEL': 'Day2',
+          },  {'Day1': [relativedelta(), relativedelta(hours=+1), relativedelta(hours=+2), relativedelta(hours=+3)],
+               'Day2': [relativedelta(hours=+8), relativedelta(hours=+9), relativedelta(hours=+10),
+                        relativedelta(hours=+11)]}),
+        # 2 groups, overlap
+        ({'LEAD_SEQ_1': "0, 1, 2, 3",
+          'LEAD_SEQ_1_LABEL': 'Day1',
+          'LEAD_SEQ_2': "3, 4, 5, 6",
+          'LEAD_SEQ_2_LABEL': 'Day2',
+          }, {'Day1': [relativedelta(), relativedelta(hours=+1), relativedelta(hours=+2), relativedelta(hours=+3)],
+              'Day2': [relativedelta(hours=+3), relativedelta(hours=+4), relativedelta(hours=+5),
+                       relativedelta(hours=+6)]}),
+        # 2 groups, no overlap, out of order
+        ({'LEAD_SEQ_1': "8, 9, 10, 11",
+          'LEAD_SEQ_1_LABEL': 'Day2',
+          'LEAD_SEQ_2': "0, 1, 2, 3",
+          'LEAD_SEQ_2_LABEL': 'Day1',
+          },  {'Day2': [relativedelta(hours=+8), relativedelta(hours=+9), relativedelta(hours=+10),
+                        relativedelta(hours=+11)],
+               'Day1': [relativedelta(), relativedelta(hours=+1), relativedelta(hours=+2), relativedelta(hours=+3)]}),
+        # 2 groups, overlap, out of order
+        ({'LEAD_SEQ_1': "3, 4, 5, 6",
+          'LEAD_SEQ_1_LABEL': 'Day2',
+          'LEAD_SEQ_2': "0, 1, 2, 3",
+          'LEAD_SEQ_2_LABEL': 'Day1',
+          }, {'Day2': [relativedelta(hours=+3), relativedelta(hours=+4), relativedelta(hours=+5),
+                       relativedelta(hours=+6)],
+              'Day1': [relativedelta(), relativedelta(hours=+1), relativedelta(hours=+2), relativedelta(hours=+3)]}),
+        # divisions without labels
+        ({'LEAD_SEQ': "begin_end_incr(0,36,12)", 'LEAD_SEQ_GROUP_SIZE': "1d"},
+         {'Group1': [relativedelta(), relativedelta(hours=+12)],
+          'Group2': [relativedelta(days=+1), relativedelta(days=+1, hours=+12)]}),
+        # divisions with divisions label
+        ({'LEAD_SEQ': "begin_end_incr(0,36,12)", 'LEAD_SEQ_GROUP_SIZE': "1d", 'LEAD_SEQ_GROUP_LABEL': 'Day'},
+         {'Day1': [relativedelta(), relativedelta(hours=+12)],
+          'Day2': [relativedelta(days=+1), relativedelta(days=+1, hours=+12)]}),
+        # divisions with explicit labels
+        ({'LEAD_SEQ': "begin_end_incr(0,36,12)", 'LEAD_SEQ_GROUP_SIZE': "1d",
+          'LEAD_SEQ_1_LABEL': 'One', 'LEAD_SEQ_2_LABEL': 'Two'},
+         {'One': [relativedelta(), relativedelta(hours=+12)],
+          'Two': [relativedelta(days=+1), relativedelta(days=+1, hours=+12)]}),
+        # divisions with one explicit label, one no label
+        ({'LEAD_SEQ': "begin_end_incr(0,36,12)", 'LEAD_SEQ_GROUP_SIZE': "1d", 'LEAD_SEQ_1_LABEL': 'One'},
+         {'One': [relativedelta(), relativedelta(hours=+12)],
+          'Group2': [relativedelta(days=+1), relativedelta(days=+1, hours=+12)]}),
+        # divisions with one explicit label, one division label
+        ({'LEAD_SEQ': "begin_end_incr(0,36,12)", 'LEAD_SEQ_GROUP_SIZE': "1d",
+          'LEAD_SEQ_1_LABEL': 'One', 'LEAD_SEQ_GROUP_LABEL': 'Day'},
+         {'One': [relativedelta(), relativedelta(hours=+12)],
+          'Day2': [relativedelta(days=+1), relativedelta(days=+1, hours=+12)]}),
+        # divisions with skipped index
+        ({'LEAD_SEQ': "0, 12, 48, 60", 'LEAD_SEQ_GROUP_SIZE': "1d", 'LEAD_SEQ_GROUP_LABEL': 'Day'},
+         {'Day1': [relativedelta(), relativedelta(hours=+12)],
+          'Day3': [relativedelta(days=+2), relativedelta(days=+2, hours=+12)]}),
+    ]
+)
+@pytest.mark.util
+def test_get_lead_sequence_groups(metplus_config, config_dict, expected_output):
+    config = metplus_config
+    for key, value in config_dict.items():
+        config.set('config', key, value)
+
+    assert tl.get_lead_sequence_groups(config) == expected_output
 
 
 @pytest.mark.parametrize(
@@ -13,9 +102,12 @@ from metplus.util.time_util import ti_calculate, ti_get_hours_from_relativedelta
         (datetime(2019, 12, 30), {'%d': ['29', '31']}, None, False),
         (datetime(2019, 2, 27), {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, None, False),
         (datetime(2019, 3, 30), {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, None, True),
-        (datetime(2019, 3, 30), {'%d': ['30', '31'], '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, None, True),
-        (datetime(2019, 3, 29), {'%d': ['30', '31'], '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, None, True),
-        (datetime(2019, 1, 29), {'%d': ['30', '31'], '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, None, False),
+        (datetime(2019, 3, 30),
+         {'%d': ['30', '31'], '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, None, True),
+        (datetime(2019, 3, 29),
+         {'%d': ['30', '31'], '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, None, True),
+        (datetime(2019, 1, 29),
+         {'%d': ['30', '31'], '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, None, False),
         (datetime(2020, 10, 31), {'%Y%m%d': ['20201031']}, None, True),
         (datetime(2020, 3, 31), {'%Y%m%d': ['20201031']}, None, False),
         (datetime(2020, 10, 30), {'%Y%m%d': ['20201031']}, None, False),
@@ -45,6 +137,7 @@ def test_skip_time(run_time, skip_times, inc_times, expected_result):
     c_dict = {'SKIP_VALID_TIMES': skip_times, 'INC_VALID_TIMES': inc_times}
     print(time_info)
     assert tl.skip_time(time_info, c_dict) == expected_result
+
 
 @pytest.mark.parametrize(
     'inc_init_times, skip_init_times, inc_valid_times, skip_valid_times, expected_result', [
@@ -90,7 +183,7 @@ def test_skip_time(run_time, skip_times, inc_times, expected_result):
         (None, {'%m': ['12']}, None, {'%d': ['29', '30']}, True),
         # include/skip init/valid
         ({'%m': ['12']}, {'%d': ['29', '31']}, {'%m': ['11', '12']}, {'%d': ['29', '30']}, False),
-        ({'%m': ['10,' '11']}, {'%d': ['29', '31']}, {'%m': ['11', '12']}, {'%d': ['29', '30']}, True),
+        ({'%m': ['10', '11']}, {'%d': ['29', '31']}, {'%m': ['11', '12']}, {'%d': ['29', '30']}, True),
         ({'%m': ['12']}, {'%d': ['29', '30']}, {'%m': ['11', '12']}, {'%d': ['29', '30']}, True),
         ({'%m': ['12']}, {'%d': ['29', '31']}, {'%m': ['10', '11']}, {'%d': ['29', '30']}, True),
         ({'%m': ['12']}, {'%d': ['29', '31']}, {'%m': ['11', '12']}, {'%d': ['29', '31']}, True),
@@ -107,15 +200,15 @@ def test_skip_time_init_and_valid(inc_init_times, skip_init_times, inc_valid_tim
 
 @pytest.mark.util
 def test_skip_time_no_valid():
-    input_dict ={'init': datetime(2019, 1, 29)}
-    assert tl.skip_time(input_dict, {'SKIP_VALID_TIMES': {'%Y': ['2019']}}) == False
+    input_dict = {'init': datetime(2019, 1, 29)}
+    assert not tl.skip_time(input_dict, {'SKIP_VALID_TIMES': {'%Y': ['2019']}})
 
 
 @pytest.mark.parametrize(
     'skip_times_conf, expected_dict', [
-        ('"%d:30,31"', {'%d': ['30','31']}),
+        ('"%d:30,31"', {'%d': ['30', '31']}),
         ('"%m:begin_end_incr(3,11,1)"', {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
-        ('"%d:30,31", "%m:begin_end_incr(3,11,1)"', {'%d': ['30','31'],
+        ('"%d:30,31", "%m:begin_end_incr(3,11,1)"', {'%d': ['30', '31'],
                                                      '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
         ('"%Y%m%d:20201031"', {'%Y%m%d': ['20201031']}),
         ('"%Y%m%d:20201031", "%Y:2019"', {'%Y%m%d': ['20201031'],
@@ -124,52 +217,26 @@ def test_skip_time_no_valid():
     ]
 )
 @pytest.mark.util
-def test_get_skip_times(metplus_config, skip_times_conf, expected_dict):
-    conf = metplus_config
-    conf.set('config', 'SKIP_VALID_TIMES', skip_times_conf)
+class TestSkipTimes:
 
-    assert tl.get_skip_times(conf, 'SKIP', 'VALID', 'T') == expected_dict
+    def test_get_skip_times(self, metplus_config, skip_times_conf, expected_dict):
+        conf = metplus_config
+        conf.set('config', 'SKIP_VALID_TIMES', skip_times_conf)
+        assert tl.get_skip_times(conf, 'SKIP', 'VALID', 'T') == expected_dict
 
+    def test_get_skip_times_wrapper(self, metplus_config, skip_times_conf, expected_dict):
+        conf = metplus_config
+        # set wrapper specific skip times, then ensure it is found
+        conf.set('config', 'GRID_STAT_SKIP_VALID_TIMES', skip_times_conf)
+        assert tl.get_skip_times(conf, 'SKIP', 'VALID', 'grid_stat') == expected_dict
 
-@pytest.mark.parametrize(
-    'skip_times_conf, expected_dict', [
-        ('"%d:30,31"', {'%d': ['30','31']}),
-        ('"%m:begin_end_incr(3,11,1)"', {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
-        ('"%d:30,31", "%m:begin_end_incr(3,11,1)"', {'%d': ['30','31'],
-                                                     '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
-        ('"%Y%m%d:20201031"', {'%Y%m%d': ['20201031']}),
-        ('"%Y%m%d:20201031", "%Y:2019"', {'%Y%m%d': ['20201031'],
-                                          '%Y': ['2019']}),
-    ]
-)
-@pytest.mark.util
-def test_get_skip_times_wrapper(metplus_config, skip_times_conf, expected_dict):
-    conf = metplus_config
+    def test_get_skip_times_wrapper_not_used(self, metplus_config, skip_times_conf, expected_dict):
+        conf = metplus_config
 
-    # set wrapper specific skip times, then ensure it is found
-    conf.set('config', 'GRID_STAT_SKIP_VALID_TIMES', skip_times_conf)
-    assert tl.get_skip_times(conf, 'SKIP', 'VALID', 'grid_stat') == expected_dict
+        # set generic SKIP_TIMES, then request grid_stat to ensure it uses generic
+        conf.set('config', 'SKIP_VALID_TIMES', skip_times_conf)
 
-
-@pytest.mark.parametrize(
-    'skip_times_conf, expected_dict', [
-        ('"%d:30,31"', {'%d': ['30','31']}),
-        ('"%m:begin_end_incr(3,11,1)"', {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
-        ('"%d:30,31", "%m:begin_end_incr(3,11,1)"', {'%d': ['30','31'],
-                                                     '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
-        ('"%Y%m%d:20201031"', {'%Y%m%d': ['20201031']}),
-        ('"%Y%m%d:20201031", "%Y:2019"', {'%Y%m%d': ['20201031'],
-                                          '%Y': ['2019']}),
-    ]
-)
-@pytest.mark.util
-def test_get_skip_times_wrapper_not_used(metplus_config, skip_times_conf, expected_dict):
-    conf = metplus_config
-
-    # set generic SKIP_TIMES, then request grid_stat to ensure it uses generic
-    conf.set('config', 'SKIP_VALID_TIMES', skip_times_conf)
-
-    assert tl.get_skip_times(conf, 'SKIP', 'VALID', 'grid_stat') == expected_dict
+        assert tl.get_skip_times(conf, 'SKIP', 'VALID', 'grid_stat') == expected_dict
 
 
 @pytest.mark.util
@@ -183,7 +250,8 @@ def test_get_start_and_end_times(metplus_config):
         config.set('config', f'{prefix}_TIME_FMT', time_format)
         config.set('config', f'{prefix}_BEG', start_time)
         config.set('config', f'{prefix}_END', end_time)
-        start_dt, end_dt = tl.get_start_and_end_times(config)
+        config.set('config', f'{prefix}_INCREMENT', '1Y')
+        start_dt, end_dt = get_start_and_end_times(config)
         assert start_dt.strftime(time_format) == start_time
         assert end_dt.strftime(time_format) == end_time
 
@@ -197,7 +265,7 @@ def test_get_start_and_end_times_now(metplus_config):
         config.set('config', f'{prefix}_TIME_FMT', time_format)
         config.set('config', f'{prefix}_BEG', '{now?fmt=%Y%m%d%H%M%S?shift=-1d}')
         config.set('config', f'{prefix}_END', '{now?fmt=%Y%m%d%H%M%S}')
-        start_dt, end_dt = tl.get_start_and_end_times(config)
+        start_dt, end_dt = get_start_and_end_times(config)
         expected_end_time = config.getstr('config', 'CLOCK_TIME')
         yesterday_dt = datetime.strptime(expected_end_time, time_format) - relativedelta(days=1)
         expected_start_time = yesterday_dt.strftime(time_format)
@@ -215,7 +283,7 @@ def test_get_start_and_end_times_today(metplus_config):
         config.set('config', f'{prefix}_TIME_FMT', time_format)
         config.set('config', f'{prefix}_BEG', '{today}')
         config.set('config', f'{prefix}_END', '{today}')
-        start_dt, end_dt = tl.get_start_and_end_times(config)
+        start_dt, end_dt = get_start_and_end_times(config)
         clock_time = config.getstr('config', 'CLOCK_TIME')
         clock_dt = datetime.strptime(clock_time, '%Y%m%d%H%M%S')
         expected_time = clock_dt.strftime(time_format)
@@ -244,7 +312,7 @@ def test_time_generator_list(metplus_config):
             next(generator)
             assert False
         except StopIteration:
-            assert True
+            pass
 
 
 @pytest.mark.util
@@ -271,7 +339,7 @@ def test_time_generator_increment(metplus_config):
             next(generator)
             assert False
         except StopIteration:
-            assert True
+            pass
 
 
 @pytest.mark.parametrize(
@@ -392,21 +460,23 @@ def test_get_lead_sequence_lead(metplus_config):
 
 @pytest.mark.parametrize(
     'key, value', [
-        ('begin_end_incr(3,12,3)',  [ 3, 6, 9, 12]),
-        ('begin_end_incr( 3,12 , 3)',  [ 3, 6, 9, 12]),
-        ('begin_end_incr(0,10,2)',  [ 0, 2, 4, 6, 8, 10]),
-        ('begin_end_incr(10,0,-2)',  [ 10, 8, 6, 4, 2, 0]),
-        ('begin_end_incr(2,2,20)',  [ 2 ]),
-        ('begin_end_incr(72,72,6)',  [ 72 ]),
-        ('begin_end_incr(0,12,1), begin_end_incr(15,60,3)', [0,1,2,3,4,5,6,7,8,9,10,11,12,15,18,21,24,27,30,33,36,39,42,45,48,51,54,57,60]),
-        ('begin_end_incr(0,10,2), 12',  [ 0, 2, 4, 6, 8, 10, 12]),
-        ('begin_end_incr(0,10,2)H, 12',  [ 0, 2, 4, 6, 8, 10, 12]),
-        ('begin_end_incr(0,10800,3600)S, 4H',  [ 0, 1, 2, 3, 4]),
+        ('begin_end_incr(3,12,3)',  [3, 6, 9, 12]),
+        ('begin_end_incr( 3,12 , 3)',  [3, 6, 9, 12]),
+        ('begin_end_incr(0,10,2)',  [0, 2, 4, 6, 8, 10]),
+        ('begin_end_incr(10,0,-2)',  [10, 8, 6, 4, 2, 0]),
+        ('begin_end_incr(2,2,20)',  [2]),
+        ('begin_end_incr(72,72,6)',  [72]),
+        ('begin_end_incr(0,12,1), begin_end_incr(15,60,3)',
+         [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 18, 21, 24, 27, 30, 33,
+          36, 39, 42, 45, 48, 51, 54, 57, 60]),
+        ('begin_end_incr(0,10,2), 12',  [0, 2, 4, 6, 8, 10, 12]),
+        ('begin_end_incr(0,10,2)H, 12',  [0, 2, 4, 6, 8, 10, 12]),
+        ('begin_end_incr(0,10800,3600)S, 4H',  [0, 1, 2, 3, 4]),
     ]
 )
 @pytest.mark.util
 def test_get_lead_sequence_lead_list(metplus_config, key, value):
-    input_dict = { 'valid' : datetime(2019, 2, 1, 13) }
+    input_dict = {'valid': datetime(2019, 2, 1, 13)}
     conf = metplus_config
     conf.set('config', 'LEAD_SEQ', key)
     test_seq = tl.get_lead_sequence(conf, input_dict)
@@ -451,7 +521,7 @@ def test_get_lead_sequence_lead_list(metplus_config, key, value):
     ]
 )
 @pytest.mark.util
-def test_get_lead_sequence_groups(metplus_config, config_dict, expected_list):
+def test_get_lead_sequence_from_groups(metplus_config, config_dict, expected_list):
     config = metplus_config
     for key, value in config_dict.items():
         config.set('config', key, value)
@@ -513,3 +583,52 @@ def test_get_lead_sequence_init_min_10(metplus_config):
     test_seq = tl.get_lead_sequence(conf, input_dict)
     lead_seq = [12, 24]
     assert test_seq == [relativedelta(hours=lead) for lead in lead_seq]
+
+def test_get_start_and_end_times_empty_times(mock_time_generator):
+    """Test empty times list returns (None, None)"""
+    config = {"mock_times": []}
+    start, end = get_start_and_end_times(config)
+    assert start is None
+    assert end is None
+
+
+def test_get_start_and_end_times_single_entry(mock_time_generator):
+    """Test handling of a single entry in the times list"""
+    config = {"mock_times": [{"loop_by": "valid", "valid": "2023-10-15"}]}
+    start, end = get_start_and_end_times(config)
+    assert start == "2023-10-15"
+    assert end == "2023-10-15"
+
+
+def test_get_start_and_end_times_missing_loop_by_key(mock_time_generator):
+    """Test when 'loop_by' key is missing in a dictionary"""
+    config = {
+        "mock_times": [
+            {"valid": "2023-10-15"},
+            {"loop_by": "valid", "valid": "2023-10-16"}
+        ]
+    }
+    with pytest.raises(KeyError):
+        get_start_and_end_times(config)  # Should raise an error for missing key
+
+
+def test_get_start_and_end_times_invalid_config(mock_time_generator):
+    """Test when time_generator produces invalid or corrupted time data"""
+    config = {"mock_times": [None]}  # Simulate corrupted output
+    start, end = get_start_and_end_times(config)
+    assert start is None
+    assert end is None
+
+
+def test_get_start_and_end_times_multiple_entries(mock_time_generator):
+    """Test handling multiple entries in the times list"""
+    config = {
+        "mock_times": [
+            {"loop_by": "valid", "valid": "2023-10-15"},
+            {"loop_by": "valid", "valid": "2023-10-16"},
+            {"loop_by": "valid", "valid": "2023-10-17"}
+        ]
+    }
+    start, end = get_start_and_end_times(config)
+    assert start == "2023-10-15"
+    assert end == "2023-10-17"

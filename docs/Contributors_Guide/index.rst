@@ -2,11 +2,16 @@
 Contributor's Guide
 ###################
 
+.. note:: Please use the `develop <https://metplus.readthedocs.io/en/develop/Contributors_Guide>`_
+          branch version of this **Contributor's Guide**.
+
 .. toctree::
    :titlesonly:
    :numbered:
 
    coding_standards
+   utilities
+   conda_recipe
    basic_components
    create_wrapper
    conda_env

@@ -131,8 +131,9 @@ met_tool_wrapper/TCDiag/TCDiag.conf
 # Output for this use case will be found in met_tool_wrapper/TCDiag (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * tc_diag_AL032023_GFSO_2023062012_cyl_grid_nest.nc
-# * tc_diag_AL032023_GFSO_2023062012_cyl_grid_parent.nc
+# * sal032023_gfso_doper_2023062012_cyl_grid_parent.nc
+# * sal032023_gfso_doper_2023062012_diag.nc
+# * sal032023_gfso_doper_2023062012_diag.dat
 #
 
 ##############################################################################

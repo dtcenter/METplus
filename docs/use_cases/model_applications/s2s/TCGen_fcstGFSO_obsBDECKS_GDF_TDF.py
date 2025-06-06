@@ -1,10 +1,16 @@
 """
 TCGen: Genesis Density Function (GDF) and Track Density Function (TDF) 
-=============================================================================
+======================================================================
 
 model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -52,31 +58,35 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 #
 
 ##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.1
+
+##############################################################################
 # Datasets
 # --------
 #
 # Both forecast and observation datasets for this use case must adhere to the ATCF format.
 #
-# **Forecast data:**
-# GFDL Cyclone Tracker output configured for "genesis mode" for the FV3GFS model. This configuration used an experimental GFSv15 physics package,
+# **Forecast:**
+# GFDL Cyclone Tracker output configured for "genesis mode" for the FV3GFS model.
+# This configuration used an experimental GFSv15 physics package,
 # and had a horizontal grid spacing of ~25 km with 64 vertical levels.
 #
-# **Observation data:**
+# **Observation:**
 # Global ATCF B-decks files from the National Hurricane Center (NHC) and Joint Typhoon Warning Center (JTWC)
 #
-# **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. 
-# Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See ‘Running METplus’ section for more information.
+# **Climatology:** None
 #
-# The MET TCGen tool requires forecast data to be provided from the GFDL cyclone tracker. More information
-# about the GFDL cyclone tracker can be found here: https://dtcenter.org/community-code/gfdl-vortex-tracker
-#
-# Archives of ATCF B-decks files can be found at these locations:
-#
-# | https://www.metoc.navy.mil/jtwc/jtwc.html?best-tracks
-# | https://www.nhc.noaa.gov/data/#hurdat
-# |
-#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # Software Versions
@@ -108,13 +118,20 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (INIT_BEG):** 2016
+#
+# **End time (INIT_END):** None
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** None
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
 # The following tools are used for each run time: TCGen, Python
 #
 # The TCGen tool is designed to be provided a single file pair or a directory containing a list of files,
 # rather than loop over valid or initialization times. Thus, a single year is used in the METplus configuration
 # file and wildcard symbols are provided to gather all the tracker and genesis input files at each
 # input directory.
-#
 
 ##############################################################################
 # METplus Configuration
@@ -136,52 +153,41 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# **TCGenConfig_wrapped**
+# .. dropdown:: TCGenConfig_wrapped
 #
-# .. note:: See the :ref:`TCGen MET Configuration<tc-gen-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
-#
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/TCGenConfig_wrapped
-#
+#   .. literalinclude:: ../../../../parm/met_config/TCGenConfig_wrapped
 
 ##############################################################################
 # Python Embedding
 # ----------------
 #
-# This use case uses a Python embedding script to create output graphics
+# This use case uses a Python embedding script to create output graphics.
 #
-# parm/use_cases/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF/UserScript_fcstGFSO_obsBDECKS_GDF_TDF.py
+#  .. dropdown:: parm/use_cases/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF/UserScript_fcstGFSO_obsBDECKS_GDF_TDF.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF/UserScript_fcstGFSO_obsBDECKS_GDF_TDF.py
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF/UserScript_fcstGFSO_obsBDECKS_GDF_TDF.py
 #
+# For more information on the basic requirements to utilize Python Embedding in METplus, 
+# please refer to the MET User’s Guide section on
+# `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
-# This use case can be run two ways:
 #
-# 1) Passing in TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf then a user-specific system configuration file::
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf -c /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf::
-#
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
-#
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
-#
-# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [config]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

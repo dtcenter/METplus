@@ -2,10 +2,15 @@
 Gen-Ens-Prod: Basic Post-Processing only
 ========================================
 
-model_application/precipitation/GenEnsProd_fcstHRRRE
-_FcstOnly_NetCDF.conf
+model_application/precipitation/GenEnsProd_fcstHRRRE_FcstOnly_NetCDF.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -15,11 +20,30 @@ _FcstOnly_NetCDF.conf
 # other MET tools.
 
 ##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.0
+
+##############################################################################
 # Datasets
 # --------
 #
-#  * Forecast dataset: HRRRE 3 member ensemble netcdf 3 hour precipitation accumulation
+# **Forecast:** NOAA High Resolution Rapid Refresh Ensemble (HRRRE) 
+# 3 member ensemble netcdf 3 hour precipitation accumulation
 #
+# **Observation:** None
+#
+# **Climatology:** None
+#
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ###############################################################################
 # METplus Components
@@ -31,6 +55,14 @@ _FcstOnly_NetCDF.conf
 ###############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (INIT_BEG):** 2019051912
+#
+# **End time (INIT_END):** 2019052000
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** 43200
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** 3,6,9,12
 #
 # The following tools are used for each run time:
 # GenEnsProd
@@ -63,22 +95,20 @@ _FcstOnly_NetCDF.conf
 #
 # | **Init:** 2019-05-20_00Z
 # | **Forecast lead:** 12
-# |
-#
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
 # METplus first loads all of the configurations found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
+# then it loads any configuration files passed to METplus via the command line.
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/GenEnsProd_fcstHRRRE_FcstOnly_NetCDF.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on user settings in the METplus configuration file. 
 # See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
@@ -88,20 +118,33 @@ _FcstOnly_NetCDF.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`GenEnsProd MET Configuration<gen-ens-prod-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: GenEnsProdConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/GenEnsProdConfig_wrapped
+#   .. literalinclude:: ../../../../parm/met_config/GenEnsProdConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
 # The command to run this use case is::
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-#    run_metplus.py /path/to/METplus/parm/use_cases/model_applications/precipitation/GenEnsProd_fcstHRRRE_FcstOnly_NetCDF.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/precipitation/GenEnsProd_fcstHRRRE_FcstOnly_NetCDF.conf /path/to/user_system.conf
 #
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

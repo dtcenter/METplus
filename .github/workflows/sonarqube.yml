@@ -14,8 +14,6 @@ on:
       - '.github/pull_request_template.md'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/labels/**'
-      - 'build_components/**'
-      - 'manage_externals/**'
       - '**/README.md'
       - '**/LICENSE.md'
 
@@ -30,8 +28,6 @@ on:
       - '.github/pull_request_template.md'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/labels/**'
-      - 'build_components/**'
-      - 'manage_externals/**'
       - '**/README.md'
       - '**/LICENSE.md'
 
@@ -56,13 +52,16 @@ jobs:
 
     - uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.12'
         cache: 'pip'
 
     - name: Install Python Test Dependencies
       run: |
         python3 -m pip install --upgrade pip
         python3 -m pip install -r internal/tests/pytests/requirements.txt
+
+    - name: Install ImageMagick convert
+      run: sudo apt update && sudo apt install imagemagick
 
     - name: Run Pytests
       run: coverage run -m pytest internal/tests/pytests

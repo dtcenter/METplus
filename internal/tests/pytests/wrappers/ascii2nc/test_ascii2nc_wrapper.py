@@ -186,8 +186,8 @@ def test_ascii2nc_missing_inputs(metplus_config, get_test_data_dir,
     ]
 )
 @pytest.mark.wrapper
-def test_ascii2nc_wrapper(metplus_config, config_overrides,
-                          env_var_values):
+def test_ascii2nc_wrapper(metplus_config, config_overrides, env_var_values,
+                          compare_command_and_env_vars):
     wrapper = ascii2nc_wrapper(metplus_config, config_overrides)
     assert wrapper.isOK
 
@@ -216,30 +216,7 @@ def test_ascii2nc_wrapper(metplus_config, config_overrides,
          f"-config {config_file} {verbosity}"),
     ]
 
-    assert len(all_commands) == len(expected_cmds)
-    for (cmd, _), expected_cmd in zip(all_commands, expected_cmds):
-        # ensure commands are generated as expected
-        assert cmd == expected_cmd
-
-    env_vars = all_commands[0][1]
-
-    missing_env = [item for item in env_var_values
-                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
-    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
-
-    # check that environment variables were set properly
-    # including deprecated env vars (not in wrapper env var keys)
-    for env_var_key in env_var_keys:
-        match = next((item for item in env_vars if
-                      item.startswith(env_var_key)), None)
-        assert match is not None
-        value = match.split('=', 1)[1]
-
-        assert env_var_values.get(env_var_key, '') == value
-
-    output_base = wrapper.config.getdir('OUTPUT_BASE')
-    if output_base:
-        shutil.rmtree(output_base)
+    compare_command_and_env_vars(all_commands, expected_cmds, env_var_values, wrapper)
 
 
 @pytest.mark.wrapper

@@ -1,13 +1,15 @@
 #! /bin/sh
 
 ################################################################################
-# Environment: metdataio.v5.1
-# Last Updated: 2023-01-27 (mccabe@ucar.edu)
+# Environment: metdataio.v6.1
+# Last Updated: 2025-02-05 (mccabe@ucar.edu)
 # Notes: Adds Python packages needed to run METdbLoad from METdataio
 # Python Packages:
-#   lxml==4.9.1
-#   pymysql==1.0.2
-#   pandas==1.2.3
+#   pymysql==1.1.1
+#   pyyaml==6.0.2
+#   xarray==2025.1.2
+#   lxml==5.3.0
+#   netcdf4==1.7.2
 #
 # Other Content: None
 ################################################################################
@@ -21,6 +23,11 @@ ENV_NAME=metdataio.${METPLUS_VERSION}
 # Conda environment to use as base for new environment
 BASE_ENV=metplus_base.${METPLUS_VERSION}
 
-mamba create -y --clone ${BASE_ENV} --name ${ENV_NAME}
+conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 
-mamba install -y --name ${ENV_NAME} -c conda-forge lxml==4.9.1 pymysql==1.0.2 pandas==1.5.1
+mamba install -y --name ${ENV_NAME} -c conda-forge \
+  pymysql==1.1.1 \
+  pyyaml==6.0.2 \
+  xarray==2025.1.2 \
+  lxml==5.3.0 \
+  netcdf4==1.7.2

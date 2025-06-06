@@ -7,8 +7,7 @@
 #   - label file
 
 if [[ $# -ne 4 ]]; then
-  echo "ERROR: `basename $0` ... must specify the GitHub username, authorization key, repository name, and label file."
-  echo "ERROR:   repo names: metplus, met, metdataio, metcalcpy, metplotpy, metviewer, metexpress, metplus-training, metplus-internal, metbaseimage"
+  echo "ERROR: `basename $0` ... must specify the GitHub username, authorization key, METplus repository name, and label file."
   exit 1
 else
   user=$1
@@ -25,10 +24,10 @@ URL="https://api.github.com/repos/dtcenter/${repo}/labels"
 
 # Output command files
 POST_CMD_FILE="`dirname $0`/commands/post_labels_${repo}_cmd.sh"
-echo "#!/bin/sh -v" > ${POST_CMD_FILE}
+echo "#!/bin/bash -v" > ${POST_CMD_FILE}
 
 PATCH_CMD_FILE="`dirname $0`/commands/patch_labels_${repo}_cmd.sh"
-echo "#!/bin/sh -v" > ${PATCH_CMD_FILE}
+echo "#!/bin/bash -v" > ${PATCH_CMD_FILE}
 
 # Initialize counts
 n_post=0

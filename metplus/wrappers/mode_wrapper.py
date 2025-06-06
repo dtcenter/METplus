@@ -12,8 +12,8 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from . import CompareGriddedWrapper
 from ..util import do_string_sub
+from . import CompareGriddedWrapper
 
 
 class MODEWrapper(CompareGriddedWrapper):
@@ -65,7 +65,8 @@ class MODEWrapper(CompareGriddedWrapper):
         'METPLUS_FCST_FILE_TYPE',
         'METPLUS_OBS_FILE_TYPE',
         'METPLUS_MULTIVAR_LOGIC',
-        'METPLUS_MULTIVAR_INTENSITY_FLAG',
+        'METPLUS_MULTIVAR_INTENSITY_COMPARE_FCST',
+        'METPLUS_MULTIVAR_INTENSITY_COMPARE_OBS',
         'METPLUS_FCST_MULTIVAR_NAME',
         'METPLUS_FCST_MULTIVAR_LEVEL',
         'METPLUS_OBS_MULTIVAR_NAME',
@@ -167,29 +168,14 @@ class MODEWrapper(CompareGriddedWrapper):
             self.logger.info(f'{tool}_MULTIVAR_LOGIC was set, so running '
                              'multi-variate MODE')
 
-        # observation input file info
-        c_dict['OBS_INPUT_DIR'] = (
-            self.config.getdir(f'OBS_{tool}_INPUT_DIR', '')
-        )
-        c_dict['OBS_INPUT_TEMPLATE'] = (
-          self.config.getraw('config', f'OBS_{tool}_INPUT_TEMPLATE')
-        )
-        if not c_dict['OBS_INPUT_TEMPLATE']:
-            self.log_error(f'OBS_{tool}_INPUT_TEMPLATE must be set')
+        self.get_input_templates(c_dict, {
+            'FCST': {'prefix': 'FCST_MODE', 'required': True},
+            'OBS': {'prefix': 'OBS_MODE', 'required': True},
+        })
 
         c_dict['OBS_INPUT_DATATYPE'] = (
           self.config.getstr('config', f'OBS_{tool}_INPUT_DATATYPE', '')
         )
-
-        # forecast input file info
-        c_dict['FCST_INPUT_DIR'] = (
-          self.config.getdir(f'FCST_{tool}_INPUT_DIR', '')
-        )
-        c_dict['FCST_INPUT_TEMPLATE'] = (
-          self.config.getraw('config', f'FCST_{tool}_INPUT_TEMPLATE')
-        )
-        if not c_dict['FCST_INPUT_TEMPLATE']:
-            self.log_error(f'FCST_{tool}_INPUT_TEMPLATE must be set')
 
         c_dict['FCST_INPUT_DATATYPE'] = (
           self.config.getstr('config', f'FCST_{tool}_INPUT_DATATYPE', '')
@@ -441,20 +427,25 @@ class MODEWrapper(CompareGriddedWrapper):
 
         self.handle_mask(single_value=True, get_flags=True)
 
-        self.add_met_config(name='multivar_intensity_flag', data_type='list',
-                            extra_args={'remove_quotes': True,
-                                        'uppercase': True})
-        # skip RuntimeFreq input file logic - remove once integrated
-        c_dict['FIND_FILES'] = False
+        self.add_met_config(name='multivar_intensity_compare_fcst',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
+        self.add_met_config(name='multivar_intensity_compare_obs',
+                            data_type='list',
+                            extra_args={'remove_quotes': True})
         return c_dict
 
-    def run_at_time_one_field(self, time_info, var_info):
+    def run_at_time_all_fields(self, time_info, var_list):
         """! Runs mode once for each fcst/obs threshold.
          Overrides run_at_time_one_field function in compare_gridded_wrapper.py
 
             @param time_info dictionary containing timing information
-            @param var_info object containing variable information
+            @param var_list list of objects containing variable information
         """
+        if len(var_list) > 1:
+            return super().run_at_time_all_fields(time_info, var_list)
+
+        var_info = var_list[0]
         # if no thresholds are specified, run once
         fcst_thresh_list = []
         obs_thresh_list = []

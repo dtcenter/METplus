@@ -22,8 +22,10 @@ Use Cases by MET Tool:
    | `GridStat <../search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_
    | `GridDiag <../search.html?q=GridDiagToolUseCase&check_keywords=yes&area=default>`_
    | `IODA2NC <../search.html?q=IODA2NCToolUseCase&check_keywords=yes&area=default>`_
+   | `MADIS2NC <../search.html?q=MADIS2NCToolUseCase&check_keywords=yes&area=default>`_
    | `MODE <../search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_
    | `MTD <../search.html?q=MTDToolUseCase&check_keywords=yes&area=default>`_
+   | `PairStat <../search.html?q=PairStatToolUseCase&check_keywords=yes&area=default>`_
    | `PB2NC <../search.html?q=PB2NCToolUseCase&check_keywords=yes&area=default>`_
    | `PCPCombine <../search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_
    | `Point2Grid <../search.html?q=Point2GridToolUseCase&check_keywords=yes&area=default>`_
@@ -31,6 +33,7 @@ Use Cases by MET Tool:
    | `PlotPointObs <../search.html?q=PlotPointObsToolUseCase&check_keywords=yes&area=default>`_
    | `PointStat <../search.html?q=PointStatToolUseCase&check_keywords=yes&area=default>`_
    | `RegridDataPlane <../search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_
+   | `RMWAnalysis <../search.html?q=RMWAnalysisToolUseCase&check_keywords=yes&area=default>`_
    | `SeriesAnalysis <../search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_
    | `StatAnalysis <../search.html?q=StatAnalysisToolUseCase&check_keywords=yes&area=default>`_
    | `TCDiag <../search.html?q=TCDiagToolUseCase&check_keywords=yes&area=default>`_
@@ -49,8 +52,10 @@ Use Cases by MET Tool:
    | **GridStat**: *GridStatToolUseCase*
    | **GridDiag**: *GridDiagToolUseCase*
    | **IODA2NC**: *IODA2NCToolUseCase*
+   | **MADIS2NC**: *MADIS2NCToolUseCase*
    | **MODE**: *MODEToolUseCase*
    | **MTD**: *MTDToolUseCase*
+   | **PairStat**: *PairStatToolUseCase*
    | **PB2NC**: *PB2NCToolUseCase*
    | **PCPCombine**: *PCPCombineToolUseCase*
    | **Point2Grid**: *Point2GridToolUseCase*
@@ -58,6 +63,7 @@ Use Cases by MET Tool:
    | **PlotPointObs**: *PlotPointObsToolUseCase*
    | **PointStat**: *PointStatToolUseCase*
    | **RegridDataPlane**: *RegridDataPlaneToolUseCase*
+   | **RMWAnalysis**: *RMWAnalysisToolUseCase*
    | **SeriesAnalysis**: *SeriesAnalysisUseCase*
    | **StatAnalysis**: *StatAnalysisToolUseCase*
    | **TCDiag**: *TCDiagToolUseCase*
@@ -74,14 +80,15 @@ Use Cases by Application:
    | `Air Quality and Composition <../search.html?q=AirQualityAndCompAppUseCase&check_keywords=yes&area=default>`_
    | `Climate <../search.html?q=ClimateAppUseCase&check_keywords=yes&area=default>`_
    | `Clouds <../search.html?q=CloudsAppUseCase&check_keywords=yes&area=default>`_
-   | `Short Range <../search.html?q=ShortRangeAppUseCase&check_keywords=yes&area=default>`_
    | `Data Assimilation  <../search.html?q=DataAssimilationAppUseCase&check_keywords=yes&area=default>`_
    | `Ensemble  <../search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_
+   | `Fire  <../search.html?q=FireAppUseCase&check_keywords=yes&area=default>`_
    | `Land Surface <../search.html?q=LandSurfaceAppUseCase&check_keywords=yes&area=default>`_
    | `Marine and Cryosphere <../search.html?q=MarineAndCryosphereAppUseCase&check_keywords=yes&area=default>`_
    | `Medium Range <../search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_
    | `PBL <../search.html?q=PBLAppUseCase&check_keywords=yes&area=default>`_
    | `Precipitation <../search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_
+   | `Short Range <../search.html?q=ShortRangeAppUseCase&check_keywords=yes&area=default>`_
    | `Space Weather <../search.html?q=SpaceWeatherAppUseCase&check_keywords=yes&area=default>`_
    | `Subseasonal to Seasonal <../search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_
    | `Subseasonal to Seasonal: Madden-Julian Oscillation <../search.html?q=S2SMJOAppUseCase&check_keywords=yes&area=default>`_
@@ -93,14 +100,15 @@ Use Cases by Application:
    | **Air Quality and Composition**: *AirQualityAndCompAppUseCase*
    | **Climate**: *ClimateAppUseCase*
    | **Clouds**: *CloudsAppUseCase*
-   | **Short Range**: *ShortRangeAppUseCase*
    | **Data Assimilation**: *DataAssimilationAppUseCase*
    | **Ensemble**: *EnsembleAppUseCase*
+   | **Fire**: *FireAppUseCase*
    | **LandSurface**: *LandSurfaceAppUseCase*
    | **Marine and Cryosphere**: *MarineAndCryosphereAppUseCase*
    | **Medium Range**: *MediumRangeAppUseCase*
    | **PBL**: *PBLAppUseCase*
    | **Precipitation**: *PrecipitationAppUseCase*
+   | **Short Range**: *ShortRangeAppUseCase*
    | **Space Weather**: *SpaceWeatherAppUseCase*
    | **Subseasonal to Seasonal**: *S2SAppUseCase*
    | **Subseasonal to Seasonal: Madden-Julian Oscillation**: *S2SMJOAppUseCase*
@@ -154,6 +162,7 @@ Use Cases by METplus Feature:
    | `METplotpy <../search.html?q=METplotpyUseCase&check_keywords=yes&area=default>`_
    | `MET_PYTHON_EXE Environment Variable  <../search.html?q=MET_PYTHON_EXEUseCase&check_keywords=yes&area=default>`_
    | `Multiple Conf File Use <../search.html?q=MultiConfUseCase&check_keywords=yes&area=default>`_
+   | `MultivariateMODE <../search.html?q=MvMODEUseCase&check_keywords=yes&area=default>`_
    | `Observation Time Summary <../search.html?q=ObsTimeSummaryUseCase&check_keywords=yes&area=default>`_
    | `Observation Uncertainty <../search.html?q=ObsUncertaintyUseCase&check_keywords=yes&area=default>`_
    | `Python Embedding Ingest <../search.html?q=PyEmbedIngestToolUseCase&check_keywords=yes&area=default>`_
@@ -185,6 +194,7 @@ Use Cases by METplus Feature:
    | **METplotpy**: *METplotpyUseCase*
    | **MET_PYTHON_EXE Environment Variable**: *MET_PYTHON_EXEUseCase*
    | **Multiple Conf File Use**: *MultiConfUseCase*
+   | **MultivariateMODE**: *MvMODEUseCase*
    | **Observation Time Summary**: *ObsTimeSummaryUseCase*
    | **Observation Uncertainty**: *ObsUncertaintyUseCase*
    | **Python Embedding Ingest**: *PyEmbedIngestToolUseCase*

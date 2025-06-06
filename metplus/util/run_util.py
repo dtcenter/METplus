@@ -6,7 +6,7 @@ from typing import NamedTuple, Union
 from logging import Logger
 import shlex
 
-from produtil.run import exe, run
+from metplus.produtil.run import exe, run
 
 from .string_manip import get_logfile_info, log_terminal_includes_info
 from .system_util import get_user_info, write_list_to_file
@@ -121,6 +121,8 @@ def pre_run_setup(config_inputs):
 
     # Read config inputs and return a config instance
     config = setup(config_inputs)
+    if not config:
+        return None
 
     logger = config.logger
 

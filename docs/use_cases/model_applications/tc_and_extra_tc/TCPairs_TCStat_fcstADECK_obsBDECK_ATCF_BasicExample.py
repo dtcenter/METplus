@@ -5,6 +5,12 @@ CycloneVerification: TC Verification Compare ADECK vs BDECK
 model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf
 
 """
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ###########################################
 # Scientific Objective
 # --------------------
@@ -15,24 +21,35 @@ model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicE
 # each input dataset. Then TC-stat will filter TC-pairs output based on user criteria.
 
 ##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 4.1
+
+##############################################################################
 # Datasets
 # --------
 #
-#
-# | **Forecast:** Adeck
+# | **Forecast:** Automated Tropical Cyclone Forecasting System (ATCF) Adeck
 # |     /path/to/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample/a{basin}{cyclone}{init?fmt=%Y}.dat
-# | **Observation:** Bdeck
+#
+# | **Observation:** Automated Tropical Cyclone Forecasting System (ATCF) Bdeck
 # |     /path/to/{TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample/b{basin}{cyclone}{init?fmt=%Y}.dat
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
-#
-# | **Data Source:** NHC ftp.noaa.gov/atcf
-# |
+# **Location:** All of the input data required for this use case can be 
+# found in a sample data tarball. Each use case category will have 
+# one or more sample data tarballs. It is only necessary to download 
+# the tarball with the use case’s dataset and not the entire collection 
+# of sample data. Click here to access the METplus releases page and download sample data 
+# for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will 
+# set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
 
 ##############################################################################
 # METplus Workflow
 # ----------------
+#
+# **Beginning time (INIT_BEG):** 202108
 #
 # The following tools are used for each run time:
 #
@@ -42,7 +59,6 @@ model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicE
 # To generate TCPairs output, this example loops by initialization time for every 6 hour period that is available
 # in the data set between 2021082500 and 2021083000. Then TCStat filters the TCPairs output based on user criteria
 # (e.g. storm characteristics in this use case).
-#
 
 ##############################################################################
 # METplus Components
@@ -56,6 +72,17 @@ model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicE
 # METplus Workflow
 # ----------------
 #
+# **Beginning time (INIT_BEG):** 202108
+#
+# **End time (INIT_END):** None
+#
+# **Increment between beginning and end times (INIT_INCREMENT):** None
+#
+# **Sequence of forecast leads to process (LEAD_SEQ):** None
+#
+# This example does not loop in time, but rather relies on ranges of times passed to
+# TCPairs and TCStat to perform relevant tasks.
+#
 # TCPairs is the first tool called in this example. It processes the following
 # run times for each storm file (e.g. aal092021.dat, aal102021.dat) against the corresponding 
 # Bdeck files (e.g. bal092021.dat, bal102021.dat):
@@ -67,15 +94,14 @@ model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicE
 # from TCPairs. In this example the TC-Stat filters the TC-Pairs output based on the 
 # characteristics of the storm (HU, SD, SS, TS, TD). The output from the TC-Stat can be used to 
 # aggregate verification statistics (e.g. Track, Intensity, MSLP, wind radii errors etc.).
-# 
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c /path/to/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf
+# then it loads any configuration files passed to METplus via the command line,
+# i.e. /path/to/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf
@@ -92,37 +118,36 @@ model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicE
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`TCPairs MET Configuration<tc-pairs-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. dropdown:: TCPairsConfig_wrapped
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/TCPairsConfig_wrapped
-# .. literalinclude:: ../../../../parm/met_config/TCStatConfig_wrapped
+#   .. literalinclude:: ../../../../parm/met_config/TCPairsConfig_wrapped
+#
+# .. dropdown:: TCStatConfig_wrapped
+#
+#   .. literalinclude:: ../../../../parm/met_config/TCStatConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case does not use Python embedding.
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# It is recommended to run this use case by:
+# Pass the use case configuration file to the run_metplus.py script along 
+# with any user-specific system configuration files if desired::
 #
-# Passing in TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf then a user-specific system configuration file::
+#   run_metplus.py /path/to/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf /path/to/user_system.conf
 #
-#   run_metplus.py -c /path/to/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf -c /path/to/user_system.conf
-#
-# The following METplus configuration variables must be set correctly to run this example.:
-#
-# * **INPUT_BASE** - Path to directory where Adeck and Bdeck ATCF format files are read (See Datasets section to obtain tarballs).
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
-# * **MET_INSTALL_DIR** - Path to location where MET is installed locally
-#
-# Example User Configuration File::
-#
-#   [dir]
-#   INPUT_BASE = /path/to/sample/input/data
-#   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
-#
-# **NOTE:** All of these items must be found under the [dir] section.
-#
+# See :ref:`running-metplus` for more information.
 
 ##############################################################################
 # Expected Output

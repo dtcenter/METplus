@@ -33,13 +33,13 @@ def read_rmm_eofs(olrfile, u850file, u200file):
     coords={'var':['olr','u850','u200'], 'lon':np.arange(0,360,2.5)})
     nlon = len(EOF1['lon'])
 
-    tmp = pd.read_csv(olrfile, header=None, delim_whitespace=True, names=['eof1','eof2'])
+    tmp = pd.read_csv(olrfile, header=None, sep=r'\s+', names=['eof1','eof2'])
     EOF1[0,:] = tmp.eof1.values
     EOF2[0,:] = tmp.eof2.values
-    tmp = pd.read_csv(u850file, header=None, delim_whitespace=True, names=['eof1','eof2'])
+    tmp = pd.read_csv(u850file, header=None, sep=r'\s+', names=['eof1','eof2'])
     EOF1[1,:] = tmp.eof1.values
     EOF2[1,:] = tmp.eof2.values
-    tmp = pd.read_csv(u200file, header=None, delim_whitespace=True, names=['eof1','eof2'])
+    tmp = pd.read_csv(u200file, header=None, sep=r'\s+', names=['eof1','eof2'])
     EOF1[2,:] = tmp.eof1.values
     EOF2[2,:] = tmp.eof2.values
 
