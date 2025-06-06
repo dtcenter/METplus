@@ -17,7 +17,7 @@ def main():
 
     # Read in the YAML configuration file.  Environment variables in
     # the configuration file are supported.
-    input_config_file = os.getenv("REFORMAT_YAML_CONFIG_NAME", "reformat_CTS.yaml")
+    input_config_file = os.getenv("REFORMAT_YAML_CONFIG_NAME", "reformat_CNT.yaml")
     settings = readconfig.parse_config(input_config_file)
     logging.info(settings)
 
@@ -52,7 +52,6 @@ def main():
 
     # Write stat file in ASCII format
     stat_lines_obj: WriteStatAscii = WriteStatAscii(settings, logger)
-    # stat_lines_obj.write_stat_ascii(file_df, parms, logger)
     stat_lines_obj.write_stat_ascii(file_df, settings)
 
 

@@ -40,9 +40,7 @@ def main():
 
         try:
             start = perf_counter()
-            print('one')
             plot = line.Line(settings)
-            print('two')
             plot.save_to_file()
             plot.write_html()
             plot.write_output_file()
@@ -50,7 +48,6 @@ def main():
             execution_time = end - start
             plot.logger.info(f"Finished creating line plot, execution time: {execution_time} seconds")
         except ValueError as val_er:
-            print('E2')
             print(val_er)
 
 if __name__ == "__main__":
