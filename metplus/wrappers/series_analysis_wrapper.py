@@ -22,7 +22,7 @@ except Exception as err_msg:
     WRAPPER_CANNOT_RUN = True
     EXCEPTION_ERR = err_msg
 
-from ..util import getlist, get_storms, mkdir_p
+from ..util import getlist, get_storms, mkdir_p, skip_time
 from ..util import do_string_sub, parse_template, get_tags
 from ..util import get_lead_sequence, get_lead_sequence_groups
 from ..util import ti_get_hours_from_lead, ti_get_seconds_from_lead
@@ -471,6 +471,10 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         all_files = []
         current_input_dict = input_dict.copy()
         for lead in leads:
+            if skip_time(current_input_dict, self.c_dict):
+                self.logger.info(f'Skipping lead: {ti_get_lead_string(lead)}')
+                continue
+
             current_input_dict['lead'] = lead
             new_files = self.get_all_files_for_lead(current_input_dict)
             self._update_list_with_new_files(new_files, all_files)

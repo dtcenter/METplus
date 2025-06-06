@@ -256,13 +256,12 @@ class RuntimeFreqWrapper(CommandBuilder):
         success = True
         for time_input in time_generator(self.config):
             if time_input is None:
+                self.errors += 1
                 success = False
-                continue
 
-            log_runtime_banner(self.config, time_input, self)
-            add_to_time_input(time_input,
-                              instance=self.instance,
-                              custom=custom)
+            # check if time should be skipped
+            if not self._should_init_or_valid_be_run(time_input, custom):
+                continue
 
             if 'init' in time_input:
                 time_input['valid'] = '*'
@@ -294,6 +293,31 @@ class RuntimeFreqWrapper(CommandBuilder):
             return
         self.logger.info(f"Processing lead group {label}:"
                          f" {format_lead_seq(lead_seq, plural=False)}")
+
+    def _should_init_or_valid_be_run(self, time_input, custom):
+        """!Check if init or valid time should run or not. It should not run
+        if time_input is invalid or if the time is marked to be skipped.
+        If time_input is correct, log the run time banner, add instance and
+        custom to the time input dictionary.
+
+        @param time_input dictionary containing timing information
+        @param custom string to use for custom filename template tag
+        @returns True if time should be run, False if it should not be run
+        """
+        if time_input is None:
+            return False
+
+        log_runtime_banner(self.config, time_input, self)
+        add_to_time_input(time_input,
+                          instance=self.instance,
+                          custom=custom)
+
+        if skip_time(time_input, self.c_dict):
+            time_type = 'valid' if 'valid' in time_input else 'init'
+            self.logger.info(f"Skipping {time_type} time: {time_input.get(time_type)}")
+            return False
+
+        return True
 
     def run_once_per_lead_group(self, lead_groups, time_input):
         success = True
@@ -341,6 +365,11 @@ class RuntimeFreqWrapper(CommandBuilder):
             # create a new dictionary each iteration in case the function
             # that it is passed into modifies it
             time_info = time_util.ti_calculate(time_input)
+            self.logger.info(f"Processing forecast lead {time_info['lead_string']}")
+
+            if skip_time(time_info, self.c_dict):
+                self.logger.info(f'Skipping lead: {time_util.ti_get_lead_string(lead)}')
+                continue
 
             self.c_dict['ALL_FILES'] = self.get_all_files_for_lead(time_info)
             if not self._check_input_files():
@@ -358,21 +387,19 @@ class RuntimeFreqWrapper(CommandBuilder):
         success = True
         for time_input in time_generator(self.config):
             if time_input is None:
+                self.errors += 1
                 success = False
+
+            if not self._should_init_or_valid_be_run(time_input, custom):
                 continue
 
-            log_runtime_banner(self.config, time_input, self)
-            add_to_time_input(time_input,
-                              instance=self.instance,
-                              custom=custom)
-
             # loop of forecast leads and process each
-            if not self.run_at_time(time_input):
+            if not self.run_at_init_or_valid(time_input):
                 success = False
 
         return success
 
-    def run_at_time(self, input_dict):
+    def run_at_init_or_valid(self, input_dict):
         success = True
 
         # loop of forecast leads and process each
@@ -387,12 +414,10 @@ class RuntimeFreqWrapper(CommandBuilder):
             # set current lead time config and environment variables
             time_info = time_util.ti_calculate(input_dict)
 
-            self.logger.info(
-                f"Processing forecast lead {time_info['lead_string']}"
-            )
+            self.logger.info(f"Processing forecast lead {time_info['lead_string']}")
 
             if skip_time(time_info, self.c_dict):
-                self.logger.debug('Skipping run time')
+                self.logger.info(f'Skipping lead: {time_util.ti_get_lead_string(lead)}')
                 continue
 
             self.c_dict['ALL_FILES'] = self.get_all_files_for_each(time_info)
@@ -435,7 +460,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         self.set_environment_variables(time_info)
 
         # build command and run
-        return self.build()
+        return self.build(time_info)
 
     def get_all_files(self, custom=None):
         """!Get all files that can be processed with the app.
@@ -452,7 +477,13 @@ class RuntimeFreqWrapper(CommandBuilder):
         # loop over all init/valid times
         for time_input in time_generator(self.config):
             if time_input is None:
+                self.errors += 1
                 return []
+
+            if skip_time(time_input, self.c_dict):
+                time_type = 'valid' if 'valid' in time_input else 'init'
+                self.logger.info(f"Skipping {time_type} time: {time_input.get(time_type)}")
+                continue
 
             add_to_time_input(time_input,
                               instance=self.instance,
@@ -524,6 +555,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             time_info = time_util.ti_calculate(current_time_input)
 
             if skip_time(time_info, self.c_dict):
+                self.logger.info(f'Skipping lead: {time_util.ti_get_lead_string(lead)}')
                 continue
 
             new_files = self.get_files_from_time(time_info)
@@ -540,6 +572,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         all_files = []
         for run_time in time_generator(self.config):
             if run_time is None:
+                self.errors += 1
                 continue
 
             current_time_input = time_input.copy()
@@ -550,7 +583,10 @@ class RuntimeFreqWrapper(CommandBuilder):
                 current_time_input['init'] = run_time['init']
                 del current_time_input['valid']
             time_info = time_util.ti_calculate(current_time_input)
+
             if skip_time(time_info, self.c_dict):
+                time_type = 'valid' if 'valid' in run_time else 'init'
+                self.logger.info(f"Skipping {time_type} time: {run_time.get(time_type)}")
                 continue
 
             new_files = self.get_files_from_time(time_info)

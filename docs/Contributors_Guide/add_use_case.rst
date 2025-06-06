@@ -509,38 +509,22 @@ Build the Documentation Manually
 --------------------------------
 
 Build the documentation and ensure that the new use case file is
-displayed and the formatting looks correct. The Python packages sphinx,
-sphinx-gallery (0.6 or higher), and sphinx_rtd_theme are required to build.
-There is a conda environment called sphinx_env available on some of the NCAR
-development machines that can be used::
+displayed and the formatting looks correct.
+There is a conda environment called metplus_dev.vX.Y
+(where X.Y is the version of METplus that is currently in development)
+available on some of the NCAR development machines that can be used, e.g.::
 
-    conda activate /home/met_test/.conda/envs/metplus_env
+    conda activate /d1/personal/met_test/miniforge3/envs/metplus_dev.v6.1
 
-or
-
-::
-
-    conda activate /home/met_test/.conda/envs/sphinx_env
 
 .. note::
-    If conda is not already in PATH, find it and run it
-    with the full path.
+    If conda is not already in PATH, find it and run it with the full path.
 
-Or create a conda environment and install the packages::
+Or create a conda environment and install the packages from the
+**docs/requirements.txt** found in the METplus repo::
 
-    conda create --name sphinx_env python=3.6
-    conda activate sphinx_env
-    conda install sphinx
-    conda install -c conda-forge sphinx-gallery
-    pip install git+https://github.com/ESMCI/sphinx_rtd_theme@version-dropdown-with-fixes
+    conda create --name sphinx_env --file METplus/docs/requirements.txt
 
-.. note::
-    The specific version of sphinx_rtd_theme is needed to build the
-    documentation with the version selector.
-    If the docs are being built locally, this version is not
-    necessarily needed. If it is easier, run 'conda install
-    sphinx_rtd_theme' instead of the pip from git command
-    to install the package.
 
 To build the docs, run the **build_docs.py** script from the docs directory.
 Make sure the conda environment is activated or the required packages
@@ -1325,18 +1309,22 @@ Check that the link now points to the new tarfile that was just created::
 After the Pull Request is Approved
 ==================================
   
-Merge the pull request and ensure that all tests pass
------------------------------------------------------
+Merge the pull request and review testing workflow run
+-------------------------------------------------------
 
-Merge the pull request on GitHub. Then go to the "Actions" tab and verify that
-all of the GitHub Actions tests pass for the develop branch. A green check mark
-for the latest run that lists "develop" as the branch signifies that the run
-completed successfully.
+Merge the pull request on GitHub.
+Then go to the "Actions" tab and monitor the latest develop branch run.
+This run should "fail" with a red X.
+Ensure that the only failures are in the use case that was added and
+that the failures are only in the *Run difference tests* job.
+**Any failures in a "Run Use Cases" job suggest that something went wrong.**
+A failing use case is likely due to the develop branch data not being updated.
 
 .. figure:: figure/github_actions_develop.png
 
 If the circle on the left side is yellow, then the run has not completed yet.
-If everything ran smoothly, clean up the files on the web server.
+If you have confirmed that the only failures are due to difference in new use
+case output, then follow the instructions below to update the truth data.
 
 Consider rearranging the use case groups
 ----------------------------------------
