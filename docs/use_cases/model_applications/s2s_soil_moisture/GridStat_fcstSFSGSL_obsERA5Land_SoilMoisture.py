@@ -16,8 +16,9 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 # --------------------
 # This use case verifies 30 years of Soil Moisture data from an ensemble for a given
 # year and month (here June).  The purpose is to evaluate the Soil Moisture ensemble
-# mean against ERA5-Land data over the CONUS and also at each grid point at a 1 degree
-# resolution.  The python embedding script computes an ensemble mean for the given month.
+# mean against ERA5-Land data over the globe, CONUS and also at each grid point at a 
+# 1 degree resolution.  This use case also demonstrates how to compute an ensemble 
+# mean from NMME data as input to Grid-Stat and Series-Analysis.
 
 ##############################################################################
 # Version Added
@@ -29,9 +30,9 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 # Datasets
 # --------
 # 
-# **Forecast:** 30 SFS-GSL Ensemble files, 0-1m Soil Moisture fields Units: mm
+# **Forecast:** 30 SFS-GSL Ensemble files, 0-1m Soil Moisture fields in mm
 #
-# **Observation:** ERA5-Land, Monthly 0-1m Soil Moisture field Units: mm 
+# **Observation:** ERA5-Land, Monthly 0-1m Soil Moisture field in mm 
 #
 # **Climatology:** None
 #
@@ -49,8 +50,8 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 # ------------------
 #
 # This use case calls a GridStat 30 times, once for each year of data of the SFS-GSL ensemble.
-# It also calls UserScript twice and makes one call to Series-Analysis.  METcalcpy, METplotpy, 
-# and METdataio are required to run this use case.  The METcalcpy scripts accessed include 
+# It also calls Series-Analysis once and UserScript twice.  METcalcpy, METplotpy, and METdataio 
+# are required to run the UserScripts in this use case.  The METcalcpy scripts accessed include 
 # the following:
 #
 # * metcalcpy/util/read_env_vars_in_config.py
@@ -79,16 +80,14 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** None
 #
-# With an increment of 12 months, all June from 1991 to 2020 are processed 
-# for a total of 30 years, with 5 members in each ensemble forecast. This use case 
-# initially reads the SFS GSL 5 member ensemble monthly forecast data,
-# and compute ensemble means for each month. The resulting 30 outputs and ERA5-Land 
-# monthly analysis are read in by GridStat to compute statistics for the globe and 
-# over CONUS.
+# This use case initially computes statiscs with Grid-Stat using ensemble means from
+# the SFS-GSL 5 member ensemble monthly forecast data.  With an increment of 12 months, 
+# all Junes from 1991 to 2020 are processed for a total of 30 years over the globe and
+# CONUS.
 #
-# Then, two UserScripts are each run once, one to reformat data and another to plot
-# data.  Finally, Series-Analysis is run once to compute statistics for June over 
-# the 30 year time period.
+# Then, Series-Analysis is run once to compute 2D statistics also over the 30 year time
+# period.  Finally, two UserScripts are each run once, one to reformat data and another 
+# to create a plot of ME and RMSE for June over the 30 year time period.
 
 ##############################################################################
 # METplus Configuration
@@ -118,7 +117,7 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 #
 #   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 #
-# .. dropdown:: GridStatConfig_wrapped
+# .. dropdown:: SeriesAnalysisConfig_wrapped
 #
 #   .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
 
@@ -132,9 +131,8 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 # latitude, longitude, and target time variables. It converts the model’s target time 
 # values—representing months since January 1960—into actual calendar dates, then filters the 
 # data to retain only forecasts matching the specified valid month. It computes the ensemble 
-# mean over the 5-member ensemble and prepares the resulting data in a 
-# format suitable for input into the MET (Model Evaluation Tools) verification system.
-# The location of the code is 
+# mean over the 5-member ensemble and prepares the resulting data in a format suitable for input 
+# into the MET (Model Evaluation Tools) verification system.  The location of the code is 
 # 
 # .. dropdown:: parm/use_cases/model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture/sfs_gsl_model_wrapper.py 
 #
@@ -169,7 +167,7 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 # For more information about YAML configuration options for the line plots shown here, see the METplotpy
 # `line plot documentation <https://metplus.readthedocs.io/projects/metplotpy/en/latest/Users_Guide/line.html>`_.
 #
-# Both Python scripts are located in::
+# Both Python scripts are located in the following directory::
 #
 #   parm/use_cases/model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture
 #
@@ -221,17 +219,6 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 #  * DIFF_Soil_moisture_0-1m_soilm1m_20200601_000000_all_all_FULL(lat, lon) 
 #  * DIFF_Soil_moisture_0-1m_soilm1m_20200601_000000_all_all_CONUS(lat, lon)
 #
-# The output from the first UserScript can be found in the reformatted directory 
-# (relative to **OUTPUT_BASE**) and will contain 1 file::
-#
-#  * reformat_CNT.data
-#
-# The output from the second UserScript will be 2 plots found in the plots directory
-# (relative to **OUTPUT_BASE**)::
-#
-#  * SoilMoisture_ME.png
-#  * SoilMoisture_RMSE.png
-#
 # The output from SeriesAnalysis will be in the series_analysis directory (relative to
 # **OUTPUT_BASE**) and will contain 3 files::
 #
@@ -247,6 +234,17 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 #  * series_cnt_RMSE(lat, lon)
 #  * series_cnt_FBAR(lat, lon)
 #  * series_cnt_OBAR(lat, lon)
+#
+# The output from the first UserScript can be found in the reformatted directory 
+# (relative to **OUTPUT_BASE**) and will contain 1 file::
+#
+#  * reformat_CNT.data
+#
+# The output from the second UserScript will be 2 plots found in the plots directory
+# (relative to **OUTPUT_BASE**)::
+#
+#  * SoilMoisture_ME.png
+#  * SoilMoisture_RMSE.png
 
 ##############################################################################
 # Keywords
