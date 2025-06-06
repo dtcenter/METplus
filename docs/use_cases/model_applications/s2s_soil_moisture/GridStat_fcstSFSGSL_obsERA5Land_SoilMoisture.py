@@ -169,7 +169,7 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 # For more information about YAML configuration options for the line plots shown here, see the METplotpy
 # `line plot documentation <https://metplus.readthedocs.io/projects/metplotpy/en/latest/Users_Guide/line.html>`_.
 #
-# Both Python scripts are located at::
+# Both Python scripts are located in::
 #
 #   parm/use_cases/model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture
 #
