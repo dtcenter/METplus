@@ -94,6 +94,23 @@ Actions for Handling New Discussions
 * Review the labels and pick at least one of the blue ones ("component:" and/or
   repository-specific - e.g. "MET:", "METplus:", etc.) to further categorize it.
 
+* If the organization or institution with which the user is affliated is known,
+  select the appropriate "requestor:" label to further categorize it. If the
+  organization or instituion is unknown, ask the user something like:
+  *Can you please let us know the organization or institution with which you're
+  affiliated, so we can add a "requestor" label to this discussion to help us
+  keep track of the support we provide?*
+
+* If the user needs to provide the support team with data, refer them to the
+  `How to Send Us Data post <https://github.com/dtcenter/METplus/discussions/954>`_.
+  If the user sends data through the Google form link, that data is stored in
+  the METplus Team Drive
+  `here <https://drive.google.com/drive/folders/1OvYqQwKWV5rB6JHBM-Ljyb4es93vFx_U>`_.
+  Move the data to a shared location on the project machine **seneca** by creating
+  a directory on **seneca** at **/d1/projects/METplus/discussions/** with the
+  METplus Discussion number (e.g. 2978) and copying the data to that location. Once
+  the data is copied to **seneca**, delete the data from the team drive.
+  
 * Ensure the discussion is answered:
 
   * If you can answer it yourself, do so.

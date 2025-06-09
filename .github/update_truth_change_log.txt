@@ -1,0 +1,1 @@
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] dtcenter/METdataio#384 - dtcenter/METdataio#384 sorts a directory listing that should prevent sporadic diffs in the clouds:8 use case
