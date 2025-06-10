@@ -613,7 +613,7 @@ class RuntimeFreqWrapper(CommandBuilder):
     def _get_var_lists(self, time_info):
         var_list_temp = self.c_dict.get('VAR_LIST_TEMP')
         # if VAR_LIST_TEMP was not set in c_dict, return a list with None
-        if var_list_temp is None:
+        if not var_list_temp:
             return [None]
 
         var_list = sub_var_list(var_list_temp, time_info)
