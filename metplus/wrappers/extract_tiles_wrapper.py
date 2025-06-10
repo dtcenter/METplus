@@ -87,31 +87,7 @@ class ExtractTilesWrapper(LoopTimesWrapper):
         )
 
         # determine which location input to use: TCStat or MTD
-        # TC_STAT template is not set
-        if not c_dict['TC_STAT_INPUT_TEMPLATE']:
-            # neither are set
-            if not c_dict['MTD_INPUT_TEMPLATE']:
-                self.log_error('Must set '
-                               'EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE '
-                               'or EXTRACT_TILES_MTD_INPUT_TEMPLATE '
-                               'to run ExtractTiles wrapper')
-            # MTD is set only
-            else:
-                c_dict['LOCATION_INPUT'] = 'MTD'
-        # TC_STAT is set
-        else:
-            # both are set
-            if c_dict['MTD_INPUT_TEMPLATE']:
-                self.log_error('Cannot set both '
-                               'EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE '
-                               'and EXTRACT_TILES_MTD_INPUT_TEMPLATE '
-                               'to run ExtractTiles wrapper')
-            # TC_STAT is set only
-            else:
-                c_dict['LOCATION_INPUT'] = 'TC_STAT'
-
-        if not c_dict.get('LOCATION_INPUT'):
-            self.log_error("Could not determine location input type")
+        self._get_location_input(c_dict)
 
         # get gridded input/output directory/template to read
         for data_type in ['FCST', 'OBS']:
@@ -156,6 +132,33 @@ class ExtractTilesWrapper(LoopTimesWrapper):
         # force error if inputs are missing
         c_dict['ALLOW_MISSING_INPUTS'] = False
         return c_dict
+
+    def _get_location_input(self, c_dict):
+        # TC_STAT template is not set
+        if not c_dict['TC_STAT_INPUT_TEMPLATE']:
+            # neither are set
+            if not c_dict['MTD_INPUT_TEMPLATE']:
+                self.log_error('Must set '
+                               'EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE '
+                               'or EXTRACT_TILES_MTD_INPUT_TEMPLATE '
+                               'to run ExtractTiles wrapper')
+            # MTD is set only
+            else:
+                c_dict['LOCATION_INPUT'] = 'MTD'
+        # TC_STAT is set
+        else:
+            # both are set
+            if c_dict['MTD_INPUT_TEMPLATE']:
+                self.log_error('Cannot set both '
+                               'EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE '
+                               'and EXTRACT_TILES_MTD_INPUT_TEMPLATE '
+                               'to run ExtractTiles wrapper')
+            # TC_STAT is set only
+            else:
+                c_dict['LOCATION_INPUT'] = 'TC_STAT'
+
+        if not c_dict.get('LOCATION_INPUT'):
+            self.log_error("Could not determine location input type")
 
     def regrid_data_plane_init(self):
         """! create instance of RegridDataPlane wrapper, overriding default
@@ -267,7 +270,7 @@ class ExtractTilesWrapper(LoopTimesWrapper):
         """
         indices = self.get_object_indices(object_dict.keys())
         if not indices:
-            self.logger.warning(f"No non-zero OBJECT_CAT found")
+            self.logger.warning("No non-zero OBJECT_CAT found")
             return
 
         # loop over corresponding CF### and CO### lines
