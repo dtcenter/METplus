@@ -538,7 +538,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             return True
 
         for key, value in file_dict.items():
-            if key in ('var_list', 'time_info'): continue
+            if key in ('var_list', 'time_info', 'method_arg'): continue
             if value is None or value == ['missing'] or all(item == 'missing' for item in value):
                 return True
 

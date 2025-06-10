@@ -838,7 +838,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         """
         var_lists = self._get_var_lists(time_info)
         if not var_lists:
-            return []
+            var_lists = [None]
 
         data_src = self.c_dict['DATA_SRC']
 
@@ -874,7 +874,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         method_arg = f'-{method.lower()}' if method != 'USER_DEFINED' else None
         files_and_fields = []
 
-        if method == 'SUM':
+        if method in ('SUM', 'USER_DEFINED'):
             return [(None, None)], method_arg
 
         if method in ('DERIVE', 'ADD'):
