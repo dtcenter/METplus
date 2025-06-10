@@ -2,7 +2,6 @@
 
 import pytest
 
-import os
 import datetime
 
 from metplus.wrappers.regrid_data_plane_wrapper import RegridDataPlaneWrapper
@@ -203,6 +202,12 @@ def test_get_output_names(metplus_config, var_list, expected_names):
     assert rdp.get_output_names(var_list, data_type) == expected_names
 
 
+def _override_c_dict(wrapper, var_list, data_type):
+    wrapper.c_dict['VAR_LIST_TMP'] = var_list
+    wrapper.c_dict['DATA_SRC'] = data_type
+    wrapper.c_dict['OUTPUT_DIR'] = wrapper.c_dict[f'{data_type}_OUTPUT_DIR']
+    wrapper.c_dict['OUTPUT_TEMPLATE'] = wrapper.c_dict[f'{data_type}_OUTPUT_TEMPLATE']
+
 @pytest.mark.wrapper
 def test_run_rdp_once_per_field(metplus_config):
     data_type = 'FCST'
@@ -215,38 +220,38 @@ def test_run_rdp_once_per_field(metplus_config):
                 {'index': '2', 'fcst_name': 'FNAME2', 'fcst_level': 'A03', 'fcst_output_name': 'OUTNAME2'},
                 ]
 
-    wrap = rdp_wrapper(metplus_config)
-    wrap.c_dict['ONCE_PER_FIELD'] = True
-    wrap.c_dict['FCST_OUTPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d%H}_accum{level?fmt=%2H}.nc'
+    config = metplus_config
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+    config.set('config', 'FCST_REGRID_DATA_PLANE_RUN', True)
+    config.set('config', 'REGRID_DATA_PLANE_ONCE_PER_FIELD', True)
+    config.set('config', 'FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}_accum{level?fmt=%2H}.nc')
+    config.set('config', 'FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}_ZENITH')
+    config.set('config', 'REGRID_DATA_PLANE_METHOD', 'BUDGET')
+    config.set('config', 'REGRID_DATA_PLANE_WIDTH', '2')
+    config.set('config', 'REGRID_DATA_PLANE_VERIF_GRID', 'VERIF_GRID')
+    config.set('config', 'FCST_REGRID_DATA_PLANE_OUTPUT_DIR', '{OUTPUT_BASE}/RDP_test')
 
-    wrap.c_dict['FCST_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d%H}_ZENITH'
-    wrap.c_dict['METHOD'] = 'BUDGET'
-    wrap.c_dict['WIDTH'] = 2
-    wrap.c_dict['VERIFICATION_GRID'] = 'VERIF_GRID'
-    wrap.c_dict['FCST_OUTPUT_DIR'] = os.path.join(wrap.config.getdir('OUTPUT_BASE'),
-                                                  'RDP_test')
+    wrapper = RegridDataPlaneWrapper(config)
+    _override_c_dict(wrapper, var_list, data_type)
+    wrapper.run_at_time_once(time_info)
 
-    wrap.c_dict['VAR_LIST'] = var_list
-    wrap.c_dict['DATA_SRC'] = data_type
-    wrap.run_at_time_once(time_info)
-
-    expected_cmds = [f"{wrap.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME1\"; "
+    expected_cmds = [f"{wrapper.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME1\"; "
                      "level=\"A06\";' -name FNAME1 2018020100_ZENITH \"VERIF_GRID\" "
-                     f"{wrap.config.getdir('OUTPUT_BASE')}/RDP_test/2018020100_accum06.nc",
-                     f"{wrap.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME2\"; "
+                     f"{wrapper.config.getdir('OUTPUT_BASE')}/RDP_test/2018020100_accum06.nc",
+                     f"{wrapper.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME2\"; "
                      "level=\"A03\";' -name OUTNAME2 2018020100_ZENITH \"VERIF_GRID\" "
-                     f"{wrap.config.getdir('OUTPUT_BASE')}/RDP_test/2018020100_accum03.nc",
+                     f"{wrapper.config.getdir('OUTPUT_BASE')}/RDP_test/2018020100_accum03.nc",
                      ]
 
     test_passed = True
 
-    if len(wrap.all_commands) != len(expected_cmds):
+    if len(wrapper.all_commands) != len(expected_cmds):
         print("Number of commands run is not the same as expected")
-        print(f"Actual commands: {wrap.all_commands}\n")
+        print(f"Actual commands: {wrapper.all_commands}\n")
         print(f"Expected commands: {expected_cmds}\n")
         assert False
 
-    for (cmd, _), expected_cmd in zip(wrap.all_commands, expected_cmds):
+    for (cmd, _), expected_cmd in zip(wrapper.all_commands, expected_cmds):
         print(f"  ACTUAL:{cmd}")
         print(f"EXPECTED:{expected_cmd}")
         if cmd != expected_cmd:
@@ -267,33 +272,31 @@ def test_run_rdp_all_fields(metplus_config):
                 {'index': '2', 'fcst_name': 'FNAME2', 'fcst_level': 'A03', 'fcst_output_name': 'OUTNAME2'},
                 ]
 
-    wrap = rdp_wrapper(metplus_config)
-    wrap.c_dict['ONCE_PER_FIELD'] = False
-    wrap.c_dict['FCST_OUTPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d%H}_ALL.nc'
+    config = metplus_config
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+    config.set('config', 'FCST_REGRID_DATA_PLANE_RUN', True)
+    config.set('config', 'REGRID_DATA_PLANE_ONCE_PER_FIELD', False)
+    config.set('config', 'FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}_ZENITH')
+    config.set('config', 'REGRID_DATA_PLANE_METHOD', 'BUDGET')
+    config.set('config', 'REGRID_DATA_PLANE_WIDTH', '2')
+    config.set('config', 'REGRID_DATA_PLANE_VERIF_GRID', 'VERIF_GRID')
+    config.set('config', 'FCST_REGRID_DATA_PLANE_OUTPUT_DIR', '{OUTPUT_BASE}/RDP_test')
+    config.set('config', 'FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}_ALL.nc')
 
-    wrap.c_dict['FCST_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d%H}_ZENITH'
-    wrap.c_dict['METHOD'] = 'BUDGET'
-    wrap.c_dict['WIDTH'] = 2
-    wrap.c_dict['VERIFICATION_GRID'] = 'VERIF_GRID'
-    wrap.c_dict['FCST_OUTPUT_DIR'] = os.path.join(wrap.config.getdir('OUTPUT_BASE'),
-                                                  'RDP_test')
-    wrap.c_dict['VAR_LIST'] = var_list
-    wrap.c_dict['DATA_SRC'] = data_type
-    wrap.run_at_time_once(time_info)
+    wrapper = RegridDataPlaneWrapper(config)
+    _override_c_dict(wrapper, var_list, data_type)
+    wrapper.run_at_time_once(time_info)
 
-    expected_cmds = [f"{wrap.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME1\"; "
+    expected_cmds = [f"{wrapper.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME1\"; "
                      "level=\"A06\";' -field 'name=\"FNAME2\"; level=\"A03\";' "
                      "-name FNAME1,OUTNAME2 2018020100_ZENITH \"VERIF_GRID\" "
-                     f"{wrap.config.getdir('OUTPUT_BASE')}/RDP_test/2018020100_ALL.nc",
+                     f"{wrapper.config.getdir('OUTPUT_BASE')}/RDP_test/2018020100_ALL.nc",
                      ]
 
     test_passed = True
 
-    if len(wrap.all_commands) != len(expected_cmds):
-        print("Number of commands run is not the same as expected")
-        assert False
-
-    for (cmd, _), expected_cmd in zip(wrap.all_commands, expected_cmds):
+    assert len(wrapper.all_commands) == len(expected_cmds)
+    for (cmd, _), expected_cmd in zip(wrapper.all_commands, expected_cmds):
         print(f"  ACTUAL:{cmd}")
         print(f"EXPECTED:{expected_cmd}")
         if cmd != expected_cmd:

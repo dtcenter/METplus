@@ -54,32 +54,35 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
             window_types.append(fcst_or_obs)
 
-            for in_or_out in ('INPUT', 'OUTPUT'):
-                # read FCST/OBS_INPUT/OUTPUT_DIR
-                c_dict[f'{fcst_or_obs}_{in_or_out}_DIR'] = (
-                    self.config.getdir(f'{fcst_or_obs}_{app}_{in_or_out}_DIR')
-                )
+            self.get_input_templates(c_dict,
+                                     {fcst_or_obs: {'prefix': f'{fcst_or_obs}_{app}', 'required': True}},
+                                     d_type=fcst_or_obs)
 
-                # read FCST/OBS_INPUT/OUTPUT_TEMPLATE
-                name = self.config.get_mp_config_name(
-                    [f'{fcst_or_obs}_{app}_{in_or_out}_TEMPLATE',
-                     f'{fcst_or_obs}_{app}_TEMPLATE']
-                )
-                if not name:
-                    self.log_error(f"{fcst_or_obs}_{app}_{in_or_out}_TEMPLATE "
-                                   f"must be set if {fcst_or_obs}_{app}_RUN")
-                    continue
+            # read FCST/OBS_OUTPUT_DIR
+            c_dict[f'{fcst_or_obs}_OUTPUT_DIR'] = (
+                self.config.getdir(f'{fcst_or_obs}_{app}_OUTPUT_DIR')
+            )
 
-                c_dict[f'{fcst_or_obs}_{in_or_out}_TEMPLATE'] = (
-                    self.config.getraw('config', name)
-                )
+            # read FCST/OBS_OUTPUT_TEMPLATE
+            name = self.config.get_mp_config_name(
+                [f'{fcst_or_obs}_{app}_OUTPUT_TEMPLATE',
+                 f'{fcst_or_obs}_{app}_TEMPLATE']
+            )
+            if not name:
+                self.log_error(f"{fcst_or_obs}_{app}_OUTPUT_TEMPLATE "
+                               f"must be set if {fcst_or_obs}_{app}_RUN")
+                continue
 
-                # set list of variables (fields)
-                c_dict[f'VAR_LIST_{fcst_or_obs}'] = parse_var_list(
-                    self.config,
-                    data_type=fcst_or_obs,
-                    met_tool=self.app_name
-                )
+            c_dict[f'{fcst_or_obs}_OUTPUT_TEMPLATE'] = (
+                self.config.getraw('config', name)
+            )
+
+            # set list of variables (fields)
+            c_dict[f'VAR_LIST_{fcst_or_obs}'] = parse_var_list(
+                self.config,
+                data_type=fcst_or_obs,
+                met_tool=self.app_name
+            )
 
         self.handle_file_window_variables(c_dict, data_types=window_types)
 
@@ -246,14 +249,8 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             @param time_info time dictionary used for string substitution
         """
         self.clear()
-        var_list = sub_var_list(self.c_dict['VAR_LIST'], time_info)
+        var_list = sub_var_list(self.c_dict['VAR_LIST_TMP'], time_info)
         data_type = self.c_dict['DATA_SRC']
-
-        # set output dir and template to current data type's values
-        self.c_dict['OUTPUT_DIR'] = self.c_dict.get(f'{data_type}_OUTPUT_DIR')
-        self.c_dict['OUTPUT_TEMPLATE'] = (
-            self.c_dict.get(f'{data_type}_OUTPUT_TEMPLATE')
-        )
 
         # if no field info or input field configs are set, error and return
         if not var_list:

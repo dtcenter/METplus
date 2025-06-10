@@ -65,6 +65,9 @@ class ReformatGriddedWrapper(LoopTimesWrapper):
 
         for to_run in run_list:
             self.logger.info("Processing {} data".format(to_run))
-            self.c_dict['VAR_LIST'] = self.c_dict.get(f'VAR_LIST_{to_run}')
+            self.c_dict['VAR_LIST_TMP'] = self.c_dict.get(f'VAR_LIST_{to_run}')
+            self.c_dict['TEMPLATE_DICT'] = self.c_dict.get(f'TEMPLATE_DICT_{to_run}')
             self.c_dict['DATA_SRC'] = to_run
+            self.c_dict['OUTPUT_DIR'] = self.c_dict[f'{to_run}_OUTPUT_DIR']
+            self.c_dict['OUTPUT_TEMPLATE'] = self.c_dict[f'{to_run}_OUTPUT_TEMPLATE']
             super().run_at_init_or_valid(input_dict)

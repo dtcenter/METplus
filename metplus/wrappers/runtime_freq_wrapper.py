@@ -108,7 +108,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             else:
                 self.log_error(err_msg)
 
-    def get_input_templates(self, c_dict, input_info=None):
+    def get_input_templates(self, c_dict, input_info=None, d_type=None):
         """!Read input templates from config.
         """
         template_dict = {}
@@ -139,7 +139,10 @@ class RuntimeFreqWrapper(CommandBuilder):
 
             template_dict[label.rstrip('_')] = (template, True, False)
 
-        c_dict['TEMPLATE_DICT'] = template_dict
+        key = 'TEMPLATE_DICT'
+        if d_type:
+            key = f'{key}_{d_type}'
+        c_dict[key] = template_dict
 
     def get_input_templates_multiple(self, c_dict):
         """!Read input templates from config. Use this function when a given
@@ -664,7 +667,8 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         return file_dict_list
 
-    def _update_list_with_new_files(self, new_files, list_to_update):
+    @staticmethod
+    def _update_list_with_new_files(new_files, list_to_update):
         if not isinstance(new_files, list):
             new_files = [new_files]
 
