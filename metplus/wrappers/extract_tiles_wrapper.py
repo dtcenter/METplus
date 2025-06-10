@@ -14,7 +14,6 @@ from datetime import datetime
 import re
 
 from ..util import do_string_sub, ti_calculate
-from ..util import sub_var_list
 from ..util import parse_var_list, round_0p5, get_storms
 from .regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from . import LoopTimesWrapper
@@ -348,8 +347,7 @@ class ExtractTilesWrapper(LoopTimesWrapper):
 
     def call_regrid_data_plane(self, time_info, track_data, input_type):
         # set var list from config using time info
-        var_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
-        self.regrid_data_plane.c_dict['VAR_LIST'] = var_list
+        self.regrid_data_plane.c_dict['VAR_LIST_TEMP'] = self.c_dict['VAR_LIST_TEMP']
 
         for data_type in ['FCST', 'OBS']:
             grid = self.get_grid(data_type, track_data[data_type], input_type)

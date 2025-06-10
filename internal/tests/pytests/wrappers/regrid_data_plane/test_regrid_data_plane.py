@@ -203,7 +203,7 @@ def test_get_output_names(metplus_config, var_list, expected_names):
 
 
 def _override_c_dict(wrapper, var_list, data_type):
-    wrapper.c_dict['VAR_LIST_TMP'] = var_list
+    wrapper.c_dict['VAR_LIST_TEMP'] = var_list
     wrapper.c_dict['DATA_SRC'] = data_type
     wrapper.c_dict['OUTPUT_DIR'] = wrapper.c_dict[f'{data_type}_OUTPUT_DIR']
     wrapper.c_dict['OUTPUT_TEMPLATE'] = wrapper.c_dict[f'{data_type}_OUTPUT_TEMPLATE']

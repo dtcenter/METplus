@@ -249,7 +249,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             @param time_info time dictionary used for string substitution
         """
         self.clear()
-        var_list = sub_var_list(self.c_dict['VAR_LIST_TMP'], time_info)
+        var_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
         data_type = self.c_dict['DATA_SRC']
 
         # if no field info or input field configs are set, error and return
