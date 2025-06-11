@@ -1,8 +1,8 @@
-'''
+"""
 Program Name: pcp_combine_wrapper.py
 Contact(s): George McCabe
 Abstract: Builds commands to run MET tool pcp_combine
-'''
+"""
 
 import os
 from datetime import timedelta
@@ -15,15 +15,9 @@ from ..util import parse_var_list, template_to_regex, split_level
 from ..util import add_field_info_to_time_info, MISSING_DATA_VALUE
 from . import ReformatGriddedWrapper
 
-'''!@namespace PCPCombineWrapper
-@brief Wraps the MET tool pcp_combine to combine/divide
-precipitation accumulations or derive additional fields
-'''
-
 
 class PCPCombineWrapper(ReformatGriddedWrapper):
-    """! Wraps the MET tool pcp_combine to combine or divide
-         precipitation accumulations """
+    """!Wraps the MET tool pcp_combine to combine or divide precipitation accumulations """
 
     RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
     RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_FOR_EACH']

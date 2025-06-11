@@ -1,4 +1,4 @@
-'''
+"""
 Program Name: regrid_data_plane.py
 Contact(s): George McCabe
 Abstract: Runs regrid_data_plane
@@ -8,7 +8,7 @@ Parameters: None
 Input Files: nc files
 Output Files: nc files
 Condition codes: 0 for success, 1 for failure
-'''
+"""
 
 import os
 
@@ -17,12 +17,6 @@ from ..util import parse_var_list, get_process_list
 from ..util import add_field_info_to_time_info, sub_var_list
 from ..util import remove_quotes, split_level, format_level
 from . import ReformatGriddedWrapper
-
-# pylint:disable=pointless-string-statement
-'''!@namespace RegridDataPlaneWrapper
-@brief Wraps the MET tool regrid_data_plane to reformat gridded datasets
-@endcode
-'''
 
 
 class RegridDataPlaneWrapper(ReformatGriddedWrapper):

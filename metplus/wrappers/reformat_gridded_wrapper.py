@@ -1,4 +1,4 @@
-'''
+"""
 Program Name: reformat_gridded_wrapper.py
 Contact(s): George McCabe
 Abstract: Parent class of all apps designed to reformat gridded data
@@ -8,25 +8,12 @@ Parameters: None
 Input Files: nc files
 Output Files: nc files
 Condition codes: 0 for success, 1 for failure
-'''
+"""
 
 from . import LoopTimesWrapper
 
-# pylint:disable=pointless-string-statement
-'''!@namespace ReformatGriddedWrapper
-@brief Common functionality to wrap similar MET applications
-that reformat gridded data
-Call as follows:
-@code{.sh}
-Cannot be called directly. Must use child classes.
-@endcode
-'''
-
-
 class ReformatGriddedWrapper(LoopTimesWrapper):
-    """! Common functionality to wrap similar MET applications
-         that reformat gridded data
-    """
+    """!Common functionality to wrap similar MET applications that reformat gridded data"""
     def __init__(self, config, instance=None):
         super().__init__(config, instance=instance)
 
