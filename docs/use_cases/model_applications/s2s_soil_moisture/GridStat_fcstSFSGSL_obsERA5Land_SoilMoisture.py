@@ -16,11 +16,12 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 # --------------------
 # This use case verifies 30 years of Soil Moisture data from an ensemble for a given
 # year and month (here June).  The purpose is to evaluate the Soil Moisture ensemble
-# mean against ERA5-Land data over the globe, CONUS and also at each grid point at a 
-# 1 degree resolution.  The use case computes categorical, continuous, and anomaly 
-# statistics with Grid-Stat, and select continuous statistics with Series-Analysus.  
-# It also demonstrates how to compute an ensemble mean from NMME data as input to 
-# Grid-Stat and Series-Analysis.
+# mean at a 1 degree resolution against ERA5-Land data.  The use case demonstrates how 
+# to compute categorical, continuous, and anomaly statistics over the globe and CONUS 
+# with Grid-Stat, and also select continuous statistics at each grid point over the globe 
+# statistics with Series-Analysus.  It also illustrates how to read in NMME data and 
+# compute an emsemble mean from NMME data as input to Grid-Stat and Series-Analysis, and 
+# how to plot example statistics from the command line.
 
 ##############################################################################
 # Version Added
@@ -55,8 +56,8 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 #
 # This use case calls a GridStat 30 times, once for each year of data of the SFS-GSL ensemble.
 # It also calls Series-Analysis once and UserScript twice.  METcalcpy, METplotpy, and METdataio 
-# are required to run the UserScripts in this use case.  The METcalcpy scripts accessed include 
-# the following:
+# are required to run the tow UserScripts.  These steps could be turned off if graphics are not
+# desires.  The METcalcpy scripts accessed include the following:
 #
 # * metcalcpy/util/read_env_vars_in_config.py
 #
@@ -89,9 +90,9 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 # all Junes from 1991 to 2020 are processed for a total of 30 years over the globe and
 # CONUS.
 #
-# Then, Series-Analysis is run once to compute 2D statistics also over the 30 year time
-# period.  Finally, two UserScripts are each run once, one to reformat data and another 
-# to create a plot of ME and RMSE for June over the 30 year time period.
+# Then, Series-Analysis is run once to compute 2D statistics over the entire 30 year time
+# period.  Finally, the two UserScripts are each run once, one to reformat data and 
+# another to create a plot of ME and RMSE for June over the 30 year time period.
 
 ##############################################################################
 # METplus Configuration
