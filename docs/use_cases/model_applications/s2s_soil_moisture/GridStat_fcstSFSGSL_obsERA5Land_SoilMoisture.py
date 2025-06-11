@@ -1,6 +1,6 @@
 """
-GridStat: Verifying Soil moisture of SFS-GSL output against ERA5-Land and compute categorical statistics
-========================================================================================================
+GridStat: Verifying Soil moisture of SFS-GSL output against ERA5-Land, continuous and categorical statistics
+============================================================================================================
 
 model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.conf
 
@@ -17,8 +17,10 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 # This use case verifies 30 years of Soil Moisture data from an ensemble for a given
 # year and month (here June).  The purpose is to evaluate the Soil Moisture ensemble
 # mean against ERA5-Land data over the globe, CONUS and also at each grid point at a 
-# 1 degree resolution.  This use case also demonstrates how to compute an ensemble 
-# mean from NMME data as input to Grid-Stat and Series-Analysis.
+# 1 degree resolution.  The use case computes categorical, continuous, and anomaly 
+# statistics with Grid-Stat, and select continuous statistics with Series-Analysus.  
+# It also demonstrates how to compute an ensemble mean from NMME data as input to 
+# Grid-Stat and Series-Analysis.
 
 ##############################################################################
 # Version Added
@@ -34,7 +36,9 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 #
 # **Observation:** ERA5-Land, Monthly 0-1m Soil Moisture field in mm 
 #
-# **Climatology:** None
+# **Climatology Forecast:** SFS-GSL 30 year Enemble Mean Soil Moisture mean and standard deviation
+#
+# **Climatology Observation:** ERA5-Land, 30 year Monthly 0-1m Soil Moisture mean and standard deviation
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
@@ -209,7 +213,7 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 #  * grid_stat_SFS-GSL_vs_ERA5_060000L_YYYY0601_000000V.stat
 #
 # Each file should contain corresponding statistics for the line type(s) requested.
-# For the netCDF file output from Grid Stat, five variable fields are present (not including 
+# For the netCDF file output from Grid Stat, sixteen variable fields are present (not including 
 # the lat/lon fields). Those variables are::
 #
 #  * FCST_Soil_moisture_0-1m_FULL(lat, lon) 
@@ -218,6 +222,16 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 #  * OBS_soilm1m_20200601_000000_all_all_CONUS(lat, lon) 
 #  * DIFF_Soil_moisture_0-1m_soilm1m_20200601_000000_all_all_FULL(lat, lon) 
 #  * DIFF_Soil_moisture_0-1m_soilm1m_20200601_000000_all_all_CONUS(lat, lon)
+#  * FCST_CLIMO_MEAN_soilm1m_20190601_000000_all_all_FULL(lat, lon)
+#  * FCST_CLIMO_MEAN_soilm1m_20190601_000000_all_all_CONUS(lat, lon)
+#  * FCST_CLIMO_STDEV_soilm1m_20190601_000000_all_all_FULL(lat, lon)
+#  * FCST_CLIMO_STDEV_soilm1m_20190601_000000_all_all_CONUS(lat, lon)
+#  * OBS_CLIMO_MEAN_soilm1m_20190601_000000_all_all_FULL(lat, lon)
+#  * OBS_CLIMO_MEAN_soilm1m_20190601_000000_all_all_CONUS(lat, lon)
+#  * OBS_CLIMO_STDEV_soilm1m_20190601_000000_all_all_FULL(lat, lon)
+#  * OBS_CLIMO_STDEV_soilm1m_20190601_000000_all_all_CONUS(lat, lon)
+#  * OBS_CLIMO_CDF_soilm1m_20190601_000000_all_all_FULL(lat, lon)
+#  * OBS_CLIMO_CDF_soilm1m_20190601_000000_all_all_CONUS(lat, lon)
 #
 # The output from SeriesAnalysis will be in the series_analysis directory (relative to
 # **OUTPUT_BASE**) and will contain 3 files::
