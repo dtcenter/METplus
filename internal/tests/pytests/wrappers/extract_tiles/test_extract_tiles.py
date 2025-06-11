@@ -2,6 +2,7 @@
 
 import pytest
 from unittest import mock
+
 import os
 import datetime
 
@@ -10,6 +11,7 @@ from metplus.wrappers.extract_tiles_wrapper import ExtractTilesWrapper
 
 def extract_tiles_wrapper(metplus_config):
     config = metplus_config
+    config.set('config', 'DO_NOT_RUN_EXE', True)
     config.set('config', 'PROCESS_LIST', 'ExtractTiles')
     config.set('config', 'LOOP_BY', 'INIT')
     config.set('config', 'INIT_TIME_FMT', '%Y%m%d')
@@ -53,12 +55,15 @@ def get_test_file(wrapper, input_type):
                       'data',
                       'mtd',
                       'fake_mtd_2d.txt')
+
     if input_type == "storm":
         return os.path.join(wrapper.config.getdir('METPLUS_BASE'),
                       'internal', 'tests',
                       'data',
                       'stat_data',
                       'fake_filter_20141214_00.tcst')
+
+    return None
 
 def get_storm_lines(wrapper):
     return get_input_lines(get_test_file(wrapper, 'storm'))
@@ -249,19 +254,27 @@ def test_get_grid(metplus_config, lat, lon, expected_result):
     "mtd"),
 ]
 )
-def test_run_extract_tiles(metplus_config, tool_config, input_type):
+def test_run_extract_tiles(tmp_path_factory, metplus_config, tool_config, input_type):
+    tmp_dir = tmp_path_factory.mktemp('tmp')
     config = metplus_config
+    config.set('config', 'INPUT_BASE', tmp_dir)
     for key, value in tool_config.items():
         config.set('config', key, value)
 
+
+    for lead in ('000', '006', '012', '018'):
+        for fcst_obs in ('fcst', 'obs'):
+            open(os.path.join(tmp_dir, f'{fcst_obs}{lead}.grb2'), 'w').close()
+
     with mock.patch.object(os.path, "exists", return_value=True):
         wrapper = extract_tiles_wrapper(config)
+        assert wrapper.isOK
         test_file = get_test_file(wrapper, input_type)
         with mock.patch.object(wrapper,
                     "get_location_input_file",
                     return_value=test_file):
             wrapper.run_all_times()
-    assert wrapper.isOK
+    assert not wrapper.errors
 
 
 def test_get_location_input_file(metplus_config):
@@ -279,9 +292,8 @@ def test_get_location_input_file(metplus_config):
     path = wrapper.get_location_input_file(time_info, 'TC_STAT')
     last_err = wrapper.logger.error.call_args_list[-1][0][0]
     assert 'Could not find TC_STAT file: /input/base/filter_20141214.tcst' in last_err
-    assert path == None
+    assert path is None
 
     with mock.patch.object(os.path, "exists", return_value=True):
         path = wrapper.get_location_input_file(time_info, 'TC_STAT')
         assert path == '/input/base/filter_20141214.tcst'
-    
