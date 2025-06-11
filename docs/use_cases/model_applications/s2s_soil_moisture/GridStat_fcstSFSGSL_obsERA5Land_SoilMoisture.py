@@ -137,9 +137,11 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 # values—representing months since January 1960—into actual calendar dates, then filters the 
 # data to retain only forecasts matching the specified valid month. It computes the ensemble 
 # mean over the 5-member ensemble and prepares the resulting data in a format suitable for input 
-# into the MET (Model Evaluation Tools) verification system.  The location of the code is 
+# into the MET (Model Evaluation Tools) verification system.  The code is located in::
+#
+#  * parm/use_cases/model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture
 # 
-# .. dropdown:: parm/use_cases/model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture/sfs_gsl_model_wrapper.py 
+# .. dropdown:: sfs_gsl_model_wrapper.py 
 #
 #   .. highlight:: python
 #   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture/sfs_gsl_model_wrapper.py
