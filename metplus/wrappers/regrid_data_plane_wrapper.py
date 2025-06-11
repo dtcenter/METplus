@@ -141,16 +141,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
             add_field_info_to_time_info(time_info, field_info)
 
-            input_name = field_info[f'{data_type.lower()}_name']
-            input_level = field_info[f'{data_type.lower()}_level']
-            input_extra = field_info.get(f'{data_type.lower()}_extra', '')
-            field_text_list = self.get_field_info(data_type,
-                                                  input_name,
-                                                  v_level=input_level,
-                                                  v_extra=input_extra)
-
-            for field_text in field_text_list:
-                self.args.append(f"-field '{field_text.strip('{ }')}'")
+            input_name = self._add_field_args(data_type, field_info)
 
             output_name = field_info.get(f'{data_type.lower()}_output_name')
             if output_name is None:
@@ -222,15 +213,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         for field_info in var_list:
             add_field_info_to_time_info(time_info, field_info)
 
-            input_name = field_info[f'{data_type.lower()}_name']
-            input_level = field_info[f'{data_type.lower()}_level']
-            input_extra = field_info.get(f'{data_type.lower()}_extra', '')
-            field_text_list = self.get_field_info(data_type,
-                                                  input_name,
-                                                  v_level=input_level,
-                                                  v_extra=input_extra)
-            for field_text in field_text_list:
-                self.args.append(f"-field '{field_text.strip('{ }')}'")
+            self._add_field_args(data_type, field_info)
 
         output_names = self.get_output_names(var_list, data_type)
 
@@ -242,6 +225,19 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
         # build and run commands
         return self.build()
+
+    def _add_field_args(self, data_type, field_info):
+        input_name = field_info[f'{data_type.lower()}_name']
+        input_level = field_info[f'{data_type.lower()}_level']
+        input_extra = field_info.get(f'{data_type.lower()}_extra', '')
+        field_text_list = self.get_field_info(data_type,
+                                              input_name,
+                                              v_level=input_level,
+                                              v_extra=input_extra)
+        for field_text in field_text_list:
+            self.args.append(f"-field '{field_text.strip('{ }')}'")
+
+        return input_name
 
     def run_at_time_once(self, time_info):
         """!Build command or commands to run at the given run time
