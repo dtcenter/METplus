@@ -12,7 +12,7 @@ Condition codes: 0 for success, 1 for failure
 
 import re
 
-from ..util import do_string_sub
+from ..util import do_string_sub, find_indices_in_config_section
 from . import LoopTimesWrapper
 from . import RegridDataPlaneWrapper
 
@@ -36,13 +36,7 @@ class PyEmbedIngestWrapper(LoopTimesWrapper):
 
         # find all PY_EMBED_INGEST_<n>_TEMPLATE keys in the conf files
         all_conf = self.config.keys('config')
-        indices = set()
-        regex = re.compile(r"PY_EMBED_INGEST_(\d+)_SCRIPT")
-        for conf in all_conf:
-            result = regex.match(conf)
-            if result is not None:
-                indices.add(result.group(1))
-
+        indices = find_indices_in_config_section(r"PY_EMBED_INGEST_(\d+)_SCRIPT", self.config).keys()
         indices = sorted(indices)
         for index in indices:
             input_type = self.config.getstr('config', 'PY_EMBED_INGEST_{}_TYPE'.format(index))
@@ -59,22 +53,15 @@ class PyEmbedIngestWrapper(LoopTimesWrapper):
             output_template = self.config.getraw('filename_templates',
                                                  'PY_EMBED_INGEST_{}_OUTPUT_TEMPLATE'.format(index))
             output_grid = self.config.getraw('config', 'PY_EMBED_INGEST_{}_OUTPUT_GRID'.format(index), '')
-            if output_grid == '':
+            if not output_grid:
                 self.log_error(f'Must set PY_EMBED_INGEST_{index}_OUTPUT_GRID')
 
-
-            ingest_script_search_text = f'PY_EMBED_INGEST_{index}_SCRIPT'
-            regex = re.compile(ingest_script_search_text + r"(.*)")
-            ingest_script_addons = []
-            for conf in all_conf:
-                result = regex.match(conf)
-                if result is not None:
-                    ingest_script_addons.append(result.group(1))
+            ingest_script_addons = self._get_ingest_script_addons(all_conf, index)
 
             # error if none are found
             if not ingest_script_addons:
                 self.log_error(f"No ingest scripts specified for PY_EMBED_INGEST_{index}")
-                return
+                return c_dict
 
             ingest_scripts = self.get_ingest_items('SCRIPT', index, ingest_script_addons)
             output_field_names = self.get_ingest_items('OUTPUT_FIELD_NAME', index, ingest_script_addons)
@@ -84,7 +71,7 @@ class PyEmbedIngestWrapper(LoopTimesWrapper):
                 self.log_error(f"If using PY_EMBED_INGEST_{index}_OUTPUT_FIELD_NAME*, the number "
                                "of output names must match the number of "
                                f"PY_EMBED_INGEST_{index}_SCRIPT* values")
-                return
+                return c_dict
 
             ingester_dict = {'output_dir': output_dir,
                              'output_template': output_template,
@@ -115,6 +102,17 @@ class PyEmbedIngestWrapper(LoopTimesWrapper):
         )
         c_dict['FIND_FILES'] = False
         return c_dict
+
+    @staticmethod
+    def _get_ingest_script_addons(all_conf, index):
+        ingest_script_search_text = f'PY_EMBED_INGEST_{index}_SCRIPT'
+        regex = re.compile(ingest_script_search_text + r"(.*)")
+        ingest_script_addons = []
+        for conf in all_conf:
+            result = regex.match(conf)
+            if result is not None:
+                ingest_script_addons.append(result.group(1))
+        return ingest_script_addons
 
     def get_ingest_items(self, item_type, index, ingest_script_addons):
         ingest_items = []
