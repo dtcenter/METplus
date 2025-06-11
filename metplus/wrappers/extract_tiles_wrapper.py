@@ -237,6 +237,9 @@ class ExtractTilesWrapper(LoopTimesWrapper):
         else:
             self.use_tc_stat_input(storm_dict, idx_dict)
 
+        if self.regrid_data_plane.errors:
+            self.errors += self.regrid_data_plane.errors
+
     def use_tc_stat_input(self, storm_dict, idx_dict):
         """! Find storms in TCStat input file and create tiles using the storm.
 
