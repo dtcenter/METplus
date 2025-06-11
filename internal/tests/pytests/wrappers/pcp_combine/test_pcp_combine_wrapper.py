@@ -983,3 +983,67 @@ def test_pcp_combine_derive_year_lookback(metplus_config, compare_command_and_en
 
     all_cmds = wrapper.run_all_times()
     compare_command_and_env_vars(all_cmds, expected_cmds, {}, wrapper, {})
+
+@pytest.mark.wrapper
+def test_pcp_combine_user_defined(metplus_config, get_test_data_dir):
+    config = metplus_config
+
+    test_data_dir = get_test_data_dir()
+    fcst_input_dir = os.path.join(test_data_dir, 'pcp_in', 'derive')
+    fcst_output_dir = '{OUTPUT_BASE}/PCP/derive'
+
+    fcst_name = 'APCP'
+    fcst_level = 'A03'
+    fcst_fmt = f'\'name="{fcst_name}"; level="{fcst_level}";\''
+
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+
+    config.set('config', 'PROCESS_LIST', 'PCPCombine')
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
+    config.set('config', 'INIT_BEG', '2005080700')
+    config.set('config', 'INIT_END', '2005080800')
+    config.set('config', 'INIT_INCREMENT', '1d')
+    config.set('config', 'LEAD_SEQ', '24H')
+    config.set('config', 'FCST_PCP_COMBINE_RUN', 'True')
+    config.set('config', 'FCST_PCP_COMBINE_METHOD', 'USER_DEFINED')
+    config.set('config', 'FCST_PCP_COMBINE_COMMAND',
+               "-derive sum,min,max,range,mean,stdev,vld_count "
+               + fcst_input_dir + "/{init?fmt=%Y%m%d%H}/wrfprs_ruc13_{lead?fmt=%HH}.tm00_G212 "
+               + fcst_input_dir + "/{init?fmt=%Y%m%d%H}/wrfprs_ruc13_{lead?fmt=%HH?shift=-3H}.tm00_G212 "
+               + fcst_input_dir + "/{init?fmt=%Y%m%d%H}/wrfprs_ruc13_{lead?fmt=%HH?shift=-6H}.tm00_G212 "
+               + fcst_input_dir + "/{init?fmt=%Y%m%d%H}/wrfprs_ruc13_{lead?fmt=%HH?shift=-9H}.tm00_G212 "
+               + fcst_input_dir + "/{init?fmt=%Y%m%d%H}/wrfprs_ruc13_{lead?fmt=%HH?shift=-12H}.tm00_G212 "
+               + fcst_input_dir + "/{init?fmt=%Y%m%d%H}/wrfprs_ruc13_{lead?fmt=%HH?shift=-15H}.tm00_G212 "
+               f"-field {fcst_fmt}")
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_DIR', fcst_input_dir)
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_DIR', fcst_output_dir)
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_TEMPLATE', 'wrfprs_ruc13_{init?fmt=%Y%m%d%H}_f{lead?fmt=%HH}_A{level?fmt=%HH}.nc')
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_ACCUM', 'A24')
+
+    wrapper = PCPCombineWrapper(config)
+    assert wrapper.isOK
+
+    app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
+    verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
+    out_dir = wrapper.c_dict.get('FCST_OUTPUT_DIR')
+    expected_cmds = []
+    for init_time in ('2005080700', '2005080800'):
+        expected_cmds.append(
+            f"{app_path} -derive sum,min,max,range,mean,stdev,vld_count "
+            f"{fcst_input_dir}/{init_time}/wrfprs_ruc13_24.tm00_G212 "
+            f"{fcst_input_dir}/{init_time}/wrfprs_ruc13_21.tm00_G212 "
+            f"{fcst_input_dir}/{init_time}/wrfprs_ruc13_18.tm00_G212 "
+            f"{fcst_input_dir}/{init_time}/wrfprs_ruc13_15.tm00_G212 "
+            f"{fcst_input_dir}/{init_time}/wrfprs_ruc13_12.tm00_G212 "
+            f"{fcst_input_dir}/{init_time}/wrfprs_ruc13_09.tm00_G212 "
+            f"-field {fcst_fmt} {out_dir}/wrfprs_ruc13_{init_time}_f24_A24.nc {verbosity}"
+        )
+
+    all_cmds = wrapper.run_all_times()
+    print(f"ALL COMMANDS: {all_cmds}")
+    assert len(all_cmds) == len(expected_cmds)
+
+    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
+        # ensure commands are generated as expected
+        assert cmd == expected_cmd
