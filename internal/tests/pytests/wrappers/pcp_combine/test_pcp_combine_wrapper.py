@@ -54,6 +54,15 @@ def pcp_combine_wrapper(metplus_config, d_type):
     set_minimum_config_settings(config, d_type)
     return PCPCombineWrapper(config)
 
+def set_pcp_combine_by_init(config, init_fmt, init_beg, init_end=None):
+    config.set('config', 'PROCESS_LIST', 'PCPCombine')
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', init_fmt)
+    config.set('config', 'INIT_BEG', init_beg)
+    if init_end is None:
+        init_end = init_beg
+    config.set('config', 'INIT_END', init_end)
+
 
 @pytest.mark.wrapper
 def test_get_accumulation_1_to_6(metplus_config, get_test_data_dir):
@@ -416,13 +425,7 @@ def test_pcp_combine_derive(metplus_config, get_test_data_dir, config_overrides,
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
     config.set('config', 'DO_NOT_RUN_EXE', True)
-
-    # set process and time config variables
-    config.set('config', 'PROCESS_LIST', 'PCPCombine')
-    config.set('config', 'LOOP_BY', 'INIT')
-    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
-    config.set('config', 'INIT_BEG', '2005080700')
-    config.set('config', 'INIT_END', '2005080700')
+    set_pcp_combine_by_init(config, '%Y%m%d%H', '2005080700')
     config.set('config', 'INIT_INCREMENT', '1M')
     config.set('config', 'LEAD_SEQ', '24H')
     config.set('config', 'LOOP_ORDER', 'times')
@@ -544,16 +547,10 @@ def test_pcp_combine_subtract(metplus_config, get_test_data_dir):
                                   'pcp_in',
                                   'derive')
     fcst_output_dir = '{OUTPUT_BASE}/PCP/subtract'
-    # set config variables to prevent command from running and bypass check
-    # if input files actually exist
+
     config.set('config', 'DO_NOT_RUN_EXE', True)
 
-    # set process and time config variables
-    config.set('config', 'PROCESS_LIST', 'PCPCombine')
-    config.set('config', 'LOOP_BY', 'INIT')
-    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
-    config.set('config', 'INIT_BEG', '2005080700')
-    config.set('config', 'INIT_END', '2005080700')
+    set_pcp_combine_by_init(config, '%Y%m%d%H', '2005080700')
     config.set('config', 'INIT_INCREMENT', '1M')
     config.set('config', 'LEAD_SEQ', '18H')
     config.set('config', 'LOOP_ORDER', 'times')
@@ -716,11 +713,7 @@ def test_add_method_single_file(metplus_config):
     config.set('config', 'INPUT_MUST_EXIST', False)
 
     # set process and time config variables
-    config.set('config', 'PROCESS_LIST', 'PCPCombine')
-    config.set('config', 'LOOP_BY', 'INIT')
-    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H%M')
-    config.set('config', 'INIT_BEG', '2019100200')
-    config.set('config', 'INIT_END', '2019100200')
+    set_pcp_combine_by_init(config, '%Y%m%d%H%M', '2019100200')
     config.set('config', 'INIT_INCREMENT', '3H')
     config.set('config', 'LEAD_SEQ', '24,27,30')
     config.set('config', 'LOOP_ORDER', 'times')
@@ -786,11 +779,7 @@ def test_subtract_method_zero_accum(metplus_config):
     config.set('config', 'INPUT_MUST_EXIST', False)
 
     # set process and time config variables
-    config.set('config', 'PROCESS_LIST', 'PCPCombine')
-    config.set('config', 'LOOP_BY', 'INIT')
-    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H%M')
-    config.set('config', 'INIT_BEG', '2019100200')
-    config.set('config', 'INIT_END', '2019100200')
+    set_pcp_combine_by_init(config, '%Y%m%d%H%M', '2019100200')
     config.set('config', 'INIT_INCREMENT', '3H')
     config.set('config', 'LEAD_SEQ', '1')
     config.set('config', 'LOOP_ORDER', 'times')
