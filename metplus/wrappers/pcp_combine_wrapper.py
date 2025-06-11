@@ -278,6 +278,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # add -name argument
         self._handle_name_argument(var_info, data_src)
 
+        # set level back to total accum (lookback) to substitute in the output file
+        time_info['level'] = lookback_seconds
+
         if not self.find_and_check_output_file(time_info=time_info):
             return True
 
