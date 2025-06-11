@@ -28,19 +28,31 @@ def rdp_wrapper(metplus_config):
 
 
 @pytest.mark.parametrize(
-    'once_per_field, missing, run, thresh, errors, allow_missing', [
-        (False, 10, 24, 0.5, 0, True),
-        (False, 10, 24, 0.6, 1, True),
-        (True, 10, 24, 0.5, 0, True),
-        (True, 10, 24, 0.6, 1, True),
-        (False, 10, 24, 0.5, 10, False),
-        (True, 10, 24, 0.5, 10, False),
+    'once_per_field, missing, run, thresh, errors, allow_missing, to_run', [
+        (False, 10, 24, 0.5, 0, True, ['FCST', 'OBS']),
+        (False, 10, 24, 0.6, 1, True, ['FCST', 'OBS']),
+        (True, 10, 24, 0.5, 0, True, ['FCST', 'OBS']),
+        (True, 10, 24, 0.6, 1, True, ['FCST', 'OBS']),
+        (False, 10, 24, 0.5, 10, False, ['FCST', 'OBS']),
+        (True, 10, 24, 0.5, 10, False, ['FCST', 'OBS']),
+        (False, 6, 12, 0.5, 0, True, ['FCST']),
+        (False, 6, 12, 0.6, 1, True, ['FCST']),
+        (True, 6, 12, 0.5, 0, True, ['FCST']),
+        (True, 6, 12, 0.6, 1, True, ['FCST']),
+        (False, 6, 12, 0.5, 6, False, ['FCST']),
+        (True, 6, 12, 0.5, 6, False, ['FCST']),
+        (False, 4, 12, 0.5, 0, True, ['OBS']),
+        (False, 4, 12, 0.7, 1, True, ['OBS']),
+        (True, 4, 12, 0.5, 0, True, ['OBS']),
+        (True, 4, 12, 0.7, 1, True, ['OBS']),
+        (False, 4, 12, 0.5, 4, False, ['OBS']),
+        (True, 4, 12, 0.5, 4, False, ['OBS']),
     ]
 )
 @pytest.mark.wrapper
 def test_regrid_data_plane_missing_inputs(metplus_config, get_test_data_dir,
                                          once_per_field, missing, run, thresh, errors,
-                                         allow_missing):
+                                         allow_missing, to_run):
     config = metplus_config
 
     config.set('config', 'INPUT_MUST_EXIST', True)
@@ -52,28 +64,31 @@ def test_regrid_data_plane_missing_inputs(metplus_config, get_test_data_dir,
     config.set('config', 'INIT_END', '2017051003')
     config.set('config', 'INIT_INCREMENT', '2H')
     config.set('config', 'LEAD_SEQ', '1,2,3,6,9,12')
-    config.set('config', 'FCST_REGRID_DATA_PLANE_RUN', True)
-    config.set('config', 'OBS_REGRID_DATA_PLANE_RUN', True)
-    config.set('config', 'FCST_REGRID_DATA_PLANE_INPUT_DIR', get_test_data_dir('fcst'))
-    config.set('config', 'OBS_REGRID_DATA_PLANE_INPUT_DIR', get_test_data_dir('obs'))
-    config.set('config', 'FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE',
-               '{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d_i%H}_f{lead?fmt=%3H}_HRRRTLE_PHPT.grb2')
-    config.set('config', 'OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE',
-               '{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A06.nc')
 
-    config.set('config', 'FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE',
-               '{OUTPUT_BASE}/{init?fmt=%Y%m%d_i%H}_f{lead?fmt=%3H}_HRRRTLE_PHPT.grb2')
-    config.set('config', 'OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE',
-               '{OUTPUT_BASE}/qpe_{valid?fmt=%Y%m%d%H}_A06.nc')
-    # add 2nd set of fields to test ONCE_PER_FIELD
-    config.set('config', 'FCST_VAR1_NAME', fcst_name)
-    config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
-    config.set('config', 'OBS_VAR1_NAME', obs_name)
-    config.set('config', 'OBS_VAR1_LEVELS', obs_level)
-    config.set('config', 'FCST_VAR2_NAME', fcst_name)
-    config.set('config', 'FCST_VAR2_LEVELS', fcst_level)
-    config.set('config', 'OBS_VAR2_NAME', obs_name)
-    config.set('config', 'OBS_VAR2_LEVELS', obs_level)
+    if 'FCST' in to_run:
+        config.set('config', 'FCST_REGRID_DATA_PLANE_RUN', True)
+        config.set('config', 'FCST_REGRID_DATA_PLANE_INPUT_DIR', get_test_data_dir('fcst'))
+        config.set('config', 'FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE',
+                   '{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d_i%H}_f{lead?fmt=%3H}_HRRRTLE_PHPT.grb2')
+        config.set('config', 'FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE',
+                   '{OUTPUT_BASE}/{init?fmt=%Y%m%d_i%H}_f{lead?fmt=%3H}_HRRRTLE_PHPT.grb2')
+        config.set('config', 'FCST_VAR1_NAME', fcst_name)
+        config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
+        config.set('config', 'FCST_VAR2_NAME', fcst_name)
+        config.set('config', 'FCST_VAR2_LEVELS', fcst_level)
+
+    if 'OBS' in to_run:
+        config.set('config', 'OBS_REGRID_DATA_PLANE_RUN', True)
+        config.set('config', 'OBS_REGRID_DATA_PLANE_INPUT_DIR', get_test_data_dir('obs'))
+        config.set('config', 'OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE',
+                   '{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A06.nc')
+        config.set('config', 'OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE',
+                   '{OUTPUT_BASE}/qpe_{valid?fmt=%Y%m%d%H}_A06.nc')
+        config.set('config', 'OBS_VAR1_NAME', obs_name)
+        config.set('config', 'OBS_VAR1_LEVELS', obs_level)
+        config.set('config', 'OBS_VAR2_NAME', obs_name)
+        config.set('config', 'OBS_VAR2_LEVELS', obs_level)
+
     config.set('config', 'REGRID_DATA_PLANE_ONCE_PER_FIELD', once_per_field)
 
     wrapper = RegridDataPlaneWrapper(config)
