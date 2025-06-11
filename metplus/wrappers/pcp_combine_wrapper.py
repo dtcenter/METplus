@@ -84,8 +84,10 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             c_dict['ALLOW_MULTIPLE_FILES'] = True
 
         # handle I/O directories and templates
+        # only require the input template to be set if not using SUM or USER_DEFINED method
+        required = c_dict[f'{d_type}_RUN_METHOD'] not in ("USER_DEFINED", "SUM")
         self.get_input_templates(c_dict,
-                                {d_type: {'prefix': f'{d_type}_PCP_COMBINE', 'required': True}},
+                                {d_type: {'prefix': f'{d_type}_PCP_COMBINE', 'required': required}},
                                  d_type=d_type)
 
         c_dict[f'{d_type}_OUTPUT_DIR'] = self.config.getdir(
@@ -205,11 +207,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             self.log_error('Statistic list is empty. Must set '
                            f'{d_type}_PCP_COMBINE_STAT_LIST if running '
                            'derive mode')
-
-        if (not c_dict[f'{d_type}_INPUT_TEMPLATE'] and
-                c_dict[f'{d_type}_RUN_METHOD'] != 'SUM'):
-            self.log_error(f"Must set {d_type}_PCP_COMBINE_INPUT_TEMPLATE "
-                           "unless using SUM method")
 
         if not c_dict[f'{d_type}_OUTPUT_TEMPLATE']:
             self.log_error(f"Must set {d_type}_PCP_COMBINE_OUTPUT_TEMPLATE")
