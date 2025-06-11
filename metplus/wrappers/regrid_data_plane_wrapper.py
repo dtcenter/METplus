@@ -149,10 +149,11 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
             self.args.append("-name " + output_name)
 
-            if not self.handle_output_file(time_info,
-                                           field_info,
-                                           data_type):
+            if not self.handle_output_file(time_info, field_info, data_type):
                 return False
+
+            # set environment variables
+            self.set_environment_variables(time_info)
 
             if not self.build():
                 return_status = False
@@ -223,6 +224,9 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         if not self.handle_output_file(time_info, var_list[0], data_type):
             return False
 
+        # set environment variables
+        self.set_environment_variables(time_info)
+
         # build and run commands
         return self.build()
 
@@ -261,9 +265,6 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         if not self.find_input_files(time_info, data_type):
             self.missing_input_count += 1
             return False
-
-        # set environment variables
-        self.set_environment_variables(time_info)
 
         # determine if running once for all fields or once per field
         # if running once per field, loop over field list and run once for each
