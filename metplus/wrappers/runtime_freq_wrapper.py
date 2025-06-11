@@ -110,6 +110,14 @@ class RuntimeFreqWrapper(CommandBuilder):
 
     def get_input_templates(self, c_dict, input_info=None, d_type=None):
         """!Read input templates from config.
+        Read *_TEMPLATE if *_INPUT_TEMPLATE is not set.
+
+        @param c_dict config dictionary
+        @param input_info dictionary of input info where key is label prefix
+        for config variables to read/set and value is a dictionary of settings
+        like prefix, required, and default.
+        @param d_type (optional) used to set TEMPLATE_DICT_{d_type} key in
+        c_dict instead of TEMPLATE_DICT, e.g. FCST or OBS
         """
         template_dict = {}
         if not input_info:
@@ -122,23 +130,36 @@ class RuntimeFreqWrapper(CommandBuilder):
             required = info.get('required', True)
 
             template = self.config.getraw('config', f'{prefix}_INPUT_FILE_LIST')
+            # if explicit file list is specified, use it
             if template:
                 c_dict['EXPLICIT_FILE_LIST'] = True
-            else:
-                input_dir = self.config.getdir(f'{prefix}_INPUT_DIR', '')
-                c_dict[f'{label}INPUT_DIR'] = input_dir
+                template_dict[label.rstrip('_')] = (template, True, False)
+                continue
+
+            # otherwise read INPUT_DIR/TEMPLATE
+            input_dir = self.config.getdir(f'{prefix}_INPUT_DIR', '')
+            c_dict[f'{label}INPUT_DIR'] = input_dir
+            templates = getlist(
+                self.config.getraw('config', f'{prefix}_INPUT_TEMPLATE')
+            )
+            # if *_INPUT_TEMPLATE is not set, check if *_TEMPLATE is set
+            if not templates:
                 templates = getlist(
-                    self.config.getraw('config', f'{prefix}_INPUT_TEMPLATE')
+                    self.config.getraw('config', f'{prefix}_TEMPLATE')
                 )
-                template = ','.join(templates)
-                c_dict[f'{label}INPUT_TEMPLATE'] = template
-                if not c_dict[f'{label}INPUT_TEMPLATE']:
-                    if required:
-                        self.log_error(f'{prefix}_INPUT_TEMPLATE required to run')
-                    continue
+
+            template = ','.join(templates)
+            c_dict[f'{label}INPUT_TEMPLATE'] = template
+            if not c_dict[f'{label}INPUT_TEMPLATE']:
+                # don't add template to output dictionary if it is not set
+                # report an error if it was marked as required
+                if required:
+                    self.log_error(f'{prefix}_INPUT_TEMPLATE required to run')
+                continue
 
             template_dict[label.rstrip('_')] = (template, True, False)
 
+        # set template dict to TEMPLATE_DICT unless d_type is specified
         key = 'TEMPLATE_DICT'
         if d_type:
             key = f'{key}_{d_type}'

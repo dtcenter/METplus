@@ -48,9 +48,12 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
             window_types.append(fcst_or_obs)
 
-            self.get_input_templates(c_dict,
-                                     {fcst_or_obs: {'prefix': f'{fcst_or_obs}_{app}', 'required': True}},
-                                     d_type=fcst_or_obs)
+            # support legacy FCST/OBS_REGRID_DATA_PLANE_TEMPLATE for INPUT_TEMPLATE
+            self.get_input_templates(
+                c_dict,
+                {fcst_or_obs: {'prefix': f'{fcst_or_obs}_{app}'}},
+                d_type=fcst_or_obs
+            )
 
             # read FCST/OBS_OUTPUT_DIR
             c_dict[f'{fcst_or_obs}_OUTPUT_DIR'] = (
