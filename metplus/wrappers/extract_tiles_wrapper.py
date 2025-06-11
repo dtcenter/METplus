@@ -255,13 +255,11 @@ class ExtractTilesWrapper(LoopTimesWrapper):
             # loop over storm track
             for storm_line in storm_lines:
                 track_data = {}
-                storm_data = self.get_data_from_track_line(idx_dict,
-                                                           storm_line)
+                storm_data = self.get_data_from_track_line(idx_dict, storm_line)
                 track_data['FCST'] = storm_data
                 track_data['OBS'] = storm_data
 
-                time_info = self.set_time_info_from_track_data(storm_data,
-                                                               storm_id)
+                time_info = self.set_time_info_from_track_data(storm_data, storm_id)
                 self.call_regrid_data_plane(time_info, track_data, 'TC_STAT')
 
     def use_mtd_input(self, object_dict, idx_dict):
@@ -362,6 +360,10 @@ class ExtractTilesWrapper(LoopTimesWrapper):
 
             # run RegridDataPlane wrapper
             self.regrid_data_plane.c_dict['DATA_SRC'] = data_type
+            self.regrid_data_plane.c_dict['TEMPLATE_DICT'] = self.regrid_data_plane.c_dict[f'TEMPLATE_DICT_{data_type}']
+            self.regrid_data_plane.c_dict['OUTPUT_DIR'] = self.regrid_data_plane.c_dict[f'{data_type}_OUTPUT_DIR']
+            self.regrid_data_plane.c_dict['OUTPUT_TEMPLATE'] = self.regrid_data_plane.c_dict[f'{data_type}_OUTPUT_TEMPLATE']
+            self.logger.debug(f'Calling regrid_data_plane for {data_type}')
             ret = self.regrid_data_plane.run_at_time_once(time_info)
             self.all_commands.extend(self.regrid_data_plane.all_commands)
             self.regrid_data_plane.all_commands.clear()
