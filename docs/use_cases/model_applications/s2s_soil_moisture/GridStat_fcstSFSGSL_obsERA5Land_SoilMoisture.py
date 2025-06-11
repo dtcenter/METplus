@@ -244,7 +244,7 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 #  * series_analysis_files_obs_init_ALL_valid_ALL_lead_ALL.txt
 #  * SFS-GSL-SA_vs_ERA5_June.nc
 #
-# The netCDF output from SeriesAnalysis contains 5 variable fields (not including the lat/lon
+# The netCDF file from SeriesAnalysis contains 5 variable fields (not including the lat/lon
 # fields).  Those variables are::
 #
 #  * series_cnt_TOTAL(lat, lon)
