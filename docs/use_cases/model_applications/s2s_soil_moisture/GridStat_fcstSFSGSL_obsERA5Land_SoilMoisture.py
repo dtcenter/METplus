@@ -216,7 +216,7 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 #  * grid_stat_SFS-GSL_vs_ERA5_060000L_YYYY0601_000000V.stat
 #
 # Each file should contain corresponding statistics for the line type(s) requested.
-# For the netCDF file output from Grid Stat, sixteen variable fields are present (not including 
+# For the netCDF file output from Grid Stat, 16 variable fields are present (not including 
 # the lat/lon fields). Those variables are::
 #
 #  * FCST_Soil_moisture_0-1m_FULL(lat, lon) 
