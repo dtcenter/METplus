@@ -80,7 +80,7 @@ def test_regrid_data_plane_missing_inputs(metplus_config, get_test_data_dir,
     if 'OBS' in to_run:
         config.set('config', 'OBS_REGRID_DATA_PLANE_RUN', True)
         config.set('config', 'OBS_REGRID_DATA_PLANE_INPUT_DIR', get_test_data_dir('obs'))
-        config.set('config', 'OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE',
+        config.set('config', 'OBS_REGRID_DATA_PLANE_TEMPLATE',
                    '{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A06.nc')
         config.set('config', 'OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE',
                    '{OUTPUT_BASE}/qpe_{valid?fmt=%Y%m%d%H}_A06.nc')
