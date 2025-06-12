@@ -522,7 +522,7 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         return all_files
 
-    def _check_input_files(self):
+    def _check_input_files(self, skip_log=False):
         if self.c_dict['ALL_FILES'] is True:
             return True
 
@@ -543,9 +543,16 @@ class RuntimeFreqWrapper(CommandBuilder):
             return True
 
         self.missing_input_count += num_missing
+
+        if skip_log:
+            return False
+
         msg = 'A problem occurred trying to obtain input files'
         if self.c_dict['ALLOW_MISSING_INPUTS']:
-            self.logger.warning(msg)
+            if self.c_dict.get('SUPPRESS_WARNINGS', False):
+                self.logger.debug(msg)
+            else:
+                self.logger.warning(msg)
         else:
             # increment error counter for GridDiag because it does not log error for each missing file
             if self.app_name in ('grid_diag', 'series_analysis'):
