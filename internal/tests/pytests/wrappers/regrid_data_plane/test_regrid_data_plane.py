@@ -2,10 +2,7 @@
 
 import pytest
 
-import datetime
-
 from metplus.wrappers.regrid_data_plane_wrapper import RegridDataPlaneWrapper
-from metplus.util import time_util
 
 fcst_name = 'APCP'
 fcst_level = 'A03'
@@ -31,39 +28,35 @@ def rdp_wrapper(metplus_config):
     'once_per_field, missing, run, thresh, errors, allow_missing, to_run', [
         (False, 10, 24, 0.5, 0, True, ['FCST', 'OBS']),
         (False, 10, 24, 0.6, 1, True, ['FCST', 'OBS']),
-        (True, 10, 24, 0.5, 0, True, ['FCST', 'OBS']),
-        (True, 10, 24, 0.6, 1, True, ['FCST', 'OBS']),
+        (True, 20, 48, 0.5, 0, True, ['FCST', 'OBS']),
+        (True, 20, 48, 0.6, 1, True, ['FCST', 'OBS']),
         (False, 10, 24, 0.5, 10, False, ['FCST', 'OBS']),
-        (True, 10, 24, 0.5, 10, False, ['FCST', 'OBS']),
+        (True, 20, 48, 0.5, 20, False, ['FCST', 'OBS']),
         (False, 6, 12, 0.5, 0, True, ['FCST']),
         (False, 6, 12, 0.6, 1, True, ['FCST']),
-        (True, 6, 12, 0.5, 0, True, ['FCST']),
-        (True, 6, 12, 0.6, 1, True, ['FCST']),
+        (True, 12, 24, 0.5, 0, True, ['FCST']),
+        (True, 12, 24, 0.6, 1, True, ['FCST']),
         (False, 6, 12, 0.5, 6, False, ['FCST']),
-        (True, 6, 12, 0.5, 6, False, ['FCST']),
+        (True, 12, 24, 0.5, 12, False, ['FCST']),
         (False, 4, 12, 0.5, 0, True, ['OBS']),
         (False, 4, 12, 0.7, 1, True, ['OBS']),
-        (True, 4, 12, 0.5, 0, True, ['OBS']),
-        (True, 4, 12, 0.7, 1, True, ['OBS']),
+        (True, 8, 24, 0.5, 0, True, ['OBS']),
+        (True, 8, 24, 0.7, 1, True, ['OBS']),
         (False, 4, 12, 0.5, 4, False, ['OBS']),
-        (True, 4, 12, 0.5, 4, False, ['OBS']),
+        (True, 8, 24, 0.5, 8, False, ['OBS']),
     ]
 )
 @pytest.mark.wrapper
-def test_regrid_data_plane_missing_inputs(metplus_config, get_test_data_dir,
-                                         once_per_field, missing, run, thresh, errors,
-                                         allow_missing, to_run):
+def test_regrid_data_plane_missing_inputs(metplus_config, get_test_data_dir, set_init_configs,
+                                          run_all_and_check_missing,
+                                          once_per_field, missing, run, thresh, errors,
+                                          allow_missing, to_run):
     config = metplus_config
 
     config.set('config', 'INPUT_MUST_EXIST', True)
     config.set('config', 'REGRID_DATA_PLANE_ALLOW_MISSING_INPUTS', allow_missing)
     config.set('config', 'REGRID_DATA_PLANE_INPUT_THRESH', thresh)
-    config.set('config', 'LOOP_BY', 'INIT')
-    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
-    config.set('config', 'INIT_BEG', '2017051001')
-    config.set('config', 'INIT_END', '2017051003')
-    config.set('config', 'INIT_INCREMENT', '2H')
-    config.set('config', 'LEAD_SEQ', '1,2,3,6,9,12')
+    set_init_configs(config)
 
     if 'FCST' in to_run:
         config.set('config', 'FCST_REGRID_DATA_PLANE_RUN', True)
@@ -92,16 +85,7 @@ def test_regrid_data_plane_missing_inputs(metplus_config, get_test_data_dir,
     config.set('config', 'REGRID_DATA_PLANE_ONCE_PER_FIELD', once_per_field)
 
     wrapper = RegridDataPlaneWrapper(config)
-    assert wrapper.isOK
-
-    all_cmds = wrapper.run_all_times()
-    for cmd, _ in all_cmds:
-        print(cmd)
-
-    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
-    assert wrapper.missing_input_count == missing
-    assert wrapper.run_count == run
-    assert wrapper.errors == errors
+    run_all_and_check_missing(wrapper, missing, run, errors)
 
 
 # field info is the input dictionary with name and level info to parse

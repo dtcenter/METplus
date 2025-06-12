@@ -35,8 +35,8 @@ def set_minimum_config_settings(config):
     'missing, run, thresh, errors, allow_missing, runtime_freq', obs_to_nc_runtime_freq_test_params
 )
 @pytest.mark.wrapper
-def test_ioda2nc_missing_inputs(metplus_config, get_test_data_dir, missing,
-                                run, thresh, errors, allow_missing, runtime_freq):
+def test_ioda2nc_missing_inputs(metplus_config, get_test_data_dir, run_all_and_check_missing,
+                                missing, run, thresh, errors, allow_missing, runtime_freq):
     config = metplus_config
     config.set('config', 'DO_NOT_RUN_EXE', True)
     config.set('config', 'INPUT_MUST_EXIST', True)
@@ -56,16 +56,7 @@ def test_ioda2nc_missing_inputs(metplus_config, get_test_data_dir, missing,
     config.set('config', 'IODA2NC_OUTPUT_TEMPLATE', '{OUTPUT_BASE}/IODA2NC/output/test.nc')
 
     wrapper = IODA2NCWrapper(config)
-    assert wrapper.isOK
-
-    all_cmds = wrapper.run_all_times()
-    for cmd, _ in all_cmds:
-        print(cmd)
-
-    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
-    assert wrapper.missing_input_count == missing
-    assert wrapper.run_count == run
-    assert wrapper.errors == errors
+    run_all_and_check_missing(wrapper, missing, run, errors)
 
 
 @pytest.mark.parametrize(
