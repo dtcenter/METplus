@@ -38,6 +38,7 @@ CSV_EXTENSIONS = [
 ]
 
 UNSUPPORTED_EXTENSIONS = [
+    '',
 ]
 
 # keywords to search and skip diff tests if found in file path
@@ -314,12 +315,6 @@ def _handle_image_files(filepath_a, filepath_b, save_diff):
 
 def _handle_text_files(filepath_a, filepath_b, dir_a, dir_b):
     print("Comparing text files")
-    # temporary test to see if any files without ext get compared
-    # REMOVE WHEN FINISHED
-    _, file_extension = os.path.splitext(filepath)
-    if file_extension=='':
-        print(f"ERROR: checking a file without extension")
-        return filepath_a, filepath_b, 'Text diff', '' 
     
     if filecmp.cmp(filepath_a, filepath_b, shallow=False):
         print("No differences found from filecmp.cmp")
