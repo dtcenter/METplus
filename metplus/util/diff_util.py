@@ -314,6 +314,12 @@ def _handle_image_files(filepath_a, filepath_b, save_diff):
 
 def _handle_text_files(filepath_a, filepath_b, dir_a, dir_b):
     print("Comparing text files")
+    # temporary test to see if any files without ext get compared
+    # REMOVE WHEN FINISHED
+    _, file_extension = os.path.splitext(filepath)
+    if file_extension=='':
+        print(f"ERROR: checking a file without extension")
+        return filepath_a, filepath_b, 'Text diff', '' 
     
     if filecmp.cmp(filepath_a, filepath_b, shallow=False):
         print("No differences found from filecmp.cmp")
@@ -592,8 +598,8 @@ def diff_text_lines(lines_a, lines_b, dir_a=None, dir_b=None,
 
         # skip FILTER and JOB_LIST lines due to expected filepath diffs
         if (compare_a.startswith('FILTER') or compare_a.startswith('JOB_LIST')):
-            print("Found a FILTER or JOB_LIST line")    # *** TEMP CHECK: REMOVE ****
-            all_good = False                            # *** TEMP CHECK: REMOVE ****
+            # print("Found a FILTER or JOB_LIST line")    # *** TEMP CHECK: REMOVE ****
+            # all_good = False                            # *** TEMP CHECK: REMOVE ****
             continue
 
         # try replacing dir_b with dir_a in line_b 
