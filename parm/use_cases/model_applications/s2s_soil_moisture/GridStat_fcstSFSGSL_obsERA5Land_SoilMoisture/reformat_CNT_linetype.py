@@ -15,10 +15,10 @@ logger = logging.getLogger(__name__)
 
 def main():
 
-    # Read in the YAML configuration file.  Environment variables in
-    # the configuration file are supported.
-    input_config_file = os.getenv("REFORMAT_YAML_CONFIG_NAME", "reformat_CNT.yaml")
-    settings = readconfig.parse_config(input_config_file)
+    # Read in the YAML configuration file.  Environment variables in the 
+    # configuration file are supported.
+    input_cnt_config_file = os.getenv("REFORMAT_YAML_CONFIG_NAME", "reformat_CNT.yaml")
+    settings = readconfig.parse_config(input_cnt_config_file)
     logging.info(settings)
 
 
@@ -28,7 +28,7 @@ def main():
     xml_loadfile_obj: XmlLoadFile = XmlLoadFile(None)
 
     # Retrieve all the filenames in the data_dir specified in the YAML config file
-    load_files = xml_loadfile_obj.filenames_from_template(settings['input_data_dir'],
+    load_cnt_files = xml_loadfile_obj.filenames_from_template(settings['input_data_dir'],
 
                                                               {})
     flags = xml_loadfile_obj.flags
@@ -36,7 +36,7 @@ def main():
     line_types = xml_loadfile_obj.line_types
     print(line_types)
     beg_read_data = time.perf_counter()
-    rdf_obj.read_data(flags, load_files, line_types)
+    rdf_obj.read_data(flags, load_cnt_files, line_types)
     end_read_data = time.perf_counter()
     time_to_read = end_read_data - beg_read_data
     logger.info("Time to read input .stat data files using METdbLoad: %f", time_to_read)
