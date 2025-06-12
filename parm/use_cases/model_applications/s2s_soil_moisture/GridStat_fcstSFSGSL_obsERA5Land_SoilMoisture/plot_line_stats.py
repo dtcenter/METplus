@@ -40,10 +40,10 @@ def main():
 
         try:
             start = perf_counter()
-            outplot = line.Line(settings)
-            outplot.save_to_file()
-            outplot.write_html()
-            outplot.write_output_file()
+            plot = line.Line(settings)
+            plot.save_to_file()
+            plot.write_html()
+            plot.write_output_file()
             end = perf_counter()
             execution_time = end - start
             outplot.logger.info(f"Finished creating line plot, execution time: {execution_time} seconds")
