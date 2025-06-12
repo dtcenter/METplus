@@ -70,9 +70,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                                f"must be set if {fcst_or_obs}_{app}_RUN")
                 continue
 
-            c_dict[f'{fcst_or_obs}_OUTPUT_TEMPLATE'] = (
-                self.config.getraw('config', name)
-            )
+            c_dict[f'{fcst_or_obs}_OUTPUT_TEMPLATE'] = self.config.getraw('config', name)
 
             # set list of variables (fields)
             c_dict[f'VAR_LIST_{fcst_or_obs}'] = parse_var_list(
@@ -83,24 +81,19 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
         self.handle_file_window_variables(c_dict, data_types=window_types)
 
-        c_dict['VERIFICATION_GRID'] = \
-            self.config.getraw('config', 'REGRID_DATA_PLANE_VERIF_GRID', '')
+        c_dict['VERIFICATION_GRID'] = self.config.getraw('config', 'REGRID_DATA_PLANE_VERIF_GRID')
 
-        c_dict['METHOD'] = \
-          self.config.getstr('config', 'REGRID_DATA_PLANE_METHOD', '')
+        c_dict['METHOD'] = self.config.getraw('config', 'REGRID_DATA_PLANE_METHOD')
 
-        c_dict['WIDTH'] = \
-         self.config.getint('config', 'REGRID_DATA_PLANE_WIDTH', 1)
+        c_dict['WIDTH'] = self.config.getint('config', 'REGRID_DATA_PLANE_WIDTH', 1)
 
-        c_dict['GAUSSIAN_DX'] = \
-         self.config.getstr('config', 'REGRID_DATA_PLANE_GAUSSIAN_DX', '')
+        c_dict['GAUSSIAN_DX'] = self.config.getstr('config', 'REGRID_DATA_PLANE_GAUSSIAN_DX', '')
 
-        c_dict['GAUSSIAN_RADIUS'] = \
-         self.config.getstr('config', 'REGRID_DATA_PLANE_GAUSSIAN_RADIUS', '')
+        c_dict['GAUSSIAN_RADIUS'] = self.config.getstr('config', 'REGRID_DATA_PLANE_GAUSSIAN_RADIUS', '')
 
         # only check if VERIFICATION_GRID is set if running the tool from the process list
-        # RegridDataPlane can be called from other tools like CustomIngest, which sets the
-        # verification grid itself
+        # RegridDataPlane can be called from other tools like PyEmbedIngest,
+        # which sets the verification grid itself
         if 'RegridDataPlane' in get_process_list(self.config):
             if not c_dict['VERIFICATION_GRID']:
                 self.log_error("REGRID_DATA_PLANE_VERIF_GRID must be set.")
