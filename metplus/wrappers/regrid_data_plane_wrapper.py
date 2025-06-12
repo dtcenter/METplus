@@ -97,9 +97,42 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         if 'RegridDataPlane' in get_process_list(self.config):
             if not c_dict['VERIFICATION_GRID']:
                 self.log_error("REGRID_DATA_PLANE_VERIF_GRID must be set.")
-        # skip RuntimeFreq input file logic - remove once integrated
-        c_dict['FIND_FILES'] = False
+
         return c_dict
+
+    def run_at_time_once(self, time_info):
+        """!Build command or commands to run at the given run time
+
+            @param time_info time dictionary used for string substitution
+        """
+        data_type = self.c_dict['DATA_SRC']
+        return_status = True
+        for file_dict in self.c_dict['ALL_FILES']:
+            self.clear()
+            if not file_dict.get(data_type): continue
+
+            # add the input file
+            self.infiles.extend(file_dict.get(data_type))
+
+            # add verification grid info
+            grid = do_string_sub(self.c_dict['VERIFICATION_GRID'], **time_info)
+
+            # put quotes around verification grid in case it is a grid description
+            self.infiles.append(f'"{grid}"')
+
+            # if no field info or input field configs are set, error and return
+            if not file_dict.get('var_list'):
+                self.log_error('No input fields were specified to '
+                               'RegridDataPlane. You must set '
+                               f'{data_type}_REGRID_DATA_PLANE_VAR<n>_INPUT_FIELD_'
+                               f'NAME or {data_type}_VAR<n>_NAME.')
+                return_status = False
+                continue
+
+            if not self.run_once_for_all_fields(time_info, file_dict['var_list'], data_type):
+                return_status = False
+
+        return return_status
 
     def handle_output_file(self, time_info, field_info, data_type):
         """! Add field level to time_info dict so it can be referenced in
@@ -233,59 +266,6 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
         return input_name
 
-    def run_at_time_once(self, time_info):
-        """!Build command or commands to run at the given run time
-
-            @param time_info time dictionary used for string substitution
-        """
-        self.clear()
-        var_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
-        data_type = self.c_dict['DATA_SRC']
-
-        # if no field info or input field configs are set, error and return
-        if not var_list:
-            self.log_error('No input fields were specified to '
-                           'RegridDataPlane. You must set '
-                           f'{data_type}_REGRID_DATA_PLANE_VAR<n>_INPUT_FIELD_'
-                           f'NAME or {data_type}_VAR<n>_NAME.')
-            return False
-
-        add_field_info_to_time_info(time_info, var_list[0])
-        self.run_count += 1
-        if not self.find_input_files(time_info, data_type):
-            self.missing_input_count += 1
-            return False
-
-        # determine if running once for all fields or once per field
-        # if running once per field, loop over field list and run once for each
-        if self.c_dict['ONCE_PER_FIELD']:
-            return self.run_once_per_field(time_info, var_list, data_type)
-
-        # if not running once per field, process all fields and run once
-        return self.run_once_for_all_fields(time_info, var_list, data_type)
-
-    def find_input_files(self, time_info, data_type):
-        """!Get input file and verification grid to process. Use the first
-         field in the list to substitute level if that is provided in the
-         filename template
-
-         @param time_info time dictionary used for string substitution
-         @param data_type type of data to process, i.e. FCST or OBS
-         @returns list of input files if files were found, None if not
-         """
-        input_path = self.find_data(time_info, data_type=data_type)
-        if not input_path:
-            return None
-
-        self.infiles.append(input_path)
-
-        grid = do_string_sub(self.c_dict['VERIFICATION_GRID'], **time_info)
-
-        # put quotes around verification grid in case it is a grid description
-        self.infiles.append(f'"{grid}"')
-
-        return time_info
-
     def set_command_line_arguments(self):
         """!Returns False if command should not be run"""
 
@@ -303,25 +283,3 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             self.args.append(f"-gaussian_radius {self.c_dict['GAUSSIAN_RADIUS']}")
 
         return True
-
-    def set_field_command_line_arguments(self, field_info, data_type):
-        """!Sets command line arguments for an input field.
-            Args:
-                @param field_info field dictionary to read level information
-                @param data_type type of data to process, i.e. FCST or OBS
-                @returns input name to be used as output name if not explicitly set
-        """
-
-        field_name = field_info[f'{data_type.lower()}_name']
-        # strip off quotes around input_level if found
-        input_level = remove_quotes(field_info[f'{data_type.lower()}_level'])
-
-        field_text = f"-field 'name=\"{field_name}\";"
-
-        if input_level:
-            field_text +=f" level=\"{input_level}\";"
-
-        field_text += "'"
-        self.args.append(field_text)
-
-        return field_name
