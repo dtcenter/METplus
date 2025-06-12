@@ -566,29 +566,42 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
         return False
 
     if diff_text_lines(lines_a, lines_b, dir_a=dir_a, dir_b=dir_b,
-                       print_error=False, is_file_list=is_file_list,
-                       is_stat_file=is_stat_file, header_a=header_a):
+                       print_error=False, is_stat_file=is_stat_file, 
+                       header_a=header_a):
         return True
 
     # if differences found in text file, sort and try again
     lines_a.sort()
     lines_b.sort()
     return diff_text_lines(lines_a, lines_b, dir_a=dir_a, dir_b=dir_b,
-                           print_error=True, is_file_list=is_file_list,
-                           is_stat_file=is_stat_file, header_a=header_a)
+                           print_error=True, is_stat_file=is_stat_file, 
+                           header_a=header_a)
 
 
 def diff_text_lines(lines_a, lines_b, dir_a=None, dir_b=None,
-                    print_error=False, is_file_list=False, is_stat_file=False,
+                    print_error=False, is_stat_file=False,
                     header_a=None):
     all_good = True
     for line_a, line_b in zip(lines_a, lines_b):
         compare_a = line_a
         compare_b = line_b
-        # if files are file list files, compare each line after replacing
-        # dir_b with dir_a in filepath_b
-        if is_file_list and dir_a and dir_b:
+
+        # initial check to skip lines without diffs
+        if compare_a == compare_b:
+            continue
+
+        # skip FILTER and JOB_LIST lines due to expected filepath diffs
+        if (compare_a.startswith('FILTER') or compare_a.startswith('JOB_LIST')):
+            print("Found a FILTER or JOB_LIST line")    # *** TEMP CHECK: REMOVE ****
+            all_good = False                            # *** TEMP CHECK: REMOVE ****
+            continue
+
+        # try replacing dir_b with dir_a in line_b 
+        # for cases where diff is due to filepath
+        try:
             compare_b = compare_b.replace(dir_b, dir_a)
+        except TypeError:       # don't error if missing dir_a or dir_b
+            pass
 
         # check for differences
         if compare_a == compare_b:
