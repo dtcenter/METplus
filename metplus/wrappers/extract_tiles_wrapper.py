@@ -168,7 +168,10 @@ class ExtractTilesWrapper(LoopTimesWrapper):
         """
         rdp = 'REGRID_DATA_PLANE'
 
-        overrides = {f'{rdp}_METHOD': 'NEAREST'}
+        overrides = {
+            f'{rdp}_METHOD': 'NEAREST',
+            f'{rdp}_ALLOW_MISSING_INPUTS': True,
+        }
         for data_type in ['FCST', 'OBS']:
             overrides[f'{data_type}_{rdp}_RUN'] = True
 
@@ -364,6 +367,10 @@ class ExtractTilesWrapper(LoopTimesWrapper):
             self.regrid_data_plane.c_dict['OUTPUT_DIR'] = self.regrid_data_plane.c_dict[f'{data_type}_OUTPUT_DIR']
             self.regrid_data_plane.c_dict['OUTPUT_TEMPLATE'] = self.regrid_data_plane.c_dict[f'{data_type}_OUTPUT_TEMPLATE']
             self.logger.debug(f'Calling regrid_data_plane for {data_type}')
+            self.regrid_data_plane.c_dict['ALL_FILES'] = self.regrid_data_plane.get_all_files_for_each(time_info)
+            if not self.regrid_data_plane._check_input_files(skip_log=True):
+                break
+
             ret = self.regrid_data_plane.run_at_time_once(time_info)
             self.all_commands.extend(self.regrid_data_plane.all_commands)
             self.regrid_data_plane.all_commands.clear()
