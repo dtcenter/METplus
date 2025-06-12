@@ -13,6 +13,34 @@ WIDTH_1 = '-width 1'
 GAUSSIAN_DX_2 = '-gaussian_dx 2'
 METHOD_BUDGET = '-method BUDGET'
 
+fcst_name1 = 'FNAME1'
+fcst_level1 = 'A06'
+fcst_name2 = 'FNAME2'
+fcst_level2 = 'A03'
+fcst_out2 = 'OUTNAME2'
+
+test_var_list = [
+    {'index': '1', 'fcst_name': fcst_name1, 'fcst_level': fcst_level1},
+    {'index': '2', 'fcst_name': fcst_name2, 'fcst_level': fcst_level2, 'fcst_output_name': fcst_out2},
+]
+
+def set_test_configs(config):
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+    config.set('config', 'LOOP_BY', 'VALID')
+    config.set('config', 'VALID_TIME_FMT', '%Y%m%d')
+    config.set('config', 'VALID_BEG', '20180201')
+    config.set('config', 'FCST_REGRID_DATA_PLANE_VAR1_INPUT_FIELD_NAME', fcst_name1)
+    config.set('config', 'FCST_REGRID_DATA_PLANE_VAR1_INPUT_LEVEL', fcst_level1)
+    config.set('config', 'FCST_REGRID_DATA_PLANE_VAR2_INPUT_FIELD_NAME', fcst_name2)
+    config.set('config', 'FCST_REGRID_DATA_PLANE_VAR2_INPUT_LEVEL', fcst_level2)
+    config.set('config', 'FCST_REGRID_DATA_PLANE_VAR2_OUTPUT_FIELD_NAME', fcst_out2)
+    config.set('config', 'FCST_REGRID_DATA_PLANE_RUN', True)
+    config.set('config', 'FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}_ZENITH')
+    config.set('config', 'REGRID_DATA_PLANE_METHOD', 'BUDGET')
+    config.set('config', 'REGRID_DATA_PLANE_WIDTH', '2')
+    config.set('config', 'REGRID_DATA_PLANE_VERIF_GRID', 'VERIF_GRID')
+    config.set('config', 'FCST_REGRID_DATA_PLANE_OUTPUT_DIR', '{OUTPUT_BASE}/RDP_test')
+
 def rdp_wrapper(metplus_config):
     """! Returns a default RegridDataPlane with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
@@ -88,55 +116,6 @@ def test_regrid_data_plane_missing_inputs(metplus_config, get_test_data_dir, set
     run_all_and_check_missing(wrapper, missing, run, errors)
 
 
-# field info is the input dictionary with name and level info to parse
-# expected_arg is the argument that should be set by the function
-# note: did not include OBS because they are handled the same way as FCST
-@pytest.mark.parametrize(
-    'field_info, expected_arg', [
-
-        # 0) name/level
-        ({'fcst_name': 'F_NAME',
-          'fcst_level': "\"(1,*,*)\""},
-          "-field 'name=\"F_NAME\"; level=\"(1,*,*)\";'"
-         ),
-
-        # 1) python embedding script
-        ({'fcst_name': 'my_script.py some args',
-          'fcst_level': ""},
-         "-field 'name=\"my_script.py some args\";'"
-         ),
-
-        # 2) name/level
-        ({'fcst_name': 'F_NAME',
-          'fcst_level': "A06"},
-         "-field 'name=\"F_NAME\"; level=\"A06\";'"
-         ),
-
-        # 3) name, no level
-        ({'fcst_name': 'F_NAME',
-          'fcst_level': ""},
-         "-field 'name=\"F_NAME\";'"
-         ),
-
-        # 4) python embedding script
-        ({'fcst_name': 'my_script.py some args',
-          'fcst_level': ""},
-         "-field 'name=\"my_script.py some args\";'"
-         ),
-    ]
-)
-@pytest.mark.wrapper
-def test_set_field_command_line_arguments(metplus_config, field_info, expected_arg):
-    data_type = 'FCST'
-
-    config = metplus_config
-
-    rdp = RegridDataPlaneWrapper(config)
-
-    rdp.set_field_command_line_arguments(field_info, data_type)
-    assert rdp.args[0] == expected_arg
-
-
 @pytest.mark.parametrize(
     'var_list, expected_names', [
 
@@ -207,84 +186,46 @@ def _override_c_dict(wrapper, var_list, data_type):
     wrapper.c_dict['OUTPUT_DIR'] = wrapper.c_dict[f'{data_type}_OUTPUT_DIR']
     wrapper.c_dict['OUTPUT_TEMPLATE'] = wrapper.c_dict[f'{data_type}_OUTPUT_TEMPLATE']
 
+
 @pytest.mark.wrapper
 def test_run_rdp_once_per_field(metplus_config):
-    data_type = 'FCST'
-
-    input_dict = {'valid': datetime.datetime.strptime("201802010000",'%Y%m%d%H%M'),
-                  'lead': 0}
-    time_info = time_util.ti_calculate(input_dict)
-
-    var_list = [{'index': '1', 'fcst_name': 'FNAME1', 'fcst_level': 'A06'},
-                {'index': '2', 'fcst_name': 'FNAME2', 'fcst_level': 'A03', 'fcst_output_name': 'OUTNAME2'},
-                ]
-
     config = metplus_config
-    config.set('config', 'DO_NOT_RUN_EXE', True)
-    config.set('config', 'FCST_REGRID_DATA_PLANE_RUN', True)
     config.set('config', 'REGRID_DATA_PLANE_ONCE_PER_FIELD', True)
     config.set('config', 'FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}_accum{level?fmt=%2H}.nc')
-    config.set('config', 'FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}_ZENITH')
-    config.set('config', 'REGRID_DATA_PLANE_METHOD', 'BUDGET')
-    config.set('config', 'REGRID_DATA_PLANE_WIDTH', '2')
-    config.set('config', 'REGRID_DATA_PLANE_VERIF_GRID', 'VERIF_GRID')
-    config.set('config', 'FCST_REGRID_DATA_PLANE_OUTPUT_DIR', '{OUTPUT_BASE}/RDP_test')
+    set_test_configs(config)
 
     wrapper = RegridDataPlaneWrapper(config)
-    _override_c_dict(wrapper, var_list, data_type)
-    wrapper.run_at_time_once(time_info)
+    _override_c_dict(wrapper, test_var_list, 'FCST')
 
-    expected_cmds = [f"{wrapper.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME1\"; "
-                     "level=\"A06\";' -name FNAME1 2018020100_ZENITH \"VERIF_GRID\" "
-                     f"{wrapper.config.getdir('OUTPUT_BASE')}/RDP_test/2018020100_accum06.nc",
-                     f"{wrapper.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME2\"; "
-                     "level=\"A03\";' -name OUTNAME2 2018020100_ZENITH \"VERIF_GRID\" "
-                     f"{wrapper.config.getdir('OUTPUT_BASE')}/RDP_test/2018020100_accum03.nc",
-                     ]
+    wrapper.run_all_times()
 
-    test_passed = True
+    expected_cmds = [
+        f"{wrapper.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME1\"; "
+        "level=\"A06\";' -name FNAME1 2018020100_ZENITH \"VERIF_GRID\" "
+        f"{wrapper.config.getdir('OUTPUT_BASE')}/RDP_test/2018020100_accum06.nc",
+        f"{wrapper.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME2\"; "
+        "level=\"A03\";' -name OUTNAME2 2018020100_ZENITH \"VERIF_GRID\" "
+       f"{wrapper.config.getdir('OUTPUT_BASE')}/RDP_test/2018020100_accum03.nc",
+    ]
 
-    if len(wrapper.all_commands) != len(expected_cmds):
-        print("Number of commands run is not the same as expected")
-        print(f"Actual commands: {wrapper.all_commands}\n")
-        print(f"Expected commands: {expected_cmds}\n")
-        assert False
-
+    assert len(wrapper.all_commands) == len(expected_cmds)
     for (cmd, _), expected_cmd in zip(wrapper.all_commands, expected_cmds):
         print(f"  ACTUAL:{cmd}")
         print(f"EXPECTED:{expected_cmd}")
-        if cmd != expected_cmd:
-            test_passed = False
-
-    assert test_passed
+        assert cmd == expected_cmd
 
 
 @pytest.mark.wrapper
 def test_run_rdp_all_fields(metplus_config):
-    data_type = 'FCST'
-
-    input_dict = {'valid': datetime.datetime.strptime("201802010000",'%Y%m%d%H%M'),
-                  'lead': 0}
-    time_info = time_util.ti_calculate(input_dict)
-
-    var_list = [{'index': '1', 'fcst_name': 'FNAME1', 'fcst_level': 'A06'},
-                {'index': '2', 'fcst_name': 'FNAME2', 'fcst_level': 'A03', 'fcst_output_name': 'OUTNAME2'},
-                ]
-
     config = metplus_config
-    config.set('config', 'DO_NOT_RUN_EXE', True)
-    config.set('config', 'FCST_REGRID_DATA_PLANE_RUN', True)
     config.set('config', 'REGRID_DATA_PLANE_ONCE_PER_FIELD', False)
-    config.set('config', 'FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}_ZENITH')
-    config.set('config', 'REGRID_DATA_PLANE_METHOD', 'BUDGET')
-    config.set('config', 'REGRID_DATA_PLANE_WIDTH', '2')
-    config.set('config', 'REGRID_DATA_PLANE_VERIF_GRID', 'VERIF_GRID')
-    config.set('config', 'FCST_REGRID_DATA_PLANE_OUTPUT_DIR', '{OUTPUT_BASE}/RDP_test')
     config.set('config', 'FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}_ALL.nc')
+    set_test_configs(config)
 
     wrapper = RegridDataPlaneWrapper(config)
-    _override_c_dict(wrapper, var_list, data_type)
-    wrapper.run_at_time_once(time_info)
+    _override_c_dict(wrapper, test_var_list, 'FCST')
+
+    wrapper.run_all_times()
 
     expected_cmds = [f"{wrapper.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME1\"; "
                      "level=\"A06\";' -field 'name=\"FNAME2\"; level=\"A03\";' "
