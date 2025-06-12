@@ -553,11 +553,14 @@ class RuntimeFreqWrapper(CommandBuilder):
                 self.logger.debug(msg)
             else:
                 self.logger.warning(msg)
-        else:
-            # increment error counter for GridDiag because it does not log error for each missing file
-            if self.app_name in ('grid_diag', 'series_analysis'):
-                self.errors += 1
-            self.logger.error(msg)
+
+            return False
+
+        # increment error counter for GridDiag because it does not log error for each missing file
+        if self.app_name in ('grid_diag', 'series_analysis'):
+            self.errors += 1
+        self.logger.error(msg)
+
         return False
 
     @staticmethod
