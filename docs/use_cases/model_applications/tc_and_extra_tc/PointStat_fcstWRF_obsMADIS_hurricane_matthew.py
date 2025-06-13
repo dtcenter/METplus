@@ -17,6 +17,22 @@ model_applications/tc_and_extra_tc/PointStat_fcstWRF_obsMADIS_hurricane_matthew.
 #
 # Perform verification of WRF data generated over Hurricane Matthew from 2016
 # using MADIS RAOB and METAR observations.
+# This use case was created originally to serve the needs of the NSF-funded
+# I-WRF project (https://i-wrf.org).
+# The goal of I-WRF is to create a series of connected software containers to
+# enable multi-node WRF simulations, verification with METplus, and
+# visualization that can run on a range of platforms
+# (HPC, cloud environments, and laptops), in order to lower the bar for
+# researchers and students to tackle interesting scientific questions with
+# WRF and METplus.
+# This Hurricane Matthew use case borrows the inputs and configuration from the
+# first simulation in the WRF Online Tutorial, and both the WRF and METplus
+# configurations here were designed to provide a simple, initial demo case for
+# a small domain that would run quickly and confirm for users that the
+# containers are working as expected.
+# The I-WRF project provided the funding to add the capability of METplus to
+# read in native WRF output files directly, in order to avoid the extra
+# complicating step of running WRF output through UPP to generate grib files.
 
 ##############################################################################
 # Version Added
