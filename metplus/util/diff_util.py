@@ -27,6 +27,7 @@ SKIP_EXTENSIONS = [
     '.gif',
     '.ix',
     '.log',
+    '',
 ]
 
 PDF_EXTENSIONS = [
@@ -38,7 +39,6 @@ CSV_EXTENSIONS = [
 ]
 
 UNSUPPORTED_EXTENSIONS = [
-    '',
 ]
 
 # keywords to search and skip diff tests if found in file path
@@ -230,7 +230,11 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
 
     file_type = get_file_type(filepath_a)
     if file_type.startswith('skip'):
-        print(f"Skipping {file_type.split(' ')[1]} file")
+        file_ext = file_type.split(' ')[1]
+        if file_ext:
+            print(f"Skipping {file_ext} file")
+        else:
+            print("Skipping file without extension")
         return None
 
     if file_type.startswith('unsupported'):
