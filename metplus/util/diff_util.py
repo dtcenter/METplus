@@ -731,19 +731,30 @@ def _nc_fields_are_equal(field, nc_a, nc_b, debug=False):
                   "differ\n"
                   f" File_A: {var_a[:]}\n File_B: {var_b[:]}")
             return False
-
         return True
+    except ValueError:
+        # check if shapes are not equal
+        if values_a.shape != values_b.shape:
+            print(f"ERROR: Field {field} values don't have the same shape")
+            return False
+        raise
 
     # if any NaN values in either data set, min and max of diff will be NaN
     # compare each value
-    if isnull(values_diff.min()) and isnull(values_diff.max()):
-        print(f"Variable {field} contains NaN. Comparing each value...")
-        if not _all_values_are_equal(var_a, var_b):
-            print(f'ERROR: Some values differ in {field}')
-            return False
-        return True
+    try:
+        if isnull(values_diff.min()) and isnull(values_diff.max()):
+            print(f"Variable {field} contains NaN. Comparing each value...")
+            if not _all_values_are_equal(var_a, var_b):
+                print(f'ERROR: Some values differ in {field}')
+                return False
+            return True
+    except ValueError:
+        # handle error due to zero-size array
+        if values_diff.size == 0:
+            return True
+        raise
 
-    # consider all values equal is min and max diff are 0
+    # consider all values equal if min and max diff are 0
     if not values_diff.min() and not values_diff.max():
         return True
 
