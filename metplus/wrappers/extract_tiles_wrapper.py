@@ -69,35 +69,22 @@ class ExtractTilesWrapper(LoopTimesWrapper):
 
         et_upper = self.app_name.upper()
 
-        # get TCStat data dir/template to read
-        c_dict['TC_STAT_INPUT_DIR'] = (
-            self.config.getdir('EXTRACT_TILES_TC_STAT_INPUT_DIR', '')
-        )
-
-        c_dict['TC_STAT_INPUT_TEMPLATE'] = (
-            self.config.getraw('config', 'EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE')
-        )
-        # get MTD data dir/template to read
-        c_dict['MTD_INPUT_DIR'] = (
-            self.config.getdir('EXTRACT_TILES_MTD_INPUT_DIR', '')
-        )
-
-        c_dict['MTD_INPUT_TEMPLATE'] = (
-            self.config.getraw('config', 'EXTRACT_TILES_MTD_INPUT_TEMPLATE')
-        )
+        self.get_input_templates(c_dict, {
+            'TC_STAT': {'prefix': 'EXTRACT_TILES_TC_STAT', 'required': False},
+            'MTD': {'prefix': 'EXTRACT_TILES_MTD', 'required': False},
+        })
 
         # determine which location input to use: TCStat or MTD
         self._get_location_input(c_dict)
 
-        # get gridded input/output directory/template to read
+        # get gridded output directory/template to read
+        # read the input templates from config directly instead of using get_input_templates because the time info
+        # used to find these files is read from the tracks, not the current run time of the run
         for data_type in ['FCST', 'OBS']:
             # get [FCST/OBS]_INPUT_DIR
             c_dict[f'{data_type}_INPUT_DIR'] = (
                 self.config.getdir(f'{data_type}_EXTRACT_TILES_INPUT_DIR', '')
             )
-            if not c_dict[f'{data_type}_INPUT_DIR']:
-                self.log_error(f'Must set {data_type}_EXTRACT_TILES_INPUT_DIR to '
-                               'run ExtractTiles wrapper')
 
             # get [FCST/OBS]_[INPUT/OUTPUT]_TEMPLATE
             for put in ['INPUT', 'OUTPUT']:
@@ -197,13 +184,18 @@ class ExtractTilesWrapper(LoopTimesWrapper):
         instance = 'extract_tiles_rdp'
         if not self.config.has_section(instance):
             self.config.add_section(instance)
+
         for key, value in overrides.items():
             self.config.set(instance, key, value)
 
-        rdp_wrapper = RegridDataPlaneWrapper(self.config,
-                                             instance=instance)
-        rdp_wrapper.c_dict['SHOW_WARNINGS'] = False
+        rdp_wrapper = RegridDataPlaneWrapper(self.config, instance=instance)
+        rdp_wrapper.c_dict['SUPPRESS_WARNINGS'] = True
         return rdp_wrapper
+
+    def run_all_times(self):
+        super().run_all_times()
+        if not self.all_commands:
+            self.log_error("No commands were generated")
 
     def run_at_time_once(self, time_info):
         """!Read TCPairs track data into TCStat to filter the data. Using the
@@ -214,7 +206,10 @@ class ExtractTilesWrapper(LoopTimesWrapper):
         """
         self.logger.debug("Begin extract tiles")
         location_input = self.c_dict.get('LOCATION_INPUT')
-        input_path = self.get_location_input_file(time_info, location_input)
+        if not self.c_dict['ALL_FILES']:
+            return
+
+        input_path = self.c_dict['ALL_FILES'][0][location_input][0]
         if not input_path:
             return
 
@@ -312,29 +307,12 @@ class ExtractTilesWrapper(LoopTimesWrapper):
             line_data = self.get_data_from_track_line(idx_dict, line)
             if self.object_id_equals_cat(line_data):
                 cluster_data.append(line_data)
+
         return cluster_data
 
     @staticmethod
     def object_id_equals_cat(track_line):
         return track_line['OBJECT_CAT'] == track_line['OBJECT_ID']
-
-    def get_location_input_file(self, time_info, input_type):
-        """! Get the name of the filter file to use.
-
-          @param time_info dictionary containing time information
-          @param input_type type of input to read: TC_STAT or MTD
-          @returns file path if found or None if not
-        """
-        input_path = os.path.join(self.c_dict[f'{input_type}_INPUT_DIR'],
-                                  self.c_dict[f'{input_type}_INPUT_TEMPLATE'])
-        input_path = do_string_sub(input_path, **time_info)
-
-        self.logger.debug(f"Looking for {input_type} file: {input_path}")
-        if not os.path.exists(input_path):
-            self.log_error(f"Could not find {input_type} file: {input_path}")
-            return None
-
-        return input_path
 
     @staticmethod
     def get_object_indices(object_cats):

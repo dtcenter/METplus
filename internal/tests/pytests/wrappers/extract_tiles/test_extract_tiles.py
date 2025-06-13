@@ -8,6 +8,7 @@ import datetime
 
 from metplus.wrappers.extract_tiles_wrapper import ExtractTilesWrapper
 
+init_beg = '20141214'
 
 def extract_tiles_wrapper(metplus_config):
     config = metplus_config
@@ -15,8 +16,8 @@ def extract_tiles_wrapper(metplus_config):
     config.set('config', 'PROCESS_LIST', 'ExtractTiles')
     config.set('config', 'LOOP_BY', 'INIT')
     config.set('config', 'INIT_TIME_FMT', '%Y%m%d')
-    config.set('config', 'INIT_BEG', '20141214')
-    config.set('config', 'INIT_END', '20141214')
+    config.set('config', 'INIT_BEG', init_beg)
+    config.set('config', 'INIT_END', init_beg)
     config.set('config', 'INIT_INCREMENT', '21600')
     config.set('config', 'EXTRACT_TILES_NLAT', '60')
     config.set('config', 'EXTRACT_TILES_NLON', '60')
@@ -48,29 +49,21 @@ def extract_tiles_wrapper(metplus_config):
     return wrapper
 
 
-def get_test_file(wrapper, input_type):
-    if input_type == "mtd":
-        return os.path.join(wrapper.config.getdir('METPLUS_BASE'),
-                      'internal', 'tests',
-                      'data',
-                      'mtd',
-                      'fake_mtd_2d.txt')
+def get_test_file(get_test_data_dir, input_type):
+    if input_type == "MTD":
+        return os.path.join(get_test_data_dir(), 'mtd', 'fake_mtd_2d.txt')
 
-    if input_type == "storm":
-        return os.path.join(wrapper.config.getdir('METPLUS_BASE'),
-                      'internal', 'tests',
-                      'data',
-                      'stat_data',
-                      'fake_filter_20141214_00.tcst')
+    if input_type == "TC_STAT":
+        return os.path.join(get_test_data_dir(), 'stat_data', 'fake_filter_20141214_00.tcst')
 
     return None
 
-def get_storm_lines(wrapper):
-    return get_input_lines(get_test_file(wrapper, 'storm'))
+def get_storm_lines(get_test_data_dir):
+    return get_input_lines(get_test_file(get_test_data_dir, 'TC_STAT'))
     
 
-def get_mtd_lines(wrapper):
-    return get_input_lines(get_test_file(wrapper, 'mtd'))
+def get_mtd_lines(get_test_data_dir):
+    return get_input_lines(get_test_file(get_test_data_dir, 'MTD'))
 
 
 def get_input_lines(filepath):
@@ -111,9 +104,9 @@ def test_get_object_indices(metplus_config, object_cats, expected_indices):
     ]
 )
 @pytest.mark.wrapper
-def test_get_header_indices(metplus_config,header_name, index):
+def test_get_header_indices(metplus_config, get_test_data_dir, header_name, index):
     wrapper = extract_tiles_wrapper(metplus_config)
-    header = get_storm_lines(wrapper)[0]
+    header = get_storm_lines(get_test_data_dir)[0]
     idx_dict = wrapper.get_header_indices(header)
     assert(idx_dict[header_name] == index)
 
@@ -130,9 +123,9 @@ def test_get_header_indices(metplus_config,header_name, index):
     ]
 )
 @pytest.mark.wrapper
-def test_get_header_indices_mtd(metplus_config, header_name, index):
+def test_get_header_indices_mtd(metplus_config, get_test_data_dir, header_name, index):
     wrapper = extract_tiles_wrapper(metplus_config)
-    header = get_mtd_lines(wrapper)[0]
+    header = get_mtd_lines(get_test_data_dir)[0]
     idx_dict = wrapper.get_header_indices(header, 'MTD')
     assert(idx_dict[header_name] == index)
 
@@ -151,9 +144,9 @@ def test_get_header_indices_mtd(metplus_config, header_name, index):
     ]
 )
 @pytest.mark.wrapper
-def test_get_data_from_track_line(metplus_config, header_name, value):
+def test_get_data_from_track_line(metplus_config, get_test_data_dir, header_name, value):
     wrapper = extract_tiles_wrapper(metplus_config)
-    storm_lines = get_storm_lines(wrapper)
+    storm_lines = get_storm_lines(get_test_data_dir)
     header = storm_lines[0]
     idx_dict = wrapper.get_header_indices(header)
     storm_data = wrapper.get_data_from_track_line(idx_dict, storm_lines[2])
@@ -172,9 +165,9 @@ def test_get_data_from_track_line(metplus_config, header_name, value):
     ]
 )
 @pytest.mark.wrapper
-def test_get_data_from_track_line_mtd(metplus_config, header_name, value):
+def test_get_data_from_track_line_mtd(metplus_config, get_test_data_dir, header_name, value):
     wrapper = extract_tiles_wrapper(metplus_config)
-    storm_lines = get_mtd_lines(wrapper)
+    storm_lines = get_mtd_lines(get_test_data_dir)
     header = storm_lines[0]
     idx_dict = wrapper.get_header_indices(header, 'MTD')
     storm_data = wrapper.get_data_from_track_line(idx_dict, storm_lines[2])
@@ -182,10 +175,10 @@ def test_get_data_from_track_line_mtd(metplus_config, header_name, value):
 
 
 @pytest.mark.wrapper
-def test_set_time_info_from_track_data(metplus_config):
+def test_set_time_info_from_track_data(metplus_config, get_test_data_dir):
     storm_id = 'ML1221072014'
     wrapper = extract_tiles_wrapper(metplus_config)
-    storm_lines = get_storm_lines(wrapper)
+    storm_lines = get_storm_lines(get_test_data_dir)
     header = storm_lines[0]
     idx_dict = wrapper.get_header_indices(header)
     storm_data = wrapper.get_data_from_track_line(idx_dict, storm_lines[2])
@@ -239,61 +232,24 @@ def test_get_grid(metplus_config, lat, lon, expected_result):
 
 
 @pytest.mark.parametrize(
-'tool_config,input_type',[
-    #TC stat
-    ({
-    'EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE': 'filter_{init?fmt=%Y%m%d}.tcst',
-    'EXTRACT_TILES_TC_STAT_INPUT_DIR': '{INPUT_BASE}',
-    },
-    "storm"),
-    #MTD
-    ({
-    'EXTRACT_TILES_MTD_INPUT_TEMPLATE': 'filter_{init?fmt=%Y%m%d}.tcst',
-    'EXTRACT_TILES_MTD_INPUT_DIR': '{INPUT_BASE}'
-    },
-    "mtd"),
-]
+'input_type',[
+        "TC_STAT",
+        "MTD",
+    ]
 )
-def test_run_extract_tiles(tmp_path_factory, metplus_config, tool_config, input_type):
+def test_run_extract_tiles(tmp_path_factory, metplus_config, get_test_data_dir, input_type):
     tmp_dir = tmp_path_factory.mktemp('tmp')
     config = metplus_config
     config.set('config', 'INPUT_BASE', tmp_dir)
-    for key, value in tool_config.items():
-        config.set('config', key, value)
 
+    test_file = get_test_file(get_test_data_dir, input_type)
+    config.set('config', f'EXTRACT_TILES_{input_type}_INPUT_TEMPLATE', test_file)
 
     for lead in ('000', '006', '012', '018'):
         for fcst_obs in ('fcst', 'obs'):
             open(os.path.join(tmp_dir, f'{fcst_obs}{lead}.grb2'), 'w').close()
 
-    with mock.patch.object(os.path, "exists", return_value=True):
-        wrapper = extract_tiles_wrapper(config)
-        assert wrapper.isOK
-        test_file = get_test_file(wrapper, input_type)
-        with mock.patch.object(wrapper,
-                    "get_location_input_file",
-                    return_value=test_file):
-            wrapper.run_all_times()
-    assert not wrapper.errors
-
-
-def test_get_location_input_file(metplus_config):
-    config = metplus_config
-    config.set('config', 'EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE', 'filter_{init?fmt=%Y%m%d}.tcst')
-    config.set('config', 'EXTRACT_TILES_TC_STAT_INPUT_DIR', '/input/base/')
-
     wrapper = extract_tiles_wrapper(config)
-    time_info = {
-                 'loop_by': 'init',
-                 'init': datetime.datetime(2014, 12, 14, 0, 0),
-                }
-
-    # Check error on missing file
-    path = wrapper.get_location_input_file(time_info, 'TC_STAT')
-    last_err = wrapper.logger.error.call_args_list[-1][0][0]
-    assert 'Could not find TC_STAT file: /input/base/filter_20141214.tcst' in last_err
-    assert path is None
-
-    with mock.patch.object(os.path, "exists", return_value=True):
-        path = wrapper.get_location_input_file(time_info, 'TC_STAT')
-        assert path == '/input/base/filter_20141214.tcst'
+    assert wrapper.isOK
+    wrapper.run_all_times()
+    assert not wrapper.errors
