@@ -30,7 +30,6 @@ class PyEmbedIngestWrapper(LoopTimesWrapper):
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
-        # get values from config object and set them to be accessed by wrapper
 
         c_dict['INGESTERS'] = []
 
@@ -39,7 +38,7 @@ class PyEmbedIngestWrapper(LoopTimesWrapper):
         indices = find_indices_in_config_section(r"PY_EMBED_INGEST_(\d+)_SCRIPT", self.config).keys()
         indices = sorted(indices)
         for index in indices:
-            input_type = self.config.getstr('config', 'PY_EMBED_INGEST_{}_TYPE'.format(index))
+            input_type = self.config.getraw('config', f'PY_EMBED_INGEST_{index}_TYPE')
             input_type = input_type.upper()
             if input_type not in VALID_PYTHON_EMBED_TYPES:
                 self.log_error(f'PY_EMBED_INGEST_{index}_TYPE ({input_type}) not valid. '
@@ -49,10 +48,9 @@ class PyEmbedIngestWrapper(LoopTimesWrapper):
             if input_type == 'PANDAS':
                 self.log_error('Running PyEmbedIngester on pandas data not yet implemented')
 
-            output_dir = self.config.getdir('PY_EMBED_INGEST_{}_OUTPUT_DIR'.format(index), '')
-            output_template = self.config.getraw('filename_templates',
-                                                 'PY_EMBED_INGEST_{}_OUTPUT_TEMPLATE'.format(index))
-            output_grid = self.config.getraw('config', 'PY_EMBED_INGEST_{}_OUTPUT_GRID'.format(index), '')
+            output_dir = self.config.getdir(f'PY_EMBED_INGEST_{index}_OUTPUT_DIR', '')
+            output_template = self.config.getraw('config', f'PY_EMBED_INGEST_{index}_OUTPUT_TEMPLATE')
+            output_grid = self.config.getraw('config', f'PY_EMBED_INGEST_{index}_OUTPUT_GRID')
             if not output_grid:
                 self.log_error(f'Must set PY_EMBED_INGEST_{index}_OUTPUT_GRID')
 
@@ -73,14 +71,15 @@ class PyEmbedIngestWrapper(LoopTimesWrapper):
                                f"PY_EMBED_INGEST_{index}_SCRIPT* values")
                 return c_dict
 
-            ingester_dict = {'output_dir': output_dir,
-                             'output_template': output_template,
-                             'output_field_names': output_field_names,
-                             'scripts': ingest_scripts,
-                             'input_type': input_type,
-                             'output_grid': output_grid,
-                             'index': index,
-                            }
+            ingester_dict = {
+                'output_dir': output_dir,
+                'output_template': output_template,
+                'output_field_names': output_field_names,
+                'scripts': ingest_scripts,
+                'input_type': input_type,
+                'output_grid': output_grid,
+                'index': index,
+            }
 
             c_dict['INGESTERS'].append(ingester_dict)
 
@@ -88,8 +87,8 @@ class PyEmbedIngestWrapper(LoopTimesWrapper):
         instance = 'py_embed_ingest_rdp'
         if not self.config.has_section(instance):
             self.config.add_section(instance)
-        self.config.set(instance,
-                        'REGRID_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS',
+
+        self.config.set(instance, 'REGRID_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS',
                         c_dict['SKIP_IF_OUTPUT_EXISTS'])
 
         # set config variable to prevent incorrect error in RegridDataPlane
@@ -97,10 +96,11 @@ class PyEmbedIngestWrapper(LoopTimesWrapper):
         # PyEmbedIngest wrapper builds commands without these settings
         self.config.set('config', 'RDP_SKIP_RUN_CHECK', True)
 
-        c_dict['regrid_data_plane'] = (
-            RegridDataPlaneWrapper(self.config, instance=instance)
-        )
+        c_dict['regrid_data_plane'] = RegridDataPlaneWrapper(self.config, instance=instance)
+
+        # this wrapper doesn't find input files because it uses Python Embedding to read input data
         c_dict['FIND_FILES'] = False
+
         return c_dict
 
     @staticmethod
@@ -112,14 +112,16 @@ class PyEmbedIngestWrapper(LoopTimesWrapper):
             result = regex.match(conf)
             if result is not None:
                 ingest_script_addons.append(result.group(1))
+
         return ingest_script_addons
 
     def get_ingest_items(self, item_type, index, ingest_script_addons):
         ingest_items = []
         # for each addon, get raw value for ingest_script or output field name
         for addon in ingest_script_addons:
-            ingest_item = self.config.getraw('config',
-                                             f"PY_EMBED_INGEST_{index}_{item_type}{addon if addon else ''}")
+            ingest_item = self.config.getraw(
+                'config', f"PY_EMBED_INGEST_{index}_{item_type}{addon if addon else ''}"
+            )
 
             # add to list of ingest_items
             if ingest_item:
