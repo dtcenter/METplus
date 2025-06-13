@@ -296,8 +296,7 @@ class CommandBuilder:
                 msg.append(self.print_env_item(env_item))
 
         if print_copyable:
-            msg.append("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-            msg.append(self.get_env_copy())
+            msg.append(f"COPYABLE ENVIRONMENT FOR NEXT COMMAND:\n{self.get_env_copy()}")
 
         return msg
 
@@ -397,7 +396,7 @@ class CommandBuilder:
                 clean_env = self.env[var].replace('"', r'\"').replace(r'\\"', r'\\\"')
                 line = 'export ' + var + '="' + clean_env + '"'
             line = line.replace('\n', '')
-            out += line + '; '
+            out += line + ';\n'
 
         return out
 
