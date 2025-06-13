@@ -597,8 +597,6 @@ def diff_text_lines(lines_a, lines_b, dir_a=None, dir_b=None,
 
         # skip FILTER and JOB_LIST lines due to expected filepath diffs
         if (compare_a.startswith('FILTER') or compare_a.startswith('JOB_LIST')):
-            # print("Found a FILTER or JOB_LIST line")    # *** TEMP CHECK: REMOVE ****
-            # all_good = False                            # *** TEMP CHECK: REMOVE ****
             continue
 
         # try replacing dir_b with dir_a in line_b 
