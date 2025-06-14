@@ -71,6 +71,9 @@ ROUNDING_OVERRIDES = {
 # Note: Completing METplus issue #1873 could allow this to be set to 6
 rounding_precision = DEFAULT_ROUNDING_PRECISION
 
+# set tolerance for zero values
+IS_ZERO_TOL = 1.0e-10
+
 
 def get_file_type(filepath):
     _, file_extension = os.path.splitext(filepath)
@@ -488,6 +491,8 @@ def _is_equal_rounded(value_a, value_b):
         return True
     if _round_float(value_a) == _round_float(value_b):
         return True
+    if _set_zero(value_a) == _set_zero(value_b):
+        return True
     return False
 
 
@@ -511,6 +516,11 @@ def _truncate_float(value):
 
 def _round_float(value):
     return round(float(value), rounding_precision)
+
+def _set_zero(value):
+    if abs(value) < IS_ZERO_TOL:
+        value = 0.0
+    return value
 
 
 def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
