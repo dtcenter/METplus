@@ -757,6 +757,11 @@ def _nc_fields_are_equal(field, nc_a, nc_b, debug=False):
     # consider all values equal if min and max diff are 0
     if not values_diff.min() and not values_diff.max():
         return True
+    
+    # if this fails, compare all values, applying same rounding logic
+    # used for other file types
+    if _all_values_are_equal(var_a, var_b):
+        return True
 
     print(f"ERROR: Field ({field}) values differ\n"
           f"Min diff: {values_diff.min()}, "
