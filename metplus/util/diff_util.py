@@ -5,6 +5,7 @@ import os
 import netCDF4
 import filecmp
 import csv
+from math import log10, floor
 from numbers import Number
 from PIL import Image, ImageChops
 from pandas import isnull
@@ -73,6 +74,8 @@ rounding_precision = DEFAULT_ROUNDING_PRECISION
 
 # set tolerance for zero values
 IS_ZERO_TOL = 1.0e-10
+
+SIG_FIG = 6
 
 
 def get_file_type(filepath):
@@ -487,10 +490,12 @@ def _is_equal_rounded(value_a, value_b):
         return True
     if not _is_number(value_a) or not _is_number(value_b):
         return False
-    if _truncate_float(value_a) == _truncate_float(value_b):
-        return True
-    if _round_float(value_a) == _round_float(value_b):
-        return True
+    if _round_sig_figs(value_a) == _round_sig_figs(value_b):
+        return True     
+    # if _truncate_float(value_a) == _truncate_float(value_b):
+    #     return True
+    # if _round_float(value_a) == _round_float(value_b):
+    #     return True
     if _set_zero(value_a) == _set_zero(value_b):
         return True
     return False
@@ -513,7 +518,6 @@ def _truncate_float(value):
     factor = 1 / (10 ** rounding_precision)
     return float(value) // factor * factor
 
-
 def _round_float(value):
     return round(float(value), rounding_precision)
 
@@ -522,6 +526,11 @@ def _set_zero(value):
         value = 0.0
     return value
 
+def _round_sig_figs(value):
+    sf = SIG_FIG
+    return round(
+        value / 10**floor(log10(value)), sf-1) * (
+            10**floor(log10(value)))
 
 def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
     with open(filepath_a, 'r') as file_handle:
