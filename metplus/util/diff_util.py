@@ -490,14 +490,14 @@ def _is_equal_rounded(value_a, value_b):
         return True
     if not _is_number(value_a) or not _is_number(value_b):
         return False
+    if _set_zero(value_a) == _set_zero(value_b):
+        return True
     if _round_sig_figs(value_a) == _round_sig_figs(value_b):
         return True     
     # if _truncate_float(value_a) == _truncate_float(value_b):
     #     return True
     # if _round_float(value_a) == _round_float(value_b):
     #     return True
-    if _set_zero(value_a) == _set_zero(value_b):
-        return True
     return False
 
 
