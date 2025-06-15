@@ -534,7 +534,7 @@ def _round_sig_figs(value):
     # round to SIG_FIG-1 to retain SIG_FIG digits
     # then multiply by 10^val_mag to revert to its actual magnitude
     # try:
-        val_mag = log10(float(value)) // 1
+        val_mag = log10(abs(float(value))) // 1
         return round(float(value) / 10**val_mag, SIG_FIG-1) * (10**val_mag)
     # catch & return nan: floor(nan) raises ValueError
     # except ValueError:
