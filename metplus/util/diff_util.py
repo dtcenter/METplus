@@ -523,7 +523,9 @@ def _round_float(value):
 
 def _set_zero(value):
     if abs(value) < IS_ZERO_TOL:
+        print(f"setting {value} to zero")  # DEBUG -- REMOVE
         value = 0.0
+    print(f"returning {value} after zero check") # DEBUG -- REMOVE
     return value
 
 def _round_sig_figs(value):
@@ -825,7 +827,7 @@ def _all_values_are_equal(var_a, var_b):
         # continue to next value if both values are NaN
         if (isnull(val_a) and isnull(val_b)) or (is_masked(val_a) and is_masked(val_b)):
             continue
-        print(f"comparing val_a: {val_a}, val_b: {val_b}")  #DEBUG--REMOVE
+        #print(f"comparing val_a: {val_a}, val_b: {val_b}")  #DEBUG--REMOVE
         if not _is_equal_rounded(val_a, val_b):
             print(f'val_a: {val_a}, val_b: {val_b}')
             return False
