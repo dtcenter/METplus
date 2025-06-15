@@ -825,6 +825,7 @@ def _all_values_are_equal(var_a, var_b):
         # continue to next value if both values are NaN
         if (isnull(val_a) and isnull(val_b)) or (is_masked(val_a) and is_masked(val_b)):
             continue
+        print(f"comparing val_a: {val_a}, val_b: {val_b}")  #DEBUG--REMOVE
         if not _is_equal_rounded(val_a, val_b):
             print(f'val_a: {val_a}, val_b: {val_b}')
             return False
