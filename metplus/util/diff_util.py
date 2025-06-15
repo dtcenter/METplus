@@ -494,10 +494,10 @@ def _is_equal_rounded(value_a, value_b):
         return True
     if _round_sig_figs(value_a) == _round_sig_figs(value_b):
         return True     
-    # if _truncate_float(value_a) == _truncate_float(value_b):
-    #     return True
-    # if _round_float(value_a) == _round_float(value_b):
-    #     return True
+    if _truncate_float(value_a) == _truncate_float(value_b):
+        return True
+    if _round_float(value_a) == _round_float(value_b):
+        return True
     return False
 
 
