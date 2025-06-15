@@ -529,17 +529,16 @@ def _set_zero(value):
     return value
 
 def _round_sig_figs(value):
-    # val_sf finds the number of significant figures in the value
-    # divide by 10^val_sf to put the first sig fig before the decimal
+    # divide by 10^val_mag to put its first sig fig before the decimal
     #   and the rest after
     # round to SIG_FIG-1 to retain SIG_FIG digits
-    # then multiply by 10^val_sf to go back to its actual magnitude
-    try:
-        val_sf = floor(log10(value))
-        return round(value / 10**val_sf, SIG_FIG-1) * (10**val_sf)
+    # then multiply by 10^val_mag to revert to its actual magnitude
+    # try:
+        val_mag = log10(float(value)) // 1
+        return round(float(value) / 10**val_mag, SIG_FIG-1) * (10**val_mag)
     # catch & return nan: floor(nan) raises ValueError
-    except ValueError:
-        return value
+    # except ValueError:
+    #     return value
 
 def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
     with open(filepath_a, 'r') as file_handle:
