@@ -75,7 +75,7 @@ rounding_precision = DEFAULT_ROUNDING_PRECISION
 # set tolerance for zero values
 IS_ZERO_TOL = 1.0e-10
 
-SIG_FIG = 6
+SIG_FIG = 7
 
 
 def get_file_type(filepath):
