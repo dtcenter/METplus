@@ -529,10 +529,17 @@ def _set_zero(value):
     return value
 
 def _round_sig_figs(value):
-    sf = SIG_FIG
-    return round(
-        value / 10**floor(log10(value)), sf-1) * (
-            10**floor(log10(value)))
+    # val_sf finds the number of significant figures in the value
+    # divide by 10^val_sf to put the first sig fig before the decimal
+    #   and the rest after
+    # round to SIG_FIG-1 to retain SIG_FIG digits
+    # then multiply by 10^val_sf to go back to its actual magnitude
+    try:
+        val_sf = floor(log10(value))
+        return round(value / 10**val_sf, SIG_FIG-1) * (10**val_sf)
+    # catch & return nan: floor(nan) raises ValueError
+    except ValueError:
+        return value
 
 def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
     with open(filepath_a, 'r') as file_handle:
