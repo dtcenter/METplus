@@ -522,7 +522,7 @@ def _round_float(value):
     return round(float(value), rounding_precision)
 
 def _set_zero(value):
-    if abs(value) < IS_ZERO_TOL:
+    if abs(float(value)) < IS_ZERO_TOL:
         print(f"setting {value} to zero")  # DEBUG -- REMOVE
         value = 0.0
     print(f"returning {value} after zero check") # DEBUG -- REMOVE
