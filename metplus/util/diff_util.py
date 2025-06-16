@@ -502,16 +502,21 @@ def _is_equal_rounded(value_a, value_b):
 
 
 def _is_number(value):
-    if isinstance(value, Number):
-        return True
-    # Handle NumPy masked constants
-    if is_masked(value):
-        return False
-    # Try to convert to string first, in case value is not a string
+    # if isinstance(value, Number):
+    #     return True
+    # # Handle NumPy masked constants
+    # if is_masked(value):
+    #     return False
+    # # Try to convert to string first, in case value is not a string
+    # try:
+    #     return str(value).replace('.', '1').replace('-', '1').strip().isdigit()
+    # except (AttributeError, TypeError):
+    #     return False
     try:
-        return str(value).replace('.', '1').replace('-', '1').strip().isdigit()
-    except (AttributeError, TypeError):
+        float(value)
+    except:
         return False
+    return True
 
 
 def _truncate_float(value):
