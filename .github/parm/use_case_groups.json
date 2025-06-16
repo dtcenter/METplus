@@ -251,12 +251,12 @@
   {
     "category": "s2s_soil_moisture",
     "index_list": "0",
-    "run": true
+    "run": false
   },
   {
     "category": "s2s_soil_moisture",
     "index_list": "1",
-    "run": true
+    "run": false
   },
   {
     "category": "s2s_stratosphere",
