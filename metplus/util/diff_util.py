@@ -5,8 +5,7 @@ import os
 import netCDF4
 import filecmp
 import csv
-from math import log10, floor
-from numbers import Number
+from math import log10
 from PIL import Image, ImageChops
 from pandas import isnull
 from numpy.ma import is_masked
@@ -75,6 +74,7 @@ rounding_precision = DEFAULT_ROUNDING_PRECISION
 # set tolerance for zero values
 IS_ZERO_TOL = 1.0e-10
 
+# number of significant figures to use for comparing floats
 SIG_FIG = 7
 
 
@@ -502,22 +502,11 @@ def _is_equal_rounded(value_a, value_b):
 
 
 def _is_number(value):
-    # if isinstance(value, Number):
-    #     return True
-    # # Handle NumPy masked constants
-    # if is_masked(value):
-    #     return False
-    # # Try to convert to string first, in case value is not a string
-    # try:
-    #     return str(value).replace('.', '1').replace('-', '1').strip().isdigit()
-    # except (AttributeError, TypeError):
-    #     return False
     try:
         float(value)
     except:
         return False
     return True
-
 
 def _truncate_float(value):
     factor = 1 / (10 ** rounding_precision)
@@ -528,9 +517,8 @@ def _round_float(value):
 
 def _set_zero(value):
     if abs(float(value)) < IS_ZERO_TOL:
-        print(f"setting {value} to zero")  # DEBUG -- REMOVE
+        # print(f"setting {value} to 0.0")  # DEBUG
         value = 0.0
-    print(f"returning {value} after zero check") # DEBUG -- REMOVE
     return value
 
 def _round_sig_figs(value):
@@ -538,12 +526,9 @@ def _round_sig_figs(value):
     #   and the rest after
     # round to SIG_FIG-1 to retain SIG_FIG digits
     # then multiply by 10^val_mag to revert to its actual magnitude
-    # try:
-        val_mag = log10(abs(float(value))) // 1
-        return round(float(value) / 10**val_mag, SIG_FIG-1) * (10**val_mag)
-    # catch & return nan: floor(nan) raises ValueError
-    # except ValueError:
-    #     return value
+    val_mag = log10(abs(float(value))) // 1
+    return round(float(value) / 10**val_mag, SIG_FIG-1) * (10**val_mag)
+
 
 def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
     with open(filepath_a, 'r') as file_handle:
@@ -838,7 +823,6 @@ def _all_values_are_equal(var_a, var_b):
         # continue to next value if both values are NaN
         if (isnull(val_a) and isnull(val_b)) or (is_masked(val_a) and is_masked(val_b)):
             continue
-        #print(f"comparing val_a: {val_a}, val_b: {val_b}")  #DEBUG--REMOVE
         if not _is_equal_rounded(val_a, val_b):
             print(f'val_a: {val_a}, val_b: {val_b}')
             return False
