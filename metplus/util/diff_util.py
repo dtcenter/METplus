@@ -237,12 +237,11 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
     file_type = get_file_type(filepath_a)
     if file_type.startswith('skip'):
         file_ext = file_type.split(' ')[1]
-        skip_log = f"Skipping {file_ext} file" if file_ext else "Skipping file without extension"
-        print(skip_log)
+        print(f"Skipping {file_ext} file" if file_ext else "Skipping file without extension")
         return None
 
     if file_type.startswith('unsupported'):
-        print(f"Unsupported file type encountered: {file_type.split('.')[1]}")
+        print(f"Unsupported file type encountered: {file_type.split(' ')[1]}")
         return filepath_a, filepath_b, file_type, ''
 
     if file_type == 'csv':
