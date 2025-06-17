@@ -237,10 +237,8 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
     file_type = get_file_type(filepath_a)
     if file_type.startswith('skip'):
         file_ext = file_type.split(' ')[1]
-        if file_ext:
-            print(f"Skipping {file_ext} file")
-        else:
-            print("Skipping file without extension")
+        skip_log = f"Skipping {file_ext} file" if file_ext else "Skipping file without extension"
+        print(skip_log)
         return None
 
     if file_type.startswith('unsupported'):
@@ -409,7 +407,7 @@ def _is_zero_pixel(pixel):
 
 
 def save_diff_file(image_diff, filepath_b):
-    rel_path, file_extension = os.path.splitext(filepath_b)
+    rel_path, _ = os.path.splitext(filepath_b)
     diff_file = f'{rel_path}_diff.png'
     print(f"Saving diff file: {diff_file}")
     image_diff.save(diff_file, "PNG")
@@ -504,7 +502,7 @@ def _is_equal_rounded(value_a, value_b):
 def _is_number(value):
     try:
         float(value)
-    except:
+    except ValueError:
         return False
     return True
 
@@ -613,7 +611,7 @@ def diff_text_lines(lines_a, lines_b, dir_a=None, dir_b=None,
             continue
 
         # skip FILTER and JOB_LIST lines due to expected filepath diffs
-        if (compare_a.startswith('FILTER') or compare_a.startswith('JOB_LIST')):
+        if compare_a.startswith(('FILTER', 'JOB_LIST')):
             continue
 
         # try replacing dir_b with dir_a in line_b 
@@ -633,8 +631,7 @@ def diff_text_lines(lines_a, lines_b, dir_a=None, dir_b=None,
                 all_good = False
             continue
 
-        if print_error:
-            print(f"ERROR: Line differs\n A: {compare_a}\n B: {compare_b}")
+        _print_error_message(f"ERROR: Line differs\n A: {compare_a}\n B: {compare_b}", print_error)
         all_good = False
 
     return all_good
@@ -657,8 +654,7 @@ def _diff_stat_line(compare_a, compare_b, header, print_error=False):
 
     # error if different number of columns are found
     if len(cols_a) != len(cols_b):
-        if print_error:
-            print(f'{message}Different number of columns')
+        _print_error_message(f'{message}Different number of columns', print_error)
         return False
 
     all_good = True
@@ -672,8 +668,8 @@ def _diff_stat_line(compare_a, compare_b, header, print_error=False):
         label = f'column {index+2}' if index >= len(header) else header[index]
         message += f"  Diff in {label}:\n    A: {col_a}\n    B: {col_b}\n"
 
-    if not all_good and print_error:
-        print(message)
+    if not all_good:
+        _print_error_message(message, print_error)
     return all_good
 
 
@@ -744,8 +740,7 @@ def _nc_fields_are_equal(field, nc_a, nc_b, debug=False):
     except TypeError:
         # handle non-numeric fields
         if not _all_values_are_equal(var_a, var_b):
-            print(f"ERROR: Field ({field}) values (non-numeric) "
-                  "differ\n"
+            print(f"ERROR: Field ({field}) values (non-numeric) differ\n"
                   f" File_A: {var_a[:]}\n File_B: {var_b[:]}")
             return False
         return True
@@ -756,6 +751,35 @@ def _nc_fields_are_equal(field, nc_a, nc_b, debug=False):
             return False
         raise
 
+    # Check for NaN values and empty arrays first
+    diff_result = _check_values_diff(values_diff, field, var_a, var_b)
+    if diff_result is not None:
+        return diff_result
+
+    # if this fails, compare all values, applying the same rounding logic
+    # used for other file types
+    if _all_values_are_equal(var_a, var_b):
+        return True
+
+    print(f"ERROR: Field ({field}) values differ\n"
+          f"Min diff: {values_diff.min()}, "
+          f"Max diff: {values_diff.max()}")
+    if debug:
+        # print indices that are not zero and count of diffs
+        _print_nc_field_diff_summary(values_diff)
+
+    return False
+
+
+def _check_values_diff(values_diff, field, var_a, var_b):
+    """Check for NaN values and empty arrays in NetCDF field comparison.
+
+    @param values_diff numpy array of differences between var_a and var_b
+    @param field name of the field being compared
+    @param var_a first netCDF variable
+    @param var_b second netCDF variable
+    @returns True if values are equal, False if they differ, None if normal comparison should continue
+    """
     # if any NaN values in either data set, min and max of diff will be NaN
     # compare each value
     try:
@@ -774,20 +798,9 @@ def _nc_fields_are_equal(field, nc_a, nc_b, debug=False):
     # consider all values equal if min and max diff are 0
     if not values_diff.min() and not values_diff.max():
         return True
-    
-    # if this fails, compare all values, applying same rounding logic
-    # used for other file types
-    if _all_values_are_equal(var_a, var_b):
-        return True
 
-    print(f"ERROR: Field ({field}) values differ\n"
-          f"Min diff: {values_diff.min()}, "
-          f"Max diff: {values_diff.max()}")
-    if debug:
-        # print indices that are not zero and count of diffs
-        _print_nc_field_diff_summary(values_diff)
-
-    return False
+    # Return None to indicate normal comparison should continue
+    return None
 
 
 def _print_nc_field_diff_summary(values_diff):
@@ -828,6 +841,9 @@ def _all_values_are_equal(var_a, var_b):
             return False
     return True
 
+def _print_error_message(msg, print_error):
+    if print_error:
+        print(msg)
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
