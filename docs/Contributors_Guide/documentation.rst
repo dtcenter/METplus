@@ -1532,6 +1532,11 @@ desired.
 Setting Up a Sphinx Environment Using MacPorts
 ----------------------------------------------
 
+Many METplus developers have MacBooks with administrative access. To build the
+Sphinx documentation locally, developers may need to install the version
+of Python that METplus is using for development along with the necessary Sphinx
+packages. 
+
 As the admin user, run the following commands:
 
 .. code-block:: none
