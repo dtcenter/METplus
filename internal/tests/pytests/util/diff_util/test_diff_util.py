@@ -582,3 +582,52 @@ def test__all_values_are_equal(capfd, array_a, array_b, expected, check_print):
     assert actual == expected
     if check_print:
         _statment_in_capfd(capfd, check_print)
+
+
+@pytest.mark.parametrize(
+    'extension,check_print',
+    [
+        ('.zip', ["Skipping .zip file"]),
+        ('.gif', ["Skipping .gif file"]),
+        ('.ix', ["Skipping .ix file"]),
+        ('.log', ["Skipping .log file"]),
+        ('', ["Skipping file without extension"]),
+    ],
+)
+@pytest.mark.util
+def test_compare_files_skip_extensions(capfd, tmp_path_factory, extension, check_print):
+    dir_a = tmp_path_factory.mktemp('dir_a')
+    dir_b = tmp_path_factory.mktemp('dir_b')
+    file_a = str(dir_a / f'file{extension}')
+    file_b = str(dir_b / f'file{extension}')
+    open(file_a, 'w').close()
+    open(file_b, 'w').close()
+    assert du.compare_files(file_a, file_b, debug=True, dir_a=dir_a, dir_b=dir_b) is None
+    _statment_in_capfd(capfd, check_print)
+
+
+@pytest.mark.parametrize(
+    'value_a,value_b,expected_result',
+    [
+        # equal numbers
+        ('1.1', '1.1', True),
+        # equal strings
+        ('abc', 'abc', True),
+        # one not a number
+        ('1.1', 'abc', False),
+        # another one not a number
+        ('abc', '1.1', False),
+        # almost zero
+        ('0.0', '0.000000000001', True),
+        # significant figures
+        ('300124.88', '300124.89', True),
+        # truncate float
+        ('1.1238', '1.1239', True),
+        # round float
+        ('1.1241', '1.1239', True),
+    ],
+)
+@pytest.mark.util
+def test_is_equal_rounded(value_a, value_b, expected_result):
+    du.rounding_precision = 3
+    assert du._is_equal_rounded(value_a, value_b) == expected_result
