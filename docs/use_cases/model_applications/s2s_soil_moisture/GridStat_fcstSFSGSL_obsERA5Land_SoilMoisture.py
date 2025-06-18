@@ -19,7 +19,7 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 # mean at a 1 degree resolution against ERA5-Land data.  The use case demonstrates how 
 # to compute categorical, continuous, and anomaly statistics over the globe and CONUS 
 # with Grid-Stat, and also select continuous statistics at each grid point over the globe 
-# statistics with Series-Analysus.  It also illustrates how to read in NMME data and 
+# statistics with Series-Analysis.  It also illustrates how to read in NMME data and 
 # compute an emsemble mean from NMME data as input to Grid-Stat and Series-Analysis, and 
 # how to plot example statistics from the command line.
 
@@ -54,10 +54,10 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 # METplus Components
 # ------------------
 #
-# This use case calls a GridStat 30 times, once for each year of data of the SFS-GSL ensemble.
+# This use case calls GridStat 30 times, once for each year of data of the SFS-GSL ensemble.
 # It also calls Series-Analysis once and UserScript twice.  METcalcpy, METplotpy, and METdataio 
-# are required to run the tow UserScripts.  These steps could be turned off if graphics are not
-# desires.  The METcalcpy scripts accessed include the following:
+# are required to run the two UserScripts.  These steps could be turned off if graphics are not
+# desired.  The METcalcpy scripts accessed include the following:
 #
 # * metcalcpy/util/read_env_vars_in_config.py
 #
@@ -77,21 +77,21 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 # METplus Workflow
 # ----------------
 #
-# **Beginning time (INIT_BEG):** 1991-06-00
+# **Beginning time (VALID_BEG):** 1991-06-00
 #
-# **End time (INIT_END):** 2020-06-00
+# **End time (VALID_END):** 2020-06-00
 #
-# **Increment between beginning and end times (INIT_INCREMENT):** 12 months
+# **Increment between beginning and end times (VALID_INCREMENT):** 12 months
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** None
 #
-# This use case initially computes statiscs with Grid-Stat using ensemble means from
+# This use case initially computes statistics with Grid-Stat using ensemble means from
 # the SFS-GSL 5 member ensemble monthly forecast data.  With an increment of 12 months, 
 # all Junes from 1991 to 2020 are processed for a total of 30 years over the globe and
 # CONUS.
 #
 # Then, Series-Analysis is run once to compute 2D statistics over the entire 30 year time
-# period.  Finally, the two UserScripts are each run once, one to reformat data and 
+# period.  Finally, the two UserScripts are each run once; one to reformat data and 
 # another to create a plot of ME and RMSE for June over the 30 year time period.
 
 ##############################################################################
@@ -276,7 +276,7 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 #   * PythonEmbeddingFileUseCase
 #   * S2SAppUseCase
 #   * S2SSoilMoistureAppUseCase
-#   * NETCDFFileUseCase
+#   * NetCDFFileUseCase
 #   * METdataioUseCase
 #   * METcalcpyUseCase
 #   * METplotpyUseCase
