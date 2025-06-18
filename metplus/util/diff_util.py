@@ -10,18 +10,22 @@ from PIL import Image, ImageChops
 from pandas import isnull
 from numpy.ma import is_masked
 
+# file extensions for supported image file types
 IMAGE_EXTENSIONS = [
     '.jpg',
     '.jpeg',
     '.png',
 ]
 
+# file extensions used to determine if a file is a NetCDF file
 NETCDF_EXTENSIONS = [
     '.nc',
     '.cdf',
     '.nc4',
 ]
 
+# file extensions to skip
+# these will be reported as a successful diff test
 SKIP_EXTENSIONS = [
     '.zip',
     '.gif',
@@ -30,14 +34,19 @@ SKIP_EXTENSIONS = [
     '',
 ]
 
+# file extensions used to determine if a file is a PDF file
 PDF_EXTENSIONS = [
     '.pdf',
 ]
 
+# file extensions used to determine if a file is a CSV file
 CSV_EXTENSIONS = [
     '.csv',
 ]
 
+# file extensions that are not currently supported by the diff utility
+# these will be flagged as differences so the reviewer knows to examine
+# the files manually
 UNSUPPORTED_EXTENSIONS = [
 ]
 
