@@ -121,9 +121,10 @@ model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 # * pyembed_hi_fcst_HR1.py
 # * pyembed_hi_obs_gdas.py
 #
-# In addition to the basic package requirements for Python embedding, these Python scripts also require
+# In addition to the `basic package requirements for Python embedding <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/appendixF.html#compiling-met-for-python-embedding>`_, these Python scripts also require
 #
 # * `MetPy <https://unidata.github.io/MetPy/latest/>`_
+# * `METcalcpy version 3.1+ <https://metplus.readthedocs.io/projects/metcalcpy/en/latest/index.html>`_
 #
 # The forecast Python embedding scripts require the data variable names and the path
 # to the mask file created with GenVxMask, while the observation Python embedding scripts
@@ -168,9 +169,8 @@ model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 # A second user script is used to plot matched forecast and observation pairs (MPR) from PointStat MPR
 # text files in order to visualize the two metrics in the same space.
 #
-# In addition to the basic package requirements for Python embedding, these Python scripts also require
+# In addition to the `basic package requirements for Python embedding <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/appendixF.html#compiling-met-for-python-embedding>`_, the **plot_2panel_ctp_hi.py** Python script also requires
 #
-# * `MetPy <https://unidata.github.io/MetPy/latest/>`_
 # * `Matplotlib <https://matplotlib.org/stable/>`_
 #
 # .. dropdown:: parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI/create_raob_mask_file.py
