@@ -37,7 +37,7 @@ fileCLM = os.path.expandvars(sys.argv[3])
 soil_varname = varCLM = sys.argv[4]
 season = sys.argv[5]
 if season not in ['DJF','MAM','JJA','SON']:
-  print("ERROR: UNRECOGNIZED SEASON IN tci_from_cesm.py")
+  print(f"ERROR: UNRECOGNIZED SEASON IN {__file__}")
   sys.exit(1) 
 
 print("Starting Terrestrial Coupling Index Calculation for: "+season)
@@ -54,7 +54,7 @@ print("Finished reading CAM and CLM files with Xarray.")
 # Add a Pandas date range to subset by season
 time_units, reference_date = ds.time.attrs['units'].split('since')
 if time_units.strip() not in ['D','days','Days','DAYS']:
-  print("ERROR: TIME UNITS EXPECTED TO BE DAYS IN tci_from_cesm.py")
+  print(f"ERROR: TIME UNITS EXPECTED TO BE DAYS IN {__file__}")
   sys.exit(1)
 else:
   ds['time'] = pd.date_range(start=reference_date, periods=ds.sizes['time'], freq='D')
@@ -94,7 +94,7 @@ delta_lon = (ds.lon.max().values-lon_ll)/n_lon
 
 # 6. Create a dictionary for the LatLon grid and required attributes
 grid_attrs = {'type': 'LatLon',
-              'name': 'CESM Grid',
+              'name': 'user-defined grid',
               'lat_ll': float(lat_ll),
               'lon_ll': float(lon_ll),
               'delta_lat': float(delta_lat),
@@ -113,4 +113,3 @@ attrs = {'valid': time_var,
          'level': '10cm_soil_depth',
          'units': 'W/m2',
          'grid': grid_attrs}
-
