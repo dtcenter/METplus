@@ -55,7 +55,7 @@ def ascii2nc_wrapper(metplus_config, config_overrides=None):
     ]
 )
 @pytest.mark.wrapper
-def test_ascii2nc_missing_inputs(metplus_config, get_test_data_dir,
+def test_ascii2nc_missing_inputs(metplus_config, get_test_data_dir, run_all_and_check_missing,
                                  missing, run, thresh, errors, allow_missing):
     config_overrides = {
         'INPUT_MUST_EXIST': True,
@@ -65,16 +65,7 @@ def test_ascii2nc_missing_inputs(metplus_config, get_test_data_dir,
         'VALID_END': '2010010200',
     }
     wrapper = ascii2nc_wrapper(metplus_config, config_overrides)
-    assert wrapper.isOK
-
-    all_cmds = wrapper.run_all_times()
-    for cmd, _ in all_cmds:
-        print(cmd)
-
-    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
-    assert wrapper.missing_input_count == missing
-    assert wrapper.run_count == run
-    assert wrapper.errors == errors
+    run_all_and_check_missing(wrapper, missing, run, errors)
 
 
 @pytest.mark.parametrize(
