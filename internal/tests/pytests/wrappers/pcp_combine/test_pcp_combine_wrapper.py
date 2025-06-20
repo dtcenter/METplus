@@ -54,6 +54,15 @@ def pcp_combine_wrapper(metplus_config, d_type):
     set_minimum_config_settings(config, d_type)
     return PCPCombineWrapper(config)
 
+def set_pcp_combine_by_init(config, init_fmt, init_beg, init_end=None):
+    config.set('config', 'PROCESS_LIST', 'PCPCombine')
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', init_fmt)
+    config.set('config', 'INIT_BEG', init_beg)
+    if init_end is None:
+        init_end = init_beg
+    config.set('config', 'INIT_END', init_end)
+
 
 @pytest.mark.wrapper
 def test_get_accumulation_1_to_6(metplus_config, get_test_data_dir):
@@ -68,7 +77,7 @@ def test_get_accumulation_1_to_6(metplus_config, get_test_data_dir):
     accum = 6 * 3600
 
     pcw.c_dict[f'{data_src}_INPUT_DIR'] = input_dir
-    pcw._build_input_accum_list(data_src, time_info)
+    pcw._build_input_accum_list(data_src)
 
     files_found = pcw.get_accumulation(time_info, accum, data_src)
     in_files = [item[0] for item in files_found]
@@ -96,7 +105,7 @@ def test_get_accumulation_6_to_6(metplus_config, get_test_data_dir):
     pcw.c_dict['FCST_INPUT_TEMPLATE'] = template
 
     pcw.c_dict[f'{data_src}_INPUT_DIR'] = input_dir
-    pcw._build_input_accum_list(data_src, time_info)
+    pcw._build_input_accum_list(data_src)
 
     files_found = pcw.get_accumulation(time_info, accum, data_src)
     in_files = [item[0] for item in files_found]
@@ -111,7 +120,7 @@ def test_get_lowest_forecast_file_dated_subdir(metplus_config, get_test_data_dir
     input_dir = get_test_data_dir('fcst')
     valid_time = datetime.strptime("201802012100", '%Y%m%d%H%M')
     pcw.c_dict[f'{data_src}_INPUT_DIR'] = input_dir
-    pcw._build_input_accum_list(data_src, {'valid': valid_time})
+    pcw._build_input_accum_list(data_src)
     out_file, fcst = pcw.get_lowest_fcst_file(valid_time, data_src, custom='')
     assert(out_file == input_dir+"/20180201/file.2018020118f003.nc" and
            fcst == 10800)
@@ -140,7 +149,7 @@ def test_forecast_not_constant_init(metplus_config, get_test_data_dir):
     init_time = datetime.strptime("2018020112", '%Y%m%d%H')
     valid_time = datetime.strptime("2018020121", '%Y%m%d%H')
     pcw.c_dict[f'{data_src}_INPUT_DIR'] = input_dir
-    pcw._build_input_accum_list(data_src, {'valid': valid_time})
+    pcw._build_input_accum_list(data_src)
     out_file, fcst = pcw.find_input_file(init_time, valid_time, 0, data_src, custom='')
     assert(out_file == input_dir+"/20180201/file.2018020118f003.nc" and
            fcst == 10800)
@@ -155,7 +164,7 @@ def test_get_lowest_forecast_file_no_subdir(metplus_config, get_test_data_dir):
     template = "file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc"
     pcw.c_dict[f'{data_src}_INPUT_TEMPLATE'] = template
     pcw.c_dict[f'{data_src}_INPUT_DIR'] = input_dir
-    pcw._build_input_accum_list(data_src, {'valid': valid_time})
+    pcw._build_input_accum_list(data_src)
     out_file, fcst = pcw.get_lowest_fcst_file(valid_time, data_src, custom='')
     assert(out_file == input_dir+"/file.2018020118f003.nc" and fcst == 10800)
 
@@ -169,7 +178,7 @@ def test_get_lowest_forecast_file_yesterday(metplus_config, get_test_data_dir):
     template = "file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc"
     pcw.c_dict[f'{data_src}_INPUT_TEMPLATE'] = template
     pcw.c_dict[f'{data_src}_INPUT_DIR'] = input_dir
-    pcw._build_input_accum_list(data_src, {'valid': valid_time})
+    pcw._build_input_accum_list(data_src)
     out_file, fcst = pcw.get_lowest_fcst_file(valid_time, data_src, custom='')
     assert(out_file == input_dir+"/file.2018013118f012.nc" and fcst == 43200)
 
@@ -177,15 +186,24 @@ def test_get_lowest_forecast_file_yesterday(metplus_config, get_test_data_dir):
 @pytest.mark.wrapper
 def test_setup_add_method(metplus_config, get_test_data_dir):
     data_src = "OBS"
-    pcw = pcp_combine_wrapper(metplus_config, data_src)
+    lookback = 6
+
+    config = metplus_config
+    set_minimum_config_settings(config, data_src)
+    config.set('config', f'{data_src}_PCP_COMBINE_METHOD', 'ADD')
+    config.set('config', 'VALID_BEG', "2016090418")
+    config.set('config', 'VALID_END', "2016090418")
+    config.set('config', f'{data_src}_PCP_COMBINE_LOOKBACK', lookback)
+    wrapper = PCPCombineWrapper(config)
     task_info = {
         'valid': datetime.strptime("2016090418", '%Y%m%d%H'),
     }
     time_info = ti_calculate(task_info)
 
     input_dir = get_test_data_dir('accum')
-    lookback = 6 * 3600
-    files_found = pcw.setup_add_method(time_info, lookback, data_src)
+    wrapper.c_dict['DATA_SRC'] = data_src
+    wrapper.c_dict['ALL_FILES'] = wrapper.get_all_files_for_each(time_info)
+    files_found = wrapper.c_dict['ALL_FILES'][0][data_src]
     assert files_found
     
     in_files = [item[0] for item in files_found]
@@ -210,7 +228,7 @@ def test_setup_sum_method(metplus_config):
     }
     time_info = ti_calculate(task_info)
     lookback = 6 * 3600
-    assert pcw.setup_sum_method(time_info, lookback, data_src)
+    assert pcw.set_sum_method_arguments(time_info, lookback, data_src)
 
 def _set_subhourly_config_settings(config, fcst_name, fcst_level, fcst_input_dir, fcst_output_dir, fcst_output_name):
     config.set('config', 'DO_NOT_RUN_EXE', True)
@@ -244,7 +262,16 @@ def _set_subhourly_config_settings(config, fcst_name, fcst_level, fcst_input_dir
 @pytest.mark.wrapper
 def test_setup_subtract_method(metplus_config, custom):
     data_src = "FCST"
-    pcw = pcp_combine_wrapper(metplus_config, data_src)
+    config = metplus_config
+    set_minimum_config_settings(config, data_src)
+    config.set('config', f'{data_src}_PCP_COMBINE_METHOD', 'SUBTRACT')
+    config.set('config', 'VALID_BEG', "201609050000")
+    config.set('config', 'VALID_END', "201609050000")
+    config.set('config', 'VALID_TIME_FMT', "%Y%m%d%H%M")
+    config.set('config', 'LEAD_SEQ', "9H")
+    config.set('config', f'{data_src}_PCP_COMBINE_LOOKBACK', 6)
+    wrapper = PCPCombineWrapper(config)
+
     task_info = {
         'valid': datetime.strptime("201609050000", '%Y%m%d%H%M'),
         'lead_hours': 9,
@@ -252,12 +279,14 @@ def test_setup_subtract_method(metplus_config, custom):
     }
     if custom:
         task_info['custom'] = 'file'
-        temp = pcw.config.getraw('config', 'FCST_PCP_COMBINE_INPUT_TEMPLATE')
+        temp = wrapper.config.getraw('config', 'FCST_PCP_COMBINE_INPUT_TEMPLATE')
         temp = temp.replace('file.', '{custom}.')
-        pcw.config.set('config', 'FCST_PCP_COMBINE_INPUT_TEMPLATE', temp)
+        wrapper.config.set('config', 'FCST_PCP_COMBINE_INPUT_TEMPLATE', temp)
     time_info = ti_calculate(task_info)
-    lookback = 6 * 3600
-    files_found = pcw.setup_subtract_method(time_info, lookback, data_src)
+
+    wrapper.c_dict['DATA_SRC'] = data_src
+    wrapper.c_dict['ALL_FILES'] = wrapper.get_all_files_for_each(time_info)
+    files_found = wrapper.c_dict['ALL_FILES'][0][data_src]
     in_files = [item[0] for item in files_found]
 
     assert len(in_files) == 2
@@ -396,13 +425,7 @@ def test_pcp_combine_derive(metplus_config, get_test_data_dir, config_overrides,
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
     config.set('config', 'DO_NOT_RUN_EXE', True)
-
-    # set process and time config variables
-    config.set('config', 'PROCESS_LIST', 'PCPCombine')
-    config.set('config', 'LOOP_BY', 'INIT')
-    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
-    config.set('config', 'INIT_BEG', '2005080700')
-    config.set('config', 'INIT_END', '2005080700')
+    set_pcp_combine_by_init(config, '%Y%m%d%H', '2005080700')
     config.set('config', 'INIT_INCREMENT', '1M')
     config.set('config', 'LEAD_SEQ', '24H')
     config.set('config', 'LOOP_ORDER', 'times')
@@ -524,16 +547,10 @@ def test_pcp_combine_subtract(metplus_config, get_test_data_dir):
                                   'pcp_in',
                                   'derive')
     fcst_output_dir = '{OUTPUT_BASE}/PCP/subtract'
-    # set config variables to prevent command from running and bypass check
-    # if input files actually exist
+
     config.set('config', 'DO_NOT_RUN_EXE', True)
 
-    # set process and time config variables
-    config.set('config', 'PROCESS_LIST', 'PCPCombine')
-    config.set('config', 'LOOP_BY', 'INIT')
-    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
-    config.set('config', 'INIT_BEG', '2005080700')
-    config.set('config', 'INIT_END', '2005080700')
+    set_pcp_combine_by_init(config, '%Y%m%d%H', '2005080700')
     config.set('config', 'INIT_INCREMENT', '1M')
     config.set('config', 'LEAD_SEQ', '18H')
     config.set('config', 'LOOP_ORDER', 'times')
@@ -638,7 +655,8 @@ def test_handle_name_argument(metplus_config, output_name, extra_output,
     config = metplus_config
     wrapper = PCPCombineWrapper(config)
     wrapper.c_dict[data_src + '_EXTRA_OUTPUT_NAMES'] = extra_output
-    wrapper._handle_name_argument(output_name, data_src)
+    wrapper.c_dict[f'{data_src}_OUTPUT_NAME'] = output_name
+    wrapper._handle_name_argument({}, data_src)
     actual_results = wrapper.args
     print(f"Actual: {actual_results}")
     print(f"Expected: {expected_results}")
@@ -695,11 +713,7 @@ def test_add_method_single_file(metplus_config):
     config.set('config', 'INPUT_MUST_EXIST', False)
 
     # set process and time config variables
-    config.set('config', 'PROCESS_LIST', 'PCPCombine')
-    config.set('config', 'LOOP_BY', 'INIT')
-    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H%M')
-    config.set('config', 'INIT_BEG', '2019100200')
-    config.set('config', 'INIT_END', '2019100200')
+    set_pcp_combine_by_init(config, '%Y%m%d%H%M', '2019100200')
     config.set('config', 'INIT_INCREMENT', '3H')
     config.set('config', 'LEAD_SEQ', '24,27,30')
     config.set('config', 'LOOP_ORDER', 'times')
@@ -765,11 +779,7 @@ def test_subtract_method_zero_accum(metplus_config):
     config.set('config', 'INPUT_MUST_EXIST', False)
 
     # set process and time config variables
-    config.set('config', 'PROCESS_LIST', 'PCPCombine')
-    config.set('config', 'LOOP_BY', 'INIT')
-    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H%M')
-    config.set('config', 'INIT_BEG', '2019100200')
-    config.set('config', 'INIT_END', '2019100200')
+    set_pcp_combine_by_init(config, '%Y%m%d%H%M', '2019100200')
     config.set('config', 'INIT_INCREMENT', '3H')
     config.set('config', 'LEAD_SEQ', '1')
     config.set('config', 'LOOP_ORDER', 'times')
@@ -962,3 +972,67 @@ def test_pcp_combine_derive_year_lookback(metplus_config, compare_command_and_en
 
     all_cmds = wrapper.run_all_times()
     compare_command_and_env_vars(all_cmds, expected_cmds, {}, wrapper, {})
+
+@pytest.mark.wrapper
+def test_pcp_combine_user_defined(metplus_config, get_test_data_dir):
+    config = metplus_config
+
+    test_data_dir = get_test_data_dir()
+    fcst_input_dir = os.path.join(test_data_dir, 'pcp_in', 'derive')
+    fcst_output_dir = '{OUTPUT_BASE}/PCP/derive'
+
+    fcst_name = 'APCP'
+    fcst_level = 'A03'
+    fcst_fmt = f'\'name="{fcst_name}"; level="{fcst_level}";\''
+
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+
+    config.set('config', 'PROCESS_LIST', 'PCPCombine')
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
+    config.set('config', 'INIT_BEG', '2005080700')
+    config.set('config', 'INIT_END', '2005080800')
+    config.set('config', 'INIT_INCREMENT', '1d')
+    config.set('config', 'LEAD_SEQ', '24H')
+    config.set('config', 'FCST_PCP_COMBINE_RUN', 'True')
+    config.set('config', 'FCST_PCP_COMBINE_METHOD', 'USER_DEFINED')
+    config.set('config', 'FCST_PCP_COMBINE_COMMAND',
+               "-derive sum,min,max,range,mean,stdev,vld_count "
+               + fcst_input_dir + "/{init?fmt=%Y%m%d%H}/wrfprs_ruc13_{lead?fmt=%HH}.tm00_G212 "
+               + fcst_input_dir + "/{init?fmt=%Y%m%d%H}/wrfprs_ruc13_{lead?fmt=%HH?shift=-3H}.tm00_G212 "
+               + fcst_input_dir + "/{init?fmt=%Y%m%d%H}/wrfprs_ruc13_{lead?fmt=%HH?shift=-6H}.tm00_G212 "
+               + fcst_input_dir + "/{init?fmt=%Y%m%d%H}/wrfprs_ruc13_{lead?fmt=%HH?shift=-9H}.tm00_G212 "
+               + fcst_input_dir + "/{init?fmt=%Y%m%d%H}/wrfprs_ruc13_{lead?fmt=%HH?shift=-12H}.tm00_G212 "
+               + fcst_input_dir + "/{init?fmt=%Y%m%d%H}/wrfprs_ruc13_{lead?fmt=%HH?shift=-15H}.tm00_G212 "
+               f"-field {fcst_fmt}")
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_DIR', fcst_input_dir)
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_DIR', fcst_output_dir)
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_TEMPLATE', 'wrfprs_ruc13_{init?fmt=%Y%m%d%H}_f{lead?fmt=%HH}_A{level?fmt=%HH}.nc')
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_ACCUM', 'A24')
+
+    wrapper = PCPCombineWrapper(config)
+    assert wrapper.isOK
+
+    app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
+    verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
+    out_dir = wrapper.c_dict.get('FCST_OUTPUT_DIR')
+    expected_cmds = []
+    for init_time in ('2005080700', '2005080800'):
+        expected_cmds.append(
+            f"{app_path} -derive sum,min,max,range,mean,stdev,vld_count "
+            f"{fcst_input_dir}/{init_time}/wrfprs_ruc13_24.tm00_G212 "
+            f"{fcst_input_dir}/{init_time}/wrfprs_ruc13_21.tm00_G212 "
+            f"{fcst_input_dir}/{init_time}/wrfprs_ruc13_18.tm00_G212 "
+            f"{fcst_input_dir}/{init_time}/wrfprs_ruc13_15.tm00_G212 "
+            f"{fcst_input_dir}/{init_time}/wrfprs_ruc13_12.tm00_G212 "
+            f"{fcst_input_dir}/{init_time}/wrfprs_ruc13_09.tm00_G212 "
+            f"-field {fcst_fmt} {out_dir}/wrfprs_ruc13_{init_time}_f24_A24.nc {verbosity}"
+        )
+
+    all_cmds = wrapper.run_all_times()
+    print(f"ALL COMMANDS: {all_cmds}")
+    assert len(all_cmds) == len(expected_cmds)
+
+    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
+        # ensure commands are generated as expected
+        assert cmd == expected_cmd

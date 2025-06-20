@@ -5,37 +5,48 @@ import os
 import netCDF4
 import filecmp
 import csv
-from numbers import Number
+from math import log10
 from PIL import Image, ImageChops
 from pandas import isnull
 from numpy.ma import is_masked
 
+# file extensions for supported image file types
 IMAGE_EXTENSIONS = [
     '.jpg',
     '.jpeg',
     '.png',
 ]
 
+# file extensions used to determine if a file is a NetCDF file
 NETCDF_EXTENSIONS = [
     '.nc',
     '.cdf',
     '.nc4',
 ]
 
+# file extensions to skip
+# these will be reported as a successful diff test
 SKIP_EXTENSIONS = [
     '.zip',
     '.gif',
     '.ix',
+    '.log',
+    '',
 ]
 
+# file extensions used to determine if a file is a PDF file
 PDF_EXTENSIONS = [
     '.pdf',
 ]
 
+# file extensions used to determine if a file is a CSV file
 CSV_EXTENSIONS = [
     '.csv',
 ]
 
+# file extensions that are not currently supported by the diff utility
+# these will be flagged as differences so the reviewer knows to examine
+# the files manually
 UNSUPPORTED_EXTENSIONS = [
 ]
 
@@ -68,6 +79,12 @@ ROUNDING_OVERRIDES = {
 # number of decision places to accept float differences
 # Note: Completing METplus issue #1873 could allow this to be set to 6
 rounding_precision = DEFAULT_ROUNDING_PRECISION
+
+# set tolerance for zero values
+IS_ZERO_TOL = 1.0e-10
+
+# number of significant figures to use for comparing floats
+SIG_FIG = 7
 
 
 def get_file_type(filepath):
@@ -120,6 +137,7 @@ def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
         return [result]
 
     diff_files = []
+    n_files_compared = 0
     for filepath_a in _get_files(dir_a):
         filepath_b = filepath_a.replace(dir_a, dir_b)
         print("\n# # # # # # # # # # # # # # # # # # # # # # # # # # "
@@ -133,6 +151,7 @@ def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
                                    dir_a=dir_a,
                                    dir_b=dir_b,
                                    save_diff=save_diff)
+            n_files_compared += 1
         except Exception as err:
             print(f"ERROR: Exception occurred in diff logic: {err}")
             result = filepath_a, filepath_b, 'Exception in diff logic', ''
@@ -154,9 +173,10 @@ def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
             continue
         print(f"ERROR: File does not exist: {filepath_a}")
         diff_files.append(('', filepath_b, 'file not found (new output)', ''))
+        n_files_compared += 1
 
     print('::endgroup::')
-
+    print(f"\n\nNumber of files compared = {n_files_compared}")
     _print_dir_summary(diff_files)
     return diff_files
 
@@ -189,7 +209,7 @@ def _get_files(search_dir):
 def _print_dir_summary(diff_files):
     print("\n\n**************************************************\nSummary:\n")
     if diff_files:
-        print("\nERROR: Some differences were found")
+        print(f"ERROR: Differences were found with {len(diff_files)} files\n")
         for filepath_a, filepath_b, reason, diff_file in diff_files:
             print(f"{reason}\n  A:{filepath_a}\n  B:{filepath_b}")
             if diff_file:
@@ -225,11 +245,12 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
 
     file_type = get_file_type(filepath_a)
     if file_type.startswith('skip'):
-        print(f"Skipping {file_type.split(' ')[1]} file")
+        file_ext = file_type.split(' ')[1]
+        print(f"Skipping {file_ext} file" if file_ext else "Skipping file without extension")
         return None
 
     if file_type.startswith('unsupported'):
-        print(f"Unsupported file type encountered: {file_type.split('.')[1]}")
+        print(f"Unsupported file type encountered: {file_type.split(' ')[1]}")
         return filepath_a, filepath_b, file_type, ''
 
     if file_type == 'csv':
@@ -310,11 +331,12 @@ def _handle_image_files(filepath_a, filepath_b, save_diff):
 
 def _handle_text_files(filepath_a, filepath_b, dir_a, dir_b):
     print("Comparing text files")
+    
     if filecmp.cmp(filepath_a, filepath_b, shallow=False):
         print("No differences found from filecmp.cmp")
         return True
 
-    # if files differ, open files and handle expected diffs
+        # if files differ, open files and handle expected diffs
     if not compare_txt_files(filepath_a, filepath_b, dir_a, dir_b):
         print(f"ERROR: File differs: {filepath_b}")
         return filepath_a, filepath_b, 'Text diff', ''
@@ -393,7 +415,7 @@ def _is_zero_pixel(pixel):
 
 
 def save_diff_file(image_diff, filepath_b):
-    rel_path, file_extension = os.path.splitext(filepath_b)
+    rel_path, _ = os.path.splitext(filepath_b)
     diff_file = f'{rel_path}_diff.png'
     print(f"Saving diff file: {diff_file}")
     image_diff.save(diff_file, "PNG")
@@ -474,6 +496,10 @@ def _is_equal_rounded(value_a, value_b):
         return True
     if not _is_number(value_a) or not _is_number(value_b):
         return False
+    if _set_zero(value_a) == _set_zero(value_b):
+        return True
+    if _round_sig_figs(value_a) == _round_sig_figs(value_b):
+        return True     
     if _truncate_float(value_a) == _truncate_float(value_b):
         return True
     if _round_float(value_a) == _round_float(value_b):
@@ -482,25 +508,32 @@ def _is_equal_rounded(value_a, value_b):
 
 
 def _is_number(value):
-    if isinstance(value, Number):
-        return True
-    # Handle NumPy masked constants
-    if is_masked(value):
-        return False
-    # Try to convert to string first, in case value is not a string
     try:
-        return str(value).replace('.', '1').replace('-', '1').strip().isdigit()
-    except (AttributeError, TypeError):
+        float(value)
+    except ValueError:
         return False
-
+    return True
 
 def _truncate_float(value):
     factor = 1 / (10 ** rounding_precision)
     return float(value) // factor * factor
 
-
 def _round_float(value):
     return round(float(value), rounding_precision)
+
+def _set_zero(value):
+    if abs(float(value)) < IS_ZERO_TOL:
+        # print(f"setting {value} to 0.0")  # DEBUG
+        value = 0.0
+    return value
+
+def _round_sig_figs(value):
+    # divide by 10^val_mag to put its first sig fig before the decimal
+    #   and the rest after
+    # round to SIG_FIG-1 to retain SIG_FIG digits
+    # then multiply by 10^val_mag to revert to its actual magnitude
+    val_mag = log10(abs(float(value))) // 1
+    return round(float(value) / 10**val_mag, SIG_FIG-1) * (10**val_mag)
 
 
 def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
@@ -561,29 +594,40 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
         return False
 
     if diff_text_lines(lines_a, lines_b, dir_a=dir_a, dir_b=dir_b,
-                       print_error=False, is_file_list=is_file_list,
-                       is_stat_file=is_stat_file, header_a=header_a):
+                       print_error=False, is_stat_file=is_stat_file, 
+                       header_a=header_a):
         return True
 
     # if differences found in text file, sort and try again
     lines_a.sort()
     lines_b.sort()
     return diff_text_lines(lines_a, lines_b, dir_a=dir_a, dir_b=dir_b,
-                           print_error=True, is_file_list=is_file_list,
-                           is_stat_file=is_stat_file, header_a=header_a)
+                           print_error=True, is_stat_file=is_stat_file, 
+                           header_a=header_a)
 
 
 def diff_text_lines(lines_a, lines_b, dir_a=None, dir_b=None,
-                    print_error=False, is_file_list=False, is_stat_file=False,
+                    print_error=False, is_stat_file=False,
                     header_a=None):
     all_good = True
     for line_a, line_b in zip(lines_a, lines_b):
         compare_a = line_a
         compare_b = line_b
-        # if files are file list files, compare each line after replacing
-        # dir_b with dir_a in filepath_b
-        if is_file_list and dir_a and dir_b:
+
+        # initial check to skip lines without diffs
+        if compare_a == compare_b:
+            continue
+
+        # skip FILTER and JOB_LIST lines due to expected filepath diffs
+        if compare_a.startswith(('FILTER', 'JOB_LIST')):
+            continue
+
+        # try replacing dir_b with dir_a in line_b 
+        # for cases where diff is due to filepath
+        try:
             compare_b = compare_b.replace(dir_b, dir_a)
+        except TypeError:       # don't error if missing dir_a or dir_b
+            pass
 
         # check for differences
         if compare_a == compare_b:
@@ -595,8 +639,7 @@ def diff_text_lines(lines_a, lines_b, dir_a=None, dir_b=None,
                 all_good = False
             continue
 
-        if print_error:
-            print(f"ERROR: Line differs\n A: {compare_a}\n B: {compare_b}")
+        _print_error_message(f"ERROR: Line differs\n A: {compare_a}\n B: {compare_b}", print_error)
         all_good = False
 
     return all_good
@@ -619,8 +662,7 @@ def _diff_stat_line(compare_a, compare_b, header, print_error=False):
 
     # error if different number of columns are found
     if len(cols_a) != len(cols_b):
-        if print_error:
-            print(f'{message}Different number of columns')
+        _print_error_message(f'{message}Different number of columns', print_error)
         return False
 
     all_good = True
@@ -634,8 +676,8 @@ def _diff_stat_line(compare_a, compare_b, header, print_error=False):
         label = f'column {index+2}' if index >= len(header) else header[index]
         message += f"  Diff in {label}:\n    A: {col_a}\n    B: {col_b}\n"
 
-    if not all_good and print_error:
-        print(message)
+    if not all_good:
+        _print_error_message(message, print_error)
     return all_good
 
 
@@ -706,24 +748,25 @@ def _nc_fields_are_equal(field, nc_a, nc_b, debug=False):
     except TypeError:
         # handle non-numeric fields
         if not _all_values_are_equal(var_a, var_b):
-            print(f"ERROR: Field ({field}) values (non-numeric) "
-                  "differ\n"
+            print(f"ERROR: Field ({field}) values (non-numeric) differ\n"
                   f" File_A: {var_a[:]}\n File_B: {var_b[:]}")
             return False
-
         return True
-
-    # if any NaN values in either data set, min and max of diff will be NaN
-    # compare each value
-    if isnull(values_diff.min()) and isnull(values_diff.max()):
-        print(f"Variable {field} contains NaN. Comparing each value...")
-        if not _all_values_are_equal(var_a, var_b):
-            print(f'ERROR: Some values differ in {field}')
+    except ValueError:
+        # check if shapes are not equal
+        if values_a.shape != values_b.shape:
+            print(f"ERROR: Field {field} values don't have the same shape")
             return False
-        return True
+        raise
 
-    # consider all values equal is min and max diff are 0
-    if not values_diff.min() and not values_diff.max():
+    # Check for NaN values and empty arrays first
+    diff_result = _check_values_diff(values_diff, field, var_a, var_b)
+    if diff_result is not None:
+        return diff_result
+
+    # if this fails, compare all values, applying the same rounding logic
+    # used for other file types
+    if _all_values_are_equal(var_a, var_b):
         return True
 
     print(f"ERROR: Field ({field}) values differ\n"
@@ -734,6 +777,38 @@ def _nc_fields_are_equal(field, nc_a, nc_b, debug=False):
         _print_nc_field_diff_summary(values_diff)
 
     return False
+
+
+def _check_values_diff(values_diff, field, var_a, var_b):
+    """Check for NaN values and empty arrays in NetCDF field comparison.
+
+    @param values_diff numpy array of differences between var_a and var_b
+    @param field name of the field being compared
+    @param var_a first netCDF variable
+    @param var_b second netCDF variable
+    @returns True if values are equal, False if they differ, None if normal comparison should continue
+    """
+    # if any NaN values in either data set, min and max of diff will be NaN
+    # compare each value
+    try:
+        if isnull(values_diff.min()) and isnull(values_diff.max()):
+            print(f"Variable {field} contains NaN. Comparing each value...")
+            if not _all_values_are_equal(var_a, var_b):
+                print(f'ERROR: Some values differ in {field}')
+                return False
+            return True
+    except ValueError:
+        # handle error due to zero-size array
+        if values_diff.size == 0:
+            return True
+        raise
+
+    # consider all values equal if min and max diff are 0
+    if not values_diff.min() and not values_diff.max():
+        return True
+
+    # Return None to indicate normal comparison should continue
+    return None
 
 
 def _print_nc_field_diff_summary(values_diff):
@@ -774,6 +849,9 @@ def _all_values_are_equal(var_a, var_b):
             return False
     return True
 
+def _print_error_message(msg, print_error):
+    if print_error:
+        print(msg)
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
