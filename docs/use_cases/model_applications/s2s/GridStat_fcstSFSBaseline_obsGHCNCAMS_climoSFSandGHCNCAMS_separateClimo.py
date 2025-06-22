@@ -19,7 +19,7 @@ model_applications/s2s/GridStat_fcstSFSBaseline_obsGHCNCAMS_climoSFSandGHCNCAMS_
 # performance relative to a reference forecast. In most use cases, this is accomplished with
 # a climatology comparison; however, the climatologies applied are often from the
 # observational dataset and do not provide as much insight as a climatology
-# based on the forecast itself. This use case shows a basic setup of using 
+# based on the forecast itself. This use case shows a basic setup using 
 # ensemble-specific climatology and applying that climatology to the forecast, as
 # well as a separate climatology for the observational dataset. This use case will
 # be an important template for those hoping to utilize forecast climatologies within
