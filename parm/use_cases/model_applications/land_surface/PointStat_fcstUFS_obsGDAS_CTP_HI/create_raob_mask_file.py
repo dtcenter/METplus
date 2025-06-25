@@ -2,8 +2,6 @@ import os
 import numpy as np
 import pandas as pd
 import sys
-from metcalcpy.diagnostics import land_surface
-from metpy.units import units
 
 # Append the MET Python module directory to the path to import the functions
 sys.path.append(os.environ.get('MET_PYTHON_DIR'))
