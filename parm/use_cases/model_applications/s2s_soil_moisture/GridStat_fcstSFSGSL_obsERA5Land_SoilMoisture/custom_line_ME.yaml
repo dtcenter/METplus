@@ -206,7 +206,7 @@ show_signif:
 #- 'False'
 stat_input: !ENV '${PLOTTING_STAT_INPUT}'
 sync_yaxes: 'True'
-title: June CONUS Soil Moisture Mean Error for the SFS-GSL model, 1991 - 2020
+title: June CONUS Soil Moisture ME for the SFS-GSL model, 1991 - 2020
 title_align: 0.5
 title_offset: -2
 title_size: 1.5
