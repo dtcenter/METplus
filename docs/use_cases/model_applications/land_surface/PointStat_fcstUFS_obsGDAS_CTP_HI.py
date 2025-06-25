@@ -187,6 +187,16 @@ model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 # Running METplus
 # ---------------
 #
+# .. note::
+#
+#   Prior to running this use case, the user should ensure that the version of Python in their environment meets the requirements
+#   for the Python UserScripts. These requirements are noted earlier in this documentation. Additionally, if the user is using a version
+#   of MET that was not compiled against a Python installation meeting the requirements for Python embedding (also described earlier), then
+#   the user should set the MET_PYTHON_EXE configuration variable under the [user_env_var] section of their local METplus configuration file 
+#   to "python3". When a user runs the Linux command "which python3", it should return the path to the Python installation that meets the 
+#   requirements for either the Python UserScripts, and if needed, Python embedding scripts. This will ensure the correct Python is used for
+#   Python embedding (if needed), and the Python UserScripts.
+#
 # Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired::
 #
