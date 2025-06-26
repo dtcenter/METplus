@@ -79,7 +79,7 @@ METplus Version 6.1.0 Release Notes (2025-07-02)
 
      * PairStat
        (`#2781 <https://github.com/dtcenter/METplus/issues/2781>`_,
-        `#2944 <https://github.com/dtcenter/METplus/issues/2944>`_)
+       `#2944 <https://github.com/dtcenter/METplus/issues/2944>`_)
      * RMW-Analysis
        (`#2962 <https://github.com/dtcenter/METplus/issues/2962>`_)
 
