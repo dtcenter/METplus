@@ -1,0 +1,29 @@
+# Configuration settings for reformatting MET .stat output to format for METplotpy
+
+# if .stat file input already contains aggregated statistics (i.e. output from MET stat-analysis
+# has been applied to MET .stat output from point-stat, grid-stat, or ensemble-stat).
+input_stats_aggregated: True 
+
+output_dir: !ENV '${REFORMAT_OUTPUT_DIR}'
+output_filename: !ENV '${REFORMAT_OUTPUT_FILENAME}'
+
+input_data_dir: !ENV '${REFORMAT_INPUT_DIR}'
+
+# Set to log_filename to STDOUT/stdout if no log file is to be saved
+log_directory: !ENV '${REFORMAT_OUTPUT_DIR}'
+log_filename: 'reformat.log'
+
+# Log levels are: INFO, DEBUG, WARNING, ERROR.
+# Set to INFO for most verbose, ERROR for least verbose.
+log_level: info
+
+# Currently support FHO, CTC, CTS, CNT, SL1L2, VL1L2, PCT, MCTC, VCNT, ECNT, RHIST, TCDiag, and MPR line types
+#line_type: CTS
+line_type: !ENV '${REFORMAT_LINETYPE}'
+
+#
+# FOR MPR linetype only
+#
+
+# True if reformatting for scatter plot, False otherwise
+keep_all_mpr_cols: False
