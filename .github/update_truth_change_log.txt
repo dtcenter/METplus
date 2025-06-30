@@ -36,3 +36,4 @@
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3009 - #3009 changed the output of the {lead} filename template tag to support months and years if they are possible to compute. This changed the output file names in the s2s:0 use case. It did not affect the results.
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #2985 - Moved use case added from #2985 to another group
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3019 - #3019 changes the extension of one output file in the marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport use case
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #2981, #3020, #3030 - #2981 adds land_surface:1 #3020 updates s2s_soil_moisture:0-1 #3030 adds s2s:6 clouds:8 and s2s:2 have image diffs that do not appear to be different upon visual review that are likely caused by https://github.com/dtcenter/METplotpy/commit/4d576d32cfc568d185810d7c41b40b981748553d

@@ -2,11 +2,7 @@
 
 import pytest
 
-import os
-import datetime
-
 from metplus.wrappers.regrid_data_plane_wrapper import RegridDataPlaneWrapper
-from metplus.util import time_util
 
 fcst_name = 'APCP'
 fcst_level = 'A03'
@@ -16,6 +12,34 @@ obs_level = '"(*,*)"'
 WIDTH_1 = '-width 1'
 GAUSSIAN_DX_2 = '-gaussian_dx 2'
 METHOD_BUDGET = '-method BUDGET'
+
+fcst_name1 = 'FNAME1'
+fcst_level1 = 'A06'
+fcst_name2 = 'FNAME2'
+fcst_level2 = 'A03'
+fcst_out2 = 'OUTNAME2'
+
+test_var_list = [
+    {'index': '1', 'fcst_name': fcst_name1, 'fcst_level': fcst_level1},
+    {'index': '2', 'fcst_name': fcst_name2, 'fcst_level': fcst_level2, 'fcst_output_name': fcst_out2},
+]
+
+def set_test_configs(config):
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+    config.set('config', 'LOOP_BY', 'VALID')
+    config.set('config', 'VALID_TIME_FMT', '%Y%m%d')
+    config.set('config', 'VALID_BEG', '20180201')
+    config.set('config', 'FCST_REGRID_DATA_PLANE_VAR1_INPUT_FIELD_NAME', fcst_name1)
+    config.set('config', 'FCST_REGRID_DATA_PLANE_VAR1_INPUT_LEVEL', fcst_level1)
+    config.set('config', 'FCST_REGRID_DATA_PLANE_VAR2_INPUT_FIELD_NAME', fcst_name2)
+    config.set('config', 'FCST_REGRID_DATA_PLANE_VAR2_INPUT_LEVEL', fcst_level2)
+    config.set('config', 'FCST_REGRID_DATA_PLANE_VAR2_OUTPUT_FIELD_NAME', fcst_out2)
+    config.set('config', 'FCST_REGRID_DATA_PLANE_RUN', True)
+    config.set('config', 'FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}_ZENITH')
+    config.set('config', 'REGRID_DATA_PLANE_METHOD', 'BUDGET')
+    config.set('config', 'REGRID_DATA_PLANE_WIDTH', '2')
+    config.set('config', 'REGRID_DATA_PLANE_VERIF_GRID', 'VERIF_GRID')
+    config.set('config', 'FCST_REGRID_DATA_PLANE_OUTPUT_DIR', '{OUTPUT_BASE}/RDP_test')
 
 def rdp_wrapper(metplus_config):
     """! Returns a default RegridDataPlane with /path/to entries in the
@@ -29,114 +53,67 @@ def rdp_wrapper(metplus_config):
 
 
 @pytest.mark.parametrize(
-    'once_per_field, missing, run, thresh, errors, allow_missing', [
-        (False, 10, 24, 0.5, 0, True),
-        (False, 10, 24, 0.6, 1, True),
-        (True, 10, 24, 0.5, 0, True),
-        (True, 10, 24, 0.6, 1, True),
-        (False, 10, 24, 0.5, 10, False),
-        (True, 10, 24, 0.5, 10, False),
+    'once_per_field, missing, run, thresh, errors, allow_missing, to_run', [
+        (False, 10, 24, 0.5, 0, True, ['FCST', 'OBS']),
+        (False, 10, 24, 0.6, 1, True, ['FCST', 'OBS']),
+        (True, 20, 48, 0.5, 0, True, ['FCST', 'OBS']),
+        (True, 20, 48, 0.6, 1, True, ['FCST', 'OBS']),
+        (False, 10, 24, 0.5, 10, False, ['FCST', 'OBS']),
+        (True, 20, 48, 0.5, 20, False, ['FCST', 'OBS']),
+        (False, 6, 12, 0.5, 0, True, ['FCST']),
+        (False, 6, 12, 0.6, 1, True, ['FCST']),
+        (True, 12, 24, 0.5, 0, True, ['FCST']),
+        (True, 12, 24, 0.6, 1, True, ['FCST']),
+        (False, 6, 12, 0.5, 6, False, ['FCST']),
+        (True, 12, 24, 0.5, 12, False, ['FCST']),
+        (False, 4, 12, 0.5, 0, True, ['OBS']),
+        (False, 4, 12, 0.7, 1, True, ['OBS']),
+        (True, 8, 24, 0.5, 0, True, ['OBS']),
+        (True, 8, 24, 0.7, 1, True, ['OBS']),
+        (False, 4, 12, 0.5, 4, False, ['OBS']),
+        (True, 8, 24, 0.5, 8, False, ['OBS']),
     ]
 )
 @pytest.mark.wrapper
-def test_regrid_data_plane_missing_inputs(metplus_config, get_test_data_dir,
-                                         once_per_field, missing, run, thresh, errors,
-                                         allow_missing):
+def test_regrid_data_plane_missing_inputs(metplus_config, get_test_data_dir, set_init_configs,
+                                          run_all_and_check_missing,
+                                          once_per_field, missing, run, thresh, errors,
+                                          allow_missing, to_run):
     config = metplus_config
 
     config.set('config', 'INPUT_MUST_EXIST', True)
     config.set('config', 'REGRID_DATA_PLANE_ALLOW_MISSING_INPUTS', allow_missing)
     config.set('config', 'REGRID_DATA_PLANE_INPUT_THRESH', thresh)
-    config.set('config', 'LOOP_BY', 'INIT')
-    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
-    config.set('config', 'INIT_BEG', '2017051001')
-    config.set('config', 'INIT_END', '2017051003')
-    config.set('config', 'INIT_INCREMENT', '2H')
-    config.set('config', 'LEAD_SEQ', '1,2,3,6,9,12')
-    config.set('config', 'FCST_REGRID_DATA_PLANE_RUN', True)
-    config.set('config', 'OBS_REGRID_DATA_PLANE_RUN', True)
-    config.set('config', 'FCST_REGRID_DATA_PLANE_INPUT_DIR', get_test_data_dir('fcst'))
-    config.set('config', 'OBS_REGRID_DATA_PLANE_INPUT_DIR', get_test_data_dir('obs'))
-    config.set('config', 'FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE',
-               '{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d_i%H}_f{lead?fmt=%3H}_HRRRTLE_PHPT.grb2')
-    config.set('config', 'OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE',
-               '{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A06.nc')
+    set_init_configs(config)
 
-    config.set('config', 'FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE',
-               '{OUTPUT_BASE}/{init?fmt=%Y%m%d_i%H}_f{lead?fmt=%3H}_HRRRTLE_PHPT.grb2')
-    config.set('config', 'OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE',
-               '{OUTPUT_BASE}/qpe_{valid?fmt=%Y%m%d%H}_A06.nc')
-    # add 2nd set of fields to test ONCE_PER_FIELD
-    config.set('config', 'FCST_VAR1_NAME', fcst_name)
-    config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
-    config.set('config', 'OBS_VAR1_NAME', obs_name)
-    config.set('config', 'OBS_VAR1_LEVELS', obs_level)
-    config.set('config', 'FCST_VAR2_NAME', fcst_name)
-    config.set('config', 'FCST_VAR2_LEVELS', fcst_level)
-    config.set('config', 'OBS_VAR2_NAME', obs_name)
-    config.set('config', 'OBS_VAR2_LEVELS', obs_level)
+    if 'FCST' in to_run:
+        config.set('config', 'FCST_REGRID_DATA_PLANE_RUN', True)
+        config.set('config', 'FCST_REGRID_DATA_PLANE_INPUT_DIR', get_test_data_dir('fcst'))
+        config.set('config', 'FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE',
+                   '{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d_i%H}_f{lead?fmt=%3H}_HRRRTLE_PHPT.grb2')
+        config.set('config', 'FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE',
+                   '{OUTPUT_BASE}/{init?fmt=%Y%m%d_i%H}_f{lead?fmt=%3H}_HRRRTLE_PHPT.grb2')
+        config.set('config', 'FCST_VAR1_NAME', fcst_name)
+        config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
+        config.set('config', 'FCST_VAR2_NAME', fcst_name)
+        config.set('config', 'FCST_VAR2_LEVELS', fcst_level)
+
+    if 'OBS' in to_run:
+        config.set('config', 'OBS_REGRID_DATA_PLANE_RUN', True)
+        config.set('config', 'OBS_REGRID_DATA_PLANE_INPUT_DIR', get_test_data_dir('obs'))
+        config.set('config', 'OBS_REGRID_DATA_PLANE_TEMPLATE',
+                   '{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A06.nc')
+        config.set('config', 'OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE',
+                   '{OUTPUT_BASE}/qpe_{valid?fmt=%Y%m%d%H}_A06.nc')
+        config.set('config', 'OBS_VAR1_NAME', obs_name)
+        config.set('config', 'OBS_VAR1_LEVELS', obs_level)
+        config.set('config', 'OBS_VAR2_NAME', obs_name)
+        config.set('config', 'OBS_VAR2_LEVELS', obs_level)
+
     config.set('config', 'REGRID_DATA_PLANE_ONCE_PER_FIELD', once_per_field)
 
     wrapper = RegridDataPlaneWrapper(config)
-    assert wrapper.isOK
-
-    all_cmds = wrapper.run_all_times()
-    for cmd, _ in all_cmds:
-        print(cmd)
-
-    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
-    assert wrapper.missing_input_count == missing
-    assert wrapper.run_count == run
-    assert wrapper.errors == errors
-
-
-# field info is the input dictionary with name and level info to parse
-# expected_arg is the argument that should be set by the function
-# note: did not include OBS because they are handled the same way as FCST
-@pytest.mark.parametrize(
-    'field_info, expected_arg', [
-
-        # 0) name/level
-        ({'fcst_name': 'F_NAME',
-          'fcst_level': "\"(1,*,*)\""},
-          "-field 'name=\"F_NAME\"; level=\"(1,*,*)\";'"
-         ),
-
-        # 1) python embedding script
-        ({'fcst_name': 'my_script.py some args',
-          'fcst_level': ""},
-         "-field 'name=\"my_script.py some args\";'"
-         ),
-
-        # 2) name/level
-        ({'fcst_name': 'F_NAME',
-          'fcst_level': "A06"},
-         "-field 'name=\"F_NAME\"; level=\"A06\";'"
-         ),
-
-        # 3) name, no level
-        ({'fcst_name': 'F_NAME',
-          'fcst_level': ""},
-         "-field 'name=\"F_NAME\";'"
-         ),
-
-        # 4) python embedding script
-        ({'fcst_name': 'my_script.py some args',
-          'fcst_level': ""},
-         "-field 'name=\"my_script.py some args\";'"
-         ),
-    ]
-)
-@pytest.mark.wrapper
-def test_set_field_command_line_arguments(metplus_config, field_info, expected_arg):
-    data_type = 'FCST'
-
-    config = metplus_config
-
-    rdp = RegridDataPlaneWrapper(config)
-
-    rdp.set_field_command_line_arguments(field_info, data_type)
-    assert rdp.args[0] == expected_arg
+    run_all_and_check_missing(wrapper, missing, run, errors)
 
 
 @pytest.mark.parametrize(
@@ -203,97 +180,63 @@ def test_get_output_names(metplus_config, var_list, expected_names):
     assert rdp.get_output_names(var_list, data_type) == expected_names
 
 
+def _override_c_dict(wrapper, var_list, data_type):
+    wrapper.c_dict['VAR_LIST_TEMP'] = var_list
+    wrapper.c_dict['DATA_SRC'] = data_type
+    wrapper.c_dict['OUTPUT_DIR'] = wrapper.c_dict[f'{data_type}_OUTPUT_DIR']
+    wrapper.c_dict['OUTPUT_TEMPLATE'] = wrapper.c_dict[f'{data_type}_OUTPUT_TEMPLATE']
+
+
 @pytest.mark.wrapper
 def test_run_rdp_once_per_field(metplus_config):
-    data_type = 'FCST'
+    config = metplus_config
+    config.set('config', 'REGRID_DATA_PLANE_ONCE_PER_FIELD', True)
+    config.set('config', 'FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}_accum{level?fmt=%2H}.nc')
+    set_test_configs(config)
 
-    input_dict = {'valid': datetime.datetime.strptime("201802010000",'%Y%m%d%H%M'),
-                  'lead': 0}
-    time_info = time_util.ti_calculate(input_dict)
+    wrapper = RegridDataPlaneWrapper(config)
+    _override_c_dict(wrapper, test_var_list, 'FCST')
 
-    var_list = [{'index': '1', 'fcst_name': 'FNAME1', 'fcst_level': 'A06'},
-                {'index': '2', 'fcst_name': 'FNAME2', 'fcst_level': 'A03', 'fcst_output_name': 'OUTNAME2'},
-                ]
+    wrapper.run_all_times()
 
-    wrap = rdp_wrapper(metplus_config)
-    wrap.c_dict['ONCE_PER_FIELD'] = True
-    wrap.c_dict['FCST_OUTPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d%H}_accum{level?fmt=%2H}.nc'
+    expected_cmds = [
+        f"{wrapper.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME1\"; "
+        "level=\"A06\";' -name FNAME1 2018020100_ZENITH \"VERIF_GRID\" "
+        f"{wrapper.config.getdir('OUTPUT_BASE')}/RDP_test/2018020100_accum06.nc",
+        f"{wrapper.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME2\"; "
+        "level=\"A03\";' -name OUTNAME2 2018020100_ZENITH \"VERIF_GRID\" "
+       f"{wrapper.config.getdir('OUTPUT_BASE')}/RDP_test/2018020100_accum03.nc",
+    ]
 
-    wrap.c_dict['FCST_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d%H}_ZENITH'
-    wrap.c_dict['METHOD'] = 'BUDGET'
-    wrap.c_dict['WIDTH'] = 2
-    wrap.c_dict['VERIFICATION_GRID'] = 'VERIF_GRID'
-    wrap.c_dict['FCST_OUTPUT_DIR'] = os.path.join(wrap.config.getdir('OUTPUT_BASE'),
-                                                  'RDP_test')
-
-    wrap.c_dict['VAR_LIST'] = var_list
-    wrap.c_dict['DATA_SRC'] = data_type
-    wrap.run_at_time_once(time_info)
-
-    expected_cmds = [f"{wrap.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME1\"; "
-                     "level=\"A06\";' -name FNAME1 2018020100_ZENITH \"VERIF_GRID\" "
-                     f"{wrap.config.getdir('OUTPUT_BASE')}/RDP_test/2018020100_accum06.nc",
-                     f"{wrap.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME2\"; "
-                     "level=\"A03\";' -name OUTNAME2 2018020100_ZENITH \"VERIF_GRID\" "
-                     f"{wrap.config.getdir('OUTPUT_BASE')}/RDP_test/2018020100_accum03.nc",
-                     ]
-
-    test_passed = True
-
-    if len(wrap.all_commands) != len(expected_cmds):
-        print("Number of commands run is not the same as expected")
-        print(f"Actual commands: {wrap.all_commands}\n")
-        print(f"Expected commands: {expected_cmds}\n")
-        assert False
-
-    for (cmd, _), expected_cmd in zip(wrap.all_commands, expected_cmds):
+    assert len(wrapper.all_commands) == len(expected_cmds)
+    for (cmd, _), expected_cmd in zip(wrapper.all_commands, expected_cmds):
         print(f"  ACTUAL:{cmd}")
         print(f"EXPECTED:{expected_cmd}")
-        if cmd != expected_cmd:
-            test_passed = False
-
-    assert test_passed
+        assert cmd == expected_cmd
 
 
 @pytest.mark.wrapper
 def test_run_rdp_all_fields(metplus_config):
-    data_type = 'FCST'
+    config = metplus_config
+    config.set('config', 'REGRID_DATA_PLANE_ONCE_PER_FIELD', False)
+    config.set('config', 'FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}_ALL.nc')
+    set_test_configs(config)
 
-    input_dict = {'valid': datetime.datetime.strptime("201802010000",'%Y%m%d%H%M'),
-                  'lead': 0}
-    time_info = time_util.ti_calculate(input_dict)
+    wrapper = RegridDataPlaneWrapper(config)
+    _override_c_dict(wrapper, test_var_list, 'FCST')
 
-    var_list = [{'index': '1', 'fcst_name': 'FNAME1', 'fcst_level': 'A06'},
-                {'index': '2', 'fcst_name': 'FNAME2', 'fcst_level': 'A03', 'fcst_output_name': 'OUTNAME2'},
-                ]
+    wrapper.run_all_times()
 
-    wrap = rdp_wrapper(metplus_config)
-    wrap.c_dict['ONCE_PER_FIELD'] = False
-    wrap.c_dict['FCST_OUTPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d%H}_ALL.nc'
-
-    wrap.c_dict['FCST_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d%H}_ZENITH'
-    wrap.c_dict['METHOD'] = 'BUDGET'
-    wrap.c_dict['WIDTH'] = 2
-    wrap.c_dict['VERIFICATION_GRID'] = 'VERIF_GRID'
-    wrap.c_dict['FCST_OUTPUT_DIR'] = os.path.join(wrap.config.getdir('OUTPUT_BASE'),
-                                                  'RDP_test')
-    wrap.c_dict['VAR_LIST'] = var_list
-    wrap.c_dict['DATA_SRC'] = data_type
-    wrap.run_at_time_once(time_info)
-
-    expected_cmds = [f"{wrap.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME1\"; "
+    expected_cmds = [f"{wrapper.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME1\"; "
                      "level=\"A06\";' -field 'name=\"FNAME2\"; level=\"A03\";' "
                      "-name FNAME1,OUTNAME2 2018020100_ZENITH \"VERIF_GRID\" "
-                     f"{wrap.config.getdir('OUTPUT_BASE')}/RDP_test/2018020100_ALL.nc",
+                     f"{wrapper.config.getdir('OUTPUT_BASE')}/RDP_test/2018020100_ALL.nc",
                      ]
 
     test_passed = True
 
-    if len(wrap.all_commands) != len(expected_cmds):
-        print("Number of commands run is not the same as expected")
-        assert False
-
-    for (cmd, _), expected_cmd in zip(wrap.all_commands, expected_cmds):
+    assert len(wrapper.all_commands) == len(expected_cmds)
+    for (cmd, _), expected_cmd in zip(wrapper.all_commands, expected_cmds):
         print(f"  ACTUAL:{cmd}")
         print(f"EXPECTED:{expected_cmd}")
         if cmd != expected_cmd:

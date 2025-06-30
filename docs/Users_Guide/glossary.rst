@@ -8937,16 +8937,6 @@ METplus Configuration Glossary
 
      | *Used by:* SeriesAnalysis
 
-   SERIES_ANALYSIS_CLIMO_MEAN_FILE_TYPE
-     Specify the value for 'climo_mean.file_type' in the MET configuration file for SeriesAnalysis.
-
-     | *Used by:* SeriesAnalysis
-
-   SERIES_ANALYSIS_CLIMO_STDEV_FILE_TYPE
-     Specify the value for 'climo_stdev.file_type' in the MET configuration file for SeriesAnalysis.
-
-     | *Used by:* SeriesAnalysis
-
    OMP_NUM_THREADS
      Sets environment variable of the same name that determines the number
      of threads to use in the MET executables. Defaults to 1 thread.
@@ -14297,3 +14287,163 @@ METplus Configuration Glossary
      See :term:`SKIP_VALID_TIMES` for formatting information.
 
      | *Used by:* RMWAnalysis
+
+   ENSEMBLE_STAT_CLIMO_MEAN_FILE_TYPE
+     Specify the value for 'climo_mean.file_type' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_STDEV_FILE_TYPE
+     Specify the value for 'climo_stdev.file_type' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_MEAN_FILE_TYPE
+     Specify the value for 'fcst.climo_mean.file_type' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_FCST_CLIMO_STDEV_FILE_TYPE
+     Specify the value for 'fcst.climo_stdev.file_type' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_MEAN_FILE_TYPE
+     Specify the value for 'obs.climo_mean.file_type' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_CLIMO_STDEV_FILE_TYPE
+     Specify the value for 'obs.climo_stdev.file_type' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   GRID_STAT_CLIMO_MEAN_FILE_TYPE
+     Specify the value for 'climo_mean.file_type' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_STDEV_FILE_TYPE
+     Specify the value for 'climo_stdev.file_type' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_MEAN_FILE_TYPE
+     Specify the value for 'fcst.climo_mean.file_type' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_FCST_CLIMO_STDEV_FILE_TYPE
+     Specify the value for 'fcst.climo_stdev.file_type' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_MEAN_FILE_TYPE
+     Specify the value for 'obs.climo_mean.file_type' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OBS_CLIMO_STDEV_FILE_TYPE
+     Specify the value for 'obs.climo_stdev.file_type' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GEN_ENS_PROD_CLIMO_MEAN_FILE_TYPE
+     Specify the value for 'climo_mean.file_type' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_STDEV_FILE_TYPE
+     Specify the value for 'climo_stdev.file_type' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   PAIR_STAT_CLIMO_MEAN_FILE_TYPE
+     Specify the value for 'climo_mean.file_type' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_CLIMO_STDEV_FILE_TYPE
+     Specify the value for 'climo_stdev.file_type' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_MEAN_FILE_TYPE
+     Specify the value for 'fcst.climo_mean.file_type' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_FCST_CLIMO_STDEV_FILE_TYPE
+     Specify the value for 'fcst.climo_stdev.file_type' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_MEAN_FILE_TYPE
+     Specify the value for 'obs.climo_mean.file_type' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_OBS_CLIMO_STDEV_FILE_TYPE
+     Specify the value for 'obs.climo_stdev.file_type' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   POINT_STAT_CLIMO_MEAN_FILE_TYPE
+     Specify the value for 'climo_mean.file_type' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_FILE_TYPE
+     Specify the value for 'climo_stdev.file_type' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_MEAN_FILE_TYPE
+     Specify the value for 'fcst.climo_mean.file_type' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_FCST_CLIMO_STDEV_FILE_TYPE
+     Specify the value for 'fcst.climo_stdev.file_type' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_MEAN_FILE_TYPE
+     Specify the value for 'obs.climo_mean.file_type' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_CLIMO_STDEV_FILE_TYPE
+     Specify the value for 'obs.climo_stdev.file_type' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   SERIES_ANALYSIS_CLIMO_MEAN_FILE_TYPE
+     Specify the value for 'climo_mean.file_type' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_STDEV_FILE_TYPE
+     Specify the value for 'climo_stdev.file_type' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_MEAN_FILE_TYPE
+     Specify the value for 'fcst.climo_mean.file_type' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_FCST_CLIMO_STDEV_FILE_TYPE
+     Specify the value for 'fcst.climo_stdev.file_type' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_MEAN_FILE_TYPE
+     Specify the value for 'obs.climo_mean.file_type' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_CLIMO_STDEV_FILE_TYPE
+     Specify the value for 'obs.climo_stdev.file_type' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
