@@ -696,28 +696,8 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
     # keep track of any differences that are found
     is_equal = True
 
-    # check if attribrutes match
-    if sorted(nc_a.ncattrs()) != sorted(nc_b.ncattrs()):
-        attrs_in_a_only = [attr for attr in nc_a.ncattrs() if attr not in nc_b.ncattrs()]
-        attrs_in_b_only = [attr for attr in nc_b.ncattrs() if attr not in nc_a.ncattrs()]
-        print("ERROR: Attribute list differs between files\n"
-               f"Unique to File_A: {attrs_in_a_only}\n"
-               f"Unique to File_B: {attrs_in_b_only}\n")
-        is_equal = False
-    
-    for attr in nc_a.ncattrs():
-        if attr in attrs_in_a_only or attr == 'FileOrigins':
-            continue
-        if nc_a.getncattr(attr) == nc_b.getncattr(attr):
-            continue
-        try:
-            if float(nc_a.getncattr(attr)) == float(nc_b.getncattr(attr)):
-                continue
-        except ValueError as err:
-            pass
-        print("ERROR: An attribute differs between files\n"
-               f"File_A: {attr}: {nc_a.getncattr(attr)}\n"
-               f"File_B: {attr}: {nc_b.getncattr(attr)}\n")
+    # check if global attributes match
+    if not _compare_nc_attributes(nc_a, nc_b, 'global'):
         is_equal = False
 
     # if no fields are specified, get all of them
@@ -737,10 +717,52 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
 
     # loop through fields, keeping track of any differences
     for field in field_list:
+        if not _compare_nc_attributes(nc_a[field], nc_b[field], 'variable'):
+            is_equal = False
         if not _nc_fields_are_equal(field, nc_a, nc_b, debug=debug):
             is_equal = False
 
     return is_equal
+
+def _compare_nc_attributes(nc_obj_a, nc_obj_b, attr_type):
+    """!Compare global or variable attributes in netcdf files
+
+    @param nc_obj_a netCDF4.Dataset or netCDF4.Variable from file a
+    @param nc_obj_b netCDF4.Dataset or netCDF4.Variable from file b
+    @param attr_type 'global' or 'variable'
+    @return True if all attributes equal, False if not
+    """
+    if attr_type=='variable':
+        attr_desc = f"variable {nc_obj_a.name}"
+    else:
+        attr_desc = "global"
+
+    attrs_equal = True
+
+    attrs_in_a_only = [attr for attr in nc_obj_a.ncattrs() if attr not in nc_obj_b.ncattrs()]
+    attrs_in_b_only = [attr for attr in nc_obj_b.ncattrs() if attr not in nc_obj_a.ncattrs()]
+    if attrs_in_a_only or attrs_in_b_only:
+        print(f"ERROR: {attr_desc} attribute list differs between files\n"
+               f"Unique to File_A: {attrs_in_a_only}\n"
+               f"Unique to File_B: {attrs_in_b_only}\n")
+        attrs_equal = False
+    
+    for attr in nc_obj_a.ncattrs():
+        if attr in attrs_in_a_only or attr == 'FileOrigins':
+            continue
+        if nc_obj_a.getncattr(attr) == nc_obj_b.getncattr(attr):
+            continue
+        try:
+            if float(nc_obj_a.getncattr(attr)) == float(nc_obj_b.getncattr(attr)):
+                continue
+        except ValueError as err:
+            pass
+        print(f"ERROR: A {attr_desc} attribute differs between files\n"
+               f"File_A: {attr}: {nc_obj_a.getncattr(attr)}\n"
+               f"File_B: {attr}: {nc_obj_b.getncattr(attr)}\n")
+        attrs_equal = False
+    
+    return attrs_equal
 
 
 def _nc_fields_are_equal(field, nc_a, nc_b, debug=False):
