@@ -739,7 +739,7 @@ def _compare_nc_attributes(nc_obj_a, nc_obj_b, attr_type):
     @return True if all attributes equal, False if not
     """
     if attr_type=='variable':
-        attr_desc = f"variable {nc_obj_a.name}"
+        attr_desc = f"variable ({nc_obj_a.name})"
     else:
         attr_desc = "global"
 
@@ -754,9 +754,9 @@ def _compare_nc_attributes(nc_obj_a, nc_obj_b, attr_type):
         attrs_equal = False
     
     for attr in nc_obj_a.ncattrs():
-        if attr in attrs_in_a_only or attr == 'FileOrigins':
+        if attr in attrs_in_a_only + ['FileOrigins', 'History']:
             continue
-        if nc_obj_a.getncattr(attr) == nc_obj_b.getncattr(attr):
+        if nc_obj_a.getncattr(attr).strip() == nc_obj_b.getncattr(attr).strip():
             continue
         try:
             if float(nc_obj_a.getncattr(attr)) == float(nc_obj_b.getncattr(attr)):
