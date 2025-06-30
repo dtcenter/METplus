@@ -499,7 +499,7 @@ def _is_equal_rounded(value_a, value_b):
     if _set_zero(value_a) == _set_zero(value_b):
         return True
     if _round_sig_figs(value_a) == _round_sig_figs(value_b):
-        return True     
+        return True
     if _truncate_float(value_a) == _truncate_float(value_b):
         return True
     if _round_float(value_a) == _round_float(value_b):
@@ -509,6 +509,9 @@ def _is_equal_rounded(value_a, value_b):
 
 def _is_number(value):
     try:
+        # consider masked values to not be a number
+        if is_masked(value):
+            return False
         float(value)
     except ValueError:
         return False
