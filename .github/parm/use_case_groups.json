@@ -361,7 +361,7 @@
   {
     "category": "tc_and_extra_tc",
     "index_list": "6",
-    "run": false
+    "run": true
   },
   {
     "category": "unstructured_grids",
