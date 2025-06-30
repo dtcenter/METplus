@@ -4,16 +4,13 @@
 # has been applied to MET .stat output from point-stat, grid-stat, or ensemble-stat).
 input_stats_aggregated: True 
 
-#output_dir: !ENV '${PLOT_OUTPUT_DIR}'
-output_dir: '.'
+output_dir: !ENV '${PLOT_OUTPUT_DIR}'
 output_filename: cnt_reformatted.data
 
-#input_data_dir: !ENV '${PLOT_INPUT_DIR}'
-input_data_dir: '../point_stat'
+input_data_dir: !ENV '${PLOT_INPUT_DIR}'
 
 # Set to log_filename to STDOUT/stdout if no log file is to be saved
-#log_directory: !ENV '${PLOT_LOG_DIR}'
-log_directory: '../logs'
+log_directory: !ENV '${PLOT_LOG_DIR}'
 log_filename: reformatting_cnt.log
 
 # most verbose is info, less verbose is error
