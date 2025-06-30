@@ -443,6 +443,25 @@ export METPLUS_ENV_VERSION=v6.1
 ./scripts/rioxarray_env.sh ${METPLUS_ENV_VERSION}
 ```
 
+## wrf_plot.v6.1 (from mp_analysis.v6.1)
+
+### Docker
+
+```
+export METPLUS_ENV_VERSION=v6.1
+docker build -t dtcenter/metplus-envs:wrf_plot.${METPLUS_ENV_VERSION} \
+    --build-arg METPLUS_ENV_VERSION \
+    --build-arg BASE_ENV=mp_analysis \
+    --build-arg ENV_NAME=wrf_plot .
+docker push dtcenter/metplus-envs:wrf_plot.${METPLUS_ENV_VERSION}
+```
+
+### Local
+
+```
+export METPLUS_ENV_VERSION=v6.1
+./scripts/wrf_plot_env.sh ${METPLUS_ENV_VERSION}
+```
 
 ## diff.v6.1 (from netcdf4.v6.1)
 
