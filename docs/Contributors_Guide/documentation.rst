@@ -1529,6 +1529,41 @@ desired.
   It is assumed that the web browser application and METplus
   source code are located on the same computer/host.
 
+Setting Up a Sphinx Environment Using MacPorts
+----------------------------------------------
+
+Many METplus developers have MacBooks with administrative access. To build the
+Sphinx documentation locally, developers may need to install the version
+of Python that METplus is using for development along with the necessary Sphinx
+packages. 
+
+As the admin user, run the following commands:
+
+.. code-block:: none
+
+  sudo port install python312
+  sudo port select --set python python312
+  sudo port select --set python3 python312
+
+  sudo port install py312-sphinx
+  sudo port select --set python python312
+  sudo port select --set sphinx py312-sphinx
+  sudo port install py312-dateutil
+
+As the user, run the following commands:
+
+.. code-block::	none
+
+  python3 -m ensurepip --default-pip
+  python3 -m pip install sphinx_design sphinx_rtd_theme sphinx-gallery sphinx-copybutton
+
+To build the documentation, run :code:`make clean html` from the top level
+*METplus/docs* directory.
+  
+
+Build Using a Script
+--------------------
+  
 All the sphinx modules (listed earlier) need to be present in order to
 generate the HTML content that comprises the documentation.
 From the command line, change to the *METplus/docs* directory and
@@ -1547,6 +1582,9 @@ This script does the following:
 * Creates symbolic links under Users_Guide to the directories under
   "generated" to preserve old URL paths
 
+View the Output from the Local Build
+------------------------------------
+  
 The html files that are created can be found in the *METplus/docs/_build/html*
 directory.  The web browser can point to this directory by entering
 the following in the web browser's navigation bar:
