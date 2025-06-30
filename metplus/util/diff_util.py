@@ -717,9 +717,15 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
 
     # loop through fields, keeping track of any differences
     for field in field_list:
-        if not _compare_nc_attributes(nc_a[field], nc_b[field], 'variable'):
-            is_equal = False
-        if not _nc_fields_are_equal(field, nc_a, nc_b, debug=debug):
+        try:
+            var_a = nc_a.variables[field]
+            var_b = nc_b.variables[field]
+            if not _compare_nc_attributes(var_a, var_b, 'variable'):
+                is_equal = False
+            if not _nc_fields_are_equal(field, nc_a, nc_b, debug=debug):
+                is_equal = False
+        except KeyError:
+            print(f"ERROR: Field {field} not found")
             is_equal = False
 
     return is_equal
