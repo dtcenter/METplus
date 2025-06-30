@@ -696,6 +696,30 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
     # keep track of any differences that are found
     is_equal = True
 
+    # check if attribrutes match
+    if sorted(nc_a.ncattrs()) != sorted(nc_b.ncattrs()):
+        attrs_in_a_only = [attr for attr in nc_a.ncattrs() if attr not in nc_b.ncattrs()]
+        attrs_in_b_only = [attr for attr in nc_b.ncattrs() if attr not in nc_a.ncattrs()]
+        print("ERROR: Attribute list differs between files\n"
+               f"Unique to File_A: {attrs_in_a_only}\n"
+               f"Unique to File_B: {attrs_in_b_only}\n")
+        is_equal = False
+    
+    for attr in nc_a.ncattrs():
+        if attr in attrs_in_a_only or attr == 'FileOrigins':
+            continue
+        if nc_a.getncattr(attr) == nc_b.getncattr(attr):
+            continue
+        try:
+            if float(nc_a.getncattr(attr)) == float(nc_b.getncattr(attr)):
+                continue
+        except ValueError as err:
+            pass
+        print("ERROR: An attribute differs between files\n"
+               f"File_A: {attr}: {nc_a.getncattr(attr)}\n"
+               f"File_B: {attr}: {nc_b.getncattr(attr)}\n")
+        is_equal = False
+
     # if no fields are specified, get all of them
     if fields:
         field_list = [fields] if not isinstance(fields, list) else fields
