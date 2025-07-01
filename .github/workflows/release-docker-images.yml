@@ -25,7 +25,7 @@ jobs:
       - name: Get and check tag name
         id: get_tag_name
         run: |
-          if [ ${{ github.event_name != 'workflow_dispatch' ]; then
+          if [ ${{ github.event_name != 'workflow_dispatch' }} ]; then
             SOURCE_BRANCH=${{ github.event.inputs.version }}
           else
             SOURCE_BRANCH=${GITHUB_REF#refs/tags/}
