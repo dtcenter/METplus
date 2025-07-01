@@ -761,16 +761,22 @@ def _compare_nc_attributes(nc_obj_a, nc_obj_b, attr_type):
     for attr in nc_obj_a.ncattrs():
         if attr in attrs_in_a_only + ['FileOrigins', 'History']:
             continue
-        if nc_obj_a.getncattr(attr).strip() == nc_obj_b.getncattr(attr).strip():
+        try:
+            attr_a = nc_obj_a.getncattr(attr).strip()
+            attr_b = nc_obj_b.getncattr(attr).strip()
+        except AttributeError as err:
+            attr_a = nc_obj_a.getncattr(attr)
+            attr_b = nc_obj_b.getncattr(attr)
+        if attr_a == attr_b:
             continue
         try:
-            if float(nc_obj_a.getncattr(attr)) == float(nc_obj_b.getncattr(attr)):
+            if float(attr_a) == float(attr_b):
                 continue
         except ValueError as err:
             pass
         print(f"ERROR: A {attr_desc} attribute differs between files\n"
-               f"File_A: {attr}: {nc_obj_a.getncattr(attr)}\n"
-               f"File_B: {attr}: {nc_obj_b.getncattr(attr)}\n")
+               f"File_A: {attr}: {attr_a}\n"
+               f"File_B: {attr}: {attr_b}\n")
         attrs_equal = False
     
     return attrs_equal
