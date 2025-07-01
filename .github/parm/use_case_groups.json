@@ -82,7 +82,7 @@
   {
     "category": "land_surface",
     "index_list": "1",
-    "run": true
+    "run": false
   },
   {
     "category": "marine_and_cryosphere",
