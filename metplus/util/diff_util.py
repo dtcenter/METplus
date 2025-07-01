@@ -767,7 +767,7 @@ def _compare_nc_attributes(nc_obj_a, nc_obj_b, attr_type):
         except AttributeError as err:
             attr_a = nc_obj_a.getncattr(attr)
             attr_b = nc_obj_b.getncattr(attr)
-        if attr_a == attr_b:
+        if (attr_a == attr_b) or (isnull(attr_a) and isnull(attr_b)):
             continue
         try:
             if float(attr_a) == float(attr_b):
