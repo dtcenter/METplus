@@ -535,8 +535,13 @@ def _round_sig_figs(value):
     #   and the rest after
     # round to SIG_FIG-1 to retain SIG_FIG digits
     # then multiply by 10^val_mag to revert to its actual magnitude
-    val_mag = log10(abs(float(value))) // 1
-    return round(float(value) / 10**val_mag, SIG_FIG-1) * (10**val_mag)
+    try:
+        val_mag = log10(abs(float(value))) // 1
+        return round(float(value) / 10**val_mag, SIG_FIG-1) * (10**val_mag)
+    except ValueError:
+        if value==0:
+            return 0
+        raise
 
 
 def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
