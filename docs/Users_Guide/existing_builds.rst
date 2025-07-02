@@ -526,7 +526,7 @@ in the
 .. dropdown:: DockerHub
 
    | **MET**
-   | *Last Updated: July 2, 2025*
+   | *Last Updated: July 8, 2025*
 
       .. code-block:: ini
 
@@ -535,7 +535,7 @@ in the
      `dtcenter/met DockerHub <https://hub.docker.com/r/dtcenter/met>`_
 
    | **METplus**
-   | *Last Updated: July 2, 2025*
+   | *Last Updated: July 8, 2025*
 
       .. code-block:: ini
 
@@ -544,7 +544,7 @@ in the
      `dtcenter/metplus DockerHub <https://hub.docker.com/r/dtcenter/metplus>`_
 
    | **METplus Analysis**
-   | *Last Updated: July 2, 2025*
+   | *Last Updated: July 8, 2025*
 
       .. code-block:: ini
 
