@@ -128,23 +128,22 @@ model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
 ##############################################################################
 # User Scripting
 # --------------
-# [UPDATE_SECTION_CONTENT]
 #
-# This use case uses a Python script to perform plotting, which at the time of 
-# this use case creation was not an ability METplus had. Additionally some of 
-# the plotting features used in this script are not currently slated for METplus 
-# analysis suite development.
-# In order to create the plots, the script reads in a yaml file and sets up 
-# the correct environment. Plot parameters (which are hard coded in the script) are set, 
-# and the datasets are read in from the input file. The desired variable fields 
-# are placed into arrays, which are then treated for bad data and squeezed to the 
-# appropriate dimensions. Additional basic math is completed on the resulting arrays 
-# to create the cross spectra values with the results being graphed.
+# This use case uses two Python UserScripts to perform plotting of the output.
+# These scripts are called via the METplus configuration file, and produce a map
+# plot of the mean error (ME, bias) at each observation location from PointStat 
+# for both variables analyzed, as well as a 2D histogram plotting the frequency of
+# each forecast minus observation and forecast value combination.
 #
-# .. dropdown:: parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra/cross_spectra_plot.py
+# .. dropdown:: parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp/plot_point_stat_bias_map_ISMN.py
 # 
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra/cross_spectra_plot.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp/plot_point_stat_bias_map_ISMN.py
+#
+# .. dropdown:: parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp/plot_point_stat_bias_2d_hist_ISMN.py
+#
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp/plot_point_stat_bias_map_ISMN.py
 
 ##############################################################################
 # Running METplus
@@ -160,7 +159,6 @@ model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
 ##############################################################################
 # Expected Output
 # ---------------
-# [UPDATE_SECTION_CONTENT]
 #
 # A successful run will output the following both to the screen and to the logfile::
 #
@@ -168,22 +166,17 @@ model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
 # Output for this use case will be found in 
-# {OUTPUT_BASE}/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds 
+# {OUTPUT_BASE}/model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp 
 # and will contain the following files::
 #
-#  * grid_stat_198201_000000L_19700101_000000V_pairs.nc
-#  * grid_stat_198201_000000L_19700101_000000V_pstd.txt
-#  * grid_stat_198201_000000L_19700101_000000V.stat
-#
-# Each file should contain corresponding statistics for the line type(s) requested.
-# For the netCDF file, five variable fields are present (not including the lat/lon fields). 
-# Those variables are::
-#
-#  * FCST_fcst_ENS_FREQ_lt-0.43_0_0_all_all_FULL(lat, lon)
-#  * OBS_tmp2m_20100101_000000_all_all_FULL(lat, lon)
-#  * CLIMO_MEAN_tmp2m_20100101_000000_all_all_FULL(lat, lon)
-#  * CLIMO_STDEV_tmp2m_20100101_000000_all_all_FULL(lat, lon)
-#  * CLIMO_CDF_tmp2m_20100101_000000_all_all_FULL(lat, lon)
+#  * ascii2nc/2020080512_ismn.nc
+#  * point_stat/point_stat_600000L_20200805_120000V_mpr.txt
+#  * point_stat/point_stat_600000L_20200805_120000V.stat
+#  * stat_analysis/2020080512_2020080512_OBS_SID_CNT.stat
+#  * 20200805_120000_20200805_120000_SOILW_0-0.1_2D_hist.png
+#  * 20200805_120000_20200805_120000_SOILW_0-0.1_ME_map.png
+#  * 20200805_120000_20200805_120000_TSOIL_0-0.1_2D_hist.png
+#  * 20200805_120000_20200805_120000_TSOIL_0-0.1_ME_map.png
 
 ##############################################################################
 # Keywords
@@ -200,4 +193,4 @@ model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
-# sphinx_gallery_thumbnail_path = '_static/short-range-MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.png'
+# sphinx_gallery_thumbnail_path = '_static/land_surface-PointStat_fcstUFS_obsISMN_SoilMoistureTemp.png'
