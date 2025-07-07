@@ -1,8 +1,8 @@
 """
-PointStat: Use Python embedding to calculate temperature terciles
-=================================================================
+PointStat: Verify UFS Soil Moisture and Temperature with ISMN Observations
+==========================================================================
 
-model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds.conf
+model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
 
 """
 ##############################################################################
@@ -27,17 +27,18 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 ##############################################################################
 # Version Added
 # -------------
-# [UPDATE_SECTION_CONTENT]
 #
-# METplus version 6.0
+# METplus version 6.1
 
 ##############################################################################
 # Datasets
 # --------
-# [UPDATE_SECTION_CONTENT]
-# **Forecast:** Global Forecast System (GFS) 25km resolution, 2m temperature
 #
-# **Observation:** ECMWF Reanalysis v5 (ERA5) 5 degree resolution, 2m temperature
+# **Forecast:** Global Forecast System (GFS) version 17 prototype.
+# Global 1-degree grid including soil moisture content and soil temperature.
+#
+# **Observation:** International Soil Moisture Network (ISMN) observations
+# of soil moisture content and soil temperature.
 #
 # **Climatology:** None
 #
@@ -53,51 +54,49 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 ##############################################################################
 # METplus Components
 # ------------------
-# [UPDATE_SECTION_CONTENT]
 #
-# The only tool this use case calls is GridStat. Within GridStat a Python 
-# script is used for ingesting forecast data, once for each year of data of 
-# the CFSv2 ensemble.
+# This use case uses ASCII2NC to process ISMN observations from their raw
+# format and then calls PointStat to verify the forecast data using those
+# observations. After PointStat, StatAnalysis is called to compute an aggregate
+# mean error (ME, Bias) across all times and forecast leads. Then METplus UserScripts
+# are used to create various graphics from the output.
 
 ##############################################################################
 # METplus Workflow
 # ----------------
-# [UPDATE_SECTION_CONTENT]
 #
-# **Beginning time (INIT_BEG):** 1982-01-01
+# **Beginning time (INIT_BEG):** 2020-08-05 12:00
 #
-# **End time (INIT_END):** 2010-01-02
+# **End time (INIT_END):** 2020-08-05 12:00
 #
-# **Increment between beginning and end times (INIT_INCREMENT):** 1 year
+# **Increment between beginning and end times (INIT_INCREMENT):** 12 Hours
 #
-# **Sequence of forecast leads to process (LEAD_SEQ):** None
+# **Sequence of forecast leads to process (LEAD_SEQ):** 60
 #
-# With an increment of 1 year, all January 1st’s from 1982 to 2010 are processed 
-# for a total of 29 years, with 24 members in each ensemble forecast. This use case 
-# initially runs SeriesAnalysis 24 times, once for each member of the CFSv2 ensemble 
-# across the 29 years of data. The resulting 24 outputs are read in by GenEnsProd 
-# which uses the normalize option to normalize each of the ensemble members 
-# relative to its climatology (FBAR) and standard deviation (FSTDEV). The output from 
-# GenEnsProd are 29 files containing the uncalibrated probability forecasts for 
-# the lower tercile of January for each year. The final probability verification 
-# is done across the temporal scale in SeriesAnalysis, and the spatial scale in GridStat.
+# Only a single time is used to demonstrate the workflow for this use case.
+# For each time, ASCII2NC is used to convert the ISMN observations to NetCDF.
+# Then PointStat is called to create matched forecast and observation pairs for each
+# variable and level defined by the user. After PointStat, StatAnalysis is used to
+# compute an aggregate mean error (ME, bias) for all forecast/observation pairs across
+# all valid times and forecast leads. This bias value is used to create a plot of the ME
+# at each ISMN site on a map, color-coded by the bias value. In addition, 2-D histogram
+# plots are created showing the relationship between the forecast minus observation values and
+# the forecast values.
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
-# [UPDATE_SECTION_CONTENT]
 #
 # METplus first loads all of the configuration files found in parm/metplus_config, 
 # then it loads any configuration files passed to METplus via the command line, 
-# i.e. parm/use_cases/model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool.conf
+# i.e. parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
 
 ##############################################################################
 # MET Configuration
 # -----------------
-# [UPDATE_SECTION_CONTENT]
 #
 # METplus sets environment variables based on user settings in the METplus
 # configuration file. See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details.
@@ -108,36 +107,23 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 # not supported by METplus you’d like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. dropdown:: GridStatConfig_wrapped
+# .. dropdown:: Ascii2NcConfig_wrapped
 #
-#   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+#   .. literalinclude:: ../../../../parm/met_config/Ascii2NcConfig_wrapped
+#
+# .. dropdown:: PointStatConfig_wrapped
+#
+#   .. literalinclude:: ../../../../parm/met_config/Ascii2NcConfig_wrapped
+#
+# .. dropdown:: STATAnalysisConfig_wrapped
+#
+#   .. literalinclude:: ../../../../parm/met_config/STATAnalysisConfig_wrapped
 
 ##############################################################################
 # Python Embedding
 # ----------------
-# [UPDATE_SECTION_CONTENT]
 #
-# This use case calls the read_ASCAT_data.py script to read and pass to PointStat 
-# the user-requested variable. The script needs 5 inputs in the following order: 
-# a path to a directory that contains only ASCAT data of the “ascat_YYYYMMDDHHMMSS_*” 
-# string, a start time in YYYYMMDDHHMMSS, an end time in the same format, 
-# a message type to code the variables as, and a variable name to read in. 
-# Currently the script puts the same station ID to each observation, but there is 
-# space in the code describing an alternate method that may be improved upon to 
-# allow different satellites to have their own station IDs. 
-# This code currently ingests all files it finds in the directory, pulls out the 
-# requested variable, and arranges the data in a list of lists following the 
-# 11-column format for point data. This list of lists is passed back 
-# to PointStat for evaluation and the requested statistical output. The location 
-# of the code is 
-# 
-# .. dropdown:: parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds/read_ASCAT_data.py
-#
-#   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds/read_ASCAT_data.py
-# 
-# For more information on the basic requirements to utilize Python Embedding in METplus, 
-# please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
+# This use case does not use Python embedding.
 
 ##############################################################################
 # User Scripting
@@ -163,12 +149,11 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 ##############################################################################
 # Running METplus
 # ---------------
-# [UPDATE_SECTION_CONTENT]
 #
 # Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired::
 #
-#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds.conf /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 
@@ -207,13 +192,12 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 #
 # .. note::
 #
+#   * ASCII2NCToolUseCase
 #   * PointStatToolUseCase
-#   * PythonEmbeddingFileUseCase
-#   * GRIB2FileUseCase
-#   * MarineAndCryosphereAppUseCase
+#   * StatAnalysisToolUseCase
+#   * UserScriptUseCase
+#   * LandSurfaceAppUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
-#
-#
 #
 # sphinx_gallery_thumbnail_path = '_static/short-range-MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.png'
