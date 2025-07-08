@@ -14,7 +14,7 @@ Description
 Sample image
   *Insert sample image here*
 
-  .. image:: images/sample_image.png
+  .. image:: images/ismn.png
    :width: 600
 
 Recommended use
@@ -60,46 +60,11 @@ Variables available
 
 METplus Use Cases
   Link to
-  `METplus Use Cases <https://metplus.readthedocs.io/en/develop/search.html?q=VxData%26%26UseCase&check_keywords=yes&area=default>`_
+  `METplus Use Cases <https://metplus.readthedocs.io/en/develop/search.html?q=VxDataISMN&check_keywords=yes&area=default>`_
   for this dataset.
 
-  .. 
-   [Delete this comment section]
-   Update search terms with the VxData label defined above.
-
 Keywords
-  ..
-    [Delete this comment section]
-    Specify one or more labels from each of the lists above.
-    When adding new labels, remember to update template.rst and quicksearch.rst.
-
   .. note:: **Current Dataset:** VxDataISMN
-  ..
-    [Delete this comment section]
-    Define a VxData label by which this dataset can be referenced.
 
-  .. note:: **Data Labels:** DataType, DataLevel, DataProvider, DataApplication
-  ..
-    [Delete this comment section]
-    Select at least one DataType label:
-      DataTypePoint
-      DataTypeGridded
-    Select at least one DataLevel label:
-      DataLevelSurface
-      DataLevelUpperAir
-      DataLevelSatellite
-    Select at least one DataProvider label:
-      DataProviderEUMETNET
-      DataProviderNASA
-      DataProviderNOAA
-      DataProviderUSAF
-    Select at least one DataApplication label:
-      DataApplicationClimate
-      DataApplicationShortRange
-      DataApplicationEnsemble
-      DataApplicationMarineAndCryo
-      DataApplicationMediumRange
-      DataApplicationPrecipitation
-      DataApplicationSpaceWeather
-      DataApplicationS2S
-      DataApplicationTCandExtraTC
+  .. note:: **Data Labels:** DataTypePoint, DataLevelSurface, DataApplicationLandSurface
+
