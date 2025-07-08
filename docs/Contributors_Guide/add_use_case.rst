@@ -926,6 +926,12 @@ Example::
 This example adds a new use case group that contains the climate use case
 with index 2 and is marked to "run" for every push.
 
+.. note::
+    Be sure to remember and change the "run" entry in this file to false
+    prior to the final merge after pull request review. This will trigger
+    a complete run of the testing suite prior to merging, so allow time
+    for that to complete as well.
+
 New use cases are added as a separate item to make reviewing the test results
 easier. A new use case will produce new output data that is not found in the
 "truth" data set which is compared to the output of the use case runs to check
@@ -1305,6 +1311,22 @@ to the polite instructions**::
 Check that the link now points to the new tarfile that was just created::
 
   ls -lh sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
+
+Return the test run setting to false
+------------------------------------
+
+In the *.github/parm/use_case_groups.json* file, return the *run* setting
+to false for the new use case in :ref:`add_new_category_to_test_runs` 
+and commit the file to the feature branch. This will trigger a full run of the 
+automated testing suite, so allow time for that to complete prior to merging.
+
+Example (note the setting for *run*)::
+
+      {
+        "category": "climate",
+        "index_list": "2",
+        "run": false
+      }
 
 After the Pull Request is Approved
 ==================================
