@@ -33,6 +33,7 @@ Use Cases by MET Tool:
    | `PlotPointObs <../search.html?q=PlotPointObsToolUseCase&check_keywords=yes&area=default>`_
    | `PointStat <../search.html?q=PointStatToolUseCase&check_keywords=yes&area=default>`_
    | `RegridDataPlane <../search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_
+   | `RMWAnalysis <../search.html?q=RMWAnalysisToolUseCase&check_keywords=yes&area=default>`_
    | `SeriesAnalysis <../search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_
    | `StatAnalysis <../search.html?q=StatAnalysisToolUseCase&check_keywords=yes&area=default>`_
    | `TCDiag <../search.html?q=TCDiagToolUseCase&check_keywords=yes&area=default>`_
@@ -62,6 +63,7 @@ Use Cases by MET Tool:
    | **PlotPointObs**: *PlotPointObsToolUseCase*
    | **PointStat**: *PointStatToolUseCase*
    | **RegridDataPlane**: *RegridDataPlaneToolUseCase*
+   | **RMWAnalysis**: *RMWAnalysisToolUseCase*
    | **SeriesAnalysis**: *SeriesAnalysisUseCase*
    | **StatAnalysis**: *StatAnalysisToolUseCase*
    | **TCDiag**: *TCDiagToolUseCase*
@@ -215,15 +217,19 @@ Use cases by File Format:
    | `GEMPAK <../search.html?q=GEMPAKFileUseCase&check_keywords=yes&area=default>`_
    | `GRIB <../search.html?q=GRIBFileUseCase&check_keywords=yes&area=default>`_
    | `GRIB2 <../search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_
+   | `MADIS <../search.html?q=MADISFileUseCase&check_keywords=yes&area=default>`_
    | `NetCDF <../search.html?q=NetCDFFileUseCase&check_keywords=yes&area=default>`_
    | `Python Embedding <../search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_
    | `prepBUFR <../search.html?q=prepBUFRFileUseCase&check_keywords=yes&area=default>`_
+   | `WRF <../search.html?q=WRFFileUseCase&check_keywords=yes&area=default>`_
 
 .. only:: latex
 
    | **GEMPAK**: *GEMPAKFileUseCase*
    | **GRIB**: *GRIBFileUseCase*
    | **GRIB2**: *GRIB2FileUseCase*
+   | **MADIS**: *MADISFileUseCase*
    | **NetCDF**: *NetCDFFileUseCase*
    | **Python Embedding**: *PythonEmbeddingFileUseCase*
    | **prepBUFR**: *prepBUFRFileUseCase*
+   | **WRF**: *WRFFileUseCase*

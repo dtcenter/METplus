@@ -57,19 +57,14 @@ def test_handle_command_options(metplus_config, input_val, expected):
     ]
 )
 @pytest.mark.wrapper
-def test_gen_vx_mask_missing_inputs(metplus_config, get_test_data_dir, missing,
-                                    run, thresh, errors, allow_missing):
+def test_gen_vx_mask_missing_inputs(metplus_config, get_test_data_dir, set_init_configs, run_all_and_check_missing,
+                                    missing, run, thresh, errors, allow_missing):
     config = metplus_config
     config.set('config', 'DO_NOT_RUN_EXE', True)
     config.set('config', 'INPUT_MUST_EXIST', True)
     config.set('config', 'GEN_VX_MASK_ALLOW_MISSING_INPUTS', allow_missing)
     config.set('config', 'GEN_VX_MASK_INPUT_THRESH', thresh)
-    config.set('config', 'LOOP_BY', 'INIT')
-    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
-    config.set('config', 'INIT_BEG', '2017051001')
-    config.set('config', 'INIT_END', '2017051003')
-    config.set('config', 'INIT_INCREMENT', '2H')
-    config.set('config', 'LEAD_SEQ', '1,2,3,6,9,12')
+    set_init_configs(config)
     config.set('config', 'GEN_VX_MASK_OPTIONS', "-type lat -thresh 'ge30&&le50', -type lon -thresh 'le-70&&ge-130' -intersection -name lat_lon_mask")
     config.set('config', 'GEN_VX_MASK_INPUT_DIR', get_test_data_dir('fcst'))
     config.set('config', 'GEN_VX_MASK_INPUT_TEMPLATE',
@@ -81,16 +76,7 @@ def test_gen_vx_mask_missing_inputs(metplus_config, get_test_data_dir, missing,
     config.set('config', 'GEN_VX_MASK_OUTPUT_TEMPLATE', '{OUTPUT_BASE}/GenVxMask/test.nc')
 
     wrapper = GenVxMaskWrapper(config)
-    assert wrapper.isOK
-
-    all_cmds = wrapper.run_all_times()
-    for cmd, _ in all_cmds:
-        print(cmd)
-
-    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
-    assert wrapper.missing_input_count == missing
-    assert wrapper.run_count == run
-    assert wrapper.errors == errors
+    run_all_and_check_missing(wrapper, missing, run, errors)
 
 
 @pytest.mark.wrapper

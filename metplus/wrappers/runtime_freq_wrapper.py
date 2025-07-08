@@ -108,8 +108,16 @@ class RuntimeFreqWrapper(CommandBuilder):
             else:
                 self.log_error(err_msg)
 
-    def get_input_templates(self, c_dict, input_info=None):
+    def get_input_templates(self, c_dict, input_info=None, d_type=None):
         """!Read input templates from config.
+        Read *_TEMPLATE if *_INPUT_TEMPLATE is not set.
+
+        @param c_dict config dictionary
+        @param input_info dictionary of input info where key is label prefix
+        for config variables to read/set and value is a dictionary of settings
+        like prefix, required, and default.
+        @param d_type (optional) used to set TEMPLATE_DICT_{d_type} key in
+        c_dict instead of TEMPLATE_DICT, e.g. FCST or OBS
         """
         template_dict = {}
         if not input_info:
@@ -122,24 +130,40 @@ class RuntimeFreqWrapper(CommandBuilder):
             required = info.get('required', True)
 
             template = self.config.getraw('config', f'{prefix}_INPUT_FILE_LIST')
+            # if explicit file list is specified, use it
             if template:
                 c_dict['EXPLICIT_FILE_LIST'] = True
-            else:
-                input_dir = self.config.getdir(f'{prefix}_INPUT_DIR', '')
-                c_dict[f'{label}INPUT_DIR'] = input_dir
+                template_dict[label.rstrip('_')] = (template, True, False)
+                continue
+
+            # otherwise read INPUT_DIR/TEMPLATE
+            input_dir = self.config.getdir(f'{prefix}_INPUT_DIR', '')
+            c_dict[f'{label}INPUT_DIR'] = input_dir
+            templates = getlist(
+                self.config.getraw('config', f'{prefix}_INPUT_TEMPLATE')
+            )
+            # if *_INPUT_TEMPLATE is not set, check if *_TEMPLATE is set
+            if not templates:
                 templates = getlist(
-                    self.config.getraw('config', f'{prefix}_INPUT_TEMPLATE')
+                    self.config.getraw('config', f'{prefix}_TEMPLATE')
                 )
-                template = ','.join(templates)
-                c_dict[f'{label}INPUT_TEMPLATE'] = template
-                if not c_dict[f'{label}INPUT_TEMPLATE']:
-                    if required:
-                        self.log_error(f'{prefix}_INPUT_TEMPLATE required to run')
-                    continue
+
+            template = ','.join(templates)
+            c_dict[f'{label}INPUT_TEMPLATE'] = template
+            if not c_dict[f'{label}INPUT_TEMPLATE']:
+                # don't add template to output dictionary if it is not set
+                # report an error if it was marked as required
+                if required:
+                    self.log_error(f'{prefix}_INPUT_TEMPLATE required to run')
+                continue
 
             template_dict[label.rstrip('_')] = (template, True, False)
 
-        c_dict['TEMPLATE_DICT'] = template_dict
+        # set template dict to TEMPLATE_DICT unless d_type is specified
+        key = 'TEMPLATE_DICT'
+        if d_type:
+            key = f'{key}_{d_type}'
+        c_dict[key] = template_dict
 
     def get_input_templates_multiple(self, c_dict):
         """!Read input templates from config. Use this function when a given
@@ -256,13 +280,12 @@ class RuntimeFreqWrapper(CommandBuilder):
         success = True
         for time_input in time_generator(self.config):
             if time_input is None:
+                self.errors += 1
                 success = False
-                continue
 
-            log_runtime_banner(self.config, time_input, self)
-            add_to_time_input(time_input,
-                              instance=self.instance,
-                              custom=custom)
+            # check if time should be skipped
+            if not self._should_init_or_valid_be_run(time_input, custom):
+                continue
 
             if 'init' in time_input:
                 time_input['valid'] = '*'
@@ -294,6 +317,31 @@ class RuntimeFreqWrapper(CommandBuilder):
             return
         self.logger.info(f"Processing lead group {label}:"
                          f" {format_lead_seq(lead_seq, plural=False)}")
+
+    def _should_init_or_valid_be_run(self, time_input, custom):
+        """!Check if init or valid time should run or not. It should not run
+        if time_input is invalid or if the time is marked to be skipped.
+        If time_input is correct, log the run time banner, add instance and
+        custom to the time input dictionary.
+
+        @param time_input dictionary containing timing information
+        @param custom string to use for custom filename template tag
+        @returns True if time should be run, False if it should not be run
+        """
+        if time_input is None:
+            return False
+
+        log_runtime_banner(self.config, time_input, self)
+        add_to_time_input(time_input,
+                          instance=self.instance,
+                          custom=custom)
+
+        if skip_time(time_input, self.c_dict):
+            time_type = 'valid' if 'valid' in time_input else 'init'
+            self.logger.info(f"Skipping {time_type} time: {time_input.get(time_type)}")
+            return False
+
+        return True
 
     def run_once_per_lead_group(self, lead_groups, time_input):
         success = True
@@ -341,6 +389,11 @@ class RuntimeFreqWrapper(CommandBuilder):
             # create a new dictionary each iteration in case the function
             # that it is passed into modifies it
             time_info = time_util.ti_calculate(time_input)
+            self.logger.info(f"Processing forecast lead {time_info['lead_string']}")
+
+            if skip_time(time_info, self.c_dict):
+                self.logger.info(f'Skipping lead: {time_util.ti_get_lead_string(lead)}')
+                continue
 
             self.c_dict['ALL_FILES'] = self.get_all_files_for_lead(time_info)
             if not self._check_input_files():
@@ -358,21 +411,19 @@ class RuntimeFreqWrapper(CommandBuilder):
         success = True
         for time_input in time_generator(self.config):
             if time_input is None:
+                self.errors += 1
                 success = False
+
+            if not self._should_init_or_valid_be_run(time_input, custom):
                 continue
 
-            log_runtime_banner(self.config, time_input, self)
-            add_to_time_input(time_input,
-                              instance=self.instance,
-                              custom=custom)
-
             # loop of forecast leads and process each
-            if not self.run_at_time(time_input):
+            if not self.run_at_init_or_valid(time_input):
                 success = False
 
         return success
 
-    def run_at_time(self, input_dict):
+    def run_at_init_or_valid(self, input_dict):
         success = True
 
         # loop of forecast leads and process each
@@ -387,12 +438,10 @@ class RuntimeFreqWrapper(CommandBuilder):
             # set current lead time config and environment variables
             time_info = time_util.ti_calculate(input_dict)
 
-            self.logger.info(
-                f"Processing forecast lead {time_info['lead_string']}"
-            )
+            self.logger.info(f"Processing forecast lead {time_info['lead_string']}")
 
             if skip_time(time_info, self.c_dict):
-                self.logger.debug('Skipping run time')
+                self.logger.info(f'Skipping lead: {time_util.ti_get_lead_string(lead)}')
                 continue
 
             self.c_dict['ALL_FILES'] = self.get_all_files_for_each(time_info)
@@ -435,7 +484,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         self.set_environment_variables(time_info)
 
         # build command and run
-        return self.build()
+        return self.build(time_info)
 
     def get_all_files(self, custom=None):
         """!Get all files that can be processed with the app.
@@ -452,7 +501,13 @@ class RuntimeFreqWrapper(CommandBuilder):
         # loop over all init/valid times
         for time_input in time_generator(self.config):
             if time_input is None:
+                self.errors += 1
                 return []
+
+            if skip_time(time_input, self.c_dict):
+                time_type = 'valid' if 'valid' in time_input else 'init'
+                self.logger.info(f"Skipping {time_type} time: {time_input.get(time_type)}")
+                continue
 
             add_to_time_input(time_input,
                               instance=self.instance,
@@ -467,7 +522,7 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         return all_files
 
-    def _check_input_files(self):
+    def _check_input_files(self, skip_log=False):
         if self.c_dict['ALL_FILES'] is True:
             return True
 
@@ -488,14 +543,24 @@ class RuntimeFreqWrapper(CommandBuilder):
             return True
 
         self.missing_input_count += num_missing
+
+        if skip_log:
+            return False
+
         msg = 'A problem occurred trying to obtain input files'
         if self.c_dict['ALLOW_MISSING_INPUTS']:
-            self.logger.warning(msg)
-        else:
-            # increment error counter for GridDiag because it does not log error for each missing file
-            if self.app_name in ('grid_diag', 'series_analysis'):
-                self.errors += 1
-            self.logger.error(msg)
+            if self.c_dict.get('SUPPRESS_WARNINGS', False):
+                self.logger.debug(msg)
+            else:
+                self.logger.warning(msg)
+
+            return False
+
+        # increment error counter for GridDiag because it does not log error for each missing file
+        if self.app_name in ('grid_diag', 'series_analysis'):
+            self.errors += 1
+        self.logger.error(msg)
+
         return False
 
     @staticmethod
@@ -504,7 +569,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             return True
 
         for key, value in file_dict.items():
-            if key in ('var_list', 'time_info'): continue
+            if key in ('var_list', 'time_info', 'method_arg'): continue
             if value is None or value == ['missing'] or all(item == 'missing' for item in value):
                 return True
 
@@ -524,6 +589,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             time_info = time_util.ti_calculate(current_time_input)
 
             if skip_time(time_info, self.c_dict):
+                self.logger.info(f'Skipping lead: {time_util.ti_get_lead_string(lead)}')
                 continue
 
             new_files = self.get_files_from_time(time_info)
@@ -540,6 +606,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         all_files = []
         for run_time in time_generator(self.config):
             if run_time is None:
+                self.errors += 1
                 continue
 
             current_time_input = time_input.copy()
@@ -550,7 +617,10 @@ class RuntimeFreqWrapper(CommandBuilder):
                 current_time_input['init'] = run_time['init']
                 del current_time_input['valid']
             time_info = time_util.ti_calculate(current_time_input)
+
             if skip_time(time_info, self.c_dict):
+                time_type = 'valid' if 'valid' in run_time else 'init'
+                self.logger.info(f"Skipping {time_type} time: {run_time.get(time_type)}")
                 continue
 
             new_files = self.get_files_from_time(time_info)
@@ -574,7 +644,7 @@ class RuntimeFreqWrapper(CommandBuilder):
     def _get_var_lists(self, time_info):
         var_list_temp = self.c_dict.get('VAR_LIST_TEMP')
         # if VAR_LIST_TEMP was not set in c_dict, return a list with None
-        if var_list_temp is None:
+        if not var_list_temp:
             return [None]
 
         var_list = sub_var_list(var_list_temp, time_info)
@@ -628,7 +698,8 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         return file_dict_list
 
-    def _update_list_with_new_files(self, new_files, list_to_update):
+    @staticmethod
+    def _update_list_with_new_files(new_files, list_to_update):
         if not isinstance(new_files, list):
             new_files = [new_files]
 

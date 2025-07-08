@@ -260,10 +260,14 @@ def compare_command_and_env_vars():
         print(f"ALL COMMANDS: {all_commands}")
         assert len(all_commands) == len(expected_cmds)
 
+        if hasattr(wrapper, 'WRAPPER_ENV_VAR_KEYS'):
+            wrapper_env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS
+        else:
+            wrapper_env_var_keys = []
         missing_env = [item for item in env_var_values
-                       if item not in wrapper.WRAPPER_ENV_VAR_KEYS
+                       if item not in wrapper_env_var_keys
                        and item != 'DIAG_ARG']
-        env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
+        env_var_keys = wrapper_env_var_keys + missing_env
 
         for (actual_cmd, env_vars), expected_cmd in zip(all_commands, expected_cmds):
             # ensure commands are generated as expected
@@ -283,3 +287,33 @@ def compare_command_and_env_vars():
                     assert value == env_var_values.get(env_var_key, '')
 
     return do_comparison
+
+
+@pytest.fixture(scope="module")
+def set_init_configs():
+    def set_init_config_settings(config):
+        config.set('config', 'LOOP_BY', 'INIT')
+        config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
+        config.set('config', 'INIT_BEG', '2017051001')
+        config.set('config', 'INIT_END', '2017051003')
+        config.set('config', 'INIT_INCREMENT', '2H')
+        config.set('config', 'LEAD_SEQ', '1,2,3,6,9,12')
+
+    return set_init_config_settings
+
+
+@pytest.fixture(scope="module")
+def run_all_and_check_missing():
+    def run_all_and_check_missing_run_error(wrapper, missing, run, errors):
+        assert wrapper.isOK
+
+        all_cmds = wrapper.run_all_times()
+        for cmd, _ in all_cmds:
+            print(cmd)
+
+        print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
+        assert wrapper.missing_input_count == missing
+        assert wrapper.run_count == run
+        assert wrapper.errors == errors
+
+    return run_all_and_check_missing_run_error

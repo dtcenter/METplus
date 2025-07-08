@@ -296,8 +296,7 @@ class CommandBuilder:
                 msg.append(self.print_env_item(env_item))
 
         if print_copyable:
-            msg.append("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-            msg.append(self.get_env_copy())
+            msg.append(f"COPYABLE ENVIRONMENT FOR NEXT COMMAND:\n{self.get_env_copy()}")
 
         return msg
 
@@ -397,7 +396,7 @@ class CommandBuilder:
                 clean_env = self.env[var].replace('"', r'\"').replace(r'\\"', r'\\\"')
                 line = 'export ' + var + '="' + clean_env + '"'
             line = line.replace('\n', '')
-            out += line + '; '
+            out += line + ';\n'
 
         return out
 
@@ -452,6 +451,7 @@ class CommandBuilder:
         # errors when searching through offset list
         is_mandatory = mandatory if offsets == [0] else False
 
+        suppress_warnings = self.c_dict.get('SUPPRESS_WARNINGS', False)
         self.c_dict['SUPPRESS_WARNINGS'] = True
         for offset in offsets:
             time_info['offset_hours'] = offset
@@ -461,10 +461,10 @@ class CommandBuilder:
                                      return_list=return_list)
 
             if obs_path is not None:
-                self.c_dict['SUPPRESS_WARNINGS'] = False
+                self.c_dict['SUPPRESS_WARNINGS'] = suppress_warnings
                 return obs_path, time_info
 
-        self.c_dict['SUPPRESS_WARNINGS'] = False
+        self.c_dict['SUPPRESS_WARNINGS'] = suppress_warnings
 
         # if no files are found return None
         # if offsets are specified, log error with list offsets used
@@ -479,7 +479,10 @@ class CommandBuilder:
             # error should already be reported
             self.logger.error(log_message)
         else:
-            self.logger.warning(log_message)
+            if self.c_dict.get('SUPPRESS_WARNINGS', False):
+                self.logger.debug(log_message)
+            else:
+                self.logger.warning(log_message)
 
         return None, time_info
 
@@ -1289,12 +1292,27 @@ class CommandBuilder:
     # to call cmdrunner.run_cmd().
     # Make sure they have SET THE self.app_name in the subclasses constructor.
     # see regrid_data_plane_wrapper.py as an example of how to set.
-    def build(self):
-        """!Build and run command"""
+    def build(self, time_info=None):
+        """!Builds and executes a command.
+
+        This method is responsible for creating a command to be executed,
+        substituting time-based information into the command if provided,
+        and running the resulting command string. If the command generation
+        fails, the method logs the error and returns a failure status.
+
+        @param time_info: dict, optional
+            A dictionary containing time-related keys to substitute into the
+            command string. Defaults to None.
+
+        @returns True if the command was successfully executed, False otherwise.
+        """
         cmd = self.get_command()
         if cmd is None:
             self.log_error("Could not generate command")
             return False
+
+        if time_info:
+            cmd = do_string_sub(cmd, **time_info, skip_missing_tags=True)
 
         return self.run_command(cmd)
 

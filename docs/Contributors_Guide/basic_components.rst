@@ -483,6 +483,18 @@ should be set.
                         data_type='string',
                         metplus_configs=['GRID_STAT_NC_PAIRS_VAR_NAME'])
 
+Example: Set value to an empty list if empty string is set as value::
+
+    self.add_met_config(name='message_type',
+                        data_type='list',
+                        extra_args={'allow_empty': True})
+
+In this example (from EnsembleStat wrapper),
+if **ENSEMBLE_STAT_MESSAGE_TYPE** is set to an empty string,
+then **METPLUS_MESSAGE_TYPE** will be set to **message_type = [];**.
+If *allow_empty* was not provided to the function,
+then **METPLUS_MESSAGE_TYPE** would be set to an empty string,
+using the default value from the MET config file.
 
 Add Support for MET Dictionary
 ------------------------------

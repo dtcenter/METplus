@@ -4,10 +4,11 @@ import pytest
 
 import datetime
 import os
+from dateutil.relativedelta import relativedelta
 
 from metplus.util import do_string_sub, parse_template, get_time_from_file
-from metplus.util import get_tags,format_one_time_item, format_hms
-from metplus.util import add_to_dict, populate_match_dict, get_fmt_info
+from metplus.util import get_tags,format_one_time_item, format_time_offset
+from metplus.util import add_to_dict, populate_match_dict, get_fmt_info, format_forecast_lead
 
 TEST_FILE_TEMPLATE_A = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h"
 TEST_FILE_TEMPLATE_B = "{init?fmt=%Y%m%d%H}_dog_A{lead?fmt=%HH}h"
@@ -450,9 +451,42 @@ def test_format_one_time_item(fmt, key ,value, ttype):
     ]
 )
 @pytest.mark.util
-def test_format_hms(fmt, seconds, value):
+def test_format_time_offset(fmt, seconds, value):
     # format should be something like %M or %H%M
-    assert format_hms(fmt, seconds == value)
+    assert format_time_offset(fmt, seconds) == value
+
+
+# variables used in format forecast lead test
+TEST_TIME = datetime.datetime(2025, 2, 1)
+TEST_TIME_LEAP_YEAR = datetime.datetime(2024, 2, 1)
+
+@pytest.mark.parametrize(
+    'obj,fmt,shift,kwargs,value', [
+        (relativedelta(minutes=30), '%M', 0, {}, '30'),
+        (relativedelta(minutes=30), '%S', 0, {}, '1800'),
+        (relativedelta(hours=1,minutes=30,seconds=20), '%H', 0, {}, '01'),
+        (relativedelta(hours=1,minutes=30,seconds=20), '%M', 0, {}, '90'),
+        (relativedelta(hours=1,minutes=30,seconds=20), '%S', 0, {}, '5420'),
+        (relativedelta(hours=1,minutes=30,seconds=20), '%M%S', 0, {}, '9020'),
+        (relativedelta(hours=1,minutes=30,seconds=20), '%H%M', 0, {}, '0130'),
+        (relativedelta(hours=1,minutes=30,seconds=20), '%H%M%S', 0, {}, '013020'),
+        (relativedelta(months=1), '%m', 0, {}, '01'),
+        (relativedelta(months=1), '%3m', 0, {}, '001'),
+        (relativedelta(months=1), '%d', 0, {}, '1m'),
+        (relativedelta(years=1), '%Y', 0, {}, '01'),
+        (relativedelta(years=1), '%4Y', 0, {}, '0001'),
+        (relativedelta(months=1), '%m', 0, {'valid': TEST_TIME}, '01'),
+        (relativedelta(months=1), '%3m', 0, {'valid': TEST_TIME}, '001'),
+        (relativedelta(months=1), '%d', 0, {'valid': TEST_TIME}, '31'),
+        (relativedelta(months=1), '%m', 0, {'init': TEST_TIME}, '01'),
+        (relativedelta(months=1), '%d', 0, {'init': TEST_TIME}, '28'),
+        (relativedelta(months=1), '%d', 0, {'init': TEST_TIME_LEAP_YEAR}, '29'),
+    ]
+)
+@pytest.mark.util
+def test_format_forecast_lead(obj, fmt, shift, kwargs, value):
+    # format should be something like %M or %H%M
+    assert format_forecast_lead(obj, fmt, shift, kwargs) == value
 
 
 @pytest.mark.util

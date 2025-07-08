@@ -251,6 +251,7 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_SKIP_CONST`
 | :term:`ENSEMBLE_STAT_OBS_ERROR_FLAG`
 | :term:`ENSEMBLE_STAT_CLIMO_MEAN_FILE_NAME`
+| :term:`ENSEMBLE_STAT_CLIMO_MEAN_FILE_TYPE`
 | :term:`ENSEMBLE_STAT_CLIMO_MEAN_VAR<n>_NAME`
 | :term:`ENSEMBLE_STAT_CLIMO_MEAN_VAR<n>_LEVELS`
 | :term:`ENSEMBLE_STAT_CLIMO_MEAN_VAR<n>_OPTIONS`
@@ -265,6 +266,7 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_CLIMO_MEAN_USE_FCST`
 | :term:`ENSEMBLE_STAT_CLIMO_MEAN_USE_OBS`
 | :term:`ENSEMBLE_STAT_CLIMO_STDEV_FILE_NAME`
+| :term:`ENSEMBLE_STAT_CLIMO_STDEV_FILE_TYPE`
 | :term:`ENSEMBLE_STAT_CLIMO_STDEV_VAR<n>_NAME`
 | :term:`ENSEMBLE_STAT_CLIMO_STDEV_VAR<n>_LEVELS`
 | :term:`ENSEMBLE_STAT_CLIMO_STDEV_VAR<n>_OPTIONS`
@@ -279,6 +281,7 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_CLIMO_STDEV_USE_FCST`
 | :term:`ENSEMBLE_STAT_CLIMO_STDEV_USE_OBS`
 | :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_FILE_NAME`
+| :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_FILE_TYPE`
 | :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_VAR<n>_NAME`
 | :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_VAR<n>_LEVELS`
 | :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_VAR<n>_OPTIONS`
@@ -291,6 +294,7 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL`
 | :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_HOUR_INTERVAL`
 | :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_FILE_NAME`
+| :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_FILE_TYPE`
 | :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_VAR<n>_NAME`
 | :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_VAR<n>_LEVELS`
 | :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_VAR<n>_OPTIONS`
@@ -303,6 +307,7 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL`
 | :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_HOUR_INTERVAL`
 | :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_FILE_NAME`
+| :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_FILE_TYPE`
 | :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_VAR<n>_NAME`
 | :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_VAR<n>_LEVELS`
 | :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_VAR<n>_OPTIONS`
@@ -315,6 +320,7 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL`
 | :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_HOUR_INTERVAL`
 | :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_FILE_NAME`
+| :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_FILE_TYPE`
 | :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_VAR<n>_NAME`
 | :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_VAR<n>_LEVELS`
 | :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_VAR<n>_OPTIONS`
@@ -634,6 +640,8 @@ ${METPLUS_FCST_CLIMO_MEAN_DICT}
      - MET Config File
    * - :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_FILE_NAME`
      - fcst.climo_mean.file_name
+   * - :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_FILE_TYPE`
+     - fcst.climo_mean.file_type
    * - :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_FIELD`
      - fcst.climo_mean.field
    * - :term:`ENSEMBLE_STAT_FCST_CLIMO_MEAN_REGRID_METHOD`
@@ -662,6 +670,8 @@ ${METPLUS_FCST_CLIMO_STDEV_DICT}
      - MET Config File
    * - :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_FILE_NAME`
      - fcst.climo_stdev.file_name
+   * - :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_FILE_TYPE`
+     - fcst.climo_stdev.file_type
    * - :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_FIELD`
      - fcst.climo_stdev.field
    * - :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_REGRID_METHOD`
@@ -724,6 +734,8 @@ ${METPLUS_OBS_CLIMO_MEAN_DICT}
      - MET Config File
    * - :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_FILE_NAME`
      - obs.climo_mean.file_name
+   * - :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_FILE_TYPE`
+     - obs.climo_mean.file_type
    * - :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_FIELD`
      - obs.climo_mean.field
    * - :term:`ENSEMBLE_STAT_OBS_CLIMO_MEAN_REGRID_METHOD`
@@ -752,6 +764,8 @@ ${METPLUS_OBS_CLIMO_STDEV_DICT}
      - MET Config File
    * - :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_FILE_NAME`
      - obs.climo_stdev.file_name
+   * - :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_FILE_TYPE`
+     - obs.climo_stdev.file_type
    * - :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_FIELD`
      - obs.climo_stdev.field
    * - :term:`ENSEMBLE_STAT_OBS_CLIMO_STDEV_REGRID_METHOD`
@@ -901,6 +915,8 @@ ${METPLUS_CLIMO_MEAN_DICT}
      - MET Config File
    * - :term:`ENSEMBLE_STAT_CLIMO_MEAN_FILE_NAME`
      - climo_mean.file_name
+   * - :term:`ENSEMBLE_STAT_CLIMO_MEAN_FILE_TYPE`
+     - climo_mean.file_type
    * - :term:`ENSEMBLE_STAT_CLIMO_MEAN_FIELD`
      - climo_mean.field
    * - :term:`ENSEMBLE_STAT_CLIMO_MEAN_REGRID_METHOD`
@@ -930,6 +946,8 @@ ${METPLUS_CLIMO_STDEV_DICT}
      - MET Config File
    * - :term:`ENSEMBLE_STAT_CLIMO_STDEV_FILE_NAME`
      - climo_stdev.file_name
+   * - :term:`ENSEMBLE_STAT_CLIMO_STDEV_FILE_TYPE`
+     - climo_stdev.file_type
    * - :term:`ENSEMBLE_STAT_CLIMO_STDEV_FIELD`
      - climo_stdev.field
    * - :term:`ENSEMBLE_STAT_CLIMO_STDEV_REGRID_METHOD`
@@ -1155,6 +1173,7 @@ Configuration
 
 | :term:`EXAMPLE_INPUT_DIR`
 | :term:`EXAMPLE_INPUT_TEMPLATE`
+| :term:`EXAMPLE_RUNTIME_FREQ`
 | :term:`EXAMPLE_CUSTOM_LOOP_LIST`
 | :term:`EXAMPLE_SKIP_VALID_TIMES`
 | :term:`EXAMPLE_INC_VALID_TIMES`
@@ -1301,6 +1320,7 @@ METplus Configuration
 | :term:`GEN_ENS_PROD_NMEP_SMOOTH_TYPE_METHOD`
 | :term:`GEN_ENS_PROD_NMEP_SMOOTH_TYPE_WIDTH`
 | :term:`GEN_ENS_PROD_CLIMO_MEAN_FILE_NAME`
+| :term:`GEN_ENS_PROD_CLIMO_MEAN_FILE_TYPE`
 | :term:`GEN_ENS_PROD_CLIMO_MEAN_VAR<n>_NAME`
 | :term:`GEN_ENS_PROD_CLIMO_MEAN_VAR<n>_LEVELS`
 | :term:`GEN_ENS_PROD_CLIMO_MEAN_VAR<n>_OPTIONS`
@@ -1315,6 +1335,7 @@ METplus Configuration
 | :term:`GEN_ENS_PROD_CLIMO_MEAN_USE_FCST`
 | :term:`GEN_ENS_PROD_CLIMO_MEAN_USE_OBS`
 | :term:`GEN_ENS_PROD_CLIMO_STDEV_FILE_NAME`
+| :term:`GEN_ENS_PROD_CLIMO_STDEV_FILE_TYPE`
 | :term:`GEN_ENS_PROD_CLIMO_STDEV_VAR<n>_NAME`
 | :term:`GEN_ENS_PROD_CLIMO_STDEV_VAR<n>_LEVELS`
 | :term:`GEN_ENS_PROD_CLIMO_STDEV_VAR<n>_OPTIONS`
@@ -1617,6 +1638,8 @@ ${METPLUS_CLIMO_MEAN_DICT}
      - MET Config File
    * - :term:`GEN_ENS_PROD_CLIMO_MEAN_FILE_NAME`
      - climo_mean.file_name
+   * - :term:`GEN_ENS_PROD_CLIMO_MEAN_FILE_TYPE`
+     - climo_mean.file_type
    * - :term:`GEN_ENS_PROD_CLIMO_MEAN_FIELD`
      - climo_mean.field
    * - :term:`GEN_ENS_PROD_CLIMO_MEAN_REGRID_METHOD`
@@ -1645,6 +1668,8 @@ ${METPLUS_CLIMO_STDEV_DICT}
      - MET Config File
    * - :term:`GEN_ENS_PROD_CLIMO_STDEV_FILE_NAME`
      - climo_stdev.file_name
+   * - :term:`GEN_ENS_PROD_CLIMO_STDEV_FILE_TYPE`
+     - climo_stdev.file_type
    * - :term:`GEN_ENS_PROD_CLIMO_STDEV_FIELD`
      - climo_stdev.field
    * - :term:`GEN_ENS_PROD_CLIMO_STDEV_REGRID_METHOD`
@@ -3278,6 +3303,7 @@ METplus Configuration
 | :term:`FCST_GRID_STAT_FILE_TYPE`
 | :term:`OBS_GRID_STAT_FILE_TYPE`
 | :term:`GRID_STAT_CLIMO_MEAN_FILE_NAME`
+| :term:`GRID_STAT_CLIMO_MEAN_FILE_TYPE`
 | :term:`GRID_STAT_CLIMO_MEAN_VAR<n>_NAME`
 | :term:`GRID_STAT_CLIMO_MEAN_VAR<n>_LEVELS`
 | :term:`GRID_STAT_CLIMO_MEAN_VAR<n>_OPTIONS`
@@ -3292,6 +3318,7 @@ METplus Configuration
 | :term:`GRID_STAT_CLIMO_MEAN_USE_FCST`
 | :term:`GRID_STAT_CLIMO_MEAN_USE_OBS`
 | :term:`GRID_STAT_CLIMO_STDEV_FILE_NAME`
+| :term:`GRID_STAT_CLIMO_STDEV_FILE_TYPE`
 | :term:`GRID_STAT_CLIMO_STDEV_VAR<n>_NAME`
 | :term:`GRID_STAT_CLIMO_STDEV_VAR<n>_LEVELS`
 | :term:`GRID_STAT_CLIMO_STDEV_VAR<n>_OPTIONS`
@@ -3306,6 +3333,7 @@ METplus Configuration
 | :term:`GRID_STAT_CLIMO_STDEV_USE_FCST`
 | :term:`GRID_STAT_CLIMO_STDEV_USE_OBS`
 | :term:`GRID_STAT_FCST_CLIMO_MEAN_FILE_NAME`
+| :term:`GRID_STAT_FCST_CLIMO_MEAN_FILE_TYPE`
 | :term:`GRID_STAT_FCST_CLIMO_MEAN_VAR<n>_NAME`
 | :term:`GRID_STAT_FCST_CLIMO_MEAN_VAR<n>_LEVELS`
 | :term:`GRID_STAT_FCST_CLIMO_MEAN_VAR<n>_OPTIONS`
@@ -3318,6 +3346,7 @@ METplus Configuration
 | :term:`GRID_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL`
 | :term:`GRID_STAT_FCST_CLIMO_MEAN_HOUR_INTERVAL`
 | :term:`GRID_STAT_FCST_CLIMO_STDEV_FILE_NAME`
+| :term:`GRID_STAT_FCST_CLIMO_STDEV_FILE_TYPE`
 | :term:`GRID_STAT_FCST_CLIMO_STDEV_VAR<n>_NAME`
 | :term:`GRID_STAT_FCST_CLIMO_STDEV_VAR<n>_LEVELS`
 | :term:`GRID_STAT_FCST_CLIMO_STDEV_VAR<n>_OPTIONS`
@@ -3330,6 +3359,7 @@ METplus Configuration
 | :term:`GRID_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL`
 | :term:`GRID_STAT_FCST_CLIMO_STDEV_HOUR_INTERVAL`
 | :term:`GRID_STAT_OBS_CLIMO_MEAN_FILE_NAME`
+| :term:`GRID_STAT_OBS_CLIMO_MEAN_FILE_TYPE`
 | :term:`GRID_STAT_OBS_CLIMO_MEAN_VAR<n>_NAME`
 | :term:`GRID_STAT_OBS_CLIMO_MEAN_VAR<n>_LEVELS`
 | :term:`GRID_STAT_OBS_CLIMO_MEAN_VAR<n>_OPTIONS`
@@ -3342,6 +3372,7 @@ METplus Configuration
 | :term:`GRID_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL`
 | :term:`GRID_STAT_OBS_CLIMO_MEAN_HOUR_INTERVAL`
 | :term:`GRID_STAT_OBS_CLIMO_STDEV_FILE_NAME`
+| :term:`GRID_STAT_OBS_CLIMO_STDEV_FILE_TYPE`
 | :term:`GRID_STAT_OBS_CLIMO_STDEV_VAR<n>_NAME`
 | :term:`GRID_STAT_OBS_CLIMO_STDEV_VAR<n>_LEVELS`
 | :term:`GRID_STAT_OBS_CLIMO_STDEV_VAR<n>_OPTIONS`
@@ -3611,6 +3642,8 @@ ${METPLUS_FCST_CLIMO_MEAN_DICT}
      - MET Config File
    * - :term:`GRID_STAT_FCST_CLIMO_MEAN_FILE_NAME`
      - fcst.climo_mean.file_name
+   * - :term:`GRID_STAT_FCST_CLIMO_MEAN_FILE_TYPE`
+     - fcst.climo_mean.file_type
    * - :term:`GRID_STAT_FCST_CLIMO_MEAN_FIELD`
      - fcst.climo_mean.field
    * - :term:`GRID_STAT_FCST_CLIMO_MEAN_REGRID_METHOD`
@@ -3639,6 +3672,8 @@ ${METPLUS_FCST_CLIMO_STDEV_DICT}
      - MET Config File
    * - :term:`GRID_STAT_FCST_CLIMO_STDEV_FILE_NAME`
      - fcst.climo_stdev.file_name
+   * - :term:`GRID_STAT_FCST_CLIMO_STDEV_FILE_TYPE`
+     - fcst.climo_stdev.file_type
    * - :term:`GRID_STAT_FCST_CLIMO_STDEV_FIELD`
      - fcst.climo_stdev.field
    * - :term:`GRID_STAT_FCST_CLIMO_STDEV_REGRID_METHOD`
@@ -3699,6 +3734,8 @@ ${METPLUS_OBS_CLIMO_MEAN_DICT}
      - MET Config File
    * - :term:`GRID_STAT_OBS_CLIMO_MEAN_FILE_NAME`
      - obs.climo_mean.file_name
+   * - :term:`GRID_STAT_OBS_CLIMO_MEAN_FILE_TYPE`
+     - obs.climo_mean.file_type
    * - :term:`GRID_STAT_OBS_CLIMO_MEAN_FIELD`
      - obs.climo_mean.field
    * - :term:`GRID_STAT_OBS_CLIMO_MEAN_REGRID_METHOD`
@@ -3727,6 +3764,8 @@ ${METPLUS_OBS_CLIMO_STDEV_DICT}
      - MET Config File
    * - :term:`GRID_STAT_OBS_CLIMO_STDEV_FILE_NAME`
      - obs.climo_stdev.file_name
+   * - :term:`GRID_STAT_OBS_CLIMO_STDEV_FILE_TYPE`
+     - obs.climo_stdev.file_type
    * - :term:`GRID_STAT_OBS_CLIMO_STDEV_FIELD`
      - obs.climo_stdev.field
    * - :term:`GRID_STAT_OBS_CLIMO_STDEV_REGRID_METHOD`
@@ -3755,6 +3794,8 @@ ${METPLUS_CLIMO_MEAN_DICT}
      - MET Config File
    * - :term:`GRID_STAT_CLIMO_MEAN_FILE_NAME`
      - climo_mean.file_name
+   * - :term:`GRID_STAT_CLIMO_MEAN_FILE_TYPE`
+     - climo_mean.file_type
    * - :term:`GRID_STAT_CLIMO_MEAN_FIELD`
      - climo_mean.field
    * - :term:`GRID_STAT_CLIMO_MEAN_REGRID_METHOD`
@@ -3783,6 +3824,8 @@ ${METPLUS_CLIMO_STDEV_DICT}
      - MET Config File
    * - :term:`GRID_STAT_CLIMO_STDEV_FILE_NAME`
      - climo_stdev.file_name
+   * - :term:`GRID_STAT_CLIMO_STDEV_FILE_TYPE`
+     - climo_stdev.file_type
    * - :term:`GRID_STAT_CLIMO_STDEV_FIELD`
      - climo_stdev.field
    * - :term:`GRID_STAT_CLIMO_STDEV_REGRID_METHOD`
@@ -5968,16 +6011,19 @@ Configuration
 | :term:`PAIR_STAT_HSS_EC_VALUE`
 | :term:`PAIR_STAT_RANK_CORR_FLAG`
 | :term:`PAIR_STAT_CLIMO_MEAN_FILE_NAME`
+| :term:`PAIR_STAT_CLIMO_MEAN_FILE_TYPE`
 | :term:`PAIR_STAT_CLIMO_MEAN_FIELD`
 | :term:`PAIR_STAT_CLIMO_MEAN_TIME_INTERP_METHOD`
 | :term:`PAIR_STAT_CLIMO_MEAN_DAY_INTERVAL`
 | :term:`PAIR_STAT_CLIMO_MEAN_HOUR_INTERVAL`
 | :term:`PAIR_STAT_CLIMO_STDEV_FILE_NAME`
+| :term:`PAIR_STAT_CLIMO_STDEV_FILE_TYPE`
 | :term:`PAIR_STAT_CLIMO_STDEV_FIELD`
 | :term:`PAIR_STAT_CLIMO_STDEV_TIME_INTERP_METHOD`
 | :term:`PAIR_STAT_CLIMO_STDEV_DAY_INTERVAL`
 | :term:`PAIR_STAT_CLIMO_STDEV_HOUR_INTERVAL`
 | :term:`PAIR_STAT_FCST_CLIMO_MEAN_FILE_NAME`
+| :term:`PAIR_STAT_FCST_CLIMO_MEAN_FILE_TYPE`
 | :term:`PAIR_STAT_FCST_CLIMO_MEAN_VAR<n>_NAME`
 | :term:`PAIR_STAT_FCST_CLIMO_MEAN_VAR<n>_LEVELS`
 | :term:`PAIR_STAT_FCST_CLIMO_MEAN_VAR<n>_OPTIONS`
@@ -5990,6 +6036,7 @@ Configuration
 | :term:`PAIR_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL`
 | :term:`PAIR_STAT_FCST_CLIMO_MEAN_HOUR_INTERVAL`
 | :term:`PAIR_STAT_FCST_CLIMO_STDEV_FILE_NAME`
+| :term:`PAIR_STAT_FCST_CLIMO_STDEV_FILE_TYPE`
 | :term:`PAIR_STAT_FCST_CLIMO_STDEV_VAR<n>_NAME`
 | :term:`PAIR_STAT_FCST_CLIMO_STDEV_VAR<n>_LEVELS`
 | :term:`PAIR_STAT_FCST_CLIMO_STDEV_VAR<n>_OPTIONS`
@@ -6002,6 +6049,7 @@ Configuration
 | :term:`PAIR_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL`
 | :term:`PAIR_STAT_FCST_CLIMO_STDEV_HOUR_INTERVAL`
 | :term:`PAIR_STAT_OBS_CLIMO_MEAN_FILE_NAME`
+| :term:`PAIR_STAT_OBS_CLIMO_MEAN_FILE_TYPE`
 | :term:`PAIR_STAT_OBS_CLIMO_MEAN_VAR<n>_NAME`
 | :term:`PAIR_STAT_OBS_CLIMO_MEAN_VAR<n>_LEVELS`
 | :term:`PAIR_STAT_OBS_CLIMO_MEAN_VAR<n>_OPTIONS`
@@ -6014,6 +6062,7 @@ Configuration
 | :term:`PAIR_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL`
 | :term:`PAIR_STAT_OBS_CLIMO_MEAN_HOUR_INTERVAL`
 | :term:`PAIR_STAT_OBS_CLIMO_STDEV_FILE_NAME`
+| :term:`PAIR_STAT_OBS_CLIMO_STDEV_FILE_TYPE`
 | :term:`PAIR_STAT_OBS_CLIMO_STDEV_VAR<n>_NAME`
 | :term:`PAIR_STAT_OBS_CLIMO_STDEV_VAR<n>_LEVELS`
 | :term:`PAIR_STAT_OBS_CLIMO_STDEV_VAR<n>_OPTIONS`
@@ -6171,6 +6220,8 @@ ${METPLUS_FCST_CLIMO_MEAN_DICT}
      - MET Config File
    * - :term:`PAIR_STAT_FCST_CLIMO_MEAN_FILE_NAME`
      - fcst.climo_mean.file_name
+   * - :term:`PAIR_STAT_FCST_CLIMO_MEAN_FILE_TYPE`
+     - fcst.climo_mean.file_type
    * - :term:`PAIR_STAT_FCST_CLIMO_MEAN_FIELD`
      - fcst.climo_mean.field
    * - :term:`PAIR_STAT_FCST_CLIMO_MEAN_REGRID_METHOD`
@@ -6199,6 +6250,8 @@ ${METPLUS_FCST_CLIMO_STDEV_DICT}
      - MET Config File
    * - :term:`PAIR_STAT_FCST_CLIMO_STDEV_FILE_NAME`
      - fcst.climo_stdev.file_name
+   * - :term:`PAIR_STAT_FCST_CLIMO_STDEV_FILE_TYPE`
+     - fcst.climo_stdev.file_type
    * - :term:`PAIR_STAT_FCST_CLIMO_STDEV_FIELD`
      - fcst.climo_stdev.field
    * - :term:`PAIR_STAT_FCST_CLIMO_STDEV_REGRID_METHOD`
@@ -6260,6 +6313,8 @@ ${METPLUS_OBS_CLIMO_MEAN_DICT}
      - MET Config File
    * - :term:`PAIR_STAT_OBS_CLIMO_MEAN_FILE_NAME`
      - obs.climo_mean.file_name
+   * - :term:`PAIR_STAT_OBS_CLIMO_MEAN_FILE_TYPE`
+     - obs.climo_mean.file_type
    * - :term:`PAIR_STAT_OBS_CLIMO_MEAN_FIELD`
      - obs.climo_mean.field
    * - :term:`PAIR_STAT_OBS_CLIMO_MEAN_REGRID_METHOD`
@@ -6288,6 +6343,8 @@ ${METPLUS_OBS_CLIMO_STDEV_DICT}
      - MET Config File
    * - :term:`PAIR_STAT_OBS_CLIMO_STDEV_FILE_NAME`
      - obs.climo_stdev.file_name
+   * - :term:`PAIR_STAT_OBS_CLIMO_STDEV_FILE_TYPE`
+     - obs.climo_stdev.file_type
    * - :term:`PAIR_STAT_OBS_CLIMO_STDEV_FIELD`
      - obs.climo_stdev.field
    * - :term:`PAIR_STAT_OBS_CLIMO_STDEV_REGRID_METHOD`
@@ -6748,6 +6805,8 @@ ${METPLUS_CLIMO_MEAN_DICT}
      - MET Config File
    * - :term:`PAIR_STAT_CLIMO_MEAN_FILE_NAME`
      - climo_mean.file_name
+   * - :term:`PAIR_STAT_CLIMO_MEAN_FILE_TYPE`
+     - climo_mean.file_type
    * - :term:`PAIR_STAT_CLIMO_MEAN_FIELD`
      - climo_mean.field
    * - :term:`PAIR_STAT_CLIMO_MEAN_REGRID_METHOD`
@@ -6776,6 +6835,8 @@ ${METPLUS_CLIMO_STDEV_DICT}
      - MET Config File
    * - :term:`PAIR_STAT_CLIMO_STDEV_FILE_NAME`
      - climo_stdev.file_name
+   * - :term:`PAIR_STAT_CLIMO_STDEV_FILE_TYPE`
+     - climo_stdev.file_type
    * - :term:`PAIR_STAT_CLIMO_STDEV_FIELD`
      - climo_stdev.field
    * - :term:`PAIR_STAT_CLIMO_STDEV_REGRID_METHOD`
@@ -8085,6 +8146,7 @@ Configuration
 | :term:`POINT_STAT_INTERP_TYPE_METHOD`
 | :term:`POINT_STAT_INTERP_TYPE_WIDTH`
 | :term:`POINT_STAT_CLIMO_MEAN_FILE_NAME`
+| :term:`POINT_STAT_CLIMO_MEAN_FILE_TYPE`
 | :term:`POINT_STAT_CLIMO_MEAN_VAR<n>_NAME`
 | :term:`POINT_STAT_CLIMO_MEAN_VAR<n>_LEVELS`
 | :term:`POINT_STAT_CLIMO_MEAN_VAR<n>_OPTIONS`
@@ -8099,6 +8161,7 @@ Configuration
 | :term:`POINT_STAT_CLIMO_MEAN_USE_FCST`
 | :term:`POINT_STAT_CLIMO_MEAN_USE_OBS`
 | :term:`POINT_STAT_CLIMO_STDEV_FILE_NAME`
+| :term:`POINT_STAT_CLIMO_STDEV_FILE_TYPE`
 | :term:`POINT_STAT_CLIMO_STDEV_VAR<n>_NAME`
 | :term:`POINT_STAT_CLIMO_STDEV_VAR<n>_LEVELS`
 | :term:`POINT_STAT_CLIMO_STDEV_VAR<n>_OPTIONS`
@@ -8113,6 +8176,7 @@ Configuration
 | :term:`POINT_STAT_CLIMO_STDEV_USE_FCST`
 | :term:`POINT_STAT_CLIMO_STDEV_USE_OBS`
 | :term:`POINT_STAT_FCST_CLIMO_MEAN_FILE_NAME`
+| :term:`POINT_STAT_FCST_CLIMO_MEAN_FILE_TYPE`
 | :term:`POINT_STAT_FCST_CLIMO_MEAN_VAR<n>_NAME`
 | :term:`POINT_STAT_FCST_CLIMO_MEAN_VAR<n>_LEVELS`
 | :term:`POINT_STAT_FCST_CLIMO_MEAN_VAR<n>_OPTIONS`
@@ -8125,6 +8189,7 @@ Configuration
 | :term:`POINT_STAT_FCST_CLIMO_MEAN_DAY_INTERVAL`
 | :term:`POINT_STAT_FCST_CLIMO_MEAN_HOUR_INTERVAL`
 | :term:`POINT_STAT_FCST_CLIMO_STDEV_FILE_NAME`
+| :term:`POINT_STAT_FCST_CLIMO_STDEV_FILE_TYPE`
 | :term:`POINT_STAT_FCST_CLIMO_STDEV_VAR<n>_NAME`
 | :term:`POINT_STAT_FCST_CLIMO_STDEV_VAR<n>_LEVELS`
 | :term:`POINT_STAT_FCST_CLIMO_STDEV_VAR<n>_OPTIONS`
@@ -8137,6 +8202,7 @@ Configuration
 | :term:`POINT_STAT_FCST_CLIMO_STDEV_DAY_INTERVAL`
 | :term:`POINT_STAT_FCST_CLIMO_STDEV_HOUR_INTERVAL`
 | :term:`POINT_STAT_OBS_CLIMO_MEAN_FILE_NAME`
+| :term:`POINT_STAT_OBS_CLIMO_MEAN_FILE_TYPE`
 | :term:`POINT_STAT_OBS_CLIMO_MEAN_VAR<n>_NAME`
 | :term:`POINT_STAT_OBS_CLIMO_MEAN_VAR<n>_LEVELS`
 | :term:`POINT_STAT_OBS_CLIMO_MEAN_VAR<n>_OPTIONS`
@@ -8149,6 +8215,7 @@ Configuration
 | :term:`POINT_STAT_OBS_CLIMO_MEAN_DAY_INTERVAL`
 | :term:`POINT_STAT_OBS_CLIMO_MEAN_HOUR_INTERVAL`
 | :term:`POINT_STAT_OBS_CLIMO_STDEV_FILE_NAME`
+| :term:`POINT_STAT_OBS_CLIMO_STDEV_FILE_TYPE`
 | :term:`POINT_STAT_OBS_CLIMO_STDEV_VAR<n>_NAME`
 | :term:`POINT_STAT_OBS_CLIMO_STDEV_VAR<n>_LEVELS`
 | :term:`POINT_STAT_OBS_CLIMO_STDEV_VAR<n>_OPTIONS`
@@ -8357,6 +8424,8 @@ ${METPLUS_FCST_CLIMO_MEAN_DICT}
      - MET Config File
    * - :term:`POINT_STAT_FCST_CLIMO_MEAN_FILE_NAME`
      - fcst.climo_mean.file_name
+   * - :term:`POINT_STAT_FCST_CLIMO_MEAN_FILE_TYPE`
+     - fcst.climo_mean.file_type
    * - :term:`POINT_STAT_FCST_CLIMO_MEAN_FIELD`
      - fcst.climo_mean.field
    * - :term:`POINT_STAT_FCST_CLIMO_MEAN_REGRID_METHOD`
@@ -8385,6 +8454,8 @@ ${METPLUS_FCST_CLIMO_STDEV_DICT}
      - MET Config File
    * - :term:`POINT_STAT_FCST_CLIMO_STDEV_FILE_NAME`
      - fcst.climo_stdev.file_name
+   * - :term:`POINT_STAT_FCST_CLIMO_STDEV_FILE_TYPE`
+     - fcst.climo_stdev.file_type
    * - :term:`POINT_STAT_FCST_CLIMO_STDEV_FIELD`
      - fcst.climo_stdev.field
    * - :term:`POINT_STAT_FCST_CLIMO_STDEV_REGRID_METHOD`
@@ -8446,6 +8517,8 @@ ${METPLUS_OBS_CLIMO_MEAN_DICT}
      - MET Config File
    * - :term:`POINT_STAT_OBS_CLIMO_MEAN_FILE_NAME`
      - obs.climo_mean.file_name
+   * - :term:`POINT_STAT_OBS_CLIMO_MEAN_FILE_TYPE`
+     - obs.climo_mean.file_type
    * - :term:`POINT_STAT_OBS_CLIMO_MEAN_FIELD`
      - obs.climo_mean.field
    * - :term:`POINT_STAT_OBS_CLIMO_MEAN_REGRID_METHOD`
@@ -8474,6 +8547,8 @@ ${METPLUS_OBS_CLIMO_STDEV_DICT}
      - MET Config File
    * - :term:`POINT_STAT_OBS_CLIMO_STDEV_FILE_NAME`
      - obs.climo_stdev.file_name
+   * - :term:`POINT_STAT_OBS_CLIMO_STDEV_FILE_TYPE`
+     - obs.climo_stdev.file_type
    * - :term:`POINT_STAT_OBS_CLIMO_STDEV_FIELD`
      - obs.climo_stdev.field
    * - :term:`POINT_STAT_OBS_CLIMO_STDEV_REGRID_METHOD`
@@ -8598,6 +8673,8 @@ ${METPLUS_CLIMO_MEAN_DICT}
      - MET Config File
    * - :term:`POINT_STAT_CLIMO_MEAN_FILE_NAME`
      - climo_mean.file_name
+   * - :term:`POINT_STAT_CLIMO_MEAN_FILE_TYPE`
+     - climo_mean.file_type
    * - :term:`POINT_STAT_CLIMO_MEAN_FIELD`
      - climo_mean.field
    * - :term:`POINT_STAT_CLIMO_MEAN_REGRID_METHOD`
@@ -8626,6 +8703,8 @@ ${METPLUS_CLIMO_STDEV_DICT}
      - MET Config File
    * - :term:`POINT_STAT_CLIMO_STDEV_FILE_NAME`
      - climo_stdev.file_name
+   * - :term:`POINT_STAT_CLIMO_STDEV_FILE_TYPE`
+     - climo_stdev.file_type
    * - :term:`POINT_STAT_CLIMO_STDEV_FIELD`
      - climo_stdev.field
    * - :term:`POINT_STAT_CLIMO_STDEV_REGRID_METHOD`
@@ -9005,6 +9084,233 @@ METplus Configuration
    | :term:`VERIFICATION_GRID`
    |
 
+.. _rmw_analysis_wrapper:
+
+RMWAnalysis
+===========
+
+Description
+-----------
+
+Used to configure the MET tool RMW-Analysis.
+
+METplus Configuration
+---------------------
+
+| :term:`RMW_ANALYSIS_INPUT_TEMPLATE`
+| :term:`RMW_ANALYSIS_INPUT_DIR`
+| :term:`RMW_ANALYSIS_INPUT_FILE_LIST`
+| :term:`RMW_ANALYSIS_OUTPUT_DIR`
+| :term:`RMW_ANALYSIS_OUTPUT_TEMPLATE`
+| :term:`LOG_RMW_ANALYSIS_VERBOSITY`
+| :term:`RMW_ANALYSIS_CONFIG_FILE`
+| :term:`MODEL`
+| :term:`RMW_ANALYSIS_BASIN`
+| :term:`RMW_ANALYSIS_STORM_NAME`
+| :term:`RMW_ANALYSIS_STORM_ID`
+| :term:`RMW_ANALYSIS_CYCLONE`
+| :term:`RMW_ANALYSIS_INIT_BEG`
+| :term:`RMW_ANALYSIS_INIT_END`
+| :term:`RMW_ANALYSIS_VALID_BEG`
+| :term:`RMW_ANALYSIS_VALID_END`
+| :term:`RMW_ANALYSIS_INIT_MASK`
+| :term:`RMW_ANALYSIS_VALID_MASK`
+| :term:`RMW_ANALYSIS_SKIP_IF_OUTPUT_EXISTS`
+| :term:`RMW_ANALYSIS_MET_CONFIG_OVERRIDES`
+| :term:`RMW_ANALYSIS_SKIP_VALID_TIMES`
+| :term:`RMW_ANALYSIS_INC_VALID_TIMES`
+| :term:`RMW_ANALYSIS_SKIP_INIT_TIMES`
+| :term:`RMW_ANALYSIS_INC_INIT_TIMES`
+|
+
+.. _rmw-analysis-met-conf:
+
+MET Configuration
+-----------------
+
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
+
+`MET_INSTALL_DIR/share/met/config/RMWAnalysisConfig_default <https://github.com/dtcenter/MET/blob/HEAD/data/config/RMWAnalysisConfig_default>`_
+
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+
+.. dropdown:: Click to view parm/met_config/RMWAnalysisConfig_wrapped
+
+   .. literalinclude:: ../../parm/met_config/RMWAnalysisConfig_wrapped
+
+Environment variables in wrapped MET config
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+${METPLUS_MODEL}
+""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODEL`
+     - model
+
+${METPLUS_BASIN}
+""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`RMW_ANALYSIS_BASIN`
+     - basin
+
+${METPLUS_STORM_NAME}
+"""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`RMW_ANALYSIS_STORM_NAME`
+     - storm_name
+
+${METPLUS_STORM_ID}
+"""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`RMW_ANALYSIS_STORM_ID`
+     - storm_id
+
+${METPLUS_CYCLONE}
+""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`RMW_ANALYSIS_CYCLONE`
+     - cyclone
+
+${METPLUS_INIT_BEG}
+"""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`RMW_ANALYSIS_INIT_BEG`
+     - init_beg
+
+${METPLUS_INIT_END}
+"""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`RMW_ANALYSIS_INIT_END`
+     - init_end
+
+${METPLUS_VALID_BEG}
+""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`RMW_ANALYSIS_VALID_BEG`
+     - valid_beg
+
+${METPLUS_VALID_END}
+""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`RMW_ANALYSIS_VALID_END`
+     - valid_end
+
+${METPLUS_INIT_MASK}
+""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`RMW_ANALYSIS_INIT_MASK`
+     - init_mask
+
+${METPLUS_VALID_MASK}
+"""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`RMW_ANALYSIS_VALID_MASK`
+     - valid_mask
+
+${METPLUS_DATA_FIELD}
+"""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`BOTH_VAR<n>_NAME`
+     - data.field.name
+   * - :term:`BOTH_VAR<n>_LEVELS`
+     - data.field.level
+   * - :term:`BOTH_VAR<n>_OPTIONS`
+     - n/a
+
+.. note:: For more information on controlling the field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+
+${METPLUS_MET_CONFIG_OVERRIDES}
+"""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`RMW_ANALYSIS_MET_CONFIG_OVERRIDES`
+     - n/a
+
+
 .. _series_analysis_wrapper:
 
 SeriesAnalysis
@@ -9073,6 +9379,7 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_AGGR_INPUT_TEMPLATE`
 | :term:`SERIES_ANALYSIS_OUTPUT_TEMPLATE`
 | :term:`SERIES_ANALYSIS_CLIMO_MEAN_FILE_NAME`
+| :term:`SERIES_ANALYSIS_CLIMO_MEAN_FILE_TYPE`
 | :term:`SERIES_ANALYSIS_CLIMO_MEAN_VAR<n>_NAME`
 | :term:`SERIES_ANALYSIS_CLIMO_MEAN_VAR<n>_LEVELS`
 | :term:`SERIES_ANALYSIS_CLIMO_MEAN_VAR<n>_OPTIONS`
@@ -9084,10 +9391,10 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_CLIMO_MEAN_TIME_INTERP_METHOD`
 | :term:`SERIES_ANALYSIS_CLIMO_MEAN_DAY_INTERVAL`
 | :term:`SERIES_ANALYSIS_CLIMO_MEAN_HOUR_INTERVAL`
-| :term:`SERIES_ANALYSIS_CLIMO_MEAN_FILE_TYPE`
 | :term:`SERIES_ANALYSIS_CLIMO_MEAN_USE_FCST`
 | :term:`SERIES_ANALYSIS_CLIMO_MEAN_USE_OBS`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_NAME`
+| :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_TYPE`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_VAR<n>_NAME`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_VAR<n>_LEVELS`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_VAR<n>_OPTIONS`
@@ -9099,13 +9406,13 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_TIME_INTERP_METHOD`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_DAY_INTERVAL`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_HOUR_INTERVAL`
-| :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_TYPE`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_USE_FCST`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_USE_OBS`
 | :term:`SERIES_ANALYSIS_CLIMO_CDF_BINS`
 | :term:`SERIES_ANALYSIS_CLIMO_CDF_CENTER_BINS`
 | :term:`SERIES_ANALYSIS_CLIMO_CDF_DIRECT_PROB`
 | :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_FILE_NAME`
+| :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_FILE_TYPE`
 | :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_VAR<n>_NAME`
 | :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_VAR<n>_LEVELS`
 | :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_VAR<n>_OPTIONS`
@@ -9118,6 +9425,7 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_DAY_INTERVAL`
 | :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_HOUR_INTERVAL`
 | :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_FILE_NAME`
+| :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_FILE_TYPE`
 | :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_VAR<n>_NAME`
 | :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_VAR<n>_LEVELS`
 | :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_VAR<n>_OPTIONS`
@@ -9130,6 +9438,7 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_DAY_INTERVAL`
 | :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_HOUR_INTERVAL`
 | :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_FILE_NAME`
+| :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_FILE_TYPE`
 | :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_VAR<n>_NAME`
 | :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_VAR<n>_LEVELS`
 | :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_VAR<n>_OPTIONS`
@@ -9142,6 +9451,7 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_DAY_INTERVAL`
 | :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_HOUR_INTERVAL`
 | :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_FILE_NAME`
+| :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_FILE_TYPE`
 | :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_VAR<n>_NAME`
 | :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_VAR<n>_LEVELS`
 | :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_VAR<n>_OPTIONS`
@@ -9348,6 +9658,8 @@ ${METPLUS_FCST_CLIMO_MEAN_DICT}
      - MET Config File
    * - :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_FILE_NAME`
      - fcst.climo_mean.file_name
+   * - :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_FILE_TYPE`
+     - fcst.climo_mean.file_type
    * - :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_FIELD`
      - fcst.climo_mean.field
    * - :term:`SERIES_ANALYSIS_FCST_CLIMO_MEAN_REGRID_METHOD`
@@ -9376,6 +9688,8 @@ ${METPLUS_FCST_CLIMO_STDEV_DICT}
      - MET Config File
    * - :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_FILE_NAME`
      - fcst.climo_stdev.file_name
+   * - :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_FILE_TYPE`
+     - fcst.climo_stdev.file_type
    * - :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_FIELD`
      - fcst.climo_stdev.field
    * - :term:`SERIES_ANALYSIS_FCST_CLIMO_STDEV_REGRID_METHOD`
@@ -9449,6 +9763,8 @@ ${METPLUS_OBS_CLIMO_MEAN_DICT}
      - MET Config File
    * - :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_FILE_NAME`
      - obs.climo_mean.file_name
+   * - :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_FILE_TYPE`
+     - obs.climo_mean.file_type
    * - :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_FIELD`
      - obs.climo_mean.field
    * - :term:`SERIES_ANALYSIS_OBS_CLIMO_MEAN_REGRID_METHOD`
@@ -9477,6 +9793,8 @@ ${METPLUS_OBS_CLIMO_STDEV_DICT}
      - MET Config File
    * - :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_FILE_NAME`
      - obs.climo_stdev.file_name
+   * - :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_FILE_TYPE`
+     - obs.climo_stdev.file_type
    * - :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_FIELD`
      - obs.climo_stdev.field
    * - :term:`SERIES_ANALYSIS_OBS_CLIMO_STDEV_REGRID_METHOD`
@@ -9505,6 +9823,8 @@ ${METPLUS_CLIMO_MEAN_DICT}
      - MET Config File
    * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_FILE_NAME`
      - climo_mean.file_name
+   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_FILE_TYPE`
+     - climo_mean.file_type
    * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_FIELD`
      - climo_mean.field
    * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_REGRID_METHOD`
@@ -9521,8 +9841,6 @@ ${METPLUS_CLIMO_MEAN_DICT}
      - climo_mean.day_interval
    * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_HOUR_INTERVAL`
      - climo_mean.hour_interval
-   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_FILE_TYPE`
-     - climo_mean.file_type
 
 ${METPLUS_CLIMO_STDEV_DICT}
 """""""""""""""""""""""""""
@@ -9535,6 +9853,8 @@ ${METPLUS_CLIMO_STDEV_DICT}
      - MET Config File
    * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_NAME`
      - climo_stdev.file_name
+   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_TYPE`
+     - climo_stdev.file_type
    * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_FIELD`
      - climo_stdev.field
    * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_REGRID_METHOD`
@@ -9551,8 +9871,6 @@ ${METPLUS_CLIMO_STDEV_DICT}
      - climo_stdev.day_interval
    * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_HOUR_INTERVAL`
      - climo_stdev.hour_interval
-   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_TYPE`
-     - climo_stdev.file_type
 
 ${METPLUS_CLIMO_CDF_DICT}
 """""""""""""""""""""""""
@@ -12075,7 +12393,7 @@ ${METPLUS_MET_CONFIG_OVERRIDES}
      - MET Config File
    * - :term:`TC_PAIRS_MET_CONFIG_OVERRIDES`
      - n/a
-       
+
 .. _tcrmw_wrapper:
 
 TCRMW

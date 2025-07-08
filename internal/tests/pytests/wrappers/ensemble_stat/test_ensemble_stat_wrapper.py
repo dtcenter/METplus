@@ -83,8 +83,8 @@ def set_minimum_config_settings(config, set_fields=True, set_obs=True):
     ]
 )
 @pytest.mark.wrapper_b
-def test_ensemble_stat_missing_inputs(metplus_config, get_test_data_dir, allow_missing,
-                                      optional_input, missing, run, thresh, errors):
+def test_ensemble_stat_missing_inputs(metplus_config, get_test_data_dir, run_all_and_check_missing,
+                                      allow_missing, optional_input, missing, run, thresh, errors):
     config = metplus_config
     set_minimum_config_settings(config, set_obs=False)
     config.set('config', 'INPUT_MUST_EXIST', True)
@@ -116,16 +116,7 @@ def test_ensemble_stat_missing_inputs(metplus_config, get_test_data_dir, allow_m
         config.set('config', f'{prefix}_INPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}_obs_file')
 
     wrapper = EnsembleStatWrapper(config)
-    assert wrapper.isOK
-
-    all_cmds = wrapper.run_all_times()
-    for cmd, _ in all_cmds:
-        print(cmd)
-
-    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
-    assert wrapper.missing_input_count == missing
-    assert wrapper.run_count == run
-    assert wrapper.errors == errors
+    run_all_and_check_missing(wrapper, missing, run, errors)
 
 
 @pytest.mark.parametrize(
