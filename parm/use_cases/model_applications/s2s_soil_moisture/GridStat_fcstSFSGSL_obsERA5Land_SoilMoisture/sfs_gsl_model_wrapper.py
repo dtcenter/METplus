@@ -53,7 +53,7 @@ if not desired_dates:
 else:
    # Extract the forecast data for the specified month
    fcst_for_month = fcst[:, desired_dates, :, :]
-        
+
    # Calculate the mean over the ensemble dimension (ensmem)
    var = np.mean(fcst_for_month, axis=0)
 

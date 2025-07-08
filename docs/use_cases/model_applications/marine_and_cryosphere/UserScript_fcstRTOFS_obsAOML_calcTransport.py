@@ -152,7 +152,7 @@ model_applications/marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransp
 # Output for use case will be found in calc_transport (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * calc_transport.log 
+# * calc_transport.out 
 
 ##############################################################################
 # Keywords

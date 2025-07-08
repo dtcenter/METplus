@@ -62,35 +62,20 @@ def set_minimum_config_settings(config):
     ]
 )
 @pytest.mark.wrapper_c
-def test_plot_point_obs_missing_inputs(metplus_config, get_test_data_dir,
-                                       missing, run, thresh, errors,
-                                       allow_missing):
+def test_plot_point_obs_missing_inputs(metplus_config, get_test_data_dir, set_init_configs, run_all_and_check_missing,
+                                       missing, run, thresh, errors, allow_missing):
     config = metplus_config
     set_minimum_config_settings(config)
     config.set('config', 'INPUT_MUST_EXIST', True)
     config.set('config', 'PLOT_POINT_OBS_ALLOW_MISSING_INPUTS', allow_missing)
     config.set('config', 'PLOT_POINT_OBS_INPUT_THRESH', thresh)
-    config.set('config', 'LOOP_BY', 'INIT')
-    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
-    config.set('config', 'INIT_BEG', '2017051001')
-    config.set('config', 'INIT_END', '2017051003')
-    config.set('config', 'INIT_INCREMENT', '2H')
-    config.set('config', 'LEAD_SEQ', '1,2,3,6,9,12')
+    set_init_configs(config)
     config.set('config', 'PLOT_POINT_OBS_INPUT_DIR', get_test_data_dir('fcst'))
     config.set('config', 'PLOT_POINT_OBS_INPUT_TEMPLATE',
                '{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d_i%H}_f{lead?fmt=%3H}_HRRRTLE_PHPT.grb2')
 
     wrapper = PlotPointObsWrapper(config)
-    assert wrapper.isOK
-
-    all_cmds = wrapper.run_all_times()
-    for cmd, _ in all_cmds:
-        print(cmd)
-
-    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
-    assert wrapper.missing_input_count == missing
-    assert wrapper.run_count == run
-    assert wrapper.errors == errors
+    run_all_and_check_missing(wrapper, missing, run, errors)
 
 
 @pytest.mark.parametrize(

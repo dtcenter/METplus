@@ -1,0 +1,20 @@
+# Configuration settings for reformatting MET .stat output to format for METplotpy
+
+# if .stat file input already contains aggregated statistics (i.e. output from MET stat-analysis
+# has been applied to MET .stat output from point-stat, grid-stat, or ensemble-stat).
+input_stats_aggregated: True 
+
+output_dir: !ENV '${PLOT_OUTPUT_DIR}'
+output_filename: cnt_reformatted.data
+
+input_data_dir: !ENV '${PLOT_INPUT_DIR}'
+
+# Set to log_filename to STDOUT/stdout if no log file is to be saved
+log_directory: !ENV '${PLOT_LOG_DIR}'
+log_filename: reformatting_cnt.log
+
+# most verbose is info, less verbose is error
+log_level: info
+
+# Currently support FHO, CTC, CTS, CNT, SL1L2, VL1L2, PCT, MCTC, VCNT, ECNT, and RHIST line types
+line_type: CNT

@@ -1,18 +1,13 @@
 [
    {
     "category": "met_tool_wrapper",
-    "index_list": "0-29,59-66",
+    "index_list": "0-29,59-67",
     "run": false
   },
   {
     "category": "met_tool_wrapper",
     "index_list": "30-58",
     "run": false
-  },
-  {
-    "category": "met_tool_wrapper",
-    "index_list": "67",
-    "run": true
   },
   {
     "category": "air_quality_and_comp",
@@ -82,6 +77,11 @@
   {
     "category": "land_surface",
     "index_list": "0",
+    "run": false
+  },
+  {
+    "category": "land_surface",
+    "index_list": "1",
     "run": false
   },
   {
@@ -229,6 +229,11 @@
     "run": false
   },
   {
+    "category": "s2s",
+    "index_list": "6",
+    "run": false
+  },
+  {
     "category": "s2s_mid_lat",
     "index_list": "0-2",
     "run": false
@@ -357,6 +362,11 @@
     "category": "tc_and_extra_tc",
     "index_list": "3-5",
     "run": false
+  },
+  {
+    "category": "tc_and_extra_tc",
+    "index_list": "6",
+    "run": true
   },
   {
     "category": "unstructured_grids",

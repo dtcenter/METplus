@@ -99,6 +99,7 @@ Category: fire
 
 Category: land_surface
 0::PointStat_fcstCESM_obsFLUXNET2015_TCI:: model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf:: metplotpy_env, py_embed
+1::PointStat_fcstUFS_obsGDAS_CTP_HI:: model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI.conf:: metcalcpy, metplotpy_env, py_embed
 
 
 Category: marine_and_cryosphere
@@ -153,7 +154,7 @@ Category: s2s
 3:: UserScript_fcstS2S_obsERAI_CrossSpectra:: model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.conf:: spacetime_env
 4::SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool:: model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool.conf:: netcdf4_env
 5::GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile:: model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf:: netcdf4_env
-
+6::GridStat_fcstSFSBaseline_obsGHCNCAMS_climoSFSandGHCNCAMS_separateClimo:: model_applications/s2s/GridStat_fcstSFSBaseline_obsGHCNCAMS_climoSFSandGHCNCAMS_separateClimo.conf
 
 Category: s2s_mid_lat
 0::UserScript_fcstGFS_obsERA_Blocking:: model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.conf:: metplotpy_env,cartopy,metplus
@@ -172,7 +173,7 @@ Category: s2s_mjo
 
 Category: s2s_soil_moisture
 0::PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing:: model_applications/s2s_soil_moisture/PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.conf
-1::GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture:: model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.conf
+1::GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture:: model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.conf:: metdataio, metcalcpy, metplotpy,mp_analysis_env
 
 
 Category: s2s_stratosphere
@@ -212,7 +213,7 @@ Category: tc_and_extra_tc
 3::GridStat_fcstHAFS_obsTDR_NetCDF:: model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf:: py_embed
 4::TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample:: model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf
 5::TCGen_fcstGFS_obsBDECK_2021season:: model_applications/tc_and_extra_tc/TCGen_fcstGFS_obsBDECK_2021season.conf
-
+6::PointStat_fcstWRF_obsMADIS_hurricane_matthew:: model_applications/tc_and_extra_tc/PointStat_fcstWRF_obsMADIS_hurricane_matthew.conf:: wrf_plot_env, metdataio, metplotpy
 
 Category: unstructured_grids
 0::StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEmbed:: model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEmbed.conf:: geovista_env, py_embed

@@ -108,8 +108,16 @@ class RuntimeFreqWrapper(CommandBuilder):
             else:
                 self.log_error(err_msg)
 
-    def get_input_templates(self, c_dict, input_info=None):
+    def get_input_templates(self, c_dict, input_info=None, d_type=None):
         """!Read input templates from config.
+        Read *_TEMPLATE if *_INPUT_TEMPLATE is not set.
+
+        @param c_dict config dictionary
+        @param input_info dictionary of input info where key is label prefix
+        for config variables to read/set and value is a dictionary of settings
+        like prefix, required, and default.
+        @param d_type (optional) used to set TEMPLATE_DICT_{d_type} key in
+        c_dict instead of TEMPLATE_DICT, e.g. FCST or OBS
         """
         template_dict = {}
         if not input_info:
@@ -122,24 +130,40 @@ class RuntimeFreqWrapper(CommandBuilder):
             required = info.get('required', True)
 
             template = self.config.getraw('config', f'{prefix}_INPUT_FILE_LIST')
+            # if explicit file list is specified, use it
             if template:
                 c_dict['EXPLICIT_FILE_LIST'] = True
-            else:
-                input_dir = self.config.getdir(f'{prefix}_INPUT_DIR', '')
-                c_dict[f'{label}INPUT_DIR'] = input_dir
+                template_dict[label.rstrip('_')] = (template, True, False)
+                continue
+
+            # otherwise read INPUT_DIR/TEMPLATE
+            input_dir = self.config.getdir(f'{prefix}_INPUT_DIR', '')
+            c_dict[f'{label}INPUT_DIR'] = input_dir
+            templates = getlist(
+                self.config.getraw('config', f'{prefix}_INPUT_TEMPLATE')
+            )
+            # if *_INPUT_TEMPLATE is not set, check if *_TEMPLATE is set
+            if not templates:
                 templates = getlist(
-                    self.config.getraw('config', f'{prefix}_INPUT_TEMPLATE')
+                    self.config.getraw('config', f'{prefix}_TEMPLATE')
                 )
-                template = ','.join(templates)
-                c_dict[f'{label}INPUT_TEMPLATE'] = template
-                if not c_dict[f'{label}INPUT_TEMPLATE']:
-                    if required:
-                        self.log_error(f'{prefix}_INPUT_TEMPLATE required to run')
-                    continue
+
+            template = ','.join(templates)
+            c_dict[f'{label}INPUT_TEMPLATE'] = template
+            if not c_dict[f'{label}INPUT_TEMPLATE']:
+                # don't add template to output dictionary if it is not set
+                # report an error if it was marked as required
+                if required:
+                    self.log_error(f'{prefix}_INPUT_TEMPLATE required to run')
+                continue
 
             template_dict[label.rstrip('_')] = (template, True, False)
 
-        c_dict['TEMPLATE_DICT'] = template_dict
+        # set template dict to TEMPLATE_DICT unless d_type is specified
+        key = 'TEMPLATE_DICT'
+        if d_type:
+            key = f'{key}_{d_type}'
+        c_dict[key] = template_dict
 
     def get_input_templates_multiple(self, c_dict):
         """!Read input templates from config. Use this function when a given
@@ -498,7 +522,7 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         return all_files
 
-    def _check_input_files(self):
+    def _check_input_files(self, skip_log=False):
         if self.c_dict['ALL_FILES'] is True:
             return True
 
@@ -519,14 +543,24 @@ class RuntimeFreqWrapper(CommandBuilder):
             return True
 
         self.missing_input_count += num_missing
+
+        if skip_log:
+            return False
+
         msg = 'A problem occurred trying to obtain input files'
         if self.c_dict['ALLOW_MISSING_INPUTS']:
-            self.logger.warning(msg)
-        else:
-            # increment error counter for GridDiag because it does not log error for each missing file
-            if self.app_name in ('grid_diag', 'series_analysis'):
-                self.errors += 1
-            self.logger.error(msg)
+            if self.c_dict.get('SUPPRESS_WARNINGS', False):
+                self.logger.debug(msg)
+            else:
+                self.logger.warning(msg)
+
+            return False
+
+        # increment error counter for GridDiag because it does not log error for each missing file
+        if self.app_name in ('grid_diag', 'series_analysis'):
+            self.errors += 1
+        self.logger.error(msg)
+
         return False
 
     @staticmethod
@@ -535,7 +569,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             return True
 
         for key, value in file_dict.items():
-            if key in ('var_list', 'time_info'): continue
+            if key in ('var_list', 'time_info', 'method_arg'): continue
             if value is None or value == ['missing'] or all(item == 'missing' for item in value):
                 return True
 
@@ -610,7 +644,7 @@ class RuntimeFreqWrapper(CommandBuilder):
     def _get_var_lists(self, time_info):
         var_list_temp = self.c_dict.get('VAR_LIST_TEMP')
         # if VAR_LIST_TEMP was not set in c_dict, return a list with None
-        if var_list_temp is None:
+        if not var_list_temp:
             return [None]
 
         var_list = sub_var_list(var_list_temp, time_info)
@@ -664,7 +698,8 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         return file_dict_list
 
-    def _update_list_with_new_files(self, new_files, list_to_update):
+    @staticmethod
+    def _update_list_with_new_files(new_files, list_to_update):
         if not isinstance(new_files, list):
             new_files = [new_files]
 
