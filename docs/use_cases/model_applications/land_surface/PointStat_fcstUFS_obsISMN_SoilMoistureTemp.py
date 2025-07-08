@@ -14,15 +14,17 @@ model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
 ##############################################################################
 # Scientific Objective
 # --------------------
-# [UPDATE_SECTION_CONTENT]
 #
-# To provide statistical information on the forecast hail size compared to
-# the observed hail size from MRMS MESH data. Using objects to verify hail size
-# avoids the “unfair penalty” issue, where a CAM must first generate convection
-# to have any chance of accurately predicting the hail size. In addition, studies
-# have shown that MRMS MESH observed hail sizes do not correlate one-to-one with
-# observed sizes but can only be used to group storms into general categories.
-# Running MODE allows a user to do this.
+# This use case examines soil moisture and temperature biases in the UFS global forecast system (GFS).
+# The specific configuration is a GFSv17 pre-release version (HR1). Correct representation of land states 
+# are important for many processes, such as prediction of convection, near surface sensible weather 
+# (e.g. winds, humidity, temperature), and subsequent hydrological forecasting applications such as 
+# snowpack evolution and runoff generation. Here we use the International Soil Moisture Network (ISMN) 
+# soil moisture and temperature data to assess UFS forecast errors across CONUS for an example summer 
+# 60 hour forecast. We plot spatial differences (forecast-observation) to diagnose regional variations 
+# as well as a 2D probability density plot of forecast difference versus forecast value to assess the 
+# frequency of conditional differences. These diagnostics are useful for process understanding and may 
+# aid in land model development and forecast error improvement.
 
 ##############################################################################
 # Version Added
@@ -181,7 +183,6 @@ model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
 ##############################################################################
 # Keywords
 # --------
-# [UPDATE_SECTION_CONTENT]
 #
 # .. note::
 #
