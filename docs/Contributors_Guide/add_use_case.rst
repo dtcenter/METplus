@@ -714,7 +714,7 @@ the environment file to the staging directory:
 
 If you do not have access to the internal DTC web server,
 please follow the instructions for sending sample data using Google Drive.
-For more information on this process,please see
+For more information on this process, please see
 “How to Send Us Data” on the
 `Resources for Troubleshooting page <https://github.com/dtcenter/METplus/discussions/954>`_.
 
