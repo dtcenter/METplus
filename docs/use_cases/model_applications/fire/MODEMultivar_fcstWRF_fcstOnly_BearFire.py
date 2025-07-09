@@ -20,7 +20,9 @@ model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_BearFire.conf
 # The purpose is to identify areas in the model that meet the red flag criteria for
 # fire weather forecasting.  Observations are not used in this use case.  Rather, the 
 # model is used as both the forecast and observations (since Multivariate MODE requires 
-# both to run).
+# both to run).  As such, matched pair output is not useful for this use case.  Rather
+# simple and cluster object statistics on the area meeting the Red Flag criteria are 
+# the goal of this use case.
 
 ##############################################################################
 # Version Added
@@ -105,7 +107,7 @@ model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_BearFire.conf
 # embedding script to compute Relative Humidity from Specific Humidity, and wind 
 # speed from the U and V wind components.
 #
-# parm/use_cases/model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_BearFire/read_wrfout_fire_rh_wind.py
+# .. dropdown:: read_wrfout_fire_rh_wind.py
 #
 # .. highlight:: python
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_BearFire/read_wrfout_fire_rh_wind.py
