@@ -6,11 +6,13 @@ from metpy.calc import relative_humidity_from_specific_humidity,wind_speed
 from metpy.units import units
 import xarray as xr
 
+# Some variables controling how the date is pulled from the file
 FILE_DATE_FORMAT = '%Y-%m-%d_%H:%M:%S'
 MET_DATE_FORMAT ='%Y%m%d_%H%M%S'
 VALID_FORMAT = '%Y%m%d_%H%M%S'
 EARTH_RADIUS = 6371.229
 
+# Check to make sure the correct number of inputs is supplied
 if len(sys.argv) != 3:
     print("ERROR: Must supply input file and variable name")
     sys.exit(1)
@@ -27,55 +29,70 @@ if not found_files:
 
 input_path = found_files[0]
 
+# Open File and read date
 ds = xr.open_dataset(input_path, decode_times=False)
-
 valid_dt = datetime.strptime(ds['Times'][0].values.tobytes().decode(),
                             FILE_DATE_FORMAT)
-#init_dt = datetime.strptime(ds.attrs['SIMULATION_START_DATE'], FILE_DATE_FORMAT)
-init_dt = datetime.strptime(ds.attrs['START_DATE'], FILE_DATE_FORMAT)
+init_dt = datetime.strptime(ds.attrs['SIMULATION_START_DATE'], FILE_DATE_FORMAT)
+#init_dt = datetime.strptime(ds.attrs['START_DATE'], FILE_DATE_FORMAT)
 lead_td = valid_dt - init_dt
 lead_hours = lead_td.days * 24 + (lead_td.seconds//3600)
 lead_hms = (f"{str(lead_hours).zfill(2)}"
             f"{str((lead_td.seconds//60)%60).zfill(2)}00")
 
+# Get Grid sizes
 nx = ds.sizes['west_east']
 ny = ds.sizes['south_north']
-
 d_km = ds.attrs['DX'] * ds.sizes['west_east'] / nx / 1000
 
+# Get lower left latitude and longitude points
 lat_ll = float(ds['XLAT'][0][0][0])
 lon_ll = float(ds['XLONG'][0][0][0])
 
 
 # Read in variable of interest
 if var_name == 'RH':
-    spec_hum = ds['Q2'][0]
+    # Read in specific humidity, pressure, and temperature
+    q2 = ds['Q2'][0]
+    q2_units = q2.attrs['units']
     pres = ds['PSFC'][0]
+    pres_units = pres.attrs['units']
     temp = ds['T2'][0]
-    rh_data = relative_humidity_from_specific_humidity(pres*units.Pa,temp*units.kelvin,spec_hum)*100.
+    temp_units  = temp.attrs['units']
+
+    # Compute RH
+    rh_data = relative_humidity_from_specific_humidity(pres*units(pres_units),temp*units(temp_units),q2*units(q2_units))*100.
+
+    # Setup variables for MET output
     met_data = rh_data.to_numpy()
     met_data = met_data[::-1]
-
     LONG_NAME = 'Relative Humidity'
     var_level = 'Z2'
     var_units = '%'
 
 elif var_name == 'WIND':
+    # Read in the U and V components
     uwind = ds['U10'][0]
+    uwind_units = uwind.attrs['units']
     vwind = ds['V10'][0]
-    windspeed = wind_speed(uwind * units('m/s'), vwind * units('m/s'))
+    vwind_units = vwind.attrs['units']
+
+    # Compute Wind Speed
+    windspeed = wind_speed(uwind * units(uwind_units), vwind * units(vwind_units))
+
+    # Setup variables for MET output
     met_data = windspeed.to_numpy()
     met_data = met_data[::-1]
-
     LONG_NAME = 'Wind Speed'
     var_level = 'Z2'
-    var_units = 'ms-1'
+    var_units = str(windspeed.metpy.units)
 
 else:
     print("ERROR: Input Variable name must either be set to RH or WIND")
     sys.exit(1)
  
 
+# Set up output for MET
 attrs = {
   'valid': valid_dt.strftime(MET_DATE_FORMAT),
    'init': init_dt.strftime(MET_DATE_FORMAT),

@@ -109,8 +109,8 @@ model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_BearFire.conf
 #
 # .. dropdown:: read_wrfout_fire_rh_wind.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_BearFire/read_wrfout_fire_rh_wind.py
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_BearFire/read_wrfout_fire_rh_wind.py
 
 ##############################################################################
 # User Scripting
