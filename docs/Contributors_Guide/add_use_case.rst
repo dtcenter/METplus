@@ -713,11 +713,8 @@ the environment file to the staging directory:
     scp ${METPLUS_USER_ENV_FILE} |dtc_web_server|:|metplus_staging_dir|/
 
 If you do not have access to the internal DTC web server,
-upload the files to the RAL FTP server::
-
-    ftp -p ftp.rap.ucar.edu
-
-For an example on how to upload data to the ftp site see
+please follow the instructions for sending sample data using Google Drive.
+For more information on this process,please see
 “How to Send Us Data” on the
 `Resources for Troubleshooting page <https://github.com/dtcenter/METplus/discussions/954>`_.
 
