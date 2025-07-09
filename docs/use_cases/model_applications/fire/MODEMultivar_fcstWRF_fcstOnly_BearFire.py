@@ -104,8 +104,8 @@ model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_BearFire.conf
 #
 # This use case reads the input model data usoing a python embedding script.  Although
 # the WRF subgrid files are able to be read directly in MET, here we use the Python
-# embedding script to compute Relative Humidity from Specific Humidity, and wind 
-# speed from the U and V wind components.
+# embedding script to calculate Relative Humidity from Specific Humidity, temperature, 
+# and pressure and wind speed from the U and V wind components using MetPy functions.
 #
 # .. dropdown:: read_wrfout_fire_rh_wind.py
 #
