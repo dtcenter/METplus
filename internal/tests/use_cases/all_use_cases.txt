@@ -95,6 +95,8 @@ Category: data_assimilation
 
 Category: fire
 0::GridStat_fcstWRF_obsMMA_fire_perimeter::model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
+1::MTD_fcstWRF_obsMMA_416Fire::model_applications/fire/MTD_fcstWRF_obsMMA_416Fire.conf
+2::MODEMultivar_fcstWRF_fcstOnly_BearFire::model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_BearFire.conf
 
 
 Category: land_surface

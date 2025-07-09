@@ -75,6 +75,16 @@
     "run": false
   },
   {
+    "category": "fire",
+    "index_list": "1",
+    "run": false
+  },
+  {
+    "category": "fire",
+    "index_list": "2",
+    "run": false
+  },
+  {
     "category": "land_surface",
     "index_list": "0",
     "run": false
@@ -366,7 +376,7 @@
   {
     "category": "tc_and_extra_tc",
     "index_list": "6",
-    "run": true
+    "run": false
   },
   {
     "category": "unstructured_grids",
