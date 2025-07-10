@@ -713,11 +713,8 @@ the environment file to the staging directory:
     scp ${METPLUS_USER_ENV_FILE} |dtc_web_server|:|metplus_staging_dir|/
 
 If you do not have access to the internal DTC web server,
-upload the files to the RAL FTP server::
-
-    ftp -p ftp.rap.ucar.edu
-
-For an example on how to upload data to the ftp site see
+please follow the instructions for sending sample data using Google Drive.
+For more information on this process, please see
 “How to Send Us Data” on the
 `Resources for Troubleshooting page <https://github.com/dtcenter/METplus/discussions/954>`_.
 
@@ -925,6 +922,12 @@ Example::
 
 This example adds a new use case group that contains the climate use case
 with index 2 and is marked to "run" for every push.
+
+.. note::
+    Be sure to remember and change the "run" entry in this file to false
+    prior to the final merge after pull request review. This will trigger
+    a complete run of the testing suite prior to merging, so allow time
+    for that to complete as well.
 
 New use cases are added as a separate item to make reviewing the test results
 easier. A new use case will produce new output data that is not found in the
@@ -1305,6 +1308,22 @@ to the polite instructions**::
 Check that the link now points to the new tarfile that was just created::
 
   ls -lh sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
+
+Return the test run setting to false
+------------------------------------
+
+In the *.github/parm/use_case_groups.json* file, return the *run* setting
+to false for the new use case in :ref:`add_new_category_to_test_runs` 
+and commit the file to the feature branch. This will trigger a full run of the 
+automated testing suite, so allow time for that to complete prior to merging.
+
+Example (note the setting for *run*)::
+
+      {
+        "category": "climate",
+        "index_list": "2",
+        "run": false
+      }
 
 After the Pull Request is Approved
 ==================================

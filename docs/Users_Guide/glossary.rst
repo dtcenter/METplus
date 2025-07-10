@@ -508,7 +508,7 @@ METplus Configuration Glossary
      | *Used by:* TCDiag
 
    ASCII2NC_INPUT_FORMAT
-     Optional string to specify the format of the input data. Valid options are "met_point", "little_r", "surfrad", "wwsis", "aeronet", "aeronetv2", or "aeronetv3."
+     Optional string to specify the format of the input data. Valid options are "met_point", "little_r", "surfrad", "wwsis", "aeronet", "aeronetv2", "ismn", or "aeronetv3."
 
      | *Used by:* ASCII2NC
 
