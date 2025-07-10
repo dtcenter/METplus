@@ -10255,11 +10255,11 @@ The following values **must** be defined in the METplus configuration file:
 | :term:`STAT_ANALYSIS_OUTPUT_DIR`
 | :term:`MODEL\<n\>`
 | :term:`MODEL<n>_STAT_ANALYSIS_LOOKIN_DIR`
-| :term:`GROUP_LIST_ITEMS`
-| :term:`LOOP_LIST_ITEMS`
 
 The following values are optional in the METplus configuration file:
 
+| :term:`GROUP_LIST_ITEMS`
+| :term:`LOOP_LIST_ITEMS`
 | :term:`STAT_ANALYSIS_CONFIG_FILE`
 | :term:`LOG_STAT_ANALYSIS_VERBOSITY`
 | :term:`STAT_ANALYSIS_CUSTOM_LOOP_LIST`

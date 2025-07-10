@@ -82,6 +82,7 @@ Keywords
       DataApplicationClimate
       DataApplicationShortRange
       DataApplicationEnsemble
+      DataApplicationLandSurface
       DataApplicationMarineAndCryo
       DataApplicationMediumRange
       DataApplicationPrecipitation

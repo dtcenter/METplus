@@ -10,6 +10,7 @@ Datasets
    datasets/goes_level_1b
    datasets/goes_level_2_aerosol
    datasets/gpm_imerg
+   datasets/ismn
    datasets/madis
    datasets/metar_isu
    datasets/mping
