@@ -23,7 +23,7 @@ echo "$met_tag"
 
 MET_DOCKER_REPO=met
 if [ "$met_tag" == "develop" ] || [[ "${met_tag}" =~ ^main_v[0-9]+\.[0-9]+ ]]; then
-    MET_DOCKER_REPO=met-dev
+  MET_DOCKER_REPO=met-dev
 fi
 
 # get METplus Analysis tool versions

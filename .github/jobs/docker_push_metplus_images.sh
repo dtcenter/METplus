@@ -17,8 +17,8 @@ METPLUS_A_IMAGE_NAME=${dockerhub_repo_analysis}:${metplus_version}
 
 # skip docker push if credentials are not set
 if [ -z ${DOCKER_USERNAME+x} ] || [ -z ${DOCKER_PASSWORD+x} ]; then
-    echo "DockerHub credentials not set. Skipping docker push"
-    exit 0
+  echo "DockerHub credentials not set. Skipping docker push"
+  exit 0
 fi
 
 echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin

@@ -18,4 +18,3 @@ METPLUS_A_IMAGE_NAME=${dockerhub_repo_analysis}:${metplus_version}
 # Scan the images
 cve_scan_image ${METPLUS_IMAGE_NAME}
 cve_scan_image ${METPLUS_A_IMAGE_NAME}
-
