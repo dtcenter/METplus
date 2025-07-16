@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # assumes SOURCE_BRANCH is set before calling script
-# assumes latest_tag will be set if pushing an official or bugfix release
 
 source "${GITHUB_WORKSPACE}"/.github/jobs/bash_functions.sh
 
@@ -34,13 +33,24 @@ if ! time_command docker push "${METPLUS_A_IMAGE_NAME}"; then
   exit 1
 fi
 
-# only push X.Y-latest tag if official or bugfix release
+# only push X.Y-latest tag if requested for official or bugfix releases
 # shellcheck disable=SC2154
-if [ "${LATEST_TAG}" != "" ]; then
-    if ! time_command docker push "${dockerhub_repo}:${LATEST_TAG}"; then
-      exit 1
-    fi
-    if ! time_command docker push "${dockerhub_repo_analysis}:${LATEST_TAG}"; then
-      exit 1
-    fi
+if [[ "${UPDATE_LATEST}" == "true" && "${SOURCE_BRANCH}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  latest_version=$(echo ${metplus_version} | cut -f1,2 -d'.')-latest
+
+  # tag and push the METplus image  
+  if ! time_command docker tag ${METPLUS_IMAGE_NAME} "${dockerhub_repo}:${latest_version}"; then
+    exit 1
+  fi
+  if ! time_command docker push "${dockerhub_repo}:${latest_version}"; then
+    exit 1
+  fi
+
+  # tag and push the METplus Analysis image
+  if ! time_command docker tag ${METPLUS_A_IMAGE_NAME} "${dockerhub_repo_analysis}:${latest_version}"; then
+    exit 1
+  fi
+  if ! time_command docker push "${dockerhub_repo_analysis}:${latest_version}"; then
+    exit 1
+  fi
 fi
