@@ -10,7 +10,7 @@ on:
     inputs:
       release_version:
         description: 'Comma-separated list of versions to build, e.g. "v6.0.0","v6.1.0"'
-        default: '"v6.0.0"'
+        default: '"v6.1.0"'
         required: true
         type: string
       update_latest:
@@ -36,7 +36,7 @@ jobs:
         id: get-versions
         run: |
           if [[ ${{ github.event_name }} == 'schedule' ]]; then
-            version_list="\"v6.0.0\""
+            version_list="\"v6.0.0\",\"v6.1.0\""
             update_latest="true"
           elif [[ ${{ github.event_name }} == 'workflow_dispatch' ]]; then
             version_list=${{ toJSON(inputs.release_version) }}
