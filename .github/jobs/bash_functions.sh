@@ -21,7 +21,7 @@ function time_command {
 
 # utility function to scan a Docker image for vulnerabilities
 function cve_scan_image {
-  echo "::group::Scanning image $1"
+  echo "Scanning image $1"
   CMD_LOGFILE="${GITHUB_WORKSPACE}/CVE_Scan_`echo $1 | sed 's%[/,:]%_%g'`.log"
   time_command grype $1
   CMD_LOGFILE="${GITHUB_WORKSPACE}/CVE_Scan_`echo $1 | sed 's%[/,:]%_%g'`.log"
@@ -32,5 +32,4 @@ function cve_scan_image {
     egrep "SEVERITY|Critical" ${CMD_LOGFILE}
     echo
   fi
-  echo "::endgroup::"
 }

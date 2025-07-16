@@ -63,7 +63,7 @@ jobs:
           ref: ${{ matrix.version }}
           path: ${{ matrix.version }}
           sparse-checkout: internal/scripts/docker
-          sparse-checkout-cont-mode: false
+          sparse-checkout-cone-mode: false
 
       - uses: actions/checkout@v4
         with:
