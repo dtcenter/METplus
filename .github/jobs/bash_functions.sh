@@ -5,8 +5,18 @@
 function time_command {
   local start_seconds=$SECONDS
   echo "::group::RUNNING: $*"
-  "$@"
-  local error=$?
+
+  local error
+  # pipe output to log file if set
+  if [ "x$CMD_LOGFILE" == "x" ]; then
+    "$@"
+    error=$?
+  else
+    echo "Logging to ${CMD_LOGFILE}"
+    "$@" &>> $CMD_LOGFILE
+    error=$?
+    unset CMD_LOGFILE
+  fi
 
   local duration=$(( SECONDS - start_seconds ))
   echo "TIMING: Command took `printf '%02d' $(($duration / 60))`:`printf '%02d' $(($duration % 60))` (MM:SS): '$*'"
