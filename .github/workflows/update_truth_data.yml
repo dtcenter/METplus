@@ -143,8 +143,8 @@ jobs:
       - name: Get METplus Image
         run: .github/jobs/docker_setup.sh
         env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_USERNAME: 'dtcenter'
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
           EXTERNAL_TRIGGER: false
 
   use_case_tests:
@@ -205,5 +205,5 @@ jobs:
       - name: Create and upload output data volumes
         run: .github/jobs/create_output_data_volumes.sh
         env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_USERNAME: 'dtcenter'
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
