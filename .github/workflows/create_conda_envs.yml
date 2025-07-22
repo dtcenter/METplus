@@ -12,8 +12,8 @@ env:
   METPLUS_ENV_VERSION: v6.1
   DOCKERFILE: Dockerfile
   BASE_ENV: metplus_base
-  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  DOCKER_USERNAME: 'dtcenter'
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
 
 jobs:
   check:

@@ -25,7 +25,7 @@ VERSION_LOOKUP = {
     },
     '6.0': {
         'metplus': '6.0.0',
-        'met': '12.0.2',
+        'met': '12.0.3',
         'metplotpy': '3.0.0',
         'metcalcpy': '3.0.0',
         'metdataio': '3.0.0',
