@@ -973,11 +973,11 @@ environments use this environment as a base.
 * Python 3.12.0
 * matplotlib 3.10.0
 * scipy 1.15.1
-* plotly 6.0.0
+* plotly 6.1.1
 * xarray 2025.1.2
 * netcdf4 1.7.2
 * pyyaml 6.0.2
-* python-kaleido 0.2.1
+* python-kaleido 1.0.0
 * imageio 2.37.0
 * imutils 0.5.4
 * scikit-image 0.25.1
