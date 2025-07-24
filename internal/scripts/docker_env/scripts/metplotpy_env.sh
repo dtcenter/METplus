@@ -12,7 +12,6 @@
 #   netcdf4==1.6.2
 #   pyyaml==6.0
 #   statsmodels==0.13.2
-#   python-kaleido==0.2.1
 #   imageio==2.19.3
 #   imutils==0.5.4
 #   scikit-image==0.19.3
