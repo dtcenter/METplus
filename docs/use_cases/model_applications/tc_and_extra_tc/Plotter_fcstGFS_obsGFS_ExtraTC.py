@@ -166,5 +166,6 @@ model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC.conf
 #
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/tc_and_extra_tc-Plotter_fcstGFS_obsGFS_ExtraTC.png'
 #

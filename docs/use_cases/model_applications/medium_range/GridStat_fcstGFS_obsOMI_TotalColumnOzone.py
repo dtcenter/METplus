@@ -169,4 +169,5 @@ model_applications/medium_range/GridStat_fcstGFS_obsOMI_TotalColumnOzone.conf
 #
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/medium_range-GridStat_fcstGFS_obsOMI_TotalColumnOzone.png'

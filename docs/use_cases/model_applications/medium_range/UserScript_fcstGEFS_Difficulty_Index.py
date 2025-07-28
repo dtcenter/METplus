@@ -186,5 +186,6 @@ model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 #
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/medium_range-UserScript_fcstGEFS_Difficulty_Index.png'
 #

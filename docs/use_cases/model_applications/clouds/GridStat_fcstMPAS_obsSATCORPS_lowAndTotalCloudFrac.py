@@ -193,4 +193,5 @@ model_applications/clouds/GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.con
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
+
 # sphinx_gallery_thumbnail_path = '_static/clouds-GridStat_fcstMPAS_obsSATCORPS_lowAndTotalCloudFrac.png'

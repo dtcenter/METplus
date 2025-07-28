@@ -285,4 +285,5 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 #
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/s2s_soil_moisture-GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.png'

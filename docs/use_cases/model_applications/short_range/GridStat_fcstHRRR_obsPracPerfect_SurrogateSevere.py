@@ -155,4 +155,5 @@ model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/short_range-SS_PP_prob.png'

@@ -187,4 +187,5 @@ GridStat_fcstGloTEC_obsGloTEC_vx7.conf
 #
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/space_weather-GridStat_fcstGloTEC_obsGloTEC_vx7.jpg'
