@@ -191,5 +191,6 @@ model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_Mu
 #
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/s2s-SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool.png'
 

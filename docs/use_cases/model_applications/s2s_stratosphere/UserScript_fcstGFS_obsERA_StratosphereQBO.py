@@ -212,4 +212,5 @@ model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereQBO.py
 #
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/s2s_stratosphere-UserScript_fcstGFS_obsERA_StratosphereQBO.png'

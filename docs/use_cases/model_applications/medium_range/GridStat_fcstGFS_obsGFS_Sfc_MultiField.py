@@ -153,5 +153,6 @@ model_applications/medium_range/GridStat_fcstGFS_obsGFS_Sfc_MultiField.conf
 #
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/medium_range-GridStat_fcstGFS_obsGFS_Sfc_MultiField.png'
 #

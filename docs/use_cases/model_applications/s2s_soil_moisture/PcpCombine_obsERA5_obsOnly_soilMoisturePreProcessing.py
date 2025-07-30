@@ -186,4 +186,5 @@ model_applications/s2s_soil_moisture/PcpCombine_obsERA5_obsOnly_soilMoisturePreP
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/s2s_soil_moisture-PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.png'

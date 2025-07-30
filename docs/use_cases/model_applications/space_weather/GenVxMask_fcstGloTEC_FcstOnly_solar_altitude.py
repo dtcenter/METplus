@@ -178,4 +178,5 @@ model_applications/space_weather/GenVxMask_fcstGloTEC_solar_altitude.conf
 #
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/space_weather-GenVxMask_fcstGloTEC_solar_altitude.png'

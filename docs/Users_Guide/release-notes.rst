@@ -17,7 +17,7 @@ is broken down into the following development cycles for each component:
 1. **Beta1** releases for the METplus components occurred around 2025-01-28.
 2. **Beta2** releases for the METplus components occurred around 2025-04-01.
 3. **Release Candidate 1** for the METplus components occurred around 2025-05-22.
-4. **Official Release** releases are tentatively scheduled for 2025-07-02.
+4. **Official Release** releases occurred around 2025-07-30.
 
 .. include:: existing_builds.rst
 
@@ -43,7 +43,7 @@ When applicable, release notes are followed by the
 describes the bugfix, enhancement, or new feature.
 Important issues are listed **in bold** for emphasis.
 
-METplus Version 6.1.0 Release Notes (2025-07-02)
+METplus Version 6.1.0 Release Notes (2025-07-30)
 ------------------------------------------------
 
   .. dropdown:: Enhancements
@@ -67,6 +67,8 @@ METplus Version 6.1.0 Release Notes (2025-07-02)
        (`#2880 <https://github.com/dtcenter/METplus/issues/2880>`_)
      * Update FV3 Physics Tendency use case data
        (`#2937 <https://github.com/dtcenter/METplus/issues/2937>`_)
+     * Add additional processing to the GridStat_fcstSFSFGSL_obsERA5Land_SoilMoisture use case
+       (`#3014 <https://github.com/dtcenter/METplus/issues/3014>`_)
 
   .. dropdown:: Bugfix
 
@@ -85,6 +87,12 @@ METplus Version 6.1.0 Release Notes (2025-07-02)
 
   .. dropdown:: New Use Cases
 
+     * International Soil Moisture Network (ISMN)
+       (`#2533 <https://github.com/dtcenter/METplus/issues/2533>`_)
+     * Hurricane Matthew using native WRF
+       (`#2577 <https://github.com/dtcenter/METplus/issues/2577>`_)
+     * GridStat: Apply separate climatologies for forecast and observations
+       (`#2723 <https://github.com/dtcenter/METplus/issues/2723>`_)
      * GFS cloud forecasts vs. GFS cloud analyses
        (`#2743 <https://github.com/dtcenter/METplus/issues/2743>`_)
      * GFS cloud forecasts vs. GOES-16 cloud products
@@ -112,6 +120,8 @@ METplus Version 6.1.0 Release Notes (2025-07-02)
        (`#2814 <https://github.com/dtcenter/METplus/issues/2814>`_)
      * Enhance the Release Guide documentation by consistently adding dropdown instructions
        (`#2844 <https://github.com/dtcenter/METplus/issues/2844>`_)
+     * Update the Code Support section of the User's Guides
+       (`#2857 <https://github.com/dtcenter/METplus/issues/2857>`_)
      * Update the Existing Builds page and modulefiles for the 6.0.0/6.1.0 coordinated release
        (`#2891 <https://github.com/dtcenter/METplus/issues/2891>`_)
 
@@ -123,6 +133,8 @@ METplus Version 6.1.0 Release Notes (2025-07-02)
        (`#2816 <https://github.com/dtcenter/METplus/issues/2816>`_)
      * Update the Existing Builds page and modulefiles for the 6.0.0/6.1.0 coordinated release
        (`#2891 <https://github.com/dtcenter/METplus/issues/2891>`_)
+     * Add instructions for setting up a Sphinx env through MacPorts to the Contributor's Guide
+       (`#2921 <https://github.com/dtcenter/METplus/issues/2921>`_)
      * Create new script to build the conda env for Python 3.12
        (`#2948 <https://github.com/dtcenter/METplus/issues/2948>`_)
      * Update installation modulefiles for Python 3.12 and the Existing Builds documentation

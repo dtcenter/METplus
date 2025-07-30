@@ -167,7 +167,66 @@ in the
                   module load metplotpy/3.1.0
                   module load metdataio/3.1.0
                   module load metcalcpy/3.1.0
- 
+
+     .. dropdown:: URSA
+
+	| **NOAA MACHINE URSA**
+	| *Last updated: July 2, 2025*
+	| *Compiler and version: Intel oneAPI 2025.1.1*
+
+	  * **METplus-6.1.0-rc1**
+
+	    * METplus-6.1.0-rc1 Installation
+
+	      * /contrib/METplus/METplus-6.1.0-rc1
+
+	    * METplus-6.1 Sample Data
+
+	      * /scratch3/BMC/dtc/METplus/METplus-6.1_sample_data
+
+	    * Users should create a file like
+	      /scratch3/BMC/dtc/METplus/ursa.role-metplus.conf
+	      to set a personalized INPUT_BASE and OUTPUT_BASE.
+
+	    * To use METplus run:
+
+	      .. code-block:: ini
+
+                  module load intel-oneapi-compilers/2025.1.1
+                  module use -a /contrib/METplus/modulefiles
+                  module load metplus/6.1.0-rc1
+
+	  * **MET-12.1.0-rc1**
+
+            * MODULES:
+
+              .. code-block:: ini
+
+                  module load intel/2025.1.1
+                  module use -a /contrib/met/modulefiles/
+                  module load met/12.1.0-rc1
+
+          * **METcalcpy-3.1.0-rc1 / METplotpy-3.1.0-rc1**
+
+            * MODULES:
+
+              .. code-block:: ini
+
+                  module load intel/2025.1.1
+                  module use /contrib/METcalcpy/modulefiles
+                  module load metcalcpy/3.1.0-rc1
+                  module use /contrib/METplotpy/modulefiles
+                  module load metplotpy/3.1.0-rc1
+
+          * **METdataio-3.1.0-rc1**
+
+            * MODULES:
+
+              .. code-block:: ini
+
+                  module load intel/2025.1.1
+                  module use /contrib/METdataio/modulefiles
+                  module load metdataio/3.1.0-rc1
 
      .. dropdown:: HERA
 
@@ -526,7 +585,7 @@ in the
 .. dropdown:: DockerHub
 
    | **MET**
-   | *Last Updated: July 2, 2025*
+   | *Last Updated: July 30, 2025*
 
       .. code-block:: ini
 
@@ -535,7 +594,7 @@ in the
      `dtcenter/met DockerHub <https://hub.docker.com/r/dtcenter/met>`_
 
    | **METplus**
-   | *Last Updated: July 2, 2025*
+   | *Last Updated: July 30, 2025*
 
       .. code-block:: ini
 
@@ -544,7 +603,7 @@ in the
      `dtcenter/metplus DockerHub <https://hub.docker.com/r/dtcenter/metplus>`_
 
    | **METplus Analysis**
-   | *Last Updated: July 2, 2025*
+   | *Last Updated: July 30, 2025*
 
       .. code-block:: ini
 

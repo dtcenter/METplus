@@ -174,4 +174,5 @@ model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEm
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/unstructured_grids-StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEmbed.png'

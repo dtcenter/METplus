@@ -209,5 +209,6 @@ model_applicaitons/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelativ
 #
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/medium_range-MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.png'
 #

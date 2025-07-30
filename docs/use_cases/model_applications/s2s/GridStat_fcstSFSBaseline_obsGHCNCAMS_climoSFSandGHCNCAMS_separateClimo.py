@@ -191,4 +191,5 @@ model_applications/s2s/GridStat_fcstSFSBaseline_obsGHCNCAMS_climoSFSandGHCNCAMS_
 #
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/s2s-GridStat_fcstSFSBaseline_obsGHCNCAMS_climoSFSandGHCNCAMS_separateClimo.png'

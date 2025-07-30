@@ -157,5 +157,6 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.co
 #
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/marine_and_cryosphere-PointStat_fcstGFS_obsNDBC_WaveHeight.png'
 

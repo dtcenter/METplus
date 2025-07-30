@@ -183,5 +183,6 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMOS_climWOA_sss.
 #
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/marine_and_cryosphere-GridStat_fcstRTOFS_obsSMOS_climWOA_sss.png'
 

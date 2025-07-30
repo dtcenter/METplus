@@ -162,4 +162,5 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAl
 #
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/marine_and_cryosphere-PointStat_fcstGFS_obsJASON3_satelliteAltimetry.png'

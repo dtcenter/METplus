@@ -2,3 +2,4 @@
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3015 - #3015 added a new use case to tc_and_extra_tc
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3037 - #3037 added new use case s2s:6
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3039 - #3039 updates s2s_soil_moisture:0-1 which changes the output
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3071 - #3071 included changes to get chrome for METplotpy (plotly/kaleido dependency), which changed the font of the title text in a few images

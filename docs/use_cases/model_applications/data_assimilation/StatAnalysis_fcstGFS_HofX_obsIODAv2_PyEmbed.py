@@ -171,4 +171,5 @@ model_applications/data_assimilation/StatAnalysis_fcstGFS_HofX_obsIODAv2_PyEmbed
 #
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/data_assimilation-StatAnalysis_fcstGFS_HofX_obsIODAv2_PyEmbed.png'

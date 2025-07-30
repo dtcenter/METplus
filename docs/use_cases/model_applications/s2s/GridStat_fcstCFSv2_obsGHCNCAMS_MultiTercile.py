@@ -165,5 +165,6 @@ model_applications/s2s/GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.conf
 #
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/s2s-GridStat_fcstCFSv2_obsGHCNCAMS_MultiTercile.png'
 

@@ -170,4 +170,5 @@ model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
+
 # sphinx_gallery_thumbnail_path = '_static/pbl-PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.png'
