@@ -205,7 +205,7 @@ required to perform the following steps.
      and select **Settings**.  Modify these settings as follows.
 
       - Project name: The default project name is **@UserNames's feature**.  Rename it as
-        **Coorindated METplus-X.Y Support** (e.g. **Coordinated METplus-5.0 Support**).
+        **Coordinated METplus-X.Y Support** (e.g. **Coordinated METplus-5.0 Support**).
 
       - Add a description: Add **Issues related to support for the METplus X.Y
         coordinated release.**
