@@ -9,3 +9,12 @@ FROM dtcenter/metplus-dev:${METPLUS_IMG_TAG}
 RUN mkdir -p /usr/local/conda/envs && mkdir -p /usr/local/conda/bin
 COPY --from=env /usr/local/conda/envs /usr/local/conda/envs/
 COPY --from=env /usr/local/conda/bin/conda /usr/local/conda/bin/conda
+
+ARG METPLUS_GET_CHROME=false
+RUN if [ "${METPLUS_GET_CHROME}" = "true" ]; then \
+      echo "Installing Chrome dependencies" &&\
+      apt-get update &&\
+      apt-get install -y libasound2 libatk-bridge2.0-0 libcairo2 libcups2 libgbm1 \
+                         libnss3 libpango-1.0-0 libxcomposite1 libxdamage1 \
+                         libxfixes3 libxkbcommon0 libxrandr2; \
+    fi
