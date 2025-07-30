@@ -317,7 +317,7 @@ METplus Components Python Packages
   Description:
     Python package to define, operate and manipulate physical quantities
 
-.. dropdown:: plotly >=5.13.0
+.. dropdown:: plotly >=6.1.1
 
   METplus Component: 
     | METcalcpy, 
@@ -423,7 +423,7 @@ METplus Components Python Packages
   Description:
     A mature full-featured Python testing tool that helps to write better programs
 
-.. dropdown:: python-kaleido >=0.2.1
+.. dropdown:: python-kaleido >=1.0.0
 
   METplus Component:
     | METcalcpy, 

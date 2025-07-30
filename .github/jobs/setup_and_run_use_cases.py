@@ -76,6 +76,7 @@ def main():
             f"docker build -t {RUN_TAG} "
             f"--build-arg METPLUS_IMG_TAG={branch_name} "
             f"--build-arg METPLUS_ENV_TAG={env_tag} "
+            f"--build-arg METPLUS_GET_CHROME={str(_uses_metplotpy(requirements)).lower()} "
             f"-f {DOCKERFILE_DIR}/{dockerfile_name} ."
         )
 
@@ -196,6 +197,11 @@ def _get_dockerfile_name(requirements):
     if 'geovista' in str(requirements).lower():
         return f'{dockerfile_name}_geovista'
     return dockerfile_name
+
+
+def _uses_metplotpy(requirements):
+    """!Parse use case requirements to check if it uses METplotpy"""
+    return 'metplotpy' in str(requirements).lower()
 
 
 if __name__ == '__main__':

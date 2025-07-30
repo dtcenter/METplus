@@ -665,8 +665,8 @@ Create/Update METplus Docker Image
         - name: Get METplus Image
           run: .github/jobs/docker_setup.sh
           env:
-            DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-            DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+            DOCKER_USERNAME: 'dtcenter'
+            DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
             #SET_MET_IMAGE: met:10.0.0
 
 This job calls the **docker_setup.sh** script.
@@ -738,8 +738,8 @@ Create/Update Docker Data Volumes
       steps:
         - uses: dtcenter/metplus-action-data-update@v1
           with:
-            docker_name: ${{ secrets.DOCKER_USERNAME }}
-            docker_pass: ${{ secrets.DOCKER_PASSWORD }}
+            docker_name: 'dtcenter'
+            docker_pass: ${{ secrets.DOCKER_TOKEN }}
             repo_name: ${{ github.repository }}
             data_prefix: sample_data
             branch_name: ${{ needs.job_control.outputs.branch_name }}
@@ -973,11 +973,11 @@ environments use this environment as a base.
 * Python 3.12.0
 * matplotlib 3.10.0
 * scipy 1.15.1
-* plotly 6.0.0
+* plotly 6.1.1
 * xarray 2025.1.2
 * netcdf4 1.7.2
 * pyyaml 6.0.2
-* python-kaleido 0.2.1
+* python-kaleido 1.0.0 
 * imageio 2.37.0
 * imutils 0.5.4
 * scikit-image 0.25.1
@@ -1434,8 +1434,8 @@ Create/Update Output Data Volumes
         - uses: actions/download-artifact@v2
         - run: .github/jobs/create_output_data_volumes.sh
           env:
-            DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-            DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+            DOCKER_USERNAME: 'dtcenter'
+            DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
 
 Differences in the use case output may be expected.
 The most common difference is new data from a newly added use case that is

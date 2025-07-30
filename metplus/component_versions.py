@@ -25,11 +25,11 @@ VERSION_LOOKUP = {
     },
     '6.0': {
         'metplus': '6.0.0',
-        'met': '12.0.2',
-        'metplotpy': '3.0.0',
+        'met': '12.0.3',
+        'metplotpy': '3.0.1',
         'metcalcpy': '3.0.0',
         'metdataio': '3.0.0',
-        'metviewer': '6.0.0',
+        'metviewer': '6.0.1',
         'metexpress': '6.0.0',
     },
     '5.1': {
