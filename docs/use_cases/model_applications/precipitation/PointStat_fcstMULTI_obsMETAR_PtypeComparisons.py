@@ -172,4 +172,5 @@ model_application/precipitation/PointStat_fcstMULTI_obsMETAR_PtypeComparisons.co
 #
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/precipitation-PointStat_fcstMULTI_obsMETAR_PtypeComparisons.png'

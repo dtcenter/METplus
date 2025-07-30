@@ -160,5 +160,6 @@ model_applications/precipitation/GridStat_fcstGFS_obsCCPA_Grib.conf
 #
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/precipitation-GridStat_fcstGFS_obsCCPA_GRIB.png'
 #

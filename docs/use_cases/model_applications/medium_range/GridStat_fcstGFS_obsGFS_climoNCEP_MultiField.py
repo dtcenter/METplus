@@ -165,5 +165,6 @@ model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.con
 #
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/medium_range-GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.png'
 #

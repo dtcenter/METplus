@@ -206,4 +206,5 @@ model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.
 #
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/s2s_stratosphere-UserScript_fcstGFS_obsERA_StratospherePolar.png'

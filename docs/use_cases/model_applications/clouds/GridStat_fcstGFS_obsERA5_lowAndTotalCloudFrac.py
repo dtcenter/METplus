@@ -196,4 +196,5 @@ model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.conf
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
+
 # sphinx_gallery_thumbnail_path = '_static/clouds-GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac.png'

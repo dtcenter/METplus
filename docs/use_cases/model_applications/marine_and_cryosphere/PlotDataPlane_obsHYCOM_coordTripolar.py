@@ -167,5 +167,6 @@ model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.co
 #
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/marine_and_cryosphere-PlotDataPlane_obsHYCOM_coordTripolar.png'
 #

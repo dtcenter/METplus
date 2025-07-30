@@ -173,5 +173,6 @@ model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/short_range-MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.png'
 #

@@ -166,5 +166,6 @@ model_applications/short_range/GridStat_fcstFV3_obsGOES_BrightnessTempDmap.conf
 #
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/short_range-GridStat_fcstFV3_obsGOES_BrightnessTempDmap.png'
 #

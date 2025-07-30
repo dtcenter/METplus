@@ -169,5 +169,6 @@ model_applications/short_range/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/short_range-MODE_fcstHRRRE_obsMRMS_Hail_GRIB2.png'
 #

@@ -164,5 +164,6 @@ model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_Netcdf.conf
 #
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/precipitation-GridStat_fcstHREFmean_obsStgIV_NetCDF.png'
 #

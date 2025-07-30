@@ -157,5 +157,6 @@ model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO.py
 #
 #   Navigate to :ref:`quick-search` to discover other similar use cases.
 #
+
 # sphinx_gallery_thumbnail_path = '_static/s2s_mjo-UserScript_obsCFSr_obsOnly_MJO_ENSO.png'
 #

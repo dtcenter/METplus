@@ -208,4 +208,5 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.py
 #
 #
 #
+
 # sphinx_gallery_thumbnail_path = '_static/s2s_mid_lat-UserScript_obsERA_obsOnly_WeatherRegime.png'
