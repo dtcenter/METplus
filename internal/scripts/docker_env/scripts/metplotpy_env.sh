@@ -43,10 +43,17 @@ mamba install -y --name ${ENV_NAME} -c conda-forge \
   xarray==2025.1.2 \
   netcdf4==1.7.2 \
   pyyaml==6.0.2 \
-  python-kaleido==1.0.0 \
   imageio==2.37.0 \
   imutils==0.5.4 \
   scikit-image==0.25.1 \
   pint==0.24.4 \
   metpy==1.6.3 \
   cartopy==0.24.0
+
+# install kaleido via pip because (as of 2024/07/24) kaleido 1.0.0 from
+# conda-forge is installed as 0.0.0 and the plotly_get_chrome script fails
+# due to the version check
+/usr/local/conda/envs/${ENV_NAME}/bin/pip install kaleido==1.0.0
+
+# install chrome which is required by plotly/kaleido
+/usr/local/conda/envs/${ENV_NAME}/bin/plotly_get_chrome -y

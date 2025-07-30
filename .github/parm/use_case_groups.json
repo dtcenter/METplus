@@ -87,7 +87,7 @@
   {
     "category": "land_surface",
     "index_list": "2",
-    "run": true
+    "run": false
   },
   {
     "category": "marine_and_cryosphere",
@@ -371,7 +371,7 @@
   {
     "category": "tc_and_extra_tc",
     "index_list": "6",
-    "run": true
+    "run": false
   },
   {
     "category": "unstructured_grids",

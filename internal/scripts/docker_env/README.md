@@ -237,6 +237,8 @@ docker push dtcenter/metplus-envs:metplotpy.${METPLUS_ENV_VERSION}
 ```
 export METPLUS_ENV_VERSION=v6.1
 ./scripts/metplotpy_env.sh ${METPLUS_ENV_VERSION}
+/home/met_test/miniforge3/envs/metplotpy.${METPLUS_ENV_VERSION}/bin/pip install kaleido==1.0.0
+/home/met_test/miniforge3/envs/metplotpy.${METPLUS_ENV_VERSION}/bin/plotly_get_chrome -y
 /home/met_test/miniforge3/envs/metplotpy.${METPLUS_ENV_VERSION}/bin/python3 -m cartopy.feature.download cultural physical
 ```
 
@@ -520,7 +522,7 @@ runas met_test
 export METPLUS_ENV_VERSION=v6.1
 
 repo_names=(METdataio METplotpy METcalcpy)
-env_names=(metplotpy mp_analysis weatherregime)
+env_names=(metplotpy mp_analysis weatherregime pandac wrf_plot)
 
 for repo in "${repo_names[@]}"; do
   git clone https://github.com/dtcenter/${repo} /home/met_test/${repo} || true
