@@ -8,8 +8,7 @@ Add or update information about software releases on the website.
 
   * Navigate to https://dtcenter.org and sign in to the Drupal interface.
 
-  * Navigate to the downloads page for the |projectRepo| repository at
-    https://dtcenter.org/community-code/metplus/download
+  * Navigate to the downloads page for the |projectRepo| repository at |downloadURL|
 
   * Click on the **Edit** button to edit the Downloads page.
 
@@ -52,19 +51,19 @@ Add or update information about software releases on the website.
     * Click on **Create Release**.
 
     * Update the existing releases, as needed.
-    
+
       * For a development release, ensure the "Release Type" is set to
         **Development** and change any previous **Development** versions to
         **Other**.
-      
+
       * For a bugfix or official release, change any previous
         **Recommended** versions to **Other**.
-      
-      * For an official release, remove the corresponding development
-        releases.
+
+      * For an official release, remove the corresponding **Development**
+        versions.
 
     * Edit the "Coordinated METplus Version X.Y" software release.
-      
+
       * For a bugfix release, update the existing link and text in
         the "Coordinated METplus-X.Y" release section with the
         X.Y.Z+1 information.

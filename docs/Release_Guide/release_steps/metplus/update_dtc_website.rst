@@ -2,6 +2,8 @@
 	
 .. |projectName| replace:: METplus Wrappers
 
+.. |downloadURL| replace:: https://dtcenter.org/community-code/metplus/download
+
 .. |addTarfileStep| replace:: The URL should be the release page that was just created under the GitHub Releases tab and the link text should be the name of the release (i.e. METplus X.Y.Z-betaN).
 
 .. |otherWebsiteUpdates| replace:: Make any other necessary website updates.  For example, adding the User's Guide to https://dtcenter.org/community-code/metplus/documentation
