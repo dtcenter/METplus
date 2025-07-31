@@ -55,16 +55,17 @@ are required to perform the following steps.
    - From the `DTCenter GitHub Projects <https://github.com/orgs/dtcenter/projects>`_
      page, select the **New project** button.
 
-   - In the **Select a template** popup window, select the **Project templates: Feature**
-     option, and click the **Create** button.
+   - In the **Create Project** popup window, select the
+     **Project templates: From your organization** option on the left side,
+     click on **[TEMPLATE] METplus-X.Y Development**,
+     change the title to **METplus-X.Y Development**
+     (e.g. **METplus-6.1 Development**),
+     then click the **Create Project** button.
 
 2. Update the project **Settings**.
 
    - Click on the three dots to the right of the project name to see **More options**
      and select **Settings**.  Modify these settings as follows.
-
-      - Project name: The default project name is **@UserNames's feature**.  Rename it as
-        **{METplus Component}-{Target Version Number} Development** (e.g. **METplus-Wrappers-5.1.0 Development**).
 
       - Add a description: Add **Development toward {METplus Component} version {Target Version Number}.**
 
@@ -75,98 +76,68 @@ are required to perform the following steps.
       - Scroll down to the **Danger zone** and change **Visibilty** from its default value of **Private**
         to **Public**.
 
+      - Scroll up and click on the green **Save changes** button.
+
    - Select **Manage access** on the left hand navigation bar.
 
       - By default, the project creator has **Admin** access.
 
       - Add **Admin** access for any user with that level of access to any one
         of the repositories managed by this project.
+        To add access, enter GitHub usernames under **Invite collaborators**,
+        change role to **Admin**, and click the **Invite** button.
 
       - Add **Write** access for the **METplus** group.
-
-   - Locate the **Custom fields** section in the left hand navigation bar
-
-      - Select **Status** and retain the default list of options, but delete the
-        **New** option by clicking the **X** to its right.
-
-      - Select **Iteration** and modify the **Field name** to be **Cycle**.  Delete any existing cycles.
-        Under **More options** select a **Start on** date and set the default **Duration** as 6 weeks.
-        Click the **Add** and **Add iteration** buttons to create 5 cycles, each with the default duration
-        of 6 weeks. Modify the cycle names to be **Beta1**, **Beta2**, and so on. Click **Save changes**.
-
-      - Select **Estimate** and click the three dots to the right and **Delete field**.
+        To add access, enter METplus under **Invite collaborators**,
+        change role to **Write**, and click the **Invite** button.
 
    - Click the back arrow to return to the project page.
 
-3. Update the project **Workflows**.
+3. Create project **Views** for beta cycles.
 
-   - Click on the three dots to the right of the project name to see **More options**
-     and select **Workflows**.  Modify these settings as follows.
+   - Each view appears as a tab on the project page.
+     Create a new view for each known betaN cycle as described below.
 
-      - Enable the **Item added to project** workflow and set the status to **Backlog**.
+      - Click on the down arrow next to the **RC 1** tab and select **Duplicate view**.
 
-      - Enable the **Item reopened** workflow and set the status to **In progress**.
+      - The new view will be added to the end (right) of the existing tabs.
+        Click on the down arrow next to it, click **Rename view**,
+        rename it as **Beta 1**, and hit **Enter**.
 
-      - Enable the **Item closed** workflow and set the status to **Done**.
+      - Modify the search criteria next to the magnifying glass icon to change
+        **cycle:"RC 1"** to **cycle:"Beta 1"**.
 
-      - Enable the **Pull request merged** workflow and set the status to **Done**.
+      - Click on the down arrow next to the tab and click the green **Save** button.
 
-      - Leave all other workflows disabled.
+      - Drag the tab to the left so it appears first.
 
-   - Click the back arrow to return to the project page.
+      - Repeat for any other known Beta N development cycles.
 
-4. Create project **Views**.
+4. Create cycles for each beta.
 
-   - Each view appears as a tab on the project page.  Create a new view as described below.
+   - Click on the *...* icon at the top right of the project board,
+     click on **Settings**, then click on **Cycle** in the left menu.
 
-      - Select the **+ New view** option.
+   - Click the **+ Add Iteration** button, rename the new cycle to **Beta N**,
+     and adjust the dates. Be sure to adjust any other cycles that may have
+     shifted from the changes.
 
-      - Click on the view name to modify it, rename it as **All Cycles**, and hit **Enter**.
+   - Click on the green **Save** button.
 
-      - Click on the down arrow and, under **Configuration**, select the **Fields** option. Enable
-        the options for **Title**, **Repository**, **Assignees**, **Cycle**, **Status**,
-        **Linked Pull Request**, and **Reviewers**. Drag and drop the items to reorder them as listed above.
-
-      - In the resulting view, click the three dots in the **Status** column. Select the **Sort descending**
-        and **Group by values** options.
-
-      - The blue dot on the down arrow for this tab indicates that there are unsaved changes.
-        Select the **Save changes** option.
-
-   - Click on the down arrow and select **Duplicate View**.  Do this 8 times and name/refine these views as follows.
-
-      - View name **All Required** shows all items labelled as *REQUIRED* for the development or official release.
-        Click on the 3 horizontal bars and define the filtering criteria as
-        ``is:open label:'required: FOR OFFICIAL RELEASE','required: FOR DEVELOPMENT RELEASE'``.
-        Click **Save Changes**.
-
-      - View names **Beta1** through **Beta5** show items for each individual development cycle.
-        Click on the 3 horizontal bars and define the filtering criteria as
-        ``cycle:Beta1``, ``cycle:Beta2``, and so on. Click **Save Changes**.
-
-      - View name **Closed Issues** shows issues that have been closed across all development cycles.
-        Click on the 3 horizontal bars and define the filtering criteria as
-        ``is:closed is:issue``. Click on the 3 dots in the **Cycle** column and select
-        **Group by values**.  Click **Save Changes**.
-
-      - View name **High/Blocker Not Required** shows all items labelled as *HIGH* or *BLOCKER*
-        priority but not marked as required for the development or official release.
-        Click on the 3 horizontal bars and define the filtering criteria as
-        ``is:open label:'priority: high','priority: blocker'``
-        ``-label:'required: FOR DEVELOPMENT RELEASE'``
-        ``-label:'required: FOR OFFICIAL RELEASE'``.
-        Click **Save Changes**.
-
-   - Delete any other views created by default by clicking the down arrow next to the view name and
-     selecting **Delete view**.
-
-5. Refine the project settings, development cycle dates, and views, as needed, based on the preferences
-   of the development team.
+5. Refine the project settings, development cycle dates, and views, as needed,
+   based on the preferences of the development team.
 
 6. Link the new project to each repository.
 
-   - Navigate to the project page for each repository managed by this project
-     (e.g. `METplus Projects <https://github.com/dtcenter/METplus/projects>`_).
+   - Navigate to the project page for each METplus component repository:
+
+      - `METplus <https://github.com/dtcenter/METplus/projects>`_,
+        `MET <https://github.com/dtcenter/MET/projects>`_,
+        `METviewer <https://github.com/dtcenter/METviewer/projects>`_,
+        `METexpress <https://github.com/dtcenter/METexpress/projects>`_,
+        `METplotpy <https://github.com/dtcenter/METplotpy/projects>`_,
+        `METcalcpy <https://github.com/dtcenter/METcalcpy/projects>`_,
+        `METdataio <https://github.com/dtcenter/METdataio/projects>`_
 
    - Click the **Link a project** button and find/select this newly created project.
 
@@ -196,16 +167,17 @@ required to perform the following steps.
    - From the `DTCenter GitHub Projects <https://github.com/orgs/dtcenter/projects>`_
      page, select the **New project** button.
 
-   - In the **Select a template** popup window, select the **Project templates: Feature**
-     option, and click the **Create** button.
+   - In the **Create Project** popup window, select the
+     **Project templates: From your organization** option on the left side,
+     then click on **[TEMPLATE] Coordinated METplus-X.Y Support**,
+     change the title to **Coordinated METplus-X.Y Support**
+     (e.g. **Coordinated METplus-6.1 Support**),
+     then click the **Create Project** button.
 
 2. Update the project **Settings**.
 
    - Click on the three dots to the right of the project name to see **More options**
      and select **Settings**.  Modify these settings as follows.
-
-      - Project name: The default project name is **@UserNames's feature**.  Rename it as
-        **Coordinated METplus-X.Y Support** (e.g. **Coordinated METplus-5.0 Support**).
 
       - Add a description: Add **Issues related to support for the METplus X.Y
         coordinated release.**
@@ -216,74 +188,26 @@ required to perform the following steps.
       - Scroll down to the **Danger zone** and change **Visibilty** from its default value
         of **Private** to **Public**.
 
+      - Scroll up and click on the green **Save changes** button.
+
    - Select **Manage access** on the left hand navigation bar.
 
       - By default, the project creator has **Admin** access.
 
-      - Add **Admin** access for at least 2 other users with that level of access on one
-        of the METplus component repositories.
+      - Add **Admin** access for any user with that level of access to any one
+        of the repositories managed by this project.
+        To add access, enter GitHub usernames under **Invite collaborators**,
+        change role to **Admin**, and click the **Invite** button.
 
       - Add **Write** access for the **METplus** group.
-
-   - Locate the **Custom fields** section in the left hand navigation bar
-
-      - Select **Status** and retain the default list of options, but delete the
-        **New** option by clicking the **X** to its right.
-
-      - For **Iteration** and **Estimate**, click the 3 dots to the right of the
-        **Field name** and **Delete field**.
+        To add access, enter METplus under **Invite collaborators**,
+        change role to **Write**, and click the **Invite** button.
 
    - Click the back arrow to return to the project page.
 
-3. Update the project **Workflows**.
+3. Refine the project settings and views, as needed, based on the preferences of the support team.
 
-   - Click on the three dots to the right of the project name to see **More options**
-     and select **Workflows**.  Modify these settings as follows.
-
-      - Enable the **Item added to project** workflow and set the status to **Backlog**.
-
-      - Enable the **Item reopened** workflow and set the status to **In progress**.
-
-      - Enable the **Item closed** workflow and set the status to **Done**.
-
-      - Enable the **Pull request merged** workflow and set the status to **Done**.
-
-      - Leave all other workflows disabled.
-
-   - Click the back arrow to return to the project page.
-
-4. Create project **Views**.
-
-   - Each view appears as a tab on the project page.  Create a new view as described below.
-
-      - Select the **+ New view** option.
-
-      - Click on the view name to modify it, rename it as **All Milestones**, and hit **Enter**.
-
-      - Click on the down arrow and, under **Configuration**, select the **Fields** option. Enable
-        the options for **Title**, **Repository**, **Assignees**, **Milestone**, **Status**,
-        **Linked Pull Request**, and **Reviewers**. Drag and drop the items to reorder them
-        as listed above.
-
-      - In the resulting view, click the three dots in the **Milestone** column. Select the
-        **Sort descending** and **Group by values** options.
-
-      - The blue dot on the down arrow for this tab indicates that there are unsaved changes.
-        Select the **Save changes** option.
-
-   - Click on the down arrow and select **Duplicate View**.  Name/refine this views as follows.
-
-      - View name **Closed Issues** shows issues that have been closed across all bugfix
-        milestones.  Click on the 3 horizontal bars and define the filtering criteria as
-        ``is:closed is:issue``. Click on the 3 dots in the **Milestone** column and
-        select **Group by values**. Click **Save Changes**.
-
-   - Delete any other views created by default by clicking the down arrow next to the view
-     name and selecting **Delete view**.
-
-5. Refine the project settings and views, as needed, based on the preferences of the support team.
-
-6. Link the new project to each repository.
+4. Link the new project to each repository.
 
    - Navigate to the project page for each METplus component repository:
 
