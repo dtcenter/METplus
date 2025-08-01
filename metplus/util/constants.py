@@ -10,6 +10,7 @@ UPGRADE_INSTRUCTIONS_URL = (
 LOWER_TO_WRAPPER_NAME = {
     'ascii2nc': 'ASCII2NC',
     'cycloneplotter': 'CyclonePlotter',
+    'dataingest': 'DataIngest',
     'ensemblestat': 'EnsembleStat',
     'example': 'Example',
     'extracttiles': 'ExtractTiles',
