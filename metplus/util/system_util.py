@@ -206,6 +206,8 @@ def _check_and_decompress(filename, stage_dir, config):
     # Create staging area directory only if file has compression extension
     if any([os.path.isfile(f'{filename}{ext}') for ext in COMPRESSION_EXTENSIONS]):
         mkdir_p(os.path.dirname(staged_filename))
+    else:
+        return None
 
     # uncompress gz, bz2, or zip file
     if os.path.isfile(f"{filename}.gz"):
