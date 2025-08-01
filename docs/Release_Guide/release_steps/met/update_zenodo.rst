@@ -5,6 +5,8 @@ Update the DOI for this official release.
 
 .. dropdown:: Instructions
 
+Official MET releases are published through `Zenodo <https://zenodo.org/>`_ and members of the `DTCenter Zenodo Community <https://zenodo.org/communities/dtcenter/members>`_ have permission to upload new software versions.
+
   - Download the zip file of the new release from the `MET GitHub release page <https://github.com/dtcenter/MET/releases>`_.
 
   - Log into Zenodo

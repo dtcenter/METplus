@@ -5,6 +5,8 @@ Update the DOI for this coordinated release.
 
 .. dropdown:: Instructions
 
+Coordinated METplus releases are published through `Zenodo <https://zenodo.org/>`_ and members of the `DTCenter Zenodo Community <https://zenodo.org/communities/dtcenter/members>`_ have permission to upload new software versions.
+
   - Download the (7) zip files of the new releases from each GitHub repository.
 
   - Log into Zenodo
