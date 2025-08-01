@@ -215,8 +215,6 @@ def _check_and_decompress(filename, stage_dir, config):
         with gzip.open(f"{filename}.gz", 'rb') as infile:
             with open(staged_filename, 'wb') as outfile:
                 outfile.write(infile.read())
-                infile.close()
-                outfile.close()
                 return staged_filename
 
     elif os.path.isfile(f"{filename}.bz2"):
@@ -224,8 +222,6 @@ def _check_and_decompress(filename, stage_dir, config):
         with open(f"{filename}.bz2", 'rb') as infile:
             with open(staged_filename, 'wb') as outfile:
                 outfile.write(bz2.decompress(infile.read()))
-                infile.close()
-                outfile.close()
                 return staged_filename
 
     elif os.path.isfile(f"{filename}.zip"):
