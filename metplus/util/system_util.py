@@ -1,5 +1,5 @@
 """
-Program Name: system_manip.py
+Program Name: system_util.py
 Contact(s): George McCabe
 Description: METplus utility to handle OS/system calls
 """
@@ -11,21 +11,21 @@ import getpass
 import gzip
 import bz2
 import zipfile
-import struct
+import urllib.request
+import urllib.error
+import urllib.parse
+from urllib.request import HTTPPasswordMgrWithDefaultRealm, HTTPBasicAuthHandler, build_opener
 
 from .constants import PYTHON_EMBEDDING_TYPES, COMPRESSION_EXTENSIONS
 
 
 def mkdir_p(path):
-    """!
-       From stackoverflow.com/questions/600268/mkdir-p-functionality-in-python
+    """!From stackoverflow.com/questions/600268/mkdir-p-functionality-in-python
        Creates the entire directory path if it doesn't exist (including any
        required intermediate directories).
-       Args:
-           @param path : The full directory path to be created
-       Returns
-           None: Creates the full directory path if it doesn't exist,
-                 does nothing otherwise.
+
+       @param path The full directory path to be created
+       @returns None: Creates the full directory path if it doesn't exist
     """
     Path(path).mkdir(parents=True, exist_ok=True)
 
@@ -192,6 +192,7 @@ def _check_and_decompress(filename, stage_dir, config):
     """!Check if file path contains extension that implies it is compressed.
     Decompress file if necessary.
     Supported compression extensions are gz, bz2, and zip.
+    The full path of filename is duplicated under stage_dir.
 
     @param filename path to file to check
     @param stage_dir staging directory to decompress files into
@@ -203,30 +204,31 @@ def _check_and_decompress(filename, stage_dir, config):
         return staged_filename
 
     # Create staging area directory only if file has compression extension
-    if any([os.path.isfile(f'{filename}{ext}')
-            for ext in COMPRESSION_EXTENSIONS]):
+    if any([os.path.isfile(f'{filename}{ext}') for ext in COMPRESSION_EXTENSIONS]):
         mkdir_p(os.path.dirname(staged_filename))
 
     # uncompress gz, bz2, or zip file
-    if os.path.isfile(filename+".gz"):
-        config.logger.debug("Decompressing gz file to {}".format(staged_filename))
-        with gzip.open(filename+".gz", 'rb') as infile:
+    if os.path.isfile(f"{filename}.gz"):
+        config.logger.debug(f"Decompressing gz file to {staged_filename}")
+        with gzip.open(f"{filename}.gz", 'rb') as infile:
             with open(staged_filename, 'wb') as outfile:
                 outfile.write(infile.read())
                 infile.close()
                 outfile.close()
                 return staged_filename
-    elif os.path.isfile(filename+".bz2"):
-        config.logger.debug("Decompressing bz2 file to {}".format(staged_filename))
-        with open(filename+".bz2", 'rb') as infile:
+
+    elif os.path.isfile(f"{filename}.bz2"):
+        config.logger.debug(f"Decompressing bz2 file to {staged_filename}")
+        with open(f"{filename}.bz2", 'rb') as infile:
             with open(staged_filename, 'wb') as outfile:
                 outfile.write(bz2.decompress(infile.read()))
                 infile.close()
                 outfile.close()
                 return staged_filename
-    elif os.path.isfile(filename+".zip"):
-        config.logger.debug("Decompressing zip file to {}".format(staged_filename))
-        with zipfile.ZipFile(filename+".zip") as z:
+
+    elif os.path.isfile(f"{filename}.zip"):
+        config.logger.debug(f"Decompressing zip file to {staged_filename}")
+        with zipfile.ZipFile(f"{filename}.zip") as z:
             with open(staged_filename, 'wb') as f:
                 f.write(z.read(os.path.basename(filename)))
                 return staged_filename
@@ -300,6 +302,7 @@ def preprocess_file(filename, data_type, config, allow_dir=False):
         for ext in COMPRESSION_EXTENSIONS:
             if filename.endswith(ext):
                 return preprocess_file(filename[:-len(ext)], data_type, config)
+
         # if extension is grd (Gempak), then look in staging dir for nc file
         if filename.endswith('.grd') or data_type == "GEMPAK":
             return _process_gempak_file(filename, stage_dir, config)

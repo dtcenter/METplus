@@ -114,20 +114,17 @@ def test_preprocess_file_stage(metplus_config, filename, ext):
     conf = metplus_config
     metplus_base = conf.getdir('METPLUS_BASE')
     stage_dir = conf.getdir('STAGING_DIR',
-                            os.path.join(conf.getdir('OUTPUT_BASE'),
-                                         'stage'))
-    filepath = os.path.join(metplus_base,
-                            filename+ext)
+                            os.path.join(conf.getdir('OUTPUT_BASE'), 'stage'))
+    filepath = os.path.join(metplus_base, filename+ext)
     if ext:
-        stagepath = stage_dir + os.path.join(metplus_base,
-                                             filename)
-        if os.path.exists(stagepath):
-            os.remove(stagepath)
+        expected_path = stage_dir + os.path.join(metplus_base, filename)
+        if os.path.exists(expected_path):
+            os.remove(expected_path)
     else:
-        stagepath = filepath
+        expected_path = filepath
 
-    outpath = su.preprocess_file(filepath, None, conf)
-    assert stagepath == outpath and os.path.exists(outpath)
+    actual_path = su.preprocess_file(filepath, None, conf)
+    assert expected_path == actual_path and os.path.exists(actual_path)
 
 
 @pytest.mark.parametrize(
