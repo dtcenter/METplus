@@ -250,4 +250,35 @@ def test_get_files(tmp_path_factory, regex, expected):
     
     actual = su.get_files(search_dir, regex)
     assert actual == [os.path.join(search_dir, e) for e in expected]
-    
+
+
+@pytest.mark.parametrize(
+    'url, rel_path, username, password, success', [
+        # successful download
+        ('https://madis-data.ncep.noaa.gov/madisPublic/data/archive/2022/07/20/point/metar/netcdf/20220720_1200.gz',
+         'metar/netcdf/20220720_1200.gz', None, None, True),
+        # unsuccessful download, bad url
+        ('https://madis-data.ncep.noaa.gov/madisPublicFAKE/data/archive/2022/07/20/point/metar/netcdf/20220720_1200.gz',
+         'metar/netcdf/20220720_1200.gz', None, None, False),
+        # successful download, anonymous credentials
+        ('https://madis-data.ncep.noaa.gov/madisPublic/data/archive/2022/07/20/point/metar/netcdf/20220720_1200.gz',
+         'metar/netcdf/20220720_1200.gz', 'anonymous', 'anonymous', True),
+        # successful download, SURFRAD
+        ('https://gml.noaa.gov/aftp/data/radiation/surfrad/Boulder_CO/2022/tbl22201.dat',
+         'surfrad/tbl20220720.dat', None, None, True),
+    ]
+)
+@pytest.mark.util
+def test_download_file_http(metplus_config, url, rel_path, username, password, success):
+    config = metplus_config
+    output_path = os.path.join(config.getdir('OUTPUT_BASE'), rel_path)
+
+    # remove local file if it already exists
+    if os.path.exists(output_path):
+        os.remove(output_path)
+
+    result = su.download_file_http(url, output_path, username, password)
+    assert result['success'] == success
+    if success:
+        assert os.path.exists(output_path)
+

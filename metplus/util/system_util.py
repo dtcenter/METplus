@@ -340,3 +340,84 @@ def traverse_dir(data_dir, get_dirs=False):
 
         for dir_name in items:
             yield os.path.join(dir_path, dir_name)
+
+
+def download_file_http(url, output_path, username=None, password=None, chunk_size=8192):
+    """!Download a file from HTTP URL with optional authentication.
+
+    @param url: The HTTP/HTTPS URL to download from
+    @param output_path: Local file path where the downloaded file will be saved
+    @param username: Optional username for HTTP basic authentication
+    @param password: Optional password for HTTP basic authentication
+    @param chunk_size: Size of chunks to download at a time (default: 8192 bytes)
+    @returns: Dict with 'success': bool, 'file_size': int, 'error': str (if failed)
+    @raises: urllib.error.URLError, urllib.error.HTTPError for network issues
+    """
+    result = {'success': False, 'file_size': 0, 'error': ''}
+
+    try:
+        # Create directory if it doesn't exist
+        mkdir_p(os.path.dirname(output_path))
+
+        # Set up authentication if credentials provided
+        if username is not None and password is not None:
+            # Create password manager
+            password_mgr = HTTPPasswordMgrWithDefaultRealm()
+            password_mgr.add_password(None, url, username, password)
+
+            # Create authentication handler
+            auth_handler = HTTPBasicAuthHandler(password_mgr)
+
+            # Build opener with authentication
+            opener = build_opener(auth_handler)
+            urllib.request.install_opener(opener)
+
+        # Create request
+        request = urllib.request.Request(url)
+
+        # Add user agent to avoid being blocked by some servers
+        request.add_header('User-Agent', 'Python-urllib/3.x')
+
+        # Open URL and download
+        with urllib.request.urlopen(request) as response:
+            # Get file size if available
+            content_length = response.headers.get('Content-Length')
+            total_size = int(content_length) if content_length else None
+            if not total_size:
+                result['error'] = "File size is 0 or Content-Length header not found in response"
+                return result
+
+            # Download file in chunks
+            with open(output_path, 'wb') as output_file:
+                downloaded = 0
+                while True:
+                    chunk = response.read(chunk_size)
+                    if not chunk:
+                        break
+
+                    output_file.write(chunk)
+                    downloaded += len(chunk)
+
+        result['success'] = True
+        result['file_size'] = downloaded
+        return result
+
+    except urllib.error.HTTPError as e:
+        error_msg = f"HTTP Error {e.code}: {e.reason}"
+        result['error'] = error_msg
+        return result
+
+    except urllib.error.URLError as e:
+        error_msg = f"URL Error: {e.reason}"
+        result['error'] = error_msg
+        return result
+
+    except IOError as e:
+        error_msg = f"IO Error: {e}"
+        result['error'] = error_msg
+        return result
+
+    except Exception as e:
+        error_msg = f"Unexpected error: {e}"
+        result['error'] = error_msg
+        return result
