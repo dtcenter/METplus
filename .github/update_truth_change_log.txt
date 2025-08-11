@@ -40,3 +40,4 @@
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3036 - #3036 adds the tc_and_extra_tc:6 use case for WRF Hurricane Matthew
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3051 - Adds new ISMN use case to the land_surface model_applications category.
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] no PR - See PR #3071 for main_v6.1 for details
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] dtcenter/MET#3202 - dtcenter/MET#3202 included changes relating to madis2nc

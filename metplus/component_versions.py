@@ -14,6 +14,15 @@
 import sys
 
 VERSION_LOOKUP = {
+    '6.2': {
+        'metplus': '6.2.0',
+        'met': '12.2.0',
+        'metplotpy': '3.2.0',
+        'metcalcpy': '3.2.0',
+        'metdataio': '3.2.0',
+        'metviewer': '6.2.0',
+        'metexpress': None,
+    },
     '6.1': {
         'metplus': '6.1.0',
         'met': '12.1.0',
@@ -21,7 +30,7 @@ VERSION_LOOKUP = {
         'metcalcpy': '3.1.0',
         'metdataio': '3.1.0',
         'metviewer': '6.1.0',
-        'metexpress': None,
+        'metexpress': '6.1.3',
     },
     '6.0': {
         'metplus': '6.0.0',
