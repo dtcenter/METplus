@@ -401,21 +401,17 @@ def download_file_http(url, output_path, username=None, password=None, chunk_siz
         return result
 
     except urllib.error.HTTPError as e:
-        error_msg = f"HTTP Error {e.code}: {e.reason}"
-        result['error'] = error_msg
+        result['error'] = f"HTTP Error {e.code}: {e.reason}"
         return result
 
     except urllib.error.URLError as e:
-        error_msg = f"URL Error: {e.reason}"
-        result['error'] = error_msg
+        result['error'] = f"URL Error: {e.reason}"
         return result
 
     except IOError as e:
-        error_msg = f"IO Error: {e}"
-        result['error'] = error_msg
+        result['error'] = f"IO Error: {e}"
         return result
 
     except Exception as e:
-        error_msg = f"Unexpected error: {e}"
-        result['error'] = error_msg
+        result['error'] = f"Unexpected error: {e}"
         return result
