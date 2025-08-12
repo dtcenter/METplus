@@ -57,6 +57,9 @@ class DataIngestWrapper(RuntimeFreqWrapper):
             if self.config.has_option('config', f'DATA_INGEST_{index}_SKIP_IF_OUTPUT_EXISTS'):
                 skip_if_output_exists = self.config.getbool('config', f'DATA_INGEST_{index}_SKIP_IF_OUTPUT_EXISTS')
 
+            # auto decompress by default unless set to False in config
+            auto_decompress = self.config.getbool('config', f'DATA_INGEST_{index}_AUTO_DECOMPRESS', True)
+
             info = {
                 'index': index,
                 'url': url,
@@ -64,6 +67,7 @@ class DataIngestWrapper(RuntimeFreqWrapper):
                 'username': username,
                 'password': password,
                 'skip_if_output_exists': skip_if_output_exists,
+                'auto_decompress': auto_decompress,
             }
 
             # Add the entry to the list
@@ -95,6 +99,7 @@ class DataIngestWrapper(RuntimeFreqWrapper):
             result = download_file_http(url=url, output_path=local_path,
                                         username=ingest_info['username'],
                                         password=ingest_info['password'],
+                                        auto_decompress=ingest_info['auto_decompress'],
                                         config=self.config)
             if not result['success']:
                 self.log_error(f'Failed to download file {url} to {local_path}\n'
