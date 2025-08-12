@@ -28,36 +28,42 @@ class DataIngestWrapper(RuntimeFreqWrapper):
         # read config variables for each DATA_INGEST<n>
         # url, local path, (optional) username/password
         indices = list(
-            find_indices_in_config_section(r'DATA_INGEST_(\d+)_URL$',
+            find_indices_in_config_section(r'DATA_INGEST_(\d+)_INPUT_TEMPLATE$',
                                            self.config,
                                            index_index=1).keys()
         )
 
         if not indices:
-            self.log_error('No DATA_INGEST<n>_URL variables found in config')
+            self.log_error('No DATA_INGEST_<n>_INPUT_TEMPLATE variables found in config')
             return None
 
         c_dict['DATA_INGEST_INFO'] = []
         for index in indices:
-            url = self.config.getraw('config', f'DATA_INGEST_{index}_URL')
-            local_path = self.config.getraw('config', f'DATA_INGEST_{index}_LOCAL_PATH')
+            url = self.config.getraw('config', f'DATA_INGEST_{index}_INPUT_TEMPLATE', keep_double_slash=True)
+            local_path = self.config.getraw('config', f'DATA_INGEST_{index}_OUTPUT_TEMPLATE')
 
             # allow user to specify an empty username
             username = None
-            if self.config.hasoption('config', f'DATA_INGEST_{index}_USERNAME'):
+            if self.config.has_option('config', f'DATA_INGEST_{index}_USERNAME'):
                 username = self.config.getraw('config', f'DATA_INGEST_{index}_USERNAME')
 
             # allow user to specify an empty password
             password = None
-            if self.config.hasoption('config', f'DATA_INGEST_{index}_PASSWORD'):
+            if self.config.has_option('config', f'DATA_INGEST_{index}_PASSWORD'):
                 password = self.config.getraw('config', f'DATA_INGEST_{index}_PASSWORD')
+
+            # set skip-if-output-exists setting per index, using global DataIngest setting if unset
+            skip_if_output_exists = c_dict['SKIP_IF_OUTPUT_EXISTS']
+            if self.config.has_option('config', f'DATA_INGEST_{index}_SKIP_IF_OUTPUT_EXISTS'):
+                skip_if_output_exists = self.config.getbool('config', f'DATA_INGEST_{index}_SKIP_IF_OUTPUT_EXISTS')
 
             info = {
                 'index': index,
                 'url': url,
                 'local_path': local_path,
                 'username': username,
-                'password': password
+                'password': password,
+                'skip_if_output_exists': skip_if_output_exists,
             }
 
             # Add the entry to the list
@@ -78,10 +84,14 @@ class DataIngestWrapper(RuntimeFreqWrapper):
 
             local_path = do_string_sub(ingest_info['local_path'], **time_info)
             if os.path.exists(local_path):
-                self.logger.debug(f'Local file {local_path} already exists. Skipping download.')
-                continue
+                if ingest_info['skip_if_output_exists']:
+                    self.logger.info(f'Local file {local_path} already exists. Skipping download.')
+                    continue
+
+                self.logger.debug(f'Local file {local_path} already exists. Downloading again.')
 
             url = do_string_sub(ingest_info['url'], **time_info)
+            self.logger.info(f'Downloading file {url} to {local_path}')
             result = download_file_http(url=url, output_path=local_path,
                                         username=ingest_info['username'],
                                         password=ingest_info['password'])
@@ -91,6 +101,6 @@ class DataIngestWrapper(RuntimeFreqWrapper):
                 success = False
                 continue
 
-            self.logger.info(f'Downloaded file {url} to {local_path}')
+            self.logger.info('Downloaded completed successfully')
 
         return success
