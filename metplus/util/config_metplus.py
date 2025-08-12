@@ -548,7 +548,7 @@ class METplusConfig(ProdConfig):
                 self._conf.remove_option('config', current_var)
 
     # override get methods to perform additional error checking
-    def getraw(self, sec, opt, default='', count=0, sub_vars=True):
+    def getraw(self, sec, opt, default='', count=0, sub_vars=True, keep_double_slash=False):
         """ parse parameter and replace any existing parameters
             referenced with the value (looking in same section, then
             config, dir, and os environment)
@@ -605,7 +605,10 @@ class METplusConfig(ProdConfig):
         # when they encounter double slash. This is a GitHub issue MET #1277
         # This fix will prevent using URLs with https:// so the MET issue must
         # be resolved before we can remove the replace call
-        return in_template.replace('//', '/')
+        if not keep_double_slash:
+            in_template = in_template.replace('//', '/')
+
+        return in_template
 
     def check_default(self, sec, name, default):
         """! helper function for get methods, report error and raise
