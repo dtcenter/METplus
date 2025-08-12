@@ -52,6 +52,7 @@ LOWER_TO_WRAPPER_NAME = {
 # supported file extensions that will automatically be uncompressed
 COMPRESSION_EXTENSIONS = [
     '.gz',
+    '.gzip',
     '.bz2',
     '.zip',
 ]

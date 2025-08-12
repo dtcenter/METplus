@@ -94,7 +94,8 @@ class DataIngestWrapper(RuntimeFreqWrapper):
             self.logger.info(f'Downloading file {url} to {local_path}')
             result = download_file_http(url=url, output_path=local_path,
                                         username=ingest_info['username'],
-                                        password=ingest_info['password'])
+                                        password=ingest_info['password'],
+                                        config=self.config)
             if not result['success']:
                 self.log_error(f'Failed to download file {url} to {local_path}\n'
                                f'ERROR: {result["error"]}')

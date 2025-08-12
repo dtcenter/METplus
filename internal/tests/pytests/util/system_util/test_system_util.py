@@ -277,7 +277,7 @@ def test_download_file_http(metplus_config, url, rel_path, username, password, s
     if os.path.exists(output_path):
         os.remove(output_path)
 
-    result = su.download_file_http(url, output_path, username, password)
+    result = su.download_file_http(url, output_path, username, password, config=config)
     assert result['success'] == success
     if success:
         assert os.path.exists(output_path)
