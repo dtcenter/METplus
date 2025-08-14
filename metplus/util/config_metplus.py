@@ -669,7 +669,7 @@ class METplusConfig(ProdConfig):
         self.set('config', exe_name, full_exe_path)
         return full_exe_path
 
-    def getdir(self, name, default=None, must_exist=False):
+    def getdir(self, name, default=None, must_exist=False, keep_double_slash=False):
         """! Wraps produtil getdir and reports an error if
          it is set to /path/to
          """
@@ -686,7 +686,10 @@ class METplusConfig(ProdConfig):
             self.logger.error(f"Path must exist: {dir_path}")
             return None
 
-        return dir_path.replace('//', '/')
+        if not keep_double_slash:
+            dir_path = dir_path.replace('//', '/')
+
+        return dir_path
 
     def getdir_nocheck(self, dir_name, default=None):
         return super().getstr('config', dir_name,

@@ -39,8 +39,14 @@ class DataIngestWrapper(RuntimeFreqWrapper):
 
         c_dict['DATA_INGEST_INFO'] = []
         for index in indices:
+            url_top = self.config.getdir(f'DATA_INGEST_{index}_INPUT_DIR', keep_double_slash=True)
             url = self.config.getraw('config', f'DATA_INGEST_{index}_INPUT_TEMPLATE', keep_double_slash=True)
+            if url_top:
+                url = f"{url_top}/{url}"
+
+            local_dir = self.config.getdir(f'DATA_INGEST_{index}_OUTPUT_DIR')
             local_path = self.config.getraw('config', f'DATA_INGEST_{index}_OUTPUT_TEMPLATE')
+            local_path = os.path.join(local_dir, local_path)
 
             # allow user to specify an empty username
             username = None
