@@ -457,7 +457,7 @@ METplus Configuration Glossary
      | *Used by:* PyEmbedIngest
 
    PY_EMBED_INGEST_<n>_OUTPUT_DIR
-     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the output diirectory to write data. See also :term:`PY_EMBED_INGEST_<n>_TYPE`, :term:`PY_EMBED_INGEST_<n>_SCRIPT`, and :term:`PY_EMBED_INGEST_<n>_OUTPUT_GRID`, and :term:`PY_EMBED_INGEST_<n>_OUTPUT_TEMPLATE`.
+     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the output directory to write data. See also :term:`PY_EMBED_INGEST_<n>_TYPE`, :term:`PY_EMBED_INGEST_<n>_SCRIPT`, and :term:`PY_EMBED_INGEST_<n>_OUTPUT_GRID`, and :term:`PY_EMBED_INGEST_<n>_OUTPUT_TEMPLATE`.
 
      | *Used by:* PyEmbedIngest
 
