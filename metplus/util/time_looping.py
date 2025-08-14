@@ -101,41 +101,6 @@ def get_start_and_end_times(config):
     return start_dt, end_dt
 
 
-def loop_over_times_and_call(config, processes, custom=None):
-    """! Loop over all run times and call wrappers listed in config
-
-    @param config METplusConfig object
-    @param processes list of CommandBuilder subclass objects (Wrappers) to call
-    @param custom (optional) custom loop string value
-    @returns list of tuples with all commands run and the environment variables
-    that were set for each
-    """
-    # keep track of commands that were run
-    all_commands = []
-    for time_input in time_generator(config):
-        if not isinstance(processes, list):
-            processes = [processes]
-
-        for process in processes:
-            # if time could not be read, increment errors for each process
-            if time_input is None:
-                process.errors += 1
-                continue
-
-            log_runtime_banner(config, time_input, process)
-            add_to_time_input(time_input,
-                              instance=process.instance,
-                              custom=custom)
-
-            process.clear()
-            process.run_at_time(time_input)
-            if process.all_commands:
-                all_commands.extend(process.all_commands)
-            process.all_commands.clear()
-
-    return all_commands
-
-
 def _validate_time_values(start_dt, end_dt, time_interval, prefix, logger):
     if not start_dt:
         logger.error(f"Could not read {prefix}_BEG")

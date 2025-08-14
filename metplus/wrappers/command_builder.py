@@ -17,7 +17,7 @@ from inspect import getframeinfo, stack
 
 from ..util.constants import PYTHON_EMBEDDING_TYPES, COMPRESSION_EXTENSIONS
 from ..util.constants import MULTIPLE_INPUT_WRAPPERS, TIME_OFFSET_WARNING_WRAPPERS
-from ..util import getlist, preprocess_file, loop_over_times_and_call
+from ..util import getlist, preprocess_file
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
 from ..util import get_time_from_file, shift_time_seconds, seconds_to_met_time
 from ..util import replace_config_from_section
@@ -1362,13 +1362,13 @@ class CommandBuilder:
     def run_cmd(self, cmd, run_args):
         return run_cmd(cmd, run_args)
 
-    def run_all_times(self, custom=None):
-        """! Loop over time range specified in conf file and
-        call METplus wrapper for each time
+    def run_all_times(self):
+        """!Error because wrappers should either inherit from RuntimeFreq
+        wrapper or override this method.
 
-        @param custom (optional) custom loop string value
         """
-        return loop_over_times_and_call(self.config, self, custom=custom)
+        self.log_error('run_all_times() function not implemented for wrapper')
+        return None
 
     @staticmethod
     def format_met_config_dict(c_dict, name, keys=None):
