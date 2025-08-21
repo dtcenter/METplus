@@ -21,6 +21,32 @@ def mock_time_generator(monkeypatch):
     monkeypatch.setattr('metplus.util.time_looping.time_generator', mock_generator)
 
 
+def verify_time_generator_output(generator, prefix, expected_times):
+    """Helper function to verify time_generator output structure and values."""
+    expected_keys = {'loop_by', prefix.lower(), 'now', 'today'}
+
+    # Check each expected dictionary returned by the generator
+    for i, expected_time in enumerate(expected_times, 1):
+        next_time_info = next(generator)
+
+        # Verify structure
+        actual_keys = set(next_time_info.keys())
+        assert actual_keys == expected_keys, f"Item {i} keys {actual_keys} don't match expected {expected_keys}"
+        assert isinstance(next_time_info, dict), f"Item {i} should be a dictionary"
+
+        # Verify time value
+        actual_time = next_time_info[prefix.lower()]
+        print(f'{i}: {next_time_info}')
+        assert actual_time == expected_time
+
+    # Verify generator is exhausted after the expected number of items
+    try:
+        next(generator)
+        assert False, "Generator should have been exhausted"
+    except StopIteration:
+        pass
+
+
 @pytest.mark.parametrize(
     'config_dict, expected_output', [
         # 1 group
@@ -306,13 +332,7 @@ def test_time_generator_list(metplus_config):
         ]
 
         generator = tl.time_generator(config)
-        assert next(generator)[prefix.lower()] == expected_times[0]
-        assert next(generator)[prefix.lower()] == expected_times[1]
-        try:
-            next(generator)
-            assert False
-        except StopIteration:
-            pass
+        verify_time_generator_output(generator, prefix, expected_times)
 
 
 @pytest.mark.util
@@ -332,14 +352,7 @@ def test_time_generator_increment(metplus_config):
         ]
 
         generator = tl.time_generator(config)
-        assert next(generator)[prefix.lower()] == expected_times[0]
-        assert next(generator)[prefix.lower()] == expected_times[1]
-        assert next(generator)[prefix.lower()] == expected_times[2]
-        try:
-            next(generator)
-            assert False
-        except StopIteration:
-            pass
+        verify_time_generator_output(generator, prefix, expected_times)
 
 
 @pytest.mark.parametrize(
@@ -632,3 +645,29 @@ def test_get_start_and_end_times_multiple_entries(mock_time_generator):
     start, end = get_start_and_end_times(config)
     assert start == "2023-10-15"
     assert end == "2023-10-17"
+
+@pytest.mark.parametrize(
+    'prefix, expected', [
+        ('INIT', ('2025113012', '2025122912')),
+        ('VALID', ('2025113014', '2025113015', '2025122915', '2025122918')),
+    ]
+)
+@pytest.mark.util
+def test_time_generator_template(prefix, expected, metplus_config, tmp_path_factory, make_dummy_empty):
+    # create empty files for testing
+    # use DDMMYYYY format for the file names to ensure proper sorting
+    data_dir = tmp_path_factory.mktemp("data_dir")
+    make_dummy_empty(data_dir, '29122025_12Z_f003.txt')
+    make_dummy_empty(data_dir, '29122025_12Z_f006.txt')
+    make_dummy_empty(data_dir, '30112025_12Z_f002.txt')
+    make_dummy_empty(data_dir, '30112025_12Z_f003.txt')
+
+    expected_times = [datetime.strptime(time_str, '%Y%m%d%H') for time_str in expected]
+
+    config = metplus_config
+    config.set('config', 'LOOP_BY', prefix)
+    config.set('config', 'TIME_GENERATOR_INPUT_DIR', data_dir)
+    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', '{init?fmt=%d%m%Y_%H}Z_f{lead?fmt=%3H}.txt')
+
+    generator = tl.time_generator(config)
+    verify_time_generator_output(generator, prefix, expected_times)

@@ -2,11 +2,11 @@ import re
 from datetime import datetime, timedelta
 
 from .string_manip import getlist, getlistint
-from .time_util import get_relativedelta, add_to_time_input
+from .system_util import traverse_dir
+from .time_util import get_relativedelta
 from .time_util import ti_get_hours_from_relativedelta
 from .time_util import ti_get_seconds_from_relativedelta
-from .string_template_substitution import do_string_sub
-from .config_util import log_runtime_banner
+from .string_template_substitution import do_string_sub, get_time_from_file
 
 
 def time_generator(config):
@@ -27,6 +27,20 @@ def time_generator(config):
         config.getstr('config', 'CLOCK_TIME'),
         '%Y%m%d%H%M%S'
     )
+
+    # use TIME_GENERATOR_INPUT_DIR/TEMPLATE to find times if set
+    if config.has_option('config', 'TIME_GENERATOR_INPUT_TEMPLATE'):
+        input_dir = config.getdir('TIME_GENERATOR_INPUT_DIR')
+        input_template = config.getraw('config', 'TIME_GENERATOR_INPUT_TEMPLATE')
+        files_and_time_info = get_files_and_time_info(input_dir, input_template,
+                                                      sort_by=prefix,
+                                                      logger=config.logger)
+        unique_dts = get_unique_times(files_and_time_info, time_type=prefix)
+        for file_dt in unique_dts:
+            file_time_info = _create_time_input_dict(prefix, file_dt, clock_dt)
+            yield file_time_info
+
+        return
 
     time_format = config.getraw('config', f'{prefix}_TIME_FMT', '')
     if not time_format:
@@ -59,11 +73,7 @@ def time_generator(config):
     start_string = config.getraw('config', f'{prefix}_BEG')
     end_string = config.getraw('config', f'{prefix}_END', start_string)
 
-    time_interval = config.getstr('config', f'{prefix}_INCREMENT', '60')
-    # if [INIT/VALID]_INCREMENT is an empty string, set it to prevent crash
-    if not time_interval:
-        time_interval = '60'
-    time_interval = get_relativedelta(time_interval)
+    time_interval = _get_time_interval(config, prefix)
 
     start_dt = _get_current_dt(start_string,
                                time_format,
@@ -89,6 +99,54 @@ def time_generator(config):
         yield time_info
 
         current_dt += time_interval
+
+
+def _get_time_interval(config, prefix):
+    time_interval = config.getstr('config', f'{prefix}_INCREMENT', '60')
+    # if [INIT/VALID]_INCREMENT is an empty string, set it to prevent crash
+    if not time_interval:
+        time_interval = '60'
+    return get_relativedelta(time_interval)
+
+
+def get_files_and_time_info(data_dir, template, sort_by=None, logger=None):
+    files_and_time_info = []
+    for fullpath in traverse_dir(data_dir):
+        # remove input data directory to get relative path
+        rel_path = fullpath.replace(f"{data_dir}/", "")
+        # extract time information from relative path using template
+        file_time_info = get_time_from_file(rel_path, template, logger)
+        if file_time_info is None:
+            continue
+
+        files_and_time_info.append((fullpath, file_time_info))
+
+    if sort_by:
+        # Sort by the sort_by, e.g. init or valid, datetime in the time info dictionary
+        files_and_time_info.sort(key=lambda x: x[1].get(sort_by.lower(), datetime.min))
+
+    return files_and_time_info
+
+
+def get_unique_times(files_and_time_info, time_type):
+    """Extract unique time info dictionaries from files and time info list.
+
+    @param files_and_time_info: List of tuples (filepath, time_info_dict)
+    @param time_type: String of the type of time to extract, e.g. "init" or "valid"
+    @returns: List of unique datetimes
+    """
+    seen = set()
+    unique_times = []
+
+    for filepath, time_info in files_and_time_info:
+        time_value = time_info.get(time_type.lower())
+        if not time_value: continue
+
+        if time_value not in seen:
+            seen.add(time_value)
+            unique_times.append(time_value)
+
+    return unique_times
 
 
 def get_start_and_end_times(config):
@@ -326,6 +384,9 @@ def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
     """
 
     out_leads = []
+
+    # TODO: check for TIME_GENERATOR_INPUT_DIR/TEMPLATE and use to determine list of forecast leads to process
+
     lead_min, lead_max, no_max = _get_lead_min_max(config)
 
     # check if LEAD_SEQ, INIT_SEQ, or LEAD_SEQ_<n> are set

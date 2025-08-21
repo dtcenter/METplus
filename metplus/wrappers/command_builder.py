@@ -19,7 +19,7 @@ from ..util.constants import PYTHON_EMBEDDING_TYPES, COMPRESSION_EXTENSIONS
 from ..util.constants import MULTIPLE_INPUT_WRAPPERS, TIME_OFFSET_WARNING_WRAPPERS
 from ..util import getlist, preprocess_file
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
-from ..util import get_time_from_file, shift_time_seconds, seconds_to_met_time
+from ..util import shift_time_seconds, seconds_to_met_time
 from ..util import replace_config_from_section
 from ..util import METConfig
 from ..util import MISSING_DATA_VALUE
@@ -30,7 +30,7 @@ from ..util import get_field_info, format_field_info
 from ..util import get_wrapper_name, is_python_script
 from ..util.met_config import add_met_config_dict, handle_climo_dict
 from ..util import mkdir_p, get_skip_times
-from ..util import get_log_path, RunArgs, run_cmd, traverse_dir
+from ..util import get_log_path, RunArgs, run_cmd, get_files_and_time_info
 
 
 # pylint:disable=pointless-string-statement
@@ -796,15 +796,11 @@ class CommandBuilder:
                                             "%Y%m%d%H%M%S").strftime("%s"))
 
         # step through all files under input directory in sorted order
-        for fullpath in traverse_dir(data_dir):
-            # remove input data directory to get relative path
-            rel_path = fullpath.replace(f'{data_dir}/', "")
-            # extract time information from relative path using template
-            file_time_info = get_time_from_file(rel_path, template,
-                                                self.logger)
-            if file_time_info is None:
-                continue
+        files_and_time_info = get_files_and_time_info(data_dir, template,
+                                                      sort_by='valid',
+                                                      logger=self.config.logger)
 
+        for fullpath, file_time_info in files_and_time_info:
             # get valid time and check if it is within the time range
             file_valid_time = file_time_info['valid'].strftime("%Y%m%d%H%M%S")
             # skip if could not extract valid time
