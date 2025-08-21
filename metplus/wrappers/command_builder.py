@@ -733,9 +733,10 @@ class CommandBuilder:
         valid_range_lower = self.c_dict.get(data_type + 'FILE_WINDOW_BEGIN', 0)
         valid_range_upper = self.c_dict.get(data_type + 'FILE_WINDOW_END', 0)
 
-        msg = f"Looking for {data_type}INPUT files under {data_dir} within range " +\
-              f"[{valid_range_lower},{valid_range_upper}] using template {template}"
-        self.logger.debug(msg)
+        self.logger.debug(
+            f"Looking for {data_type}INPUT files under {data_dir} within range "
+            f"[{valid_range_lower},{valid_range_upper}] using template {template}"
+        )
 
         if not data_dir:
             self.log_error('Must set INPUT_DIR if looking for files within a time window')
@@ -809,8 +810,10 @@ class CommandBuilder:
             # skip if could not extract valid time
             if not file_valid_time:
                 continue
+
             file_valid_dt = datetime.strptime(file_valid_time, "%Y%m%d%H%M%S")
             file_valid_seconds = int(file_valid_dt.strftime("%s"))
+
             # skip if outside time range
             if file_valid_seconds < lower_limit or file_valid_seconds > upper_limit:
                 continue

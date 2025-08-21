@@ -390,24 +390,26 @@ def _are_lead_configs_ok(lead_seq, init_seq, lead_groups,
         config.logger.error(f'INIT_SEQ and LEAD_SEQ_<n> {error_message}')
         return False
 
-    if init_seq:
-        # if input dictionary not passed in,
-        # cannot compute lead sequence from it, so exit
-        if input_dict is None:
-            config.logger.error('Cannot run using INIT_SEQ for this wrapper')
-            return False
+    if not init_seq:
+        return True
 
-        # if looping by init, fail and exit
-        if 'valid' not in input_dict.keys() or input_dict['valid'] == '*':
-            log_msg = ('INIT_SEQ specified while looping by init time.'
-                       ' Use LEAD_SEQ or change to loop by valid time')
-            config.logger.error(log_msg)
-            return False
+    # if input dictionary not passed in,
+    # cannot compute lead sequence from it, so exit
+    if input_dict is None:
+        config.logger.error('Cannot run using INIT_SEQ for this wrapper')
+        return False
 
-        # maximum lead must be specified to run with INIT_SEQ
-        if no_max:
-            config.logger.error('LEAD_SEQ_MAX must be set to use INIT_SEQ')
-            return False
+    # if looping by init, fail and exit
+    if 'valid' not in input_dict.keys() or input_dict['valid'] == '*':
+        log_msg = ('INIT_SEQ specified while looping by init time.'
+                   ' Use LEAD_SEQ or change to loop by valid time')
+        config.logger.error(log_msg)
+        return False
+
+    # maximum lead must be specified to run with INIT_SEQ
+    if no_max:
+        config.logger.error('LEAD_SEQ_MAX must be set to use INIT_SEQ')
+        return False
 
     return True
 
