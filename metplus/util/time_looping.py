@@ -385,7 +385,11 @@ def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
 
     out_leads = []
 
-    # TODO: check for TIME_GENERATOR_INPUT_DIR/TEMPLATE and use to determine list of forecast leads to process
+    # use TIME_GENERATOR_INPUT_DIR/TEMPLATE to find forecast leads if set
+    if config.has_option('config', 'TIME_GENERATOR_INPUT_TEMPLATE'):
+        unique_leads = _filter_leads_by_template(config, input_dict)
+        lead_seq = _handle_lead_seq(config, unique_leads, default_unit='S')
+        return lead_seq
 
     lead_min, lead_max, no_max = _get_lead_min_max(config)
 
@@ -431,6 +435,47 @@ def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
     return out_leads
 
 
+def _filter_leads_by_template(config, input_dict=None):
+    input_dir = config.getdir('TIME_GENERATOR_INPUT_DIR')
+    input_template = config.getraw('config', 'TIME_GENERATOR_INPUT_TEMPLATE')
+    files_and_time_info = get_files_and_time_info(input_dir, input_template,
+                                                  sort_by='lead',
+                                                  logger=config.logger)
+
+    if input_dict is None:
+        return get_unique_times(files_and_time_info, time_type='lead')
+
+    # Filter files_and_time_info based on input_dict if provided
+    # Validate that input_dict contains either 'init' or 'valid' but not both
+    # (or if both are present, one should be '*')
+    has_init = 'init' in input_dict and input_dict['init'] != '*'
+    has_valid = 'valid' in input_dict and input_dict['valid'] != '*'
+
+    if has_init and has_valid and input_dict['init'] != input_dict['valid']:
+        config.logger.error("input_dict contains both 'init' and 'valid' keys "
+                            "without one being set to '*'. This is not supported.")
+        return []
+
+    if has_init or has_valid:
+        # Determine which time type to filter by
+        filter_time_type = 'init' if has_init else 'valid'
+        filter_time_value = input_dict[filter_time_type]
+
+        # Filter files to only include those matching the specified time
+        filtered_files_and_time_info = []
+        for filepath, file_time_info in files_and_time_info:
+            if file_time_info.get(filter_time_type) == filter_time_value:
+                filtered_files_and_time_info.append((filepath, file_time_info))
+
+        files_and_time_info = filtered_files_and_time_info
+
+        config.logger.debug(f"Filtered files_and_time_info to {len(files_and_time_info)} "
+                            f"files matching {filter_time_type}={filter_time_value}")
+
+    unique_leads = get_unique_times(files_and_time_info, time_type='lead')
+    return unique_leads
+
+
 def _are_lead_configs_ok(lead_seq, init_seq, lead_groups,
                          config, input_dict, no_max):
     if lead_groups is None:
@@ -462,9 +507,8 @@ def _are_lead_configs_ok(lead_seq, init_seq, lead_groups,
 
     # if looping by init, fail and exit
     if 'valid' not in input_dict.keys() or input_dict['valid'] == '*':
-        log_msg = ('INIT_SEQ specified while looping by init time.'
-                   ' Use LEAD_SEQ or change to loop by valid time')
-        config.logger.error(log_msg)
+        config.logger.error('INIT_SEQ specified while looping by init time.'
+                            ' Use LEAD_SEQ or change to loop by valid time')
         return False
 
     # maximum lead must be specified to run with INIT_SEQ
@@ -491,11 +535,11 @@ def _get_lead_min_max(config):
     return lead_min, lead_max, no_max
 
 
-def _handle_lead_seq(config, lead_strings, lead_min=None, lead_max=None):
+def _handle_lead_seq(config, lead_strings, lead_min=None, lead_max=None, default_unit='H'):
     out_leads = []
     leads = []
     for lead in lead_strings:
-        relative_delta = get_relativedelta(lead, 'H')
+        relative_delta = get_relativedelta(lead, default_unit)
         if relative_delta is not None:
             leads.append(relative_delta)
         else:

@@ -459,6 +459,7 @@ def test_time_generator_error_check_beg_end(metplus_config, prefix):
     assert next(tl.time_generator(config)) is None
 
 
+@pytest.mark.util
 def test_get_lead_sequence_lead(metplus_config):
     input_dict = {'valid': datetime(2019, 2, 1, 13)}
     conf = metplus_config
@@ -646,10 +647,16 @@ def test_get_start_and_end_times_multiple_entries(mock_time_generator):
     assert start == "2023-10-15"
     assert end == "2023-10-17"
 
+
 @pytest.mark.parametrize(
     'prefix, expected', [
-        ('INIT', ('2025113012', '2025122912')),
-        ('VALID', ('2025113014', '2025113015', '2025122915', '2025122918')),
+        # expected is a dict where keys are the run times and values are the expected lead times for each run time
+        ('INIT', ({'2025113012': [relativedelta(hours=+2), relativedelta(hours=+4)],
+                   '2025122912': [relativedelta(hours=+3), relativedelta(hours=+6)],})),
+        ('VALID', ({'2025113014': [relativedelta(hours=+2)],
+                    '2025113016': [relativedelta(hours=+4)],
+                    '2025122915': [relativedelta(hours=+3)],
+                    '2025122918': [relativedelta(hours=+6)]})),
     ]
 )
 @pytest.mark.util
@@ -660,9 +667,9 @@ def test_time_generator_template(prefix, expected, metplus_config, tmp_path_fact
     make_dummy_empty(data_dir, '29122025_12Z_f003.txt')
     make_dummy_empty(data_dir, '29122025_12Z_f006.txt')
     make_dummy_empty(data_dir, '30112025_12Z_f002.txt')
-    make_dummy_empty(data_dir, '30112025_12Z_f003.txt')
+    make_dummy_empty(data_dir, '30112025_12Z_f004.txt')
 
-    expected_times = [datetime.strptime(time_str, '%Y%m%d%H') for time_str in expected]
+    expected_times = [datetime.strptime(time_str, '%Y%m%d%H') for time_str in expected.keys()]
 
     config = metplus_config
     config.set('config', 'LOOP_BY', prefix)
@@ -671,3 +678,11 @@ def test_time_generator_template(prefix, expected, metplus_config, tmp_path_fact
 
     generator = tl.time_generator(config)
     verify_time_generator_output(generator, prefix, expected_times)
+
+    # get list of init/valid times and use them to test that correct forecast leads are generated from each
+    generator = tl.time_generator(config)
+    run_times = [next(generator) for _ in range(len(expected_times))]
+    assert len(run_times) == len(expected)
+    for run_dict, expected_lead_list in zip(run_times, expected.values()):
+        actual_lead_list = tl.get_lead_sequence(config, run_dict)
+        assert actual_lead_list == expected_lead_list
