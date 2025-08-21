@@ -238,6 +238,24 @@ def make_nc(tmp_path, lon, lat, z, data, variable='Temp', file_name='fake.nc'):
     return file_name
 
 
+@pytest.fixture(scope="module")
+def make_dummy_empty():
+    return make_empty
+
+
+def make_empty(tmp_path, file_name='fake.txt'):
+    """!Make a dummy empty file for use in tests.
+
+    @param tmp_path directory to write this netCDF to.
+    @param file_name (optional) string name of file, defualt 'fake.nc'
+
+    @returns path to empty file
+    """
+    file_name = tmp_path / file_name
+    file_name.touch()
+    return file_name
+
+
 @pytest.fixture(scope="function")
 def get_test_data_dir():
     """!Get path to directory containing test data.
