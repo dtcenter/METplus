@@ -673,7 +673,7 @@ class METplusConfig(ProdConfig):
         """! Wraps produtil getdir and reports an error if
          it is set to /path/to
          """
-        dir_path = self.getraw('config', name, default=default)
+        dir_path = self.getraw('config', name, default=default, keep_double_slash=keep_double_slash)
         if '/path/to' in dir_path:
             raise ValueError(f"{name} cannot be set to or contain '/path/to'")
 
