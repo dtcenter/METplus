@@ -664,10 +664,7 @@ def test_time_generator_template(prefix, expected, metplus_config, tmp_path_fact
     # create empty files for testing
     # use DDMMYYYY format for the file names to ensure proper sorting
     data_dir = tmp_path_factory.mktemp("data_dir")
-    make_dummy_empty(data_dir, '29122025_12Z_f003.txt')
-    make_dummy_empty(data_dir, '29122025_12Z_f006.txt')
-    make_dummy_empty(data_dir, '30112025_12Z_f002.txt')
-    make_dummy_empty(data_dir, '30112025_12Z_f004.txt')
+    _create_dummy_files(make_dummy_empty, data_dir, 1)
 
     config = metplus_config
     config.set('config', 'LOOP_BY', prefix)
@@ -676,37 +673,47 @@ def test_time_generator_template(prefix, expected, metplus_config, tmp_path_fact
 
     _test_time_generator_and_lead_sequence(config, prefix, expected)
 
+# Define shared parameters
+TWO_TEMPLATE_TEST_PARAMS = [
+    ('INIT', ({'2025113012': [relativedelta(hours=+4)],
+               '2025122912': [relativedelta(hours=+6)],})),
+    ('VALID', ({'2025113016': [relativedelta(hours=+4)],
+                '2025122915': [],
+                '2025122918': [relativedelta(hours=+6)]})),
+]
 
-@pytest.mark.parametrize(
-    'prefix, expected', [
-        # expected is a dict where keys are the run times and values are the expected lead times for each run time
-        ('INIT', ({'2025113012': [relativedelta(hours=+4)],
-                   '2025122912': [relativedelta(hours=+6)],})),
-        ('VALID', ({'2025113016': [relativedelta(hours=+4)],
-                    '2025122915': [],
-                    '2025122918': [relativedelta(hours=+6)]})),
-    ]
-)
+@pytest.mark.parametrize('prefix, expected', TWO_TEMPLATE_TEST_PARAMS)
 @pytest.mark.util
 def test_time_generator_template_two_dirs(prefix, expected, metplus_config, tmp_path_factory, make_dummy_empty):
     # create empty files for testing
     # use DDMMYYYY format for the file names to ensure proper sorting
     data_dir1 = tmp_path_factory.mktemp("data_dir1")
-    make_dummy_empty(data_dir1, '29122025_12Z_f003.txt')
-    make_dummy_empty(data_dir1, '29122025_12Z_f006.txt')
-    make_dummy_empty(data_dir1, '30112025_12Z_f002.txt')
-    make_dummy_empty(data_dir1, '30112025_12Z_f004.txt')
+    _create_dummy_files(make_dummy_empty, data_dir1, 1)
 
     data_dir2 = tmp_path_factory.mktemp("data_dir2")
-    make_dummy_empty(data_dir2, '20251229_09Z_f006.nc')
-    make_dummy_empty(data_dir2, '20251229_12Z_f006.nc')
-    make_dummy_empty(data_dir2, '20251229_12Z_f009.nc')
-    make_dummy_empty(data_dir2, '20251130_12Z_f004.nc')
-    make_dummy_empty(data_dir2, '20251130_12Z_f008.nc')
+    _create_dummy_files(make_dummy_empty, data_dir2, 2)
 
     config = metplus_config
     config.set('config', 'LOOP_BY', prefix)
     config.set('config', 'TIME_GENERATOR_INPUT_DIR', f"{data_dir1}, {data_dir2}")
+    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', ('{init?fmt=%d%m%Y_%H}Z_f{lead?fmt=%3H}.txt,'
+                                                           '{init?fmt=%Y%m%d_%H}Z_f{lead?fmt=%3H}.nc'))
+
+    _test_time_generator_and_lead_sequence(config, prefix, expected)
+
+
+@pytest.mark.parametrize('prefix, expected', TWO_TEMPLATE_TEST_PARAMS)
+@pytest.mark.util
+def test_time_generator_template_one_dir_two_templates(prefix, expected, metplus_config, tmp_path_factory, make_dummy_empty):
+    # create empty files for testing
+    # use DDMMYYYY format for the file names to ensure proper sorting
+    data_dir = tmp_path_factory.mktemp("data_dir")
+    _create_dummy_files(make_dummy_empty, data_dir, 1)
+    _create_dummy_files(make_dummy_empty, data_dir, 2)
+
+    config = metplus_config
+    config.set('config', 'LOOP_BY', prefix)
+    config.set('config', 'TIME_GENERATOR_INPUT_DIR', data_dir)
     config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', ('{init?fmt=%d%m%Y_%H}Z_f{lead?fmt=%3H}.txt,'
                                                            '{init?fmt=%Y%m%d_%H}Z_f{lead?fmt=%3H}.nc'))
 
@@ -731,3 +738,16 @@ def _test_time_generator_and_lead_sequence(config, prefix, expected):
     for run_dict, expected_lead_list in zip(run_times, expected.values()):
         actual_lead_list = tl.get_lead_sequence(config, run_dict)
         assert actual_lead_list == expected_lead_list
+
+def _create_dummy_files(make_dummy_empty, data_dir, data_num):
+    if data_num == 1:
+        make_dummy_empty(data_dir, '29122025_12Z_f003.txt')
+        make_dummy_empty(data_dir, '29122025_12Z_f006.txt')
+        make_dummy_empty(data_dir, '30112025_12Z_f002.txt')
+        make_dummy_empty(data_dir, '30112025_12Z_f004.txt')
+    elif data_num == 2:
+        make_dummy_empty(data_dir, '20251229_09Z_f006.nc')
+        make_dummy_empty(data_dir, '20251229_12Z_f006.nc')
+        make_dummy_empty(data_dir, '20251229_12Z_f009.nc')
+        make_dummy_empty(data_dir, '20251130_12Z_f004.nc')
+        make_dummy_empty(data_dir, '20251130_12Z_f008.nc')
