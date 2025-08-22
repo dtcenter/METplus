@@ -177,7 +177,7 @@ def test_preprocess_file_not_exist(metplus_config, input_exists, expected):
 
 
 @pytest.mark.util
-def test_preprocess_file_gempack(tmp_path_factory, metplus_config):
+def test_preprocess_file_gempak(tmp_path_factory, metplus_config):
     config = metplus_config
     
     # setup files and paths
