@@ -673,6 +673,7 @@ def test_time_generator_template(prefix, expected, metplus_config, tmp_path_fact
 
     _test_time_generator_and_lead_sequence(config, prefix, expected)
 
+
 # Define shared parameters
 TWO_TEMPLATE_TEST_PARAMS = [
     ('INIT', ({'2025113012': [relativedelta(hours=+4)],
@@ -681,6 +682,7 @@ TWO_TEMPLATE_TEST_PARAMS = [
                 '2025122915': [],
                 '2025122918': [relativedelta(hours=+6)]})),
 ]
+
 
 @pytest.mark.parametrize('prefix, expected', TWO_TEMPLATE_TEST_PARAMS)
 @pytest.mark.util
@@ -738,6 +740,7 @@ def _test_time_generator_and_lead_sequence(config, prefix, expected):
     for run_dict, expected_lead_list in zip(run_times, expected.values()):
         actual_lead_list = tl.get_lead_sequence(config, run_dict)
         assert actual_lead_list == expected_lead_list
+
 
 def _create_dummy_files(make_dummy_empty, data_dir, data_num):
     if data_num == 1:
