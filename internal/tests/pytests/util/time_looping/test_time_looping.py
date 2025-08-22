@@ -669,12 +669,57 @@ def test_time_generator_template(prefix, expected, metplus_config, tmp_path_fact
     make_dummy_empty(data_dir, '30112025_12Z_f002.txt')
     make_dummy_empty(data_dir, '30112025_12Z_f004.txt')
 
-    expected_times = [datetime.strptime(time_str, '%Y%m%d%H') for time_str in expected.keys()]
-
     config = metplus_config
     config.set('config', 'LOOP_BY', prefix)
     config.set('config', 'TIME_GENERATOR_INPUT_DIR', data_dir)
     config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', '{init?fmt=%d%m%Y_%H}Z_f{lead?fmt=%3H}.txt')
+
+    _test_time_generator_and_lead_sequence(config, prefix, expected)
+
+
+@pytest.mark.parametrize(
+    'prefix, expected', [
+        # expected is a dict where keys are the run times and values are the expected lead times for each run time
+        ('INIT', ({'2025113012': [relativedelta(hours=+4)],
+                   '2025122912': [relativedelta(hours=+6)],})),
+        ('VALID', ({'2025113016': [relativedelta(hours=+4)],
+                    '2025122915': [],
+                    '2025122918': [relativedelta(hours=+6)]})),
+    ]
+)
+@pytest.mark.util
+def test_time_generator_template_two_dirs(prefix, expected, metplus_config, tmp_path_factory, make_dummy_empty):
+    # create empty files for testing
+    # use DDMMYYYY format for the file names to ensure proper sorting
+    data_dir1 = tmp_path_factory.mktemp("data_dir1")
+    make_dummy_empty(data_dir1, '29122025_12Z_f003.txt')
+    make_dummy_empty(data_dir1, '29122025_12Z_f006.txt')
+    make_dummy_empty(data_dir1, '30112025_12Z_f002.txt')
+    make_dummy_empty(data_dir1, '30112025_12Z_f004.txt')
+
+    data_dir2 = tmp_path_factory.mktemp("data_dir2")
+    make_dummy_empty(data_dir2, '20251229_09Z_f006.nc')
+    make_dummy_empty(data_dir2, '20251229_12Z_f006.nc')
+    make_dummy_empty(data_dir2, '20251229_12Z_f009.nc')
+    make_dummy_empty(data_dir2, '20251130_12Z_f004.nc')
+    make_dummy_empty(data_dir2, '20251130_12Z_f008.nc')
+
+    config = metplus_config
+    config.set('config', 'LOOP_BY', prefix)
+    config.set('config', 'TIME_GENERATOR_INPUT_DIR', f"{data_dir1}, {data_dir2}")
+    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', ('{init?fmt=%d%m%Y_%H}Z_f{lead?fmt=%3H}.txt,'
+                                                           '{init?fmt=%Y%m%d_%H}Z_f{lead?fmt=%3H}.nc'))
+
+    _test_time_generator_and_lead_sequence(config, prefix, expected)
+
+
+def _test_time_generator_and_lead_sequence(config, prefix, expected):
+    """!Helper function to test both time_generator and get_lead_sequence with expected results.
+    @param config METplusConfig object
+    @param prefix Time prefix ('INIT' or 'VALID')
+    @param expected Dictionary where keys are time strings and values are expected lead lists
+    """
+    expected_times = [datetime.strptime(time_str, '%Y%m%d%H') for time_str in expected.keys()]
 
     generator = tl.time_generator(config)
     verify_time_generator_output(generator, prefix, expected_times)
