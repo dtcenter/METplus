@@ -29,13 +29,9 @@ def time_generator(config):
     )
 
     # use TIME_GENERATOR_INPUT_DIR/TEMPLATE to find times if set
-    if config.has_option('config', 'TIME_GENERATOR_INPUT_TEMPLATE'):
-        input_dir = config.getdir('TIME_GENERATOR_INPUT_DIR')
-        input_template = config.getraw('config', 'TIME_GENERATOR_INPUT_TEMPLATE')
-        files_and_time_info = get_files_and_time_info(input_dir, input_template,
-                                                      sort_by=prefix,
-                                                      logger=config.logger)
-        unique_dts = get_unique_times(files_and_time_info, time_type=prefix)
+    if config.has_option('config', 'TIME_GENERATOR_INPUT_DIR'):
+        # Get unique datetime values that appear in ALL directory / template combinations.
+        unique_dts = _get_intersected_unique_times(config, time_type=prefix, sort_by=prefix)
         for file_dt in unique_dts:
             file_time_info = _create_time_input_dict(prefix, file_dt, clock_dt)
             yield file_time_info
@@ -99,6 +95,111 @@ def time_generator(config):
         yield time_info
 
         current_dt += time_interval
+
+
+def _get_dir_template_pairs(config):
+    """!Get directory/template pairs from config variables.
+
+    @returns List of (input_dir, input_template) tuples, or empty list on error
+    """
+    input_dirs = getlist(config.getdir('TIME_GENERATOR_INPUT_DIR'))
+    input_templates = getlist(config.getraw('config', 'TIME_GENERATOR_INPUT_TEMPLATE'))
+
+    # Handle pairing logic
+    if len(input_dirs) == 1:
+        # Use the single directory for each template
+        return [(input_dirs[0], template) for template in input_templates]
+    else:
+        # Lists must be the same length for pairing
+        if len(input_dirs) != len(input_templates):
+            config.logger.error(f"TIME_GENERATOR_INPUT_DIR list length ({len(input_dirs)}) "
+                                f"must match TIME_GENERATOR_INPUT_TEMPLATE list length ({len(input_templates)}) "
+                                f"or TIME_GENERATOR_INPUT_DIR must contain exactly one item")
+            return []
+        # Pair up directories and templates using zip
+        return list(zip(input_dirs, input_templates))
+
+
+def _get_intersected_unique_times(config, time_type, sort_by=None, input_dict=None):
+    """!Get unique times that appear in ALL directory/template combinations.
+
+    @param config METplusConfig object
+    @param time_type Type of time to extract ('init', 'valid', 'lead')
+    @param sort_by Optional sort parameter for get_files_and_time_info
+    @param input_dict Optional filtering dictionary for _filter_leads_by_template
+
+    @returns Sorted list of unique times that appear in all combinations
+    """
+    dir_template_pairs = _get_dir_template_pairs(config)
+    if not dir_template_pairs:
+        return []
+
+    # Collect unique times from each directory/template combination
+    all_time_sets = []
+
+    for input_dir, input_template in dir_template_pairs:
+        files_and_time_info = get_files_and_time_info(input_dir, input_template,
+                                                      sort_by=sort_by,
+                                                      logger=config.logger)
+
+        # Apply filtering if input_dict is provided (for lead filtering)
+        if input_dict is not None:
+            files_and_time_info = _filter_files_by_input_dict(files_and_time_info,
+                                                              input_dict, config)
+            if files_and_time_info is None:
+                return []
+
+        unique_times = get_unique_times(files_and_time_info, time_type=time_type)
+        all_time_sets.append(set(unique_times))
+
+    # Find intersection of all time sets
+    if not all_time_sets:
+        return []
+
+    # Start with first set, then intersect with all others
+    intersected_times = all_time_sets[0]
+    for time_set in all_time_sets[1:]:
+        intersected_times = intersected_times.intersection(time_set)
+
+    # Convert back to sorted list
+    return sorted(list(intersected_times))
+
+
+def _filter_files_by_input_dict(files_and_time_info, input_dict, config):
+    """!Filter files_and_time_info based on input_dict constraints.
+
+    @param files_and_time_info List of (filepath, time_info_dict) tuples
+    @param input_dict Dictionary with 'init' and/or 'valid' keys
+    @param config METplusConfig object for logging
+
+    @returns Filtered list of (filepath, time_info_dict) tuples, or None on error
+    """
+    # Validate that input_dict contains either 'init' or 'valid' but not both
+    # (or if both are present, one should be '*')
+    has_init = 'init' in input_dict and input_dict['init'] != '*'
+    has_valid = 'valid' in input_dict and input_dict['valid'] != '*'
+
+    if has_init and has_valid and input_dict['init'] != input_dict['valid']:
+        config.logger.error("input_dict contains both 'init' and 'valid' keys "
+                            "without one being set to '*'. This is not supported.")
+        return None
+
+    if has_init or has_valid:
+        # Determine which time type to filter by
+        filter_time_type = 'init' if has_init else 'valid'
+        filter_time_value = input_dict[filter_time_type]
+
+        # Filter files to only include those matching the specified time
+        filtered_files_and_time_info = []
+        for filepath, file_time_info in files_and_time_info:
+            if file_time_info.get(filter_time_type) == filter_time_value:
+                filtered_files_and_time_info.append((filepath, file_time_info))
+
+        config.logger.debug(f"Filtered files_and_time_info to {len(filtered_files_and_time_info)} "
+                            f"files matching {filter_time_type}={filter_time_value}")
+        return filtered_files_and_time_info
+
+    return files_and_time_info
 
 
 def _get_time_interval(config, prefix):
@@ -436,44 +537,12 @@ def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
 
 
 def _filter_leads_by_template(config, input_dict=None):
-    input_dir = config.getdir('TIME_GENERATOR_INPUT_DIR')
-    input_template = config.getraw('config', 'TIME_GENERATOR_INPUT_TEMPLATE')
-    files_and_time_info = get_files_and_time_info(input_dir, input_template,
-                                                  sort_by='lead',
-                                                  logger=config.logger)
-
+    """!Filter forecast leads by template, returning intersection across all dir/template pairs."""
     if input_dict is None:
-        return get_unique_times(files_and_time_info, time_type='lead')
+        return _get_intersected_unique_times(config, time_type='lead', sort_by='lead')
 
-    # Filter files_and_time_info based on input_dict if provided
-    # Validate that input_dict contains either 'init' or 'valid' but not both
-    # (or if both are present, one should be '*')
-    has_init = 'init' in input_dict and input_dict['init'] != '*'
-    has_valid = 'valid' in input_dict and input_dict['valid'] != '*'
-
-    if has_init and has_valid and input_dict['init'] != input_dict['valid']:
-        config.logger.error("input_dict contains both 'init' and 'valid' keys "
-                            "without one being set to '*'. This is not supported.")
-        return []
-
-    if has_init or has_valid:
-        # Determine which time type to filter by
-        filter_time_type = 'init' if has_init else 'valid'
-        filter_time_value = input_dict[filter_time_type]
-
-        # Filter files to only include those matching the specified time
-        filtered_files_and_time_info = []
-        for filepath, file_time_info in files_and_time_info:
-            if file_time_info.get(filter_time_type) == filter_time_value:
-                filtered_files_and_time_info.append((filepath, file_time_info))
-
-        files_and_time_info = filtered_files_and_time_info
-
-        config.logger.debug(f"Filtered files_and_time_info to {len(files_and_time_info)} "
-                            f"files matching {filter_time_type}={filter_time_value}")
-
-    unique_leads = get_unique_times(files_and_time_info, time_type='lead')
-    return unique_leads
+    return _get_intersected_unique_times(config, time_type='lead', sort_by='lead',
+                                         input_dict=input_dict)
 
 
 def _are_lead_configs_ok(lead_seq, init_seq, lead_groups,
