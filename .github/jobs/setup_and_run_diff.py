@@ -12,7 +12,7 @@ ci_dir = os.path.join(os.environ.get('GITHUB_WORKSPACE'), '.github')
 sys.path.insert(0, ci_dir)
 
 from jobs import get_data_volumes
-from jobs.docker_utils import run_commands
+from jobs.docker_utils import run_command
 
 CI_JOBS_DIR = '.github/jobs'
 
@@ -67,36 +67,16 @@ docker_cmd = (
     f'docker run -d --rm -it --name diff -e GITHUB_WORKSPACE {VOLUMES_FROM}'
     f' {MOUNT_ARGS} dtcenter/metplus-envs:diff{VERSION_EXT} bash'
 )
-if not run_commands(docker_cmd):
+if not run_command(docker_cmd):
     sys.exit(1)
 
 # execute command to run difference tests in Docker container
-# do not run using run_commands function so GitHub Actions log grouping
-# can be used to put full diff output into a group so it is easier to
-# view the diff summary
+# do not include GitHub Actions log grouping so full diff output can be put
+# into one group so it is easier to view the diff summary
 docker_cmd = f'docker exec -e GITHUB_WORKSPACE diff bash -cl "{diff_command}"'
-print(f'RUNNING: {docker_cmd}')
-try:
-    process = subprocess.Popen(shlex.split(docker_cmd),
-                               shell=False,
-                               encoding='utf-8',
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.STDOUT)
-    # Poll process.stdout to show stdout live
-    while True:
-        output = process.stdout.readline()
-        if process.poll() is not None:
-            break
-        if output:
-            print(output.strip())
-    rc = process.poll()
-    if rc:
-        raise subprocess.CalledProcessError(rc, docker_cmd)
-
-except subprocess.CalledProcessError as err:
-    print(f"ERROR: Command failed -- {err}")
+if not run_command(docker_cmd, include_github_groups=False, include_timing=False):
     sys.exit(1)
 
 # force remove container to stop and remove it
-if not run_commands('docker rm -f diff'):
+if not run_command('docker rm -f diff'):
     sys.exit(1)
