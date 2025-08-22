@@ -101,7 +101,7 @@ class DataIngestWrapper(RuntimeFreqWrapper):
                 self.logger.debug(f'Local file {local_path} already exists. Downloading again.')
 
             url = do_string_sub(ingest_info['url'], **time_info)
-            self.logger.info(f'Downloading file {url} to {local_path}')
+            self.logger.info(f'Downloading file {url}')
             result = download_file_http(url=url, output_path=local_path,
                                         username=ingest_info['username'],
                                         password=ingest_info['password'],
@@ -113,6 +113,6 @@ class DataIngestWrapper(RuntimeFreqWrapper):
                 success = False
                 continue
 
-            self.logger.info('Downloaded completed successfully')
+            self.logger.info(f'Downloaded completed successfully: {local_path}')
 
         return success
