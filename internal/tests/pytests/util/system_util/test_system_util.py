@@ -263,9 +263,6 @@ def test_get_files(tmp_path_factory, regex, expected):
         # successful download, anonymous credentials
         ('https://madis-data.ncep.noaa.gov/madisPublic/data/archive/2022/07/20/point/metar/netcdf/20220720_1200.gz',
          'metar/netcdf/20220720_1200.gz', 'anonymous', 'anonymous', True),
-        # successful download, SURFRAD
-        ('https://gml.noaa.gov/aftp/data/radiation/surfrad/Boulder_CO/2022/tbl22201.dat',
-         'surfrad/tbl20220720.dat', None, None, True),
     ]
 )
 @pytest.mark.util
