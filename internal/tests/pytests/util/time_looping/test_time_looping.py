@@ -722,6 +722,26 @@ def test_time_generator_template_one_dir_two_templates(prefix, expected, metplus
     _test_time_generator_and_lead_sequence(config, prefix, expected)
 
 
+@pytest.mark.parametrize('prefix, expected', TWO_TEMPLATE_TEST_PARAMS)
+@pytest.mark.util
+def test_time_generator_template_two_templates_tag_in_dir(prefix, expected, metplus_config, tmp_path_factory, make_dummy_empty):
+    # test that including a filename template tag in the INPUT_DIR also works
+    # create empty files for testing
+    # use DDMMYYYY format for the file names to ensure proper sorting
+    data_dir = tmp_path_factory.mktemp("data_dir")
+    _create_dummy_files(make_dummy_empty, data_dir, 1, add_subdir=True)
+    _create_dummy_files(make_dummy_empty, data_dir, 2, add_subdir=True)
+    data_dir = data_dir / '{init?fmt=%Y%m%d}'
+
+    config = metplus_config
+    config.set('config', 'LOOP_BY', prefix)
+    config.set('config', 'TIME_GENERATOR_INPUT_DIR', data_dir)
+    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', ('{init?fmt=%d%m%Y_%H}Z_f{lead?fmt=%3H}.txt,'
+                                                           '{init?fmt=%Y%m%d_%H}Z_f{lead?fmt=%3H}.nc'))
+
+    _test_time_generator_and_lead_sequence(config, prefix, expected)
+
+
 def _test_time_generator_and_lead_sequence(config, prefix, expected):
     """!Helper function to test both time_generator and get_lead_sequence with expected results.
     @param config METplusConfig object
@@ -742,15 +762,26 @@ def _test_time_generator_and_lead_sequence(config, prefix, expected):
         assert actual_lead_list == expected_lead_list
 
 
-def _create_dummy_files(make_dummy_empty, data_dir, data_num):
+def _create_dummy_files(make_dummy_empty, data_dir, data_num, add_subdir=False):
+    files = []
     if data_num == 1:
-        make_dummy_empty(data_dir, '29122025_12Z_f003.txt')
-        make_dummy_empty(data_dir, '29122025_12Z_f006.txt')
-        make_dummy_empty(data_dir, '30112025_12Z_f002.txt')
-        make_dummy_empty(data_dir, '30112025_12Z_f004.txt')
+        files = [
+            '20251229/29122025_12Z_f003.txt',
+            '20251229/29122025_12Z_f006.txt',
+            '20251130/30112025_12Z_f002.txt',
+            '20251130/30112025_12Z_f004.txt',
+        ]
     elif data_num == 2:
-        make_dummy_empty(data_dir, '20251229_09Z_f006.nc')
-        make_dummy_empty(data_dir, '20251229_12Z_f006.nc')
-        make_dummy_empty(data_dir, '20251229_12Z_f009.nc')
-        make_dummy_empty(data_dir, '20251130_12Z_f004.nc')
-        make_dummy_empty(data_dir, '20251130_12Z_f008.nc')
+        files = [
+            '20251229/20251229_09Z_f006.nc',
+            '20251229/20251229_12Z_f006.nc',
+            '20251229/20251229_12Z_f009.nc',
+            '20251130/20251130_12Z_f004.nc',
+            '20251130/20251130_12Z_f008.nc',
+        ]
+
+    if not add_subdir:
+        files = [filename.split('/')[1] for filename in files]
+
+    for filename in files:
+        make_dummy_empty(data_dir, filename)

@@ -1,7 +1,7 @@
 import re
 from datetime import datetime, timedelta
 
-from .string_manip import getlist, getlistint
+from .string_manip import getlist, getlistint, split_dir_and_template
 from .system_util import traverse_dir
 from .time_util import get_relativedelta
 from .time_util import ti_get_hours_from_relativedelta
@@ -107,8 +107,14 @@ def _get_dir_template_pairs(config):
 
     # Handle pairing logic
     if len(input_dirs) == 1:
-        # Use the single directory for each template
-        return [(input_dirs[0], template) for template in input_templates]
+        # Use the single directory for each template, applying smart splitting
+        dir_template_pairs = []
+        for template in input_templates:
+            clean_dir, clean_template = split_dir_and_template(input_dirs[0], template)
+            if clean_template:  # Only add pairs that have a valid template
+                dir_template_pairs.append((clean_dir, clean_template))
+        return dir_template_pairs
+
     else:
         # Lists must be the same length for pairing
         if len(input_dirs) != len(input_templates):
@@ -116,8 +122,16 @@ def _get_dir_template_pairs(config):
                                 f"must match TIME_GENERATOR_INPUT_TEMPLATE list length ({len(input_templates)}) "
                                 f"or TIME_GENERATOR_INPUT_DIR must contain exactly one item")
             return []
-        # Pair up directories and templates using zip
-        return list(zip(input_dirs, input_templates))
+
+        # Pair up directories and templates using zip, applying smart splitting
+        dir_template_pairs = []
+        for input_dir, input_template in zip(input_dirs, input_templates):
+            clean_dir, clean_template = split_dir_and_template(input_dir, input_template)
+            if clean_template:  # Only add pairs that have a valid template
+                dir_template_pairs.append((clean_dir, clean_template))
+
+        return dir_template_pairs
+
 
 
 def _get_intersected_unique_times(config, time_type, sort_by=None, input_dict=None):

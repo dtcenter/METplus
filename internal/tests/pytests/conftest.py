@@ -251,9 +251,13 @@ def make_empty(tmp_path, file_name='fake.txt'):
 
     @returns path to empty file
     """
-    file_name = tmp_path / file_name
-    file_name.touch()
-    return file_name
+    file_path = tmp_path / file_name
+
+    # Create parent directories if they don't exist
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+
+    file_path.touch()
+    return file_path
 
 
 @pytest.fixture(scope="function")

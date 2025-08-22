@@ -29,7 +29,7 @@ from ..util import remove_quotes, split_level
 from ..util import get_field_info, format_field_info
 from ..util import get_wrapper_name, is_python_script
 from ..util.met_config import add_met_config_dict, handle_climo_dict
-from ..util import mkdir_p, get_skip_times
+from ..util import mkdir_p, get_skip_times, split_dir_and_template
 from ..util import get_log_path, RunArgs, run_cmd, get_files_and_time_info
 
 
@@ -725,6 +725,9 @@ class CommandBuilder:
                              return_list=False):
         template = self.c_dict[f'{data_type}INPUT_TEMPLATE']
         data_dir = self.c_dict[f'{data_type}INPUT_DIR']
+
+        # ensure all template tags are in template
+        data_dir, template = split_dir_and_template(data_dir, template)
 
         # convert valid_time to unix time
         valid_time = time_info['valid_fmt']
