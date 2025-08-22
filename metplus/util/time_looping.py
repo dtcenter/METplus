@@ -10,7 +10,7 @@ from .string_template_substitution import do_string_sub, get_time_from_file
 
 
 def time_generator(config):
-    """! Generator used to read METplusConfig variables for time looping
+    """!Generator used to read METplusConfig variables for time looping
 
     @param config METplusConfig object to read
     @returns None if not enough information is available on config.
@@ -129,7 +129,7 @@ def get_files_and_time_info(data_dir, template, sort_by=None, logger=None):
 
 
 def get_unique_times(files_and_time_info, time_type):
-    """Extract unique time info dictionaries from files and time info list.
+    """!Extract unique time info dictionaries from files and time info list.
 
     @param files_and_time_info: List of tuples (filepath, time_info_dict)
     @param time_type: String of the type of time to extract, e.g. "init" or "valid"
@@ -192,7 +192,7 @@ def _create_time_input_dict(prefix, current_dt, clock_dt):
 
 
 def get_time_prefix(config):
-    """! Read the METplusConfig object and determine the prefix for the time
+    """!Read the METplusConfig object and determine the prefix for the time
     looping variables.
 
     @param config METplusConfig object to read
@@ -220,7 +220,7 @@ def get_time_prefix(config):
 
 
 def _get_current_dt(time_string, time_format, clock_dt, logger):
-    """! Use time format to get datetime object from time string, substituting
+    """!Use time format to get datetime object from time string, substituting
      values for today or now template tags if specified.
 
     @param time_string string value read from the config that
@@ -374,13 +374,13 @@ def _found_time_match(time_info, time_dict, init_or_valid):
 def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
     """!Get forecast lead list from LEAD_SEQ or compute it from INIT_SEQ.
         Restrict list by LEAD_SEQ_[MIN/MAX] if set. Now returns list of relativedelta objects
-        Args:
-            @param config METplusConfig object to query config variable values
-            @param input_dict time dictionary needed to handle using INIT_SEQ. Must contain
-               valid key if processing INIT_SEQ
-            @param wildcard_if_empty if no lead sequence was set, return a
-             list with '*' if this is True, otherwise return a list with 0
-            @returns list of relativedelta objects or a list containing 0 if none are found
+
+        @param config METplusConfig object to query config variable values
+        @param input_dict time dictionary needed to handle using INIT_SEQ. Must contain
+          valid key if processing INIT_SEQ
+        @param wildcard_if_empty if no lead sequence was set, return a
+         list with '*' if this is True, otherwise return a list with 0
+        @returns list of relativedelta objects or a list containing 0 if none are found
     """
 
     out_leads = []
