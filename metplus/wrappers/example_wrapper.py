@@ -13,7 +13,6 @@ Condition codes: 0 for success, 1 for failure
 import os
 
 from . import RuntimeFreqWrapper
-from ..util import do_string_sub
 
 
 class ExampleWrapper(RuntimeFreqWrapper):

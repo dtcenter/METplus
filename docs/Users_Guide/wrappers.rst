@@ -185,6 +185,36 @@ METplus Configuration
    | :term:`CYCLONE_GENERATE_TRACK_ASCII`
    |
 
+.. _data_ingest_wrapper:
+
+DataIngest
+==========
+
+Description
+-----------
+
+Used to configure the DataIngest wrapper used to
+download input files and optionally decompress them.
+
+METplus Configuration
+---------------------
+
+Required:
+
+| :term:`DATA_INGEST_<n>_INPUT_TEMPLATE`
+| :term:`DATA_INGEST_<n>_OUTPUT_TEMPLATE`
+
+Optional:
+
+| :term:`DATA_INGEST_<n>_INPUT_DIR`
+| :term:`DATA_INGEST_<n>_INPUT_DIR`
+| :term:`DATA_INGEST_SKIP_IF_OUTPUT_EXISTS`
+| :term:`DATA_INGEST_<n>_SKIP_IF_OUTPUT_EXISTS`
+| :term:`DATA_INGEST_<n>_AUTO_DECOMPRESS`
+| :term:`DATA_INGEST_<n>_USERNAME`
+| :term:`DATA_INGEST_<n>_PASSWORD`
+
+
 .. _ensemble_stat_wrapper:
 
 EnsembleStat

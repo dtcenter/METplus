@@ -42,3 +42,4 @@
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] no PR - See PR #3071 for main_v6.1 for details
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] dtcenter/MET#3202 - dtcenter/MET#3202 included changes relating to madis2nc
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] dtcenter/MET#3185 - dtcenter/MET#3185 added the TrackPoint_count variable to the rmw_analysis NetCDF output
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3084 - #3084 adds new basic use case for DataIngest wrapper that has produces new output data
