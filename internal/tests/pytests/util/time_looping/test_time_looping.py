@@ -7,6 +7,8 @@ from metplus.util import time_looping as tl
 from metplus.util.time_util import ti_calculate, ti_get_hours_from_relativedelta
 from metplus.util.time_looping import get_start_and_end_times
 
+DATA_TEMPLATE1 = '{init?fmt=%d%m%Y_%H}Z_f{lead?fmt=%3H}.txt'
+DATA_TEMPLATE2 = '{init?fmt=%Y%m%d_%H}Z_f{lead?fmt=%3H}.nc'
 
 @pytest.fixture
 def mock_time_generator(monkeypatch):
@@ -669,7 +671,7 @@ def test_time_generator_template(prefix, expected, metplus_config, tmp_path_fact
     config = metplus_config
     config.set('config', 'LOOP_BY', prefix)
     config.set('config', 'TIME_GENERATOR_INPUT_DIR', data_dir)
-    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', '{init?fmt=%d%m%Y_%H}Z_f{lead?fmt=%3H}.txt')
+    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', DATA_TEMPLATE1)
 
     _test_time_generator_and_lead_sequence(config, prefix, expected)
 
@@ -698,8 +700,7 @@ def test_time_generator_template_two_dirs(prefix, expected, metplus_config, tmp_
     config = metplus_config
     config.set('config', 'LOOP_BY', prefix)
     config.set('config', 'TIME_GENERATOR_INPUT_DIR', f"{data_dir1}, {data_dir2}")
-    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', ('{init?fmt=%d%m%Y_%H}Z_f{lead?fmt=%3H}.txt,'
-                                                           '{init?fmt=%Y%m%d_%H}Z_f{lead?fmt=%3H}.nc'))
+    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', f'{DATA_TEMPLATE1}, {DATA_TEMPLATE2}')
 
     _test_time_generator_and_lead_sequence(config, prefix, expected)
 
@@ -716,8 +717,7 @@ def test_time_generator_template_one_dir_two_templates(prefix, expected, metplus
     config = metplus_config
     config.set('config', 'LOOP_BY', prefix)
     config.set('config', 'TIME_GENERATOR_INPUT_DIR', data_dir)
-    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', ('{init?fmt=%d%m%Y_%H}Z_f{lead?fmt=%3H}.txt,'
-                                                           '{init?fmt=%Y%m%d_%H}Z_f{lead?fmt=%3H}.nc'))
+    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', f'{DATA_TEMPLATE1}, {DATA_TEMPLATE2}')
 
     _test_time_generator_and_lead_sequence(config, prefix, expected)
 
@@ -736,8 +736,7 @@ def test_time_generator_template_two_templates_tag_in_dir(prefix, expected, metp
     config = metplus_config
     config.set('config', 'LOOP_BY', prefix)
     config.set('config', 'TIME_GENERATOR_INPUT_DIR', data_dir)
-    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', ('{init?fmt=%d%m%Y_%H}Z_f{lead?fmt=%3H}.txt,'
-                                                           '{init?fmt=%Y%m%d_%H}Z_f{lead?fmt=%3H}.nc'))
+    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', f'{DATA_TEMPLATE1}, {DATA_TEMPLATE2}')
 
     _test_time_generator_and_lead_sequence(config, prefix, expected)
 
