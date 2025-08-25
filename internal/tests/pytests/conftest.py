@@ -246,10 +246,9 @@ def make_dummy_empty():
 def make_empty(tmp_path, file_name='fake.txt'):
     """!Make a dummy empty file for use in tests.
 
-    @param tmp_path directory to write this netCDF to.
-    @param file_name (optional) string name of file, defualt 'fake.nc'
-
-    @returns path to empty file
+    @param tmp_path directory to write this empty file to.
+    @param file_name (optional) string name of file, defualt 'fake.txt'
+    @returns path to an empty file
     """
     file_path = tmp_path / file_name
 
