@@ -690,7 +690,8 @@ def split_dir_and_template(input_dir, input_template):
         return "", combined_path
 
     # Split at the last directory separator before the template
-    dir_path = combined_path[:last_separator]
+    # Handle special case where separator is at position 0 (root directory)
+    dir_path = os.sep if last_separator == 0 else combined_path[:last_separator]
     template_part = combined_path[last_separator + 1:]
 
     return dir_path, template_part
