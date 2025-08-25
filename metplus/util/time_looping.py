@@ -29,7 +29,8 @@ def time_generator(config):
     )
 
     # use TIME_GENERATOR_INPUT_DIR/TEMPLATE to find times if set
-    if config.has_option('config', 'TIME_GENERATOR_INPUT_DIR'):
+    if (config.has_option('config', 'TIME_GENERATOR_INPUT_DIR') or
+            config.has_option('config', 'TIME_GENERATOR_INPUT_TEMPLATE')):
         # Get unique datetime values that appear in ALL directory / template combinations.
         unique_dts = _get_intersected_unique_times(config, time_type=prefix, sort_by=prefix)
         for file_dt in unique_dts:
@@ -501,7 +502,8 @@ def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
     out_leads = []
 
     # use TIME_GENERATOR_INPUT_DIR/TEMPLATE to find forecast leads if set
-    if config.has_option('config', 'TIME_GENERATOR_INPUT_TEMPLATE'):
+    if (config.has_option('config', 'TIME_GENERATOR_INPUT_DIR') or
+            config.has_option('config', 'TIME_GENERATOR_INPUT_TEMPLATE')):
         unique_leads = _filter_leads_by_template(config, input_dict)
         lead_seq = _handle_lead_seq(config, unique_leads, default_unit='S')
         return lead_seq
