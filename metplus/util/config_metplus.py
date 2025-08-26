@@ -548,7 +548,7 @@ class METplusConfig(ProdConfig):
                 self._conf.remove_option('config', current_var)
 
     # override get methods to perform additional error checking
-    def getraw(self, sec, opt, default='', count=0, sub_vars=True):
+    def getraw(self, sec, opt, default='', count=0, sub_vars=True, keep_double_slash=False):
         """ parse parameter and replace any existing parameters
             referenced with the value (looking in same section, then
             config, dir, and os environment)
@@ -605,7 +605,10 @@ class METplusConfig(ProdConfig):
         # when they encounter double slash. This is a GitHub issue MET #1277
         # This fix will prevent using URLs with https:// so the MET issue must
         # be resolved before we can remove the replace call
-        return in_template.replace('//', '/')
+        if not keep_double_slash:
+            in_template = in_template.replace('//', '/')
+
+        return in_template
 
     def check_default(self, sec, name, default):
         """! helper function for get methods, report error and raise
@@ -666,11 +669,11 @@ class METplusConfig(ProdConfig):
         self.set('config', exe_name, full_exe_path)
         return full_exe_path
 
-    def getdir(self, name, default=None, must_exist=False):
+    def getdir(self, name, default=None, must_exist=False, keep_double_slash=False):
         """! Wraps produtil getdir and reports an error if
          it is set to /path/to
          """
-        dir_path = self.getraw('config', name, default=default)
+        dir_path = self.getraw('config', name, default=default, keep_double_slash=keep_double_slash)
         if '/path/to' in dir_path:
             raise ValueError(f"{name} cannot be set to or contain '/path/to'")
 
@@ -683,7 +686,10 @@ class METplusConfig(ProdConfig):
             self.logger.error(f"Path must exist: {dir_path}")
             return None
 
-        return dir_path.replace('//', '/')
+        if not keep_double_slash:
+            dir_path = dir_path.replace('//', '/')
+
+        return dir_path
 
     def getdir_nocheck(self, dir_name, default=None):
         return super().getstr('config', dir_name,
