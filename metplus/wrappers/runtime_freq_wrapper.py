@@ -346,6 +346,9 @@ class RuntimeFreqWrapper(CommandBuilder):
     def run_once_per_lead_group(self, lead_groups, time_input):
         success = True
         for label, lead_seq in lead_groups.items():
+            if not lead_seq:
+                self.logger.debug('Skipping because no leads were found')
+                continue
             self._log_lead_group(label, lead_seq)
             time_input['label'] = label
             self.c_dict['ALL_FILES'] = (
@@ -382,6 +385,10 @@ class RuntimeFreqWrapper(CommandBuilder):
         success = True
 
         lead_seq = get_lead_sequence(self.config, input_dict=None)
+        if not lead_seq:
+            self.logger.debug('Skipping because no leads were found')
+            return True
+
         for lead in lead_seq:
             # add forecast lead to time input
             time_input['lead'] = lead
@@ -431,6 +438,10 @@ class RuntimeFreqWrapper(CommandBuilder):
             lead_seq = [0]
         else:
             lead_seq = get_lead_sequence(self.config, input_dict)
+
+        if not lead_seq:
+            self.logger.debug('Skipping because no leads were found')
+            return True
 
         for lead in lead_seq:
             input_dict['lead'] = lead
@@ -517,6 +528,10 @@ class RuntimeFreqWrapper(CommandBuilder):
             lead_seq = get_lead_sequence(self.config,
                                          time_input,
                                          wildcard_if_empty=use_wildcard)
+            if not lead_seq:
+                self.logger.debug('Skipping because no leads were found')
+                continue
+
             lead_files = self.get_all_files_from_leads(time_input, lead_seq)
             self._update_list_with_new_files(lead_files, all_files)
 

@@ -6,6 +6,7 @@ from .system_util import traverse_dir
 from .time_util import get_relativedelta
 from .time_util import ti_get_hours_from_relativedelta
 from .time_util import ti_get_seconds_from_relativedelta
+from .time_util import ti_get_lead_string
 from .string_template_substitution import do_string_sub, get_time_from_file
 
 
@@ -30,6 +31,7 @@ def time_generator(config):
 
     # use TIME_GENERATOR_INPUT_DIR/TEMPLATE to find times if set
     if _is_time_generator_dir_or_template_set(config):
+        config.logger.debug(f"Using TIME_GENERATOR_INPUT_DIR/TEMPLATE to find {prefix} times")
         # Get unique datetime values that appear in ALL directory / template combinations.
         unique_dts = _get_intersected_unique_times(config, time_type=prefix, sort_by=prefix)
         for file_dt in unique_dts:
@@ -341,7 +343,7 @@ def _filter_files_by_input_dict(files_and_time_info, input_dict, config):
             if file_time_info.get(filter_time_type) == filter_time_value:
                 filtered_files_and_time_info.append((filepath, file_time_info))
 
-        config.logger.debug(f"Filtered files_and_time_info to {len(filtered_files_and_time_info)} "
+        config.logger.debug(f"Filtered input files to {len(filtered_files_and_time_info)} "
                             f"files matching {filter_time_type}={filter_time_value}")
         return filtered_files_and_time_info
 
@@ -634,8 +636,14 @@ def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
 
     # use TIME_GENERATOR_INPUT_DIR/TEMPLATE to find forecast leads if set
     if _is_time_generator_dir_or_template_set(config):
+        config.logger.debug("Using TIME_GENERATOR_INPUT_DIR/TEMPLATE to find lead times")
         unique_leads = _filter_leads_by_template(config, input_dict)
         lead_seq = _handle_lead_seq(config, unique_leads, default_unit='S')
+        if lead_seq:
+            leads_fmt = [ti_get_lead_string(lead, plural=False) for lead in lead_seq]
+            config.logger.debug(f"Found files with lead times: {', '.join(leads_fmt)}")
+        else:
+            config.logger.debug("No lead times found")
         return lead_seq
 
     lead_min, lead_max, no_max = _get_lead_min_max(config)
