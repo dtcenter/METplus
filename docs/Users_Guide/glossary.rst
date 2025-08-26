@@ -14447,3 +14447,26 @@ METplus Configuration Glossary
      Specify the value for 'obs.climo_stdev.file_type' in the MET configuration file for SeriesAnalysis.
 
      | *Used by:* SeriesAnalysis
+
+   TIME_GENERATOR_INPUT_TEMPLATE
+     Build list of runtimes to process using directory and template to extract
+     time information. If set, INIT/VALID_BEG/END/INCREMENT time looping
+     variables and forecast lead variables like :term:`LEAD_SEQ` are ignored.
+     Used with :term:`TIME_GENERATOR_INPUT_DIR`.
+     The :term:`LOOP_BY` variable determines whether to extract initialization
+     or valid times to process. List of forecast leads to process are gathered
+     based on existing forecast lead files for the current init/valid time.
+     Value can be a comma-separated list of templates, in which case the
+     runtimes to process include only the runtimes that are present for every
+     template provided. If more than one value is set for
+     :term:`TIME_GENERATOR_INPUT_DIR`, the number of values must match the
+     number of values set for :term:`TIME_GENERATOR_INPUT_TEMPLATE`.
+     See :ref:`template-based-time-generation` for more information and examples.
+
+     | *Used by:* All
+
+   TIME_GENERATOR_INPUT_DIR
+     See :term:`TIME_GENERATOR_INPUT_TEMPLATE` and
+     :ref:`template-based-time-generation` for more information and examples.
+
+     | *Used by:* All

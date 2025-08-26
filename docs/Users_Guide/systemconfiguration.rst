@@ -681,9 +681,16 @@ Timing Control
 --------------
 
 This section describes the METplus wrapper configuration variables that are
-used to control which times are processed. It also covers functionality that
+used to control which times are processed.
+The traditional method uses configuration variables to explicitly define the
+time range and increment for processing.
+As of METplus v6.2, :ref:`template-based-time-generation` was implemented
+as an alternative approach that uses filename templates to extract
+time information from local files to determine which times to process.
+This section also covers functionality that
 is useful for processing data in realtime by setting run times based on the
-clock time when the METplus wrappers are run.
+clock time when the METplus wrappers are run (see :ref:`realtime-looping`)
+and skipping times that should not be processed (see :ref:`skipping-times`).
 
 .. _LOOP_BY_ref:
 
@@ -1022,6 +1029,8 @@ length of a month or year is relative to the relative date/time.
 Therefore these intervals are calculated based on the current run time and
 cannot be expressed in seconds unless the run time value is available.
 
+.. _skipping-times:
+
 Skipping Times
 ^^^^^^^^^^^^^^
 
@@ -1139,6 +1148,8 @@ Example 9::
 This will only process times that land on Monday, Wednesday, and Friday
 except the 1st of the month.
 
+.. _realtime-looping:
+
 Realtime Looping
 ^^^^^^^^^^^^^^^^
 
@@ -1229,6 +1240,172 @@ processing the following valid times:
    VALID_BEG and VALID_END. In the above example, this would be the
    %Y%m%d%H portion within values of the VALID_TIME_FMT, VALID_BEG,
    and VALID_END variables.
+
+.. _template-based-time-generation:
+
+Template-Based Time Generation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This approach uses existing file patterns to automatically extract time information to build the list of run times to process.
+This method is controlled by:
+
+* :term:`TIME_GENERATOR_INPUT_DIR` - Directory containing input files
+* :term:`TIME_GENERATOR_INPUT_TEMPLATE` - Template pattern to extract time information
+* :term:`LOOP_BY` - Whether to extract initialization times (INIT) or valid times (VALID)
+
+When these variables are set, METplus scans the specified directory for files matching the template pattern and
+extracts time information from the file paths.
+This automatically builds the list of times to process, eliminating the need to manually configure time ranges and increments.
+The list of forecast leads to process are determined for each initialization or valid time.
+
+When ``TIME_GENERATOR_INPUT_TEMPLATE`` is set, the following traditional time looping variables are ignored:
+
+* ``INIT_BEG``, ``INIT_END``, ``INIT_INCREMENT``, ``INIT_TIME_FMT``
+* ``VALID_BEG``, ``VALID_END``, ``VALID_INCREMENT``, ``VALID_TIME_FMT``
+* ``LEAD_SEQ``
+
+The time information is instead derived entirely from the file paths matching the specified templates.
+
+Basic Template Configuration
+""""""""""""""""""""""""""""
+
+The simplest configuration uses a single directory and template:
+
+**Configuration:**
+
+.. code-block:: none
+
+   LOOP_BY = INIT
+   TIME_GENERATOR_INPUT_DIR = /data/model/gfs
+   TIME_GENERATOR_INPUT_TEMPLATE = gfs.{init?fmt=%Y%m%d}/{init?fmt=%H}/atmos/gfs.t{init?fmt=%H}z.pgrb2.0p25.f{lead?fmt=%3H}
+
+**Example directory structure:**
+
+.. code-block:: none
+
+   /data/model/gfs/
+   ├── gfs.20240101/
+   │   ├── 00/
+   │   │   └── atmos/
+   │   │       ├── gfs.t00z.pgrb2.0p25.f000
+   │   │       ├── gfs.t00z.pgrb2.0p25.f006
+   │   │       ├── gfs.t00z.pgrb2.0p25.f012
+   │   │       └── gfs.t00z.pgrb2.0p25.f018
+   │   └── 12/
+   │       └── atmos/
+   │           ├── gfs.t12z.pgrb2.0p25.f000
+   │           ├── gfs.t12z.pgrb2.0p25.f006
+   │           └── gfs.t12z.pgrb2.0p25.f012
+   └── gfs.20240102/
+       └── 00/
+           └── atmos/
+               ├── gfs.t00z.pgrb2.0p25.f000
+               ├── gfs.t00z.pgrb2.0p25.f006
+               └── gfs.t00z.pgrb2.0p25.f012
+
+**Resulting behavior:**
+
+With ``LOOP_BY = INIT``, METplus extracts initialization times and available forecast leads for each init time:
+
+* 2024-01-01 00Z: leads 0, 6, 12, 18 hours
+* 2024-01-01 12Z: leads 0, 6, 12 hours
+* 2024-01-02 00Z: leads 0, 6, 12 hours
+
+With ``LOOP_BY = VALID``, the same files would generate valid times:
+
+* 2024-01-01 00Z: lead 0
+* 2024-01-01 06Z: lead 6
+* 2024-01-01 12Z: leads 0, 12 hours
+* 2024-01-01 18Z: leads 6, 18 hours
+* 2024-01-02 00Z: leads 0, 12 hours
+* 2024-01-02 06Z: lead 6 hour
+* 2024-01-02 12Z: lead 12 hour
+
+Multiple Template - Model and Obs
+"""""""""""""""""""""""""""""""""
+
+When multiple templates are specified, METplus processes only the times that are available in ALL templates.
+This is useful for ensuring forecast and observation data alignment.
+
+**Configuration:**
+
+.. code-block:: none
+
+   TIME_GENERATOR_INPUT_DIR = /data/model/gfs, /data/obs/stage4
+   TIME_GENERATOR_INPUT_TEMPLATE = gfs.{init?fmt=%Y%m%d}/{init?fmt=%H}/atmos/gfs.t{init?fmt=%H}z.pgrb2.0p25.f{lead?fmt=%3H}, stage4.{valid?fmt=%Y%m%d%H}.06h.grib2
+   LOOP_BY = VALID
+
+**Example directory structures:**
+
+.. code-block:: none
+
+   /data/model/gfs/
+   ├── gfs.20240101/
+   │   ├── 00/
+   │   │   └── atmos/
+   │   │       ├── gfs.t00z.pgrb2.0p25.f006
+   │   │       ├── gfs.t00z.pgrb2.0p25.f012
+   │   │       └── gfs.t00z.pgrb2.0p25.f018
+   │   └── 12/
+   │       └── atmos/
+   │           ├── gfs.t12z.pgrb2.0p25.f006
+   │           └── gfs.t12z.pgrb2.0p25.f012
+
+   /data/obs/stage4/
+   ├── stage4.2024010106.06h.grib2
+   ├── stage4.2024010112.06h.grib2
+   └── stage4.2024010118.06h.grib2
+
+**Resulting behavior:**
+
+METplus identifies valid times present in both datasets:
+
+* 2024-01-01 06Z: 6 hour lead (init 2024-01-01 00Z)
+* 2024-01-01 12Z: 0 hour lead (init 2024-01-01 12Z) and 12 hour lead (init 2024-01-01 00Z)
+* 2024-01-01 18Z: 18 hour lead (init 2024-01-01 00Z)
+
+Note that 2024-01-01 18Z from GFS init 2024-01-01 12Z lead 6h is not processed
+because no Stage IV observation exists for that time.
+
+Mulitple Template - Two Model Example
+"""""""""""""""""""""""""""""""""""""
+
+Complex configurations can handle multiple data sources with different directory structures:
+
+**Configuration:**
+
+.. code-block:: none
+
+   TIME_GENERATOR_INPUT_DIR = /data/model/gfs, /data/model/nam
+   TIME_GENERATOR_INPUT_TEMPLATE = gfs.{init?fmt=%Y%m%d}/{init?fmt=%H}/atmos/gfs.t{init?fmt=%H}z.pgrb2.0p25.f{lead?fmt=%3H}, nam.{init?fmt=%Y%m%d%H}/nam.t{init?fmt=%H}z.awphys{lead?fmt=%2H}.tm00.grib2
+   LOOP_BY = INIT
+
+**Example directory structures:**
+
+.. code-block:: none
+
+   /data/model/gfs/
+   └── gfs.20240101/
+       └── 00/
+           └── atmos/
+               ├── gfs.t00z.pgrb2.0p25.f000
+               ├── gfs.t00z.pgrb2.0p25.f006
+               └── gfs.t00z.pgrb2.0p25.f012
+
+   /data/model/nam/
+   └── nam.2024010100/
+       ├── nam.t00z.awphys00.tm00.grib2
+       └── nam.t00z.awphys06.tm00.grib2
+
+**Resulting behavior:**
+
+METplus processes only the overlapping initialization time and forecast leads:
+
+* 2024-01-01 00Z: leads 0, 6 hours (lead 12 excluded because NAM doesn't have it)
+
+This approach ensures that all required input files exist before processing begins,
+preventing runtime errors due to missing data files.
+
 
 .. _Process_List:
 
