@@ -9,6 +9,7 @@ from metplus.util.time_looping import get_start_and_end_times
 
 DATA_TEMPLATE1 = '{init?fmt=%d%m%Y_%H}Z_f{lead?fmt=%3H}.txt'
 DATA_TEMPLATE2 = '{init?fmt=%Y%m%d_%H}Z_f{lead?fmt=%3H}.nc'
+DATA_TEMPLATE3 = 'obs_{valid?fmt=%Y%m%d%H}.nc'
 
 @pytest.fixture
 def mock_time_generator(monkeypatch):
@@ -662,7 +663,7 @@ def test_get_start_and_end_times_multiple_entries(mock_time_generator):
     ]
 )
 @pytest.mark.util
-def test_time_generator_template(prefix, expected, metplus_config, tmp_path_factory, make_dummy_empty):
+def test_time_generator_one_template(prefix, expected, metplus_config, tmp_path_factory, make_dummy_empty):
     # create empty files for testing
     # use DDMMYYYY format for the file names to ensure proper sorting
     data_dir = tmp_path_factory.mktemp("data_dir")
@@ -677,7 +678,7 @@ def test_time_generator_template(prefix, expected, metplus_config, tmp_path_fact
 
 
 # Define shared parameters
-TWO_TEMPLATE_TEST_PARAMS = [
+TWO_INIT_TEMPLATE_TEST_PARAMS = [
     ('INIT', ({'2025113012': [relativedelta(hours=+4)],
                '2025122912': [relativedelta(hours=+6)],})),
     ('VALID', ({'2025113016': [relativedelta(hours=+4)],
@@ -685,8 +686,13 @@ TWO_TEMPLATE_TEST_PARAMS = [
                 '2025122918': [relativedelta(hours=+6)]})),
 ]
 
+THREE_TEMPLATE_TEST_PARAMS = [
+    ('INIT', ({'2025113012': [],
+               '2025122912': [relativedelta(hours=+6)],})),
+    ('VALID', ({'2025122918': [relativedelta(hours=+6)]})),
+]
 
-@pytest.mark.parametrize('prefix, expected', TWO_TEMPLATE_TEST_PARAMS)
+@pytest.mark.parametrize('prefix, expected', TWO_INIT_TEMPLATE_TEST_PARAMS)
 @pytest.mark.util
 def test_time_generator_template_two_dirs(prefix, expected, metplus_config, tmp_path_factory, make_dummy_empty):
     # create empty files for testing
@@ -705,9 +711,9 @@ def test_time_generator_template_two_dirs(prefix, expected, metplus_config, tmp_
     _test_time_generator_and_lead_sequence(config, prefix, expected)
 
 
-@pytest.mark.parametrize('prefix, expected', TWO_TEMPLATE_TEST_PARAMS)
+@pytest.mark.parametrize('prefix, expected', TWO_INIT_TEMPLATE_TEST_PARAMS)
 @pytest.mark.util
-def test_time_generator_template_one_dir_two_templates(prefix, expected, metplus_config, tmp_path_factory, make_dummy_empty):
+def test_time_generator_template_one_dir_two_init_templates(prefix, expected, metplus_config, tmp_path_factory, make_dummy_empty):
     # create empty files for testing
     # use DDMMYYYY format for the file names to ensure proper sorting
     data_dir = tmp_path_factory.mktemp("data_dir")
@@ -722,9 +728,9 @@ def test_time_generator_template_one_dir_two_templates(prefix, expected, metplus
     _test_time_generator_and_lead_sequence(config, prefix, expected)
 
 
-@pytest.mark.parametrize('prefix, expected', TWO_TEMPLATE_TEST_PARAMS)
+@pytest.mark.parametrize('prefix, expected', TWO_INIT_TEMPLATE_TEST_PARAMS)
 @pytest.mark.util
-def test_time_generator_template_two_templates_tag_in_dir(prefix, expected, metplus_config, tmp_path_factory, make_dummy_empty):
+def test_time_generator_template_two_init_templates_tag_in_dir(prefix, expected, metplus_config, tmp_path_factory, make_dummy_empty):
     # test that including a filename template tag in the INPUT_DIR also works
     # create empty files for testing
     # use DDMMYYYY format for the file names to ensure proper sorting
@@ -740,6 +746,69 @@ def test_time_generator_template_two_templates_tag_in_dir(prefix, expected, metp
 
     _test_time_generator_and_lead_sequence(config, prefix, expected)
 
+
+@pytest.mark.parametrize('prefix, expected', [
+        ('INIT', ({'2025113012': [],
+                   '2025122912': [relativedelta(hours=+6)],})),
+        ('VALID', ({'2025122918': [relativedelta(hours=+6)]})),
+    ])
+@pytest.mark.util
+def test_time_generator_template_one_fcst_one_obs_template(prefix, expected, metplus_config, tmp_path_factory, make_dummy_empty):
+    # create empty files for testing
+    # use DDMMYYYY format for the file names to ensure proper sorting
+    data_dir = tmp_path_factory.mktemp("data_dir")
+    _create_dummy_files(make_dummy_empty, data_dir, 1)
+    _create_dummy_files(make_dummy_empty, data_dir, 3)
+
+    config = metplus_config
+    config.set('config', 'LOOP_BY', prefix)
+    config.set('config', 'TIME_GENERATOR_INPUT_DIR', data_dir)
+    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', f'{DATA_TEMPLATE1}, {DATA_TEMPLATE3}')
+
+    _test_time_generator_and_lead_sequence(config, prefix, expected)
+
+
+@pytest.mark.parametrize('prefix, expected', THREE_TEMPLATE_TEST_PARAMS)
+@pytest.mark.util
+def test_time_generator_template_one_dir_three_templates(prefix, expected, metplus_config, tmp_path_factory, make_dummy_empty):
+    # create empty files for testing
+    # use DDMMYYYY format for the file names to ensure proper sorting
+    data_dir = tmp_path_factory.mktemp("data_dir")
+    _create_dummy_files(make_dummy_empty, data_dir, 1)
+    _create_dummy_files(make_dummy_empty, data_dir, 2)
+    _create_dummy_files(make_dummy_empty, data_dir, 3)
+
+    config = metplus_config
+    config.set('config', 'LOOP_BY', prefix)
+    config.set('config', 'TIME_GENERATOR_INPUT_DIR', data_dir)
+    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', f'{DATA_TEMPLATE1}, {DATA_TEMPLATE2}, {DATA_TEMPLATE3}')
+
+    _test_time_generator_and_lead_sequence(config, prefix, expected)
+
+@pytest.mark.parametrize(
+    'prefix, expected', [
+        # expected is a dict where keys are the run times and values are the expected lead times for each run time
+        ('INIT', ({'2024103106': [relativedelta(hours=+0)],
+                   '2025122918': [relativedelta(hours=+0)],
+                   '2025123106': [relativedelta(hours=+0)],})),
+        ('VALID', ({'2024103106': [relativedelta(hours=+0)],
+                   '2025122918': [relativedelta(hours=+0)],
+                   '2025123106': [relativedelta(hours=+0)]})),
+    ]
+)
+@pytest.mark.util
+def test_time_generator_template_one_obs(prefix, expected, metplus_config, tmp_path_factory, make_dummy_empty):
+    # create empty files for testing
+    # use DDMMYYYY format for the file names to ensure proper sorting
+    data_dir = tmp_path_factory.mktemp("data_dir")
+    _create_dummy_files(make_dummy_empty, data_dir, 3)
+
+    config = metplus_config
+    config.set('config', 'LOOP_BY', prefix)
+    config.set('config', 'TIME_GENERATOR_INPUT_DIR', data_dir)
+    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', DATA_TEMPLATE3)
+
+    _test_time_generator_and_lead_sequence(config, prefix, expected)
 
 def _test_time_generator_and_lead_sequence(config, prefix, expected):
     """!Helper function to test both time_generator and get_lead_sequence with expected results.
@@ -777,6 +846,12 @@ def _create_dummy_files(make_dummy_empty, data_dir, data_num, add_subdir=False):
             '20251229/20251229_12Z_f009.nc',
             '20251130/20251130_12Z_f004.nc',
             '20251130/20251130_12Z_f008.nc',
+        ]
+    elif data_num == 3:
+        files = [
+            '20251229/obs_2025122918.nc',
+            '20251231/obs_2025123106.nc',
+            '20241031/obs_2024103106.nc',
         ]
 
     if not add_subdir:

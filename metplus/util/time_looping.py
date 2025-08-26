@@ -137,9 +137,25 @@ def _get_dir_template_pairs(config):
         return dir_template_pairs
 
 
+def _template_is_forecast(input_dir, input_template):
+    """!Determine if a template contains forecast lead time information.
+    This is done by checking if the template contains a lead tag or both
+    init and valid tags.
+
+    @param input_dir Input directory path
+    @param input_template Input template path
+    @returns True if template is a forecast, False otherwise
+    """
+    # Use existing logic to properly combine dir and template
+    _, combined_template = split_dir_and_template(input_dir, input_template)
+
+    return ('{lead' in combined_template or
+            '{init' in combined_template and '{valid' in combined_template)
+
 
 def _get_intersected_unique_times(config, time_type, sort_by=None, input_dict=None):
     """!Get unique times that appear in ALL directory/template combinations.
+    Enhanced to handle mixed template types (forecast vs analysis).
 
     @param config METplusConfig object
     @param time_type Type of time to extract ('init', 'valid', 'lead')
@@ -152,34 +168,146 @@ def _get_intersected_unique_times(config, time_type, sort_by=None, input_dict=No
     if not dir_template_pairs:
         return []
 
-    # Collect unique times from each directory/template combination
-    all_time_sets = []
+    # Separate templates into forecast (has lead times) and analysis (valid only)
+    forecast_templates = []
+    analysis_templates = []
 
     for input_dir, input_template in dir_template_pairs:
+        # Check if this template has lead time information
+        is_forecast = _template_is_forecast(input_dir, input_template)
+
         files_and_time_info = get_files_and_time_info(input_dir, input_template,
                                                       sort_by=sort_by,
                                                       logger=config.logger)
 
-        # Apply filtering if input_dict is provided (for lead filtering)
-        if input_dict is not None:
+        # Apply filtering to forecast files if input_dict is provided
+        if input_dict is not None and is_forecast:
             files_and_time_info = _filter_files_by_input_dict(files_and_time_info,
                                                               input_dict, config)
             if files_and_time_info is None:
                 return []
 
-        unique_times = get_unique_times(files_and_time_info, time_type=time_type)
-        all_time_sets.append(set(unique_times))
+        if is_forecast:
+            forecast_templates.append((input_dir, input_template, files_and_time_info))
+        else:
+            analysis_templates.append((input_dir, input_template, files_and_time_info))
 
-    # Find intersection of all time sets
-    if not all_time_sets:
+    # Handle the case based on what time_type is requested
+    if time_type.lower() == 'lead':
+        return _get_enhanced_lead_times(forecast_templates, analysis_templates)
+    elif time_type.lower() == 'valid':
+        return _get_enhanced_valid_times(forecast_templates, analysis_templates)
+    elif time_type.lower() == 'init':
+        return _get_enhanced_init_times(forecast_templates, analysis_templates)
+
+    return []
+
+
+def _get_enhanced_lead_times(forecast_templates, analysis_templates):
+    """!Get forecast lead times, considering analysis templates for valid time constraints.
+
+    @param forecast_templates List of (dir, template, files_and_time_info) for forecast data
+    @param analysis_templates List of (dir, template, files_and_time_info) for analysis data
+    @returns Sorted list of unique lead times
+    """
+    if not forecast_templates:
+        # No forecast templates, use 0 forecast lead
+        return [0]
+
+    skip_analysis_filter = bool(not analysis_templates)
+
+    # Get all valid times from analysis templates (if any)
+    analysis_valid_times = set()
+    for _, _, files_and_time_info in analysis_templates:
+        valid_times = get_unique_times(files_and_time_info, time_type='valid')
+        analysis_valid_times.update(valid_times)
+
+    # Get lead times from forecast templates
+    all_lead_sets = []
+    for _, _, files_and_time_info in forecast_templates:
+        if analysis_valid_times:
+            # Filter forecast files to only include those with valid times matching analysis
+            filtered_files = []
+            for filepath, time_info in files_and_time_info:
+                if time_info.get('valid') in analysis_valid_times:
+                    filtered_files.append((filepath, time_info))
+            unique_leads = get_unique_times(filtered_files, time_type='lead')
+        elif skip_analysis_filter:
+            # use all times if no analysis templates were specified
+            unique_leads = get_unique_times(files_and_time_info, time_type='lead')
+        else:
+            # No analysis times match, so filter out all times
+            continue
+
+        all_lead_sets.append(set(unique_leads))
+
+    # Take intersection of lead times across forecast templates
+    if not all_lead_sets:
         return []
 
-    # Start with first set, then intersect with all others
-    intersected_times = all_time_sets[0]
-    for time_set in all_time_sets[1:]:
-        intersected_times = intersected_times.intersection(time_set)
+    return _get_intersection_times(all_lead_sets)
 
-    # Convert back to sorted list
+
+def _get_enhanced_valid_times(forecast_templates, analysis_templates):
+    """!Get valid times from both forecast and analysis templates.
+
+    @param forecast_templates List of (dir, template, files_and_time_info) for forecast data
+    @param analysis_templates List of (dir, template, files_and_time_info) for analysis data
+    @returns Sorted list of unique valid times that appear in all template types
+    """
+    all_valid_sets = []
+
+    # Get valid times from forecast templates
+    for _, _, files_and_time_info in forecast_templates:
+        valid_times = get_unique_times(files_and_time_info, time_type='valid')
+        all_valid_sets.append(set(valid_times))
+
+    # Get valid times from analysis templates
+    for _, _, files_and_time_info in analysis_templates:
+        valid_times = get_unique_times(files_and_time_info, time_type='valid')
+        all_valid_sets.append(set(valid_times))
+
+    if not all_valid_sets:
+        return []
+
+    # Take intersection of all valid time sets
+    return _get_intersection_times(all_valid_sets)
+
+
+def _get_enhanced_init_times(forecast_templates, analysis_templates):
+    """!Get init times, primarily from forecast templates.
+
+    @param forecast_templates List of (dir, template, files_and_time_info) for forecast data
+    @param analysis_templates List of (dir, template, files_and_time_info) for analysis data
+    @returns Sorted list of unique init times
+    """
+    all_init_sets = []
+
+    # Get init times from forecast templates (these are meaningful)
+    for _, _, files_and_time_info in forecast_templates:
+        init_times = get_unique_times(files_and_time_info, time_type='init')
+        all_init_sets.append(set(init_times))
+
+    # For analysis templates, init == valid, but we may not want to include these
+    # in the intersection since they represent different concepts
+    # Only include if there are no forecast templates
+    if not forecast_templates:
+        for _, _, files_and_time_info in analysis_templates:
+            init_times = get_unique_times(files_and_time_info, time_type='init')
+            all_init_sets.append(set(init_times))
+
+    if not all_init_sets:
+        return []
+
+    # Take intersection
+    return _get_intersection_times(all_init_sets)
+
+
+def _get_intersection_times(all_sets):
+    intersected_times = all_sets[0]
+    for lead_set in all_sets[1:]:
+        intersected_times = intersected_times.intersection(lead_set)
+
     return sorted(list(intersected_times))
 
 
