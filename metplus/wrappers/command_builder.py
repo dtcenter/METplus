@@ -92,6 +92,9 @@ class CommandBuilder:
 
         # populate c_dict dictionary
         self.c_dict = self.create_c_dict()
+        if not self.c_dict:
+            self.log_error("Could not parse config")
+            return
 
         # if wrapper has a config file, read MET config overrides variable
         if 'CONFIG_FILE' in self.c_dict:

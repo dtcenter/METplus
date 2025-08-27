@@ -1,5 +1,5 @@
 """
-Program Name: system_manip.py
+Program Name: system_util.py
 Contact(s): George McCabe
 Description: METplus utility to handle OS/system calls
 """
@@ -11,21 +11,21 @@ import getpass
 import gzip
 import bz2
 import zipfile
-import struct
+import urllib.request
+import urllib.error
+import urllib.parse
+from urllib.request import HTTPPasswordMgrWithDefaultRealm, HTTPBasicAuthHandler, build_opener
 
 from .constants import PYTHON_EMBEDDING_TYPES, COMPRESSION_EXTENSIONS
 
 
 def mkdir_p(path):
-    """!
-       From stackoverflow.com/questions/600268/mkdir-p-functionality-in-python
+    """!From stackoverflow.com/questions/600268/mkdir-p-functionality-in-python
        Creates the entire directory path if it doesn't exist (including any
        required intermediate directories).
-       Args:
-           @param path : The full directory path to be created
-       Returns
-           None: Creates the full directory path if it doesn't exist,
-                 does nothing otherwise.
+
+       @param path The full directory path to be created
+       @returns None: Creates the full directory path if it doesn't exist
     """
     Path(path).mkdir(parents=True, exist_ok=True)
 
@@ -188,52 +188,6 @@ def _preprocess_passthrough(filename, data_type, allow_dir):
     return filename
 
 
-def _check_and_decompress(filename, stage_dir, config):
-    """!Check if file path contains extension that implies it is compressed.
-    Decompress file if necessary.
-    Supported compression extensions are gz, bz2, and zip.
-
-    @param filename path to file to check
-    @param stage_dir staging directory to decompress files into
-    @param config METplusConfig object used for logging
-    """
-    # if file exists in the staging area, return that path
-    staged_filename = stage_dir + filename
-    if os.path.isfile(staged_filename):
-        return staged_filename
-
-    # Create staging area directory only if file has compression extension
-    if any([os.path.isfile(f'{filename}{ext}')
-            for ext in COMPRESSION_EXTENSIONS]):
-        mkdir_p(os.path.dirname(staged_filename))
-
-    # uncompress gz, bz2, or zip file
-    if os.path.isfile(filename+".gz"):
-        config.logger.debug("Decompressing gz file to {}".format(staged_filename))
-        with gzip.open(filename+".gz", 'rb') as infile:
-            with open(staged_filename, 'wb') as outfile:
-                outfile.write(infile.read())
-                infile.close()
-                outfile.close()
-                return staged_filename
-    elif os.path.isfile(filename+".bz2"):
-        config.logger.debug("Decompressing bz2 file to {}".format(staged_filename))
-        with open(filename+".bz2", 'rb') as infile:
-            with open(staged_filename, 'wb') as outfile:
-                outfile.write(bz2.decompress(infile.read()))
-                infile.close()
-                outfile.close()
-                return staged_filename
-    elif os.path.isfile(filename+".zip"):
-        config.logger.debug("Decompressing zip file to {}".format(staged_filename))
-        with zipfile.ZipFile(filename+".zip") as z:
-            with open(staged_filename, 'wb') as f:
-                f.write(z.read(os.path.basename(filename)))
-                return staged_filename
-
-    return None
-
-
 def _process_gempak_file(filename, stage_dir, config):
     """!Run GempakToCFWrapper on GEMPAK file to convert it to NetCDF.
     Assumes either filename ends with .grd extension or file type has been
@@ -300,6 +254,7 @@ def preprocess_file(filename, data_type, config, allow_dir=False):
         for ext in COMPRESSION_EXTENSIONS:
             if filename.endswith(ext):
                 return preprocess_file(filename[:-len(ext)], data_type, config)
+
         # if extension is grd (Gempak), then look in staging dir for nc file
         if filename.endswith('.grd') or data_type == "GEMPAK":
             return _process_gempak_file(filename, stage_dir, config)
@@ -337,3 +292,272 @@ def traverse_dir(data_dir, get_dirs=False):
 
         for dir_name in items:
             yield os.path.join(dir_path, dir_name)
+
+
+def _detect_compression_type(data_start, url_path):
+    """!Detect compression type from data header or URL extension.
+
+    @param data_start: First few bytes of the file data
+    @param url_path: URL or file path to check for extension
+    @returns: String indicating compression type ('gzip', 'bz2', 'zip') or None
+    """
+    # Check magic bytes first (more reliable than extension)
+    if data_start.startswith(b'\x1f\x8b'):  # gzip magic bytes
+        return 'gzip'
+    elif data_start.startswith(b'BZ'):  # bz2 magic bytes
+        return 'bz2'
+    elif data_start.startswith(b'PK'):  # zip magic bytes
+        return 'zip'
+
+    # Fall back to URL/filename extension check
+    for ext in COMPRESSION_EXTENSIONS:
+        if url_path.lower().endswith(ext.lower()):
+            return ext[1:]  # Remove the dot prefix
+
+    return None
+
+
+def _decompress_data(compressed_data, compression_type, config=None):
+    """!Decompress data in memory based on compression type.
+
+    @param compressed_data: Compressed data bytes
+    @param compression_type: Type of compression ('gzip', 'bz2', 'zip')
+    @param config: Optional METplusConfig object for logging
+    @returns: Decompressed data bytes or None if decompression failed
+    """
+    try:
+        if compression_type == 'gzip':
+            config.logger.debug("Decompressing gzip data in memory")
+            return gzip.decompress(compressed_data)
+
+        if compression_type == 'bz2':
+            config.logger.debug("Decompressing bz2 data in memory")
+            return bz2.decompress(compressed_data)
+
+        if compression_type == 'zip':
+            config.logger.debug("Decompressing zip data in memory")
+            # For zip files, extract the first file in the archive
+            import io
+            with zipfile.ZipFile(io.BytesIO(compressed_data)) as z:
+                # Get the first file in the zip
+                names = z.namelist()
+                if names:
+                    return z.read(names[0])
+                else:
+                    config.logger.error("Zip file contains no files")
+                    return None
+
+        config.logger.error(f"Unsupported compression type: {compression_type}")
+        return None
+
+    except Exception as e:
+        config.logger.error(f"Failed to decompress {compression_type} data: {e}")
+        return None
+
+
+def _check_and_decompress(filename, stage_dir, config):
+    """!Check if file path contains extension that implies it is compressed.
+    Decompress file if necessary.
+    Supported compression extensions are gz, bz2, and zip.
+    The full path of filename is duplicated under stage_dir.
+
+    @param filename path to file to check
+    @param stage_dir staging directory to decompress files into
+    @param config METplusConfig object used for logging
+    """
+    # if file exists in the staging area, return that path
+    staged_filename = stage_dir + filename
+    if os.path.isfile(staged_filename):
+        return staged_filename
+
+    # Create staging area directory only if file has compression extension
+    if any([os.path.isfile(f'{filename}{ext}') for ext in COMPRESSION_EXTENSIONS]):
+        mkdir_p(os.path.dirname(staged_filename))
+    else:
+        return None
+
+    # Find the compressed file and determine compression type
+    compressed_file = None
+    compression_type = None
+
+    for ext in COMPRESSION_EXTENSIONS:
+        compressed_path = f"{filename}{ext}"
+        if os.path.isfile(compressed_path):
+            compressed_file = compressed_path
+            compression_type = ext[1:]  # Remove the dot prefix
+            break
+
+    if not compressed_file:
+        return None
+
+    # handle gz extension as a gzip compression type
+    if compression_type == 'gz':
+        compression_type = 'gzip'
+
+    config.logger.debug(f"Decompressing {compression_type} file to {staged_filename}")
+
+    try:
+        # Read compressed file
+        with open(compressed_file, 'rb') as infile:
+            compressed_data = infile.read()
+
+        # Decompress data using shared function
+        decompressed_data = _decompress_data(compressed_data, compression_type, config)
+
+        if decompressed_data is None:
+            return None
+
+        # Write decompressed data to staged file
+        with open(staged_filename, 'wb') as outfile:
+            outfile.write(decompressed_data)
+
+        return staged_filename
+
+    except Exception as e:
+        config.logger.error(f"Failed to decompress {compressed_file}: {e}")
+        return None
+
+
+def download_file_http(url, output_path, username=None, password=None, chunk_size=8192,
+                       auto_decompress=True, config=None):
+    """!Download a file from HTTP URL with optional authentication and automatic decompression.
+
+    @param url: The HTTP/HTTPS URL to download from
+    @param output_path: Local file path where the downloaded file will be saved
+    @param username: Optional username for HTTP basic authentication
+    @param password: Optional password for HTTP basic authentication
+    @param chunk_size: Size of chunks to download at a time (default: 8192 bytes)
+    @param auto_decompress: If True, automatically decompress supported formats (default: True)
+    @param config: Optional METplusConfig object for logging
+    @returns: Dict with 'success': bool, 'file_size': int, 'error': str (if failed), 'decompressed': bool
+    @raises: urllib.error.URLError, urllib.error.HTTPError for network issues
+    """
+    result = {'success': False, 'file_size': 0, 'error': '', 'decompressed': False}
+
+    try:
+        # Create directory if it doesn't exist
+        mkdir_p(os.path.dirname(output_path))
+
+        # Set up authentication if credentials provided
+        _setup_http_auth(username, password, url)
+
+        # Create request
+        request = urllib.request.Request(url)
+
+        # Add user agent to avoid being blocked by some servers
+        request.add_header('User-Agent', 'Python-urllib/3.x')
+
+        # Open URL and download
+        with urllib.request.urlopen(request) as response:
+            # Get file size if available
+            content_length = response.headers.get('Content-Length')
+            total_size = int(content_length) if content_length else None
+            if not total_size:
+                result['error'] = "File size is 0 or Content-Length header not found in response"
+                return result
+
+            # Download file in chunks into memory first
+            downloaded_data, compression_type = _download_chunks(
+                response, chunk_size, url, auto_decompress, config
+            )
+
+            final_data = _process_downloaded_data(
+                downloaded_data, compression_type, auto_decompress, config, result
+            )
+
+            # Write final data to output file
+            with open(output_path, 'wb') as output_file:
+                output_file.write(final_data)
+
+        result['success'] = True
+        result['file_size'] = len(final_data)
+        return result
+
+    except urllib.error.HTTPError as e:
+        result['error'] = f"HTTP Error {e.code}: {e.reason}"
+        return result
+
+    except urllib.error.URLError as e:
+        result['error'] = f"URL Error: {e.reason}"
+        return result
+
+    except IOError as e:
+        result['error'] = f"IO Error: {e}"
+        return result
+
+    except Exception as e:
+        result['error'] = f"Unexpected error: {e}"
+        return result
+
+
+def _setup_http_auth(username, password, url):
+    """!Set up HTTP authentication if credentials provided.
+
+    @param username: Username for authentication
+    @param password: Password for authentication
+    @param url: URL for authentication scope
+    """
+    if username is None or password is None:
+        return
+
+    password_mgr = HTTPPasswordMgrWithDefaultRealm()
+    password_mgr.add_password(None, url, username, password)
+    auth_handler = HTTPBasicAuthHandler(password_mgr)
+    opener = build_opener(auth_handler)
+    urllib.request.install_opener(opener)
+
+
+def _download_chunks(response, chunk_size, url, auto_decompress, config):
+    """!Download data in chunks and detect compression.
+
+    @param response: HTTP response object
+    @param chunk_size: Size of chunks to download
+    @param url: URL being downloaded (for compression detection)
+    @param auto_decompress: Whether to detect compression
+    @param config: Optional config object for logging
+    @returns: Tuple of (downloaded_data, compression_type)
+    """
+    downloaded_data = b''
+    first_chunk = True
+    compression_type = None
+
+    while True:
+        chunk = response.read(chunk_size)
+        if not chunk:
+            break
+
+        downloaded_data += chunk
+
+        if first_chunk and auto_decompress:
+            compression_type = _detect_compression_type(downloaded_data, url)
+            first_chunk = False
+            if compression_type and config:
+                config.logger.debug(f"Detected {compression_type} compression in downloaded file")
+
+    return downloaded_data, compression_type
+
+
+def _process_downloaded_data(downloaded_data, compression_type, auto_decompress, config, result):
+    """!Process downloaded data, handling decompression if needed.
+
+    @param downloaded_data: Raw downloaded data
+    @param compression_type: Detected compression type or None
+    @param auto_decompress: Whether to auto-decompress
+    @param config: Optional config object for logging
+    @param result: Result dictionary to update
+    @returns: Final data to write to file
+    """
+    if not (auto_decompress and compression_type):
+        return downloaded_data
+
+    decompressed_data = _decompress_data(downloaded_data, compression_type, config)
+    if decompressed_data is not None:
+        result['decompressed'] = True
+        if config:
+            config.logger.info(f"Successfully decompressed {compression_type} file during download")
+        return decompressed_data
+
+    # If decompression failed, save original data and log warning
+    if config:
+        config.logger.warning(f"Failed to decompress {compression_type} file, saving compressed version")
+    return downloaded_data

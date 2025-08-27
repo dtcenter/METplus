@@ -457,7 +457,7 @@ METplus Configuration Glossary
      | *Used by:* PyEmbedIngest
 
    PY_EMBED_INGEST_<n>_OUTPUT_DIR
-     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the output diirectory to write data. See also :term:`PY_EMBED_INGEST_<n>_TYPE`, :term:`PY_EMBED_INGEST_<n>_SCRIPT`, and :term:`PY_EMBED_INGEST_<n>_OUTPUT_GRID`, and :term:`PY_EMBED_INGEST_<n>_OUTPUT_TEMPLATE`.
+     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the output directory to write data. See also :term:`PY_EMBED_INGEST_<n>_TYPE`, :term:`PY_EMBED_INGEST_<n>_SCRIPT`, and :term:`PY_EMBED_INGEST_<n>_OUTPUT_GRID`, and :term:`PY_EMBED_INGEST_<n>_OUTPUT_TEMPLATE`.
 
      | *Used by:* PyEmbedIngest
 
@@ -14470,3 +14470,73 @@ METplus Configuration Glossary
      :ref:`template-based-time-generation` for more information and examples.
 
      | *Used by:* All
+
+   DATA_INGEST_<n>_OUTPUT_TEMPLATE
+     Used to specify location to download files to.
+     <n> is an integer greater than or equal to 1.
+     The value will be substituted with time information and appended to
+     :term:`DATA_INGEST_<n>_OUTPUT_DIR` if it is set.
+
+     | *Used by:* DataIngest
+
+   DATA_INGEST_<n>_OUTPUT_DIR
+     Used to specify location to download files to.
+     <n> is an integer greater than or equal to 1.
+     Prepended to :term:`DATA_INGEST_<n>_OUTPUT_TEMPLATE`.
+
+     | *Used by:* DataIngest
+
+   DATA_INGEST_<n>_INPUT_TEMPLATE
+     Used to specify a URL to download files from.
+     <n> is an integer greater than or equal to 1.
+     The value will be substituted with time information and appended to
+     :term:`DATA_INGEST_<n>_INPUT_DIR` if it is set.
+
+     | *Used by:* DataIngest
+
+   DATA_INGEST_<n>_INPUT_DIR
+     Used to specify a URL to download files from.
+     <n> is an integer greater than or equal to 1.
+     Prepended to :term:`DATA_INGEST_<n>_INPUT_TEMPLATE`.
+
+     | *Used by:* DataIngest
+
+   DATA_INGEST_SKIP_IF_OUTPUT_EXISTS
+     If True, do not download file if local file already exists.
+     Set to False to overwrite files.
+     Applies to all DATA_INGEST_<n> instances.
+
+     | *Used by:*  DataIngest
+
+   DATA_INGEST_<n>_SKIP_IF_OUTPUT_EXISTS
+     If True, do not download file if local file already exists.
+     Set to False to overwrite files.
+     <n> is an integer greater than or equal to 1.
+     Applies only to DATA_INGEST_<n> instance.
+
+     | *Used by:*  DataIngest
+
+   DATA_INGEST_<n>_AUTO_DECOMPRESS
+     If True, check if file is a supported compression type and automatically
+     decompress the file before writing it to disk.
+     Set to False to download files as they are from the URL.
+     Defaults to True.
+     <n> is an integer greater than or equal to 1.
+
+     | *Used by:*  DataIngest
+
+   DATA_INGEST_<n>_USERNAME
+     Optional username used to authenticate DATA_INGEST_<n> download.
+     Leave unset to skip authentication.
+     Set to an empty string to provide an empty string as the username.
+     <n> is an integer greater than or equal to 1.
+
+     | *Used by:*  DataIngest
+
+   DATA_INGEST_<n>_PASSWORD
+     Optional password used to authenticate DATA_INGEST_<n> download.
+     Leave unset to skip authentication.
+     Set to an empty string to provide an empty string as the password.
+     <n> is an integer greater than or equal to 1.
+
+     | *Used by:*  DataIngest
