@@ -1,16 +1,29 @@
 """
 GridStat: Basic Use Case
-=========================
+========================
 
 met_tool_wrapper/GridStat/GridStat.conf
 
 """
+
+##############################################################################
+# .. contents::
+#   :depth: 1
+#   :local:
+#   :backlinks: none
+
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
 # Compare 3 hour forecast precipitation accumulations to observations
 # of 3 hour precipitation accumulation. Generate statistics of the results.
+
+##############################################################################
+# Version Added
+# -------------
+#
+# METplus version 3.0
 
 ##############################################################################
 # Datasets
@@ -53,28 +66,45 @@ met_tool_wrapper/GridStat/GridStat.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
-# .. note::
-#     See the :ref:`GridStat MET Configuration<grid-stat-met-conf>`
-#     section of the User's Guide for more information on the environment
-#     variables used in the file below.
+# METplus sets environment variables based on user settings in the METplus
+# configuration file. See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details.
 #
-# parm/met_config/GridStatConfig_wrapped
+# **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
 #
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+# If there is a setting in the MET configuration file that is currently
+# not supported by METplus you’d like to control, please refer to:
+# :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
+#
+# .. dropdown:: GridStatConfig_wrapped
+#
+#   .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case does not call a Python Embedding script.
+#
+
+##############################################################################
+# User Scripting
+# --------------
+#
+# This user case does not call a user-defined script.
+#
 
 ##############################################################################
 # Running METplus
 # ---------------
 #
-# Provide the use case .conf configuration file to the run_metplus.py script.
+# Pass the use case configuration file to the run_metplus.py script along
+# with any user-specific system configuration files if desired::
 #
-# /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf /path/to/user_system.conf
 #
-# See the :ref:`running-metplus` section of the System Configuration chapter
-# for more details.
+# See :ref:`running-metplus` for more information.
 #
 
 ##############################################################################
