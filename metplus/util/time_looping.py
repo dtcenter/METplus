@@ -34,6 +34,7 @@ def time_generator(config):
         config.logger.debug(f"Using TIME_GENERATOR_INPUT_DIR/TEMPLATE to find {prefix} times")
         # Get unique datetime values that appear in ALL directory / template combinations.
         unique_dts = _get_intersected_unique_times(config, time_type=prefix, sort_by=prefix)
+        config.logger.debug(f"Found {len(unique_dts)} {prefix.lower()} times that match all search criteria")
         for file_dt in unique_dts:
             file_time_info = _create_time_input_dict(prefix, file_dt, clock_dt)
             yield file_time_info
@@ -162,7 +163,7 @@ def _get_intersected_unique_times(config, time_type, sort_by=None, input_dict=No
     @param config METplusConfig object
     @param time_type Type of time to extract ('init', 'valid', 'lead')
     @param sort_by Optional sort parameter for get_files_and_time_info
-    @param input_dict Optional filtering dictionary for _filter_leads_by_template
+    @param input_dict Optional filtering dictionary for filtering leads by template
 
     @returns Sorted list of unique times that appear in all combinations
     """
@@ -178,9 +179,11 @@ def _get_intersected_unique_times(config, time_type, sort_by=None, input_dict=No
         # Check if this template has lead time information
         is_forecast = _template_is_forecast(input_dir, input_template)
 
+        config.logger.debug(f"Searching for files in {input_dir} using template {input_template}")
         files_and_time_info = get_files_and_time_info(input_dir, input_template,
                                                       sort_by=sort_by,
                                                       logger=config.logger)
+        config.logger.debug(f"Found {len(files_and_time_info)} file{'s' if len(files_and_time_info) >1 else ''}")
 
         # Apply filtering to forecast files if input_dict is provided
         if input_dict is not None and is_forecast:
@@ -344,7 +347,8 @@ def _filter_files_by_input_dict(files_and_time_info, input_dict, config):
                 filtered_files_and_time_info.append((filepath, file_time_info))
 
         config.logger.debug(f"Filtered input files to {len(filtered_files_and_time_info)} "
-                            f"files matching {filter_time_type}={filter_time_value}")
+                            f"file{'s' if len(filtered_files_and_time_info) > 1 else ''} "
+                            f"matching {filter_time_type}={filter_time_value}")
         return filtered_files_and_time_info
 
     return files_and_time_info
@@ -637,13 +641,15 @@ def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
     # use TIME_GENERATOR_INPUT_DIR/TEMPLATE to find forecast leads if set
     if _is_time_generator_dir_or_template_set(config):
         config.logger.debug("Using TIME_GENERATOR_INPUT_DIR/TEMPLATE to find lead times")
-        unique_leads = _filter_leads_by_template(config, input_dict)
+        unique_leads = _get_intersected_unique_times(config, time_type='lead', sort_by='lead',
+                                                     input_dict=input_dict)
         lead_seq = _handle_lead_seq(config, unique_leads, default_unit='S')
         if lead_seq:
             leads_fmt = [ti_get_lead_string(lead, plural=False) for lead in lead_seq]
-            config.logger.debug(f"Found files with lead times: {', '.join(leads_fmt)}")
+            config.logger.debug(f"Found {len(lead_seq)} lead times that match "
+                                f"all search criteria: {', '.join(leads_fmt)}")
         else:
-            config.logger.debug("No lead times found")
+            config.logger.debug("No lead times found that match all search criteria")
         return lead_seq
 
     lead_min, lead_max, no_max = _get_lead_min_max(config)
@@ -688,15 +694,6 @@ def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
         return [0]
 
     return out_leads
-
-
-def _filter_leads_by_template(config, input_dict=None):
-    """!Filter forecast leads by template, returning intersection across all dir/template pairs."""
-    if input_dict is None:
-        return _get_intersected_unique_times(config, time_type='lead', sort_by='lead')
-
-    return _get_intersected_unique_times(config, time_type='lead', sort_by='lead',
-                                         input_dict=input_dict)
 
 
 def _are_lead_configs_ok(lead_seq, init_seq, lead_groups,
