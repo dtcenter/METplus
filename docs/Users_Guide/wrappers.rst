@@ -9141,10 +9141,22 @@ METplus Configuration
 | :term:`RMW_ANALYSIS_CYCLONE`
 | :term:`RMW_ANALYSIS_INIT_BEG`
 | :term:`RMW_ANALYSIS_INIT_END`
+| :term:`RMW_ANALYSIS_INIT_INC`
+| :term:`RMW_ANALYSIS_INIT_EXC`
 | :term:`RMW_ANALYSIS_VALID_BEG`
 | :term:`RMW_ANALYSIS_VALID_END`
+| :term:`RMW_ANALYSIS_VALID_INC`
+| :term:`RMW_ANALYSIS_VALID_EXC`
+| :term:`RMW_ANALYSIS_INIT_HOUR`
+| :term:`RMW_ANALYSIS_VALID_HOUR`
+| :term:`RMW_ANALYSIS_LEAD`
 | :term:`RMW_ANALYSIS_INIT_MASK`
 | :term:`RMW_ANALYSIS_VALID_MASK`
+| :term:`RMW_ANALYSIS_CATEGORY`
+| :term:`RMW_ANALYSIS_COLUMN_THRESH_NAME`
+| :term:`RMW_ANALYSIS_COLUMN_THRESH_VAL`
+| :term:`RMW_ANALYSIS_INIT_THRESH_NAME`
+| :term:`RMW_ANALYSIS_INIT_THRESH_VAL`
 | :term:`RMW_ANALYSIS_SKIP_IF_OUTPUT_EXISTS`
 | :term:`RMW_ANALYSIS_MET_CONFIG_OVERRIDES`
 | :term:`RMW_ANALYSIS_SKIP_VALID_TIMES`
@@ -9178,6 +9190,24 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 Environment variables in wrapped MET config
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+${METPLUS_DATA_FIELD}
+"""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`BOTH_VAR<n>_NAME`
+     - data.field.name
+   * - :term:`BOTH_VAR<n>_LEVELS`
+     - data.field.level
+   * - :term:`BOTH_VAR<n>_OPTIONS`
+     - n/a
+
+.. note:: For more information on controlling the field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+
 ${METPLUS_MODEL}
 """"""""""""""""
 
@@ -9189,30 +9219,6 @@ ${METPLUS_MODEL}
      - MET Config File
    * - :term:`MODEL`
      - model
-
-${METPLUS_BASIN}
-""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`RMW_ANALYSIS_BASIN`
-     - basin
-
-${METPLUS_STORM_NAME}
-"""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`RMW_ANALYSIS_STORM_NAME`
-     - storm_name
 
 ${METPLUS_STORM_ID}
 """""""""""""""""""
@@ -9226,6 +9232,18 @@ ${METPLUS_STORM_ID}
    * - :term:`RMW_ANALYSIS_STORM_ID`
      - storm_id
 
+${METPLUS_BASIN}
+""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`RMW_ANALYSIS_BASIN`
+     - basin
+
 ${METPLUS_CYCLONE}
 """"""""""""""""""
 
@@ -9237,6 +9255,18 @@ ${METPLUS_CYCLONE}
      - MET Config File
    * - :term:`RMW_ANALYSIS_CYCLONE`
      - cyclone
+
+${METPLUS_STORM_NAME}
+"""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`RMW_ANALYSIS_STORM_NAME`
+     - storm_name
 
 ${METPLUS_INIT_BEG}
 """""""""""""""""""
@@ -9262,6 +9292,30 @@ ${METPLUS_INIT_END}
    * - :term:`RMW_ANALYSIS_INIT_END`
      - init_end
 
+${METPLUS_INIT_INC}
+^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`RMW_ANALYSIS_INIT_INC`
+     - init_inc
+
+${METPLUS_INIT_EXC}
+^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`RMW_ANALYSIS_INIT_EXC`
+     - init_exc
+
 ${METPLUS_VALID_BEG}
 """"""""""""""""""""
 
@@ -9285,6 +9339,65 @@ ${METPLUS_VALID_END}
      - MET Config File
    * - :term:`RMW_ANALYSIS_VALID_END`
      - valid_end
+${METPLUS_VALID_INC}
+^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`RMW_ANALYSIS_VALID_INC`
+     - valid_inc
+
+${METPLUS_VALID_EXC}
+^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`RMW_ANALYSIS_VALID_EXC`
+     - valid_exc
+
+${METPLUS_INIT_HOUR}
+^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`RMW_ANALYSIS_INIT_HOUR`
+     - init_hour
+
+${METPLUS_VALID_HOUR}
+^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`RMW_ANALYSIS_VALID_HOUR`
+     - valid_hour
+
+${METPLUS_LEAD}
+^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`RMW_ANALYSIS_LEAD`
+     - lead
 
 ${METPLUS_INIT_MASK}
 """"""""""""""""""""
@@ -9309,9 +9422,8 @@ ${METPLUS_VALID_MASK}
      - MET Config File
    * - :term:`RMW_ANALYSIS_VALID_MASK`
      - valid_mask
-
-${METPLUS_DATA_FIELD}
-"""""""""""""""""""""
+${METPLUS_CATEGORY}
+^^^^^^^^^^^^^^^^^^^
 
 .. list-table::
    :widths: 5 5
@@ -9319,14 +9431,56 @@ ${METPLUS_DATA_FIELD}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`BOTH_VAR<n>_NAME`
-     - data.field.name
-   * - :term:`BOTH_VAR<n>_LEVELS`
-     - data.field.level
-   * - :term:`BOTH_VAR<n>_OPTIONS`
-     - n/a
+   * - :term:`RMW_ANALYSIS_CATEGORY`
+     - category
 
-.. note:: For more information on controlling the field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+${METPLUS_COLUMN_THRESH_NAME}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`RMW_ANALYSIS_COLUMN_THRESH_NAME`
+     - column_thresh_name
+
+${METPLUS_COLUMN_THRESH_VAL}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`RMW_ANALYSIS_COLUMN_THRESH_VAL`
+     - column_thresh_val
+
+${METPLUS_INIT_THRESH_NAME}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`RMW_ANALYSIS_INIT_THRESH_NAME`
+     - init_thresh_name
+
+${METPLUS_INIT_THRESH_VAL}
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`RMW_ANALYSIS_INIT_THRESH_VAL`
+     - init_thresh_val
 
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""

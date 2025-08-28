@@ -14517,3 +14517,63 @@ METplus Configuration Glossary
      <n> is an integer greater than or equal to 1.
 
      | *Used by:*  DataIngest
+
+   RMW_ANALYSIS_INIT_INC
+     Specify the value for 'init_inc' in the MET configuration file for RMWAnalysis.
+
+     | *Used by:* RMWAnalysis
+
+   RMW_ANALYSIS_INIT_EXC
+     Specify the value for 'init_exc' in the MET configuration file for RMWAnalysis.
+
+     | *Used by:* RMWAnalysis
+
+   RMW_ANALYSIS_VALID_INC
+     Specify the value for 'valid_inc' in the MET configuration file for RMWAnalysis.
+
+     | *Used by:* RMWAnalysis
+
+   RMW_ANALYSIS_VALID_EXC
+     Specify the value for 'valid_exc' in the MET configuration file for RMWAnalysis.
+
+     | *Used by:* RMWAnalysis
+
+   RMW_ANALYSIS_INIT_HOUR
+     Specify the value for 'init_hour' in the MET configuration file for RMWAnalysis.
+
+     | *Used by:* RMWAnalysis
+
+   RMW_ANALYSIS_VALID_HOUR
+     Specify the value for 'valid_hour' in the MET configuration file for RMWAnalysis.
+
+     | *Used by:* RMWAnalysis
+
+   RMW_ANALYSIS_LEAD
+     Specify the value for 'lead' in the MET configuration file for RMWAnalysis.
+
+     | *Used by:* RMWAnalysis
+
+   RMW_ANALYSIS_CATEGORY
+     Specify the value for 'category' in the MET configuration file for RMWAnalysis.
+
+     | *Used by:* RMWAnalysis
+
+   RMW_ANALYSIS_COLUMN_THRESH_NAME
+     Specify the value for 'column_thresh_name' in the MET configuration file for RMWAnalysis.
+
+     | *Used by:* RMWAnalysis
+
+   RMW_ANALYSIS_COLUMN_THRESH_VAL
+     Specify the value for 'column_thresh_val' in the MET configuration file for RMWAnalysis.
+
+     | *Used by:* RMWAnalysis
+
+   RMW_ANALYSIS_INIT_THRESH_NAME
+     Specify the value for 'init_thresh_name' in the MET configuration file for RMWAnalysis.
+
+     | *Used by:* RMWAnalysis
+
+   RMW_ANALYSIS_INIT_THRESH_VAL
+     Specify the value for 'init_thresh_val' in the MET configuration file for RMWAnalysis.
+
+     | *Used by:* RMWAnalysis
