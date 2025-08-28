@@ -185,8 +185,10 @@ def _get_intersected_unique_times(config, time_type, sort_by=None, input_dict=No
                                                       logger=config.logger)
         config.logger.debug(f"Found {len(files_and_time_info)} file{'s' if len(files_and_time_info) >1 else ''}")
 
-        # Apply filtering to forecast files if input_dict is provided
-        if input_dict is not None and is_forecast:
+        # If input_dict is provided, apply filtering
+        # only filter analysis files if input_dict contains valid time
+        # to avoid filtering out init times incorrectly when init == valid
+        if input_dict is not None and (is_forecast or 'valid' in input_dict):
             files_and_time_info = _filter_files_by_input_dict(files_and_time_info,
                                                               input_dict, config)
             if files_and_time_info is None:
@@ -294,7 +296,7 @@ def _get_enhanced_init_times(forecast_templates, analysis_templates):
         all_init_sets.append(set(init_times))
 
     # For analysis templates, init == valid, but we may not want to include these
-    # in the intersection since they represent different concepts
+    # in the intersection since they would filter out all init times except init == valid
     # Only include if there are no forecast templates
     if not forecast_templates:
         for _, _, files_and_time_info in analysis_templates:
