@@ -14517,3 +14517,13 @@ METplus Configuration Glossary
      <n> is an integer greater than or equal to 1.
 
      | *Used by:*  DataIngest
+
+   PB2NC_MESSAGE_TYPE_GROUP_MAP
+     Specify the value for 'message_type_group_map' in the MET configuration file for PB2NC.
+
+     | *Used by:* PB2NC
+
+   ENSEMBLE_STAT_MESSAGE_TYPE_GROUP_MAP
+     Specify the value for 'message_type_group_map' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
