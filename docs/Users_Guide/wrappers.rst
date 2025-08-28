@@ -9339,6 +9339,7 @@ ${METPLUS_VALID_END}
      - MET Config File
    * - :term:`RMW_ANALYSIS_VALID_END`
      - valid_end
+
 ${METPLUS_VALID_INC}
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -9422,6 +9423,7 @@ ${METPLUS_VALID_MASK}
      - MET Config File
    * - :term:`RMW_ANALYSIS_VALID_MASK`
      - valid_mask
+
 ${METPLUS_CATEGORY}
 ^^^^^^^^^^^^^^^^^^^
 
