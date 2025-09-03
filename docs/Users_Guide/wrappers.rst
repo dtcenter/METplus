@@ -267,6 +267,7 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_SKIP_IF_OUTPUT_EXISTS`
 | :term:`ENSEMBLE_STAT_DESC`
 | :term:`ENSEMBLE_STAT_OBTYPE_AS_GROUP_VAL_FLAG`
+| :term:`ENSEMBLE_STAT_MESSAGE_TYPE_GROUP_MAP`
 | :term:`ENSEMBLE_STAT_ENS_SSVAR_BIN_SIZE`
 | :term:`ENSEMBLE_STAT_ENS_PHIST_BIN_SIZE`
 | :term:`ENSEMBLE_STAT_CLIMO_CDF_BINS`
@@ -909,6 +910,18 @@ ${METPLUS_OBTYPE_AS_GROUP_VAL_FLAG}
      - MET Config File
    * - :term:`ENSEMBLE_STAT_OBTYPE_AS_GROUP_VAL_FLAG`
      - obtype_as_group_val_flag
+
+${METPLUS_MESSAGE_TYPE_GROUP_MAP}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_MESSAGE_TYPE_GROUP_MAP`
+     - message_type_group_map
 
 ${METPLUS_ENS_SSVAR_BIN_SIZE}
 """""""""""""""""""""""""""""
@@ -7060,6 +7073,7 @@ METplus Configuration
 | :term:`PB2NC_INPUT_DATATYPE`
 | :term:`PB2NC_CONFIG_FILE`
 | :term:`PB2NC_MESSAGE_TYPE`
+| :term:`PB2NC_MESSAGE_TYPE_GROUP_MAP`
 | :term:`PB2NC_STATION_ID`
 | :term:`PB2NC_GRID`
 | :term:`PB2NC_POLY`
@@ -7142,6 +7156,18 @@ ${METPLUS_MESSAGE_TYPE}
      - MET Config File
    * - :term:`PB2NC_MESSAGE_TYPE`
      - message_type
+
+${METPLUS_MESSAGE_TYPE_GROUP_MAP}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_MESSAGE_TYPE_GROUP_MAP`
+     - message_type_group_map
 
 ${METPLUS_STATION_ID}
 """""""""""""""""""""
