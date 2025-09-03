@@ -192,8 +192,6 @@ class PairStatWrapper(CompareGriddedWrapper):
 
         self.handle_climo_dict()
         self.handle_climo_cdf_dict()
-        self.add_met_config(name='message_type_group_map', data_type='list',
-                            extra_args={'remove_quotes': True})
 
         self.handle_mask(get_point=True)
 
