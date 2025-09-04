@@ -199,6 +199,17 @@ def _get_intersected_unique_times(config, time_type, sort_by=None, input_dict=No
         else:
             analysis_templates.append((input_dir, input_template, files_and_time_info))
 
+    return _get_enhanced_times(time_type, forecast_templates, analysis_templates)
+
+
+def _get_enhanced_times(time_type, forecast_templates, analysis_templates):
+    """!Call the appropriate _get_enhanced_*_times function depending on the time type.
+
+    @param time_type Type of time to extract ('init', 'valid', 'lead')
+    @param forecast_templates List of (dir, template, files_and_time_info) for forecast data
+    @param analysis_templates List of (dir, template, files_and_time_info) for analysis data
+    @returns Sorted list of unique times or empty list if invalid time_type provided
+    """
     # Handle the case based on what time_type is requested
     if time_type.lower() == 'lead':
         return _get_enhanced_lead_times(forecast_templates, analysis_templates)
@@ -208,7 +219,6 @@ def _get_intersected_unique_times(config, time_type, sort_by=None, input_dict=No
         return _get_enhanced_init_times(forecast_templates, analysis_templates)
 
     return []
-
 
 def _get_enhanced_lead_times(forecast_templates, analysis_templates):
     """!Get forecast lead times, considering analysis templates for valid time constraints.
