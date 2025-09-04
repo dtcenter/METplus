@@ -785,6 +785,31 @@ def test_time_generator_template_one_dir_three_templates(prefix, expected, metpl
 
     _test_time_generator_and_lead_sequence(config, prefix, expected)
 
+
+@pytest.mark.parametrize('prefix, expected', THREE_TEMPLATE_TEST_PARAMS)
+@pytest.mark.util
+def test_time_generator_template_one_dir_three_templates_custom_and_instance(prefix, expected, metplus_config, tmp_path_factory, make_dummy_empty):
+    """!Test that custom and instance strings are properly substituted in both the template and dir variables."""
+    # create empty files for testing
+    # use DDMMYYYY format for the file names to ensure proper sorting
+    data_dir = tmp_path_factory.mktemp("data_dir")
+    _create_dummy_files(make_dummy_empty, data_dir, 1)
+    _create_dummy_files(make_dummy_empty, data_dir, 2)
+    _create_dummy_files(make_dummy_empty, data_dir, 3)
+
+    config = metplus_config
+    config.set('config', 'LOOP_BY', prefix)
+    config.set('config', 'CURRENT_INSTANCE', 'data_dir')
+    config.set('config', 'CURRENT_CUSTOM', 'nc')
+    # replace data_dir string with instance template tag
+    config.set('config', 'TIME_GENERATOR_INPUT_DIR', str(data_dir).replace('data_dir', '{instance}'))
+    # replace nc string with custom template tag
+    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', (f'{DATA_TEMPLATE1},'
+                                                           f' {DATA_TEMPLATE2.replace('nc', '{custom}')},'
+                                                           f' {DATA_TEMPLATE3.replace('nc', '{custom}')}'))
+    _test_time_generator_and_lead_sequence(config, prefix, expected)
+
+
 @pytest.mark.parametrize(
     'prefix, expected', [
         # expected is a dict where keys are the run times and values are the expected lead times for each run time

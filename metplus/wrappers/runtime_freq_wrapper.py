@@ -202,9 +202,15 @@ class RuntimeFreqWrapper(CommandBuilder):
     def run_all_times(self):
         wrapper_instance_name = self.get_wrapper_instance_name()
         self.logger.info(f'Running wrapper: {wrapper_instance_name}')
+        # set CURRENT_INSTANCE to instance string or empty string if None
+        # this is done so instance can be substituted for template-based time generation
+        self.config.set('config', 'CURRENT_INSTANCE', self.instance if self.instance else '')
 
         # loop over all custom strings
         for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+            # set CURRENT_CUSTOM to custom string
+            # this is done so custom can be substituted for template-based time generation
+            self.config.set('config', 'CURRENT_CUSTOM', custom_string)
             if custom_string:
                 self.logger.info(
                     f"Processing custom string: {custom_string}"

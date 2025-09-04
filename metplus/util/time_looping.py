@@ -112,6 +112,14 @@ def _get_dir_template_pairs(config):
     input_dirs = getlist(config.getdir('TIME_GENERATOR_INPUT_DIR'))
     input_templates = getlist(config.getraw('config', 'TIME_GENERATOR_INPUT_TEMPLATE'))
 
+    # read input dirs and templates, substituting custom and instance strings
+    custom = config.getraw('config', 'CURRENT_CUSTOM', '')
+    instance = config.getraw('config', 'CURRENT_INSTANCE', '')
+    input_dirs = [do_string_sub(item, custom=custom, instance=instance, skip_missing_tags=True)
+                  for item in input_dirs]
+    input_templates = [do_string_sub(item, custom=custom, instance=instance, skip_missing_tags=True)
+                       for item in input_templates]
+
     # Handle pairing logic
     if len(input_dirs) == 1:
         # Use the single directory for each template, applying smart splitting
