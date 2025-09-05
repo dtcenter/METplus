@@ -804,9 +804,9 @@ def test_time_generator_template_one_dir_three_templates_custom_and_instance(pre
     # replace data_dir string with instance template tag
     config.set('config', 'TIME_GENERATOR_INPUT_DIR', str(data_dir).replace('data_dir', '{instance}'))
     # replace nc string with custom template tag
-    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', (f'{DATA_TEMPLATE1},'
-                                                           f' {DATA_TEMPLATE2.replace('nc', '{custom}')},'
-                                                           f' {DATA_TEMPLATE3.replace('nc', '{custom}')}'))
+    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', (f"{DATA_TEMPLATE1},"
+                                                           f" {DATA_TEMPLATE2.replace('nc', '{custom}')},"
+                                                           f" {DATA_TEMPLATE3.replace('nc', '{custom}')}"))
     _test_time_generator_and_lead_sequence(config, prefix, expected)
 
 
