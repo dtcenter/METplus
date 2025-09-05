@@ -223,7 +223,7 @@ def run_metplus(config):
         write_all_commands(all_commands, config)
 
         # compute total number of errors that occurred and output results
-        return _check_wrapper_run_errors(processes, config.logger)
+        return _get_total_errors_and_log_counts(processes, config.logger)
     except Exception:
         config.logger.exception("Fatal error occurred")
         config.logger.info("Check the log file for more information: "
@@ -281,16 +281,34 @@ def _check_wrapper_init_errors(processes, logger=None):
     return errors
 
 
-def _check_wrapper_run_errors(processes, logger=None):
+def _get_total_errors_and_log_counts(processes, logger=None):
     total_errors = 0
     for process in processes:
-        if not process.errors:
-            continue
+        # gather the number of times each command was run
+        run_count = {}
+        for cmd, _ in process.all_commands:
+            # get the basename of the first command
+            cmd_basename = os.path.basename(cmd.split()[0])
+            if cmd_basename not in run_count:
+                run_count[cmd_basename] = 0
+            run_count[cmd_basename] += 1
+
+        # add errors from process to total number of errors
         total_errors += process.errors
 
         if not logger:
             continue
+
         process_name = process.__class__.__name__.replace('Wrapper', '')
+
+        # log number of times each command was run
+        for cmd_basename, count in run_count.items():
+            logger.info(f"{process_name}: {cmd_basename} was run {count} times")
+
+        # log number of errors that occurred if any occurred
+        if not process.errors:
+            continue
+
         error_msg = f'{process_name} had {process.errors} error'
         if process.errors > 1:
             error_msg += 's'
