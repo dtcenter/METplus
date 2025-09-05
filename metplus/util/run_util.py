@@ -53,19 +53,41 @@ def run_cmd(cmd, run_args):
         logger.info("Not running command (DO_NOT_RUN_EXE = True)")
         return 0
 
-    log_path = run_args.log_path
+    cmd_exe = _get_command_to_run(cmd, run_args.log_path, env)
 
-    # determine if command must be run in a shell
+    # log path to the log file if used
+    if run_args.log_path:
+        logger.debug("Logging command output to: %s" % run_args.log_path)
+        _log_header_info(run_args.log_path, run_args.copyable_env, cmd, run_args.log_met_to_metplus)
+
+    # get current time to calculate total time to run command
+    start_cmd_time = datetime.now()
+
+    # run command
+    try:
+        ret = run(cmd_exe)
+    except Exception as err:
+        logger.error('Exception occurred: %s' % err)
+        return -1
+
+    # calculate time taken to run
+    end_cmd_time = datetime.now()
+    total_cmd_time = end_cmd_time - start_cmd_time
+    logger.info('Finished running %s - took %s' % (os.path.basename(shlex.split(cmd)[0]), total_cmd_time))
+
+    return ret
+
+
+def _get_command_to_run(cmd, log_path, env):
+    # determine if the command must be run in a shell
     run_in_shell = '*' in cmd or ';' in cmd or '<' in cmd or '>' in cmd
 
     # Run the executable and pass the arguments as a sequence.
     # Split the command in to a sequence using shell syntax.
     the_exe = shlex.split(cmd)[0]
     the_args = shlex.split(cmd)[1:]
-    if log_path:
-        logger.debug("Logging command output to: %s" % log_path)
-        _log_header_info(log_path, run_args.copyable_env, cmd, run_args.log_met_to_metplus)
 
+    if log_path:
         if run_in_shell:
             cmd_exe = exe('sh')['-c', cmd].env(**env).err2out() >> log_path
         else:
@@ -76,22 +98,7 @@ def run_cmd(cmd, run_args):
         else:
             cmd_exe = exe(the_exe)[the_args].env(**env).err2out()
 
-    # get current time to calculate total time to run command
-    start_cmd_time = datetime.now()
-
-    # run command
-    try:
-        ret = run(cmd_exe)
-    except Exception as err:
-        logger.error(f'Exception occurred: {err}')
-        ret = -1
-    else:
-        # calculate time to run
-        end_cmd_time = datetime.now()
-        total_cmd_time = end_cmd_time - start_cmd_time
-        logger.info(f'Finished running {the_exe} - took {total_cmd_time}')
-
-    return ret
+    return cmd_exe
 
 
 def _log_header_info(log_path, copyable_env, cmd, log_met_to_metplus):
