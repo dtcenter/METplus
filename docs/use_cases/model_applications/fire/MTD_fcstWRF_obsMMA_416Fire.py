@@ -24,7 +24,7 @@ model_applications/fire/MTD_fcstWRF_obsMMA_416Fire.conf
 # Version Added
 # -------------
 #
-# METplus version 6.1
+# METplus version 6.2
 
 ##############################################################################
 # Datasets
@@ -49,7 +49,7 @@ model_applications/fire/MTD_fcstWRF_obsMMA_416Fire.conf
 # METplus Components
 # ------------------
 #
-# This use case calls MODE-Time-Domain once.
+# This use case calls Gen-Vx-Mask and MODE-Time-Domain once.
 
 ##############################################################################
 # METplus Workflow
@@ -62,18 +62,11 @@ model_applications/fire/MTD_fcstWRF_obsMMA_416Fire.conf
 #
 # **Increment between beginning and end times (INIT_INCREMENT):** 1 hour
 #
-# **Sequence of forecast leads to process (LEAD_SEQ):** 1 - 35 hours with hourly increments
+# **Sequence of forecast leads to process (LEAD_SEQ):** 1 - 33 hours with hourly increments
 #
-# With an increment of 1 hour, one forecast initialization time is processed to produce
-#
-# for a total of 29 years, with 24 members in each ensemble forecast. This use case 
-# initially runs SeriesAnalysis 24 times, once for each member of the CFSv2 ensemble 
-# across the 29 years of data. The resulting 24 outputs are read in by GenEnsProd 
-# which uses the normalize option to normalize each of the ensemble members 
-# relative to its climatology (FBAR) and standard deviation (FSTDEV). The output from 
-# GenEnsProd are 29 files containing the uncalibrated probability forecasts for 
-# the lower tercile of January for each year. The final probability verification 
-# is done across the temporal scale in SeriesAnalysis, and the spatial scale in GridStat.
+# With an increment of 1 hour, one forecast initialization time is processed to result in 32
+# runs of Gen-Vx-Mask, once for each lead time.  Then, Mode-Time-Domain is run once which 
+# uses all model and observation times as input.
 
 ##############################################################################
 # METplus Configuration
@@ -112,23 +105,8 @@ model_applications/fire/MTD_fcstWRF_obsMMA_416Fire.conf
 ##############################################################################
 # User Scripting
 # --------------
-# [UPDATE_SECTION_CONTENT]
 #
-# This use case uses a Python script to perform plotting, which at the time of 
-# this use case creation was not an ability METplus had. Additionally some of 
-# the plotting features used in this script are not currently slated for METplus 
-# analysis suite development.
-# In order to create the plots, the script reads in a yaml file and sets up 
-# the correct environment. Plot parameters (which are hard coded in the script) are set, 
-# and the datasets are read in from the input file. The desired variable fields 
-# are placed into arrays, which are then treated for bad data and squeezed to the 
-# appropriate dimensions. Additional basic math is completed on the resulting arrays 
-# to create the cross spectra values with the results being graphed.
-#
-# .. dropdown:: parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra/cross_spectra_plot.py
-# 
-#   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra/cross_spectra_plot.py
+# User Scripting is not used in this use case.
 
 ##############################################################################
 # Running METplus
@@ -151,19 +129,32 @@ model_applications/fire/MTD_fcstWRF_obsMMA_416Fire.conf
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
 # Output for this use case will be found in 
-# {OUTPUT_BASE}/model_applications/fire/MTD_fcstWRF_obsMMA_416Fire
-# and will contain the following files::
+# {OUTPUT_BASE}/model_applications/fire/MTD_fcstWRF_obsMMA_416Fire.  The output from 
+# Gen-Vx-Mask will be in the GenVxMask/Interpolated_perimeters directory and will 
+# contain one mask for each time in the following format::
+#
+#  * 416_Fire_Interpolated_YYYYMMDDHH.nc
+#
+# The output from MTD and will contain the following files::
 #
 #  * mtd_WRF_Fire_416_20180601_170000V_2d.txt
+#  * mtd_WRF_Fire_416_20180601_170000V_3d_pair_cluster.txt
+#  * mtd_WRF_Fire_416_20180601_170000V_3d_pair_simple.txt
+#  * mtd_WRF_Fire_416_20180601_170000V_3d_single_cluster.txt
 #  * mtd_WRF_Fire_416_20180601_170000V_3d_single_simple.txt
 #  * mtd_WRF_Fire_416_20180601_170000V_obj.nc
 #
-# The 2d file contains object based statistics for the objects at different time steps.  
-# The 3d file contains the object based statistics over time.  For the netCDF file, five 
-# variable fields are present (not including the lat/lon fields). Those variables are::
+# The 2d file contains object-based statistics for the objects at different time steps.  
+# The 3d files contains the object based statistics over time for single and paired, simple and 
+# cluster objects.  For the netCDF file, six variable fields are present (not including the 
+# lat/lon fields). Those variables are::
 #
 #  * fcst_raw(time, lat, lon)
+#  * obs_raw(time, lat, lon)
 #  * fcst_object_id(time, lat, lon)
+#  * obs_object_id(time, lat, lon)
+#  * fcst_cluster_id(time, lat, lon)
+#  * obs_cluster_id(time, lat, lon)
 
 ##############################################################################
 # Keywords
@@ -172,8 +163,10 @@ model_applications/fire/MTD_fcstWRF_obsMMA_416Fire.conf
 # .. note::
 #
 #   * MTDToolUseCase
+#   * GenVxMaskToolUseCase
 #   * NetCDFFileUseCase
 #   * FireAppUseCase
+#   * WRFFileUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

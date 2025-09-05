@@ -19,10 +19,10 @@ model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_BearFire.conf
 # (relative humidity less than 15% and wind speed greater than 25 miles per hour).
 # The purpose is to identify areas in the model that meet the red flag criteria for
 # fire weather forecasting.  Observations are not used in this use case.  Rather, the 
-# model is used as both the forecast and observations (since Multivariate MODE requires 
-# both to run).  As such, matched pair output is not useful for this use case.  Rather
-# simple and cluster object statistics on the area meeting the Red Flag criteria are 
-# the goal of this use case.
+# model is input for both the forecast and observations (since Multivariate MODE 
+# requires both to run).  As such, matched object statistics are not useful for this 
+# use case.  Rather simple and cluster object statistics on the area meeting the Red 
+# Flag criteria are the goal.
 
 ##############################################################################
 # Version Added
@@ -36,7 +36,7 @@ model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_BearFire.conf
 #
 # **Forecast:** WRF Fire
 #
-# **Observation:** None
+# **Observation:** WRF Fire
 #
 # **Climatology:** None
 #
@@ -191,6 +191,7 @@ model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_BearFire.conf
 #   * MODEToolUseCase
 #   * PythonEmbeddingFileUseCase
 #   * FireAppUseCase
+#   * WRFFileUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
