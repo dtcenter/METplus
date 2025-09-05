@@ -73,7 +73,8 @@ def run_cmd(cmd, run_args):
     # calculate time taken to run
     end_cmd_time = datetime.now()
     total_cmd_time = end_cmd_time - start_cmd_time
-    logger.info('Finished running %s - took %s' % (os.path.basename(shlex.split(cmd)[0]), total_cmd_time))
+    exe_name = os.path.basename(shlex.split(cmd)[0].rstrip(';'))
+    logger.info('Finished running %s - took %s' % (exe_name, total_cmd_time))
 
     return ret
 
