@@ -808,6 +808,8 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
          {'METPLUS_POINT_WEIGHT_FLAG': 'point_weight_flag = SID;'}),
         ({'ENSEMBLE_STAT_OBTYPE_AS_GROUP_VAL_FLAG': 'FALSE', },
          {'METPLUS_OBTYPE_AS_GROUP_VAL_FLAG': 'obtype_as_group_val_flag = FALSE;'}),
+        ({'ENSEMBLE_STAT_MESSAGE_TYPE_GROUP_MAP': '{ key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";},{ key = "ANYAIR";  val = "AIRCAR,AIRCFT";}', },
+         {'METPLUS_MESSAGE_TYPE_GROUP_MAP': 'message_type_group_map = [{ key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";}, { key = "ANYAIR";  val = "AIRCAR,AIRCFT";}];'}),
 
     ]
 )

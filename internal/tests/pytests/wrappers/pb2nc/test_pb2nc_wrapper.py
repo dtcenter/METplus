@@ -239,6 +239,8 @@ def test_find_input_files(metplus_config, offsets, offset_to_find):
         ({'PB2NC_INPUT_TEMPLATE': ('ndas.t{da_init?fmt=%H}z.prepbufr.tm{offset?fmt=%2H}.{da_init?fmt=%Y%m%d}.nr,'
                                    'another_file.nr,yet_another_file.nr')},
          {}),
+        ({'PB2NC_MESSAGE_TYPE_GROUP_MAP': '{ key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";},{ key = "ANYAIR";  val = "AIRCAR,AIRCFT";}', },
+         {'METPLUS_MESSAGE_TYPE_GROUP_MAP': 'message_type_group_map = [{ key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";}, { key = "ANYAIR";  val = "AIRCAR,AIRCFT";}];'}),
 
     ]
 )

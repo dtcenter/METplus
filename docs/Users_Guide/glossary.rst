@@ -3303,6 +3303,11 @@ METplus Configuration Glossary
 
      | *Used by:*  PB2NC
 
+   PB2NC_MESSAGE_TYPE_GROUP_MAP
+     Specify the value for 'message_type_group_map' in the MET configuration file for PB2NC.
+
+     | *Used by:* PB2NC
+
    PB2NC_OBS_BUFR_VAR_LIST
      Specify which BUFR codes to use from the observation dataset when using the MET pb2nc tool. Format is comma separated list, e.g.:PMO, TOB, TDO
 
@@ -6021,6 +6026,11 @@ METplus Configuration Glossary
      Set the message_type option in the EnsembleStat MET config file.
 
      | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_MESSAGE_TYPE_GROUP_MAP
+     Specify the value for 'message_type_group_map' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
 
    ENSEMBLE_STAT_MASK_POLY
      Set the mask.poly entry in the EnsembleStat MET config file.
@@ -14575,5 +14585,3 @@ METplus Configuration Glossary
 
    RMW_ANALYSIS_INIT_THRESH_VAL
      Specify the value for 'init_thresh_val' in the MET configuration file for RMWAnalysis.
-
-     | *Used by:* RMWAnalysis
