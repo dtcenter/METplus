@@ -182,9 +182,7 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
-# Output for this use case will be found in 
-# {OUTPUT_BASE}/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds 
-# and will contain the following files::
+# Output will contain the following files:
 #
 #  * grid_stat_198201_000000L_19700101_000000V_pairs.nc
 #  * grid_stat_198201_000000L_19700101_000000V_pstd.txt
@@ -192,7 +190,7 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 #
 # Each file should contain corresponding statistics for the line type(s) requested.
 # For the netCDF file, five variable fields are present (not including the lat/lon fields). 
-# Those variables are::
+# Those variables are:
 #
 #  * FCST_fcst_ENS_FREQ_lt-0.43_0_0_all_all_FULL(lat, lon)
 #  * OBS_tmp2m_20100101_000000_all_all_FULL(lat, lon)
@@ -214,6 +212,5 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
-#
-#
+
 # sphinx_gallery_thumbnail_path = '_static/short-range-MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.png'

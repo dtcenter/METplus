@@ -33,6 +33,7 @@ Dataset Applications
 
 | `Climate <../search.html?q=DataApplicationClimate&check_keywords=yes&area=default>`_
 | `Ensemble  <../search.html?q=DataApplicationEnsemble&check_keywords=yes&area=default>`_
+| `Land Surface <../search.html?q=DataApplicationLandSurface&check_keywords=yes&area=default>`_
 | `Marine and Cryosphere <../search.html?q=DataApplicationMarineAndCryo&check_keywords=yes&area=default>`_
 | `Medium Range <../search.html?q=DataApplicationMediumRange&check_keywords=yes&area=default>`_
 | `Precipitation <../search.html?q=DataApplicationPrecipitation&check_keywords=yes&area=default>`_

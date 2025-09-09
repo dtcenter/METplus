@@ -16,7 +16,7 @@ Add or update information about software releases on the website.
   * Create a new **Software Release** for the new coordinated release by clicking
     on **Add New Release**.
 
-    * For **Full Title of Release** type "Coorindated METplus X.Y".
+    * For **Full Title of Release** type "Coordinated METplus X.Y".
 
     * For **Related Community Code** select only the "METplus" option.
 

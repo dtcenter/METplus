@@ -36,6 +36,7 @@ class PB2NCWrapper(ReformatPointWrapper):
         'METPLUS_LEVEL_CATEGORY',
         'METPLUS_QUALITY_MARK_THRESH',
         'METPLUS_OBS_BUFR_MAP',
+        'METPLUS_MESSAGE_TYPE_GROUP_MAP',
     ]
 
     # deprecated env vars that are no longer supported in the wrapped MET conf
@@ -84,6 +85,9 @@ class PB2NCWrapper(ReformatPointWrapper):
         c_dict['CONFIG_FILE'] = self.get_config_file('PB2NCConfig_wrapped')
 
         self.add_met_config(name='message_type', data_type='list')
+
+        self.add_met_config(name='message_type_group_map', data_type='list',
+                            extra_args={'remove_quotes': True})
 
         self.add_met_config(name='station_id', data_type='list')
 

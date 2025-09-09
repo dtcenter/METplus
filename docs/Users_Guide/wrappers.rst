@@ -185,6 +185,36 @@ METplus Configuration
    | :term:`CYCLONE_GENERATE_TRACK_ASCII`
    |
 
+.. _data_ingest_wrapper:
+
+DataIngest
+==========
+
+Description
+-----------
+
+Used to configure the DataIngest wrapper used to
+download input files and optionally decompress them.
+
+METplus Configuration
+---------------------
+
+Required:
+
+| :term:`DATA_INGEST_<n>_INPUT_TEMPLATE`
+| :term:`DATA_INGEST_<n>_OUTPUT_TEMPLATE`
+
+Optional:
+
+| :term:`DATA_INGEST_<n>_INPUT_DIR`
+| :term:`DATA_INGEST_<n>_INPUT_DIR`
+| :term:`DATA_INGEST_SKIP_IF_OUTPUT_EXISTS`
+| :term:`DATA_INGEST_<n>_SKIP_IF_OUTPUT_EXISTS`
+| :term:`DATA_INGEST_<n>_AUTO_DECOMPRESS`
+| :term:`DATA_INGEST_<n>_USERNAME`
+| :term:`DATA_INGEST_<n>_PASSWORD`
+
+
 .. _ensemble_stat_wrapper:
 
 EnsembleStat
@@ -237,6 +267,7 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_SKIP_IF_OUTPUT_EXISTS`
 | :term:`ENSEMBLE_STAT_DESC`
 | :term:`ENSEMBLE_STAT_OBTYPE_AS_GROUP_VAL_FLAG`
+| :term:`ENSEMBLE_STAT_MESSAGE_TYPE_GROUP_MAP`
 | :term:`ENSEMBLE_STAT_ENS_SSVAR_BIN_SIZE`
 | :term:`ENSEMBLE_STAT_ENS_PHIST_BIN_SIZE`
 | :term:`ENSEMBLE_STAT_CLIMO_CDF_BINS`
@@ -879,6 +910,18 @@ ${METPLUS_OBTYPE_AS_GROUP_VAL_FLAG}
      - MET Config File
    * - :term:`ENSEMBLE_STAT_OBTYPE_AS_GROUP_VAL_FLAG`
      - obtype_as_group_val_flag
+
+${METPLUS_MESSAGE_TYPE_GROUP_MAP}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_MESSAGE_TYPE_GROUP_MAP`
+     - message_type_group_map
 
 ${METPLUS_ENS_SSVAR_BIN_SIZE}
 """""""""""""""""""""""""""""
@@ -7030,6 +7073,7 @@ METplus Configuration
 | :term:`PB2NC_INPUT_DATATYPE`
 | :term:`PB2NC_CONFIG_FILE`
 | :term:`PB2NC_MESSAGE_TYPE`
+| :term:`PB2NC_MESSAGE_TYPE_GROUP_MAP`
 | :term:`PB2NC_STATION_ID`
 | :term:`PB2NC_GRID`
 | :term:`PB2NC_POLY`
@@ -7112,6 +7156,18 @@ ${METPLUS_MESSAGE_TYPE}
      - MET Config File
    * - :term:`PB2NC_MESSAGE_TYPE`
      - message_type
+
+${METPLUS_MESSAGE_TYPE_GROUP_MAP}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_MESSAGE_TYPE_GROUP_MAP`
+     - message_type_group_map
 
 ${METPLUS_STATION_ID}
 """""""""""""""""""""
@@ -10255,11 +10311,11 @@ The following values **must** be defined in the METplus configuration file:
 | :term:`STAT_ANALYSIS_OUTPUT_DIR`
 | :term:`MODEL\<n\>`
 | :term:`MODEL<n>_STAT_ANALYSIS_LOOKIN_DIR`
-| :term:`GROUP_LIST_ITEMS`
-| :term:`LOOP_LIST_ITEMS`
 
 The following values are optional in the METplus configuration file:
 
+| :term:`GROUP_LIST_ITEMS`
+| :term:`LOOP_LIST_ITEMS`
 | :term:`STAT_ANALYSIS_CONFIG_FILE`
 | :term:`LOG_STAT_ANALYSIS_VERBOSITY`
 | :term:`STAT_ANALYSIS_CUSTOM_LOOP_LIST`

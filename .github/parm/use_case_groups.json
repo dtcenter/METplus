@@ -10,6 +10,11 @@
     "run": false
   },
   {
+    "category": "met_tool_wrapper",
+    "index_list": "68",
+    "run": false
+  },
+  {
     "category": "air_quality_and_comp",
     "index_list": "0",
     "run": false
@@ -82,7 +87,12 @@
   {
     "category": "land_surface",
     "index_list": "1",
-    "run": true
+    "run": false
+  },
+  {
+    "category": "land_surface",
+    "index_list": "2",
+    "run": false
   },
   {
     "category": "marine_and_cryosphere",
@@ -361,6 +371,11 @@
   {
     "category": "tc_and_extra_tc",
     "index_list": "3-5",
+    "run": false
+  },
+  {
+    "category": "tc_and_extra_tc",
+    "index_list": "6",
     "run": false
   },
   {
