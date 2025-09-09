@@ -20,7 +20,7 @@ Use Cases lists the required Python packages in the individual Use Cases
 documentation.
 	  
   * :ref:`METplus Python Package Requirements <python_package_requirements>`
-  * `MET Python Embedding Requirements <https://met.readthedocs.io/en/feature_2588_install_rewrite/Users_Guide/appendixF.html#compiling-met-for-python-embedding>`_
+  * `MET Python Embedding Requirements <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#compiling-met-for-python-embedding>`_
   * `METcalcpy Python Package Requirements <https://metcalcpy.readthedocs.io/en/latest/Users_Guide/installation.html#python-requirements>`_
   * `METdataio Python Package Requirements <https://metdataio.readthedocs.io/en/latest/Users_Guide/installation.html#requirements>`_
   * `METplotpy Python Package Requirements <https://metplotpy.readthedocs.io/en/latest/Users_Guide/installation.html#python-requirements>`_
