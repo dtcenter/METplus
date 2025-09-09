@@ -1,0 +1,6 @@
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] dtcenter/METdataio#384 - dtcenter/METdataio#384 sorts a directory listing that should prevent sporadic diffs in the clouds:8 use case
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3015 - #3015 added a new use case to tc_and_extra_tc
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3037 - #3037 added new use case s2s:6
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3039 - #3039 updates s2s_soil_moisture:0-1 which changes the output
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3071 - #3071 included changes to get chrome for METplotpy (plotly/kaleido dependency), which changed the font of the title text in a few images
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] dtcenter/MET#3229 - dtcenter/MET#3229 changes the version number for MET to 12.1.1. The diff logic does not currently ignore the version column in the METdataio reformatted output
