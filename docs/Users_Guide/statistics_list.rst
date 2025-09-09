@@ -491,8 +491,8 @@ Statistics List F
     - Neighborhood 
     - Grid-Stat
     - NBRCNT 
-  * - Standard deviation of the :raw-html:`<br />`
-      error 
+  * - Standard deviation :raw-html:`<br />`
+      of forecasts 
     - FSTDEV
     - Continuous 
     - Ensemble-Stat :raw-html:`<br />`

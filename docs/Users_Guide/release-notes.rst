@@ -87,6 +87,8 @@ METplus Version 6.1.0 Release Notes (2025-07-30)
 
   .. dropdown:: New Use Cases
 
+     * Convective Triggering Potential - Humidity Index
+       (`#2390 <https://github.com/dtcenter/METplus/issues/2533>`_)
      * International Soil Moisture Network (ISMN)
        (`#2533 <https://github.com/dtcenter/METplus/issues/2533>`_)
      * Hurricane Matthew using native WRF
