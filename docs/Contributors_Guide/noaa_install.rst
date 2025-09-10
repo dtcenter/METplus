@@ -187,7 +187,7 @@ In the :code:`miniconda` directory, obtain the script. For example:
    Note that the link above links to the **RAW** content of the file. It is essential to
    download the raw format, otherwise the file will contain unwanted HTML information
    and will not work appropriately. If a user simply runs
-   :code:`wget https://github.com/dtcenter/METplus/blob/develop/internal/scripts/installation/metplus_components_v6.1_py3.12.sh`
+   **wget https://github.com/dtcenter/METplus/blob/develop/internal/scripts/installation/metplus_components_v6.1_py3.12.sh**
    any attempts to run this code will be unsuccessful.
    
 Modify the line :code:`MINICONDA_PATH=/path/to/miniconda3`, then make the script executable:
@@ -252,7 +252,7 @@ Download the compilation script, *compile_MET_all.sh*. For example:
    Note	that the link above links to the **RAW** content of the	file. It is essential to
    download the raw format, otherwise the file will contain unwanted HTML information
    and will not	work appropriately. If a user simply runs
-   :code:`https://github.com/dtcenter/MET/blob/main_v12.1/internal/scripts/installation/compile_MET_all.sh`
+   **wget https://github.com/dtcenter/MET/blob/main_v12.1/internal/scripts/installation/compile_MET_all.sh**
    any attempts	to run this code will be unsuccessful.
    
 .. note::
@@ -324,7 +324,7 @@ To download the file for **Ursa** for MET version 12.1.0, for example, run:
    Note that the link above links to the **RAW** content of the file. It is essential to
    download the raw format, otherwise the file will contain unwanted HTML information
    and will not work appropriately. If a user simply runs
-   :code:`https://github.com/dtcenter/MET/blob/main_v12.1/internal/scripts/installation/config/install_met_env.ursa`
+   **wget https://github.com/dtcenter/MET/blob/main_v12.1/internal/scripts/installation/config/install_met_env.ursa**
    any attempts to run this code will be unsuccessful.
 
 This file includes the version number for official releases. For example, for the MET
@@ -372,4 +372,88 @@ replacing :code:`X.Y.Z` with the installed version.
 
 Create a Modulefile for MET
 ---------------------------
+
+The table below lists the system name, the location for the MET modulefile, and the
+account used for the installation.
+
+.. list-table::
+
+   * - **System**
+     - **Location**
+     - **Account Access**
+   * - Ursa
+     - /contrib/met/modulefiles/met
+     - role.metplus
+   * - Hera
+     - /contrib/met/modulefiles/met
+     - role.metplus
+   * - Jet
+     - /contrib/met/modulefiles/met
+     - role.metplus
+   * - Gaea
+     - /usw/met/modulefiles/met
+     - role.metplus
+   * - Orion
+     - /apps/contrib/modulefiles/met
+     - role-ovp
+   * - Hercules
+     - /apps/contrib/modulefiles/met
+     - role-ovp
+
+Download the existing installation modulefile for the appropriate system.
+These modulefiles are located in the
+`MET GitHub repository <https://github.com/dtcenter/MET>`_
+in the **internal/scripts/installation/modulefiles** directory and are named with the format
+*<X.Y.Z>_<system-name>*. For example, 12.1.0_jet or 12.1.0_ursa.
+
+To download the file for **Ursa** for MET version 12.1.0, for example, run:
+
+.. code-block::
+
+   wget https://raw.githubusercontent.com/dtcenter/MET/refs/heads/main_v12.1/internal/scripts/installation/modulefiles/12.1.0_ursa
+
+.. note::
+
+   The :code:`wget` command above will get the modulefile for the
+   MET 12.1.0 releaese. If a different release is desired, replace the *main_v12.1* with
+   *main_vX.Y* or with *develop* for a **beta** or **rc** release.
+
+.. warning::
+
+   Note that the link above links to the **RAW** content of the file. It is essential to
+   download the raw format, otherwise the file will contain unwanted HTML information
+   and will not work appropriately. If a user simply runs
+   **wget https://github.com/dtcenter/MET/blob/main_v12.1/internal/scripts/installation/modulefiles/12.1.0_ursa**
+   any attempts to run this code will be unsuccessful.
+
+
+If installing an official release, rename the file simply X.Y.Z. For example,
+
+.. code-block::
+
+   mv 12.1.0_ursa 12.1.0
+
+If installing a beta release, rename the file X.Y.Z-betaN. For example,
+
+.. code-block::
+   
+   mv 12.1.0_ursa 12.1.0-beta1
+
+Open the file using the editor of your choice and change any references to
+X.Y.Z to X.Y.Z-betaN. Save the file.
+   
+If installing a rc release, rename the file X.Y.Z-rcN. For example,
+
+.. code-block::
+
+   mv 12.1.0_ursa 12.1.0-rc1
+
+Open the file using the	editor of your choice and change any references	to
+X.Y.Z to X.Y.Z-rcN. Save the file.
+
+Review the file to ensure no other updates need to be made.
+
+
+Installing METplus
+==================
 
