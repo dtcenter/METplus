@@ -13,7 +13,7 @@ Update Appendix A METplus Components Python Packages for this release.
   and their version number (if applicable) should be updated.
 
   The versions of the Python packages should match the versions listed in the
-  :code:`requirements.txt` file at top level of each repository and should include any new
+  :code:`requirements.txt` file(s) within each repository and should include any new
   packages used in new METplus Use Cases.
 
   .. note::
