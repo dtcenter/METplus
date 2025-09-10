@@ -40,8 +40,8 @@ where the :code:`<system-name>` and :code:`<bastion>` options are listed below.
 
 .. list-table::
 
-   * - RDHPCS System
-     - RSA Bastion hostnames
+   * - **RDHPCS System**
+     - **RSA Bastion hostnames**
    * - Ursa 
      - ursa-rsa.princeton.rdhpcs.noaa.gov :raw-html:`<br />` ursa-rsa.boulder.rdhpcs.noaa.gov
    * - Hera
@@ -83,7 +83,7 @@ where the :code:`<system-name>` is either :code:`orion` or
 While compilations may be done on any of the nodes, the development nodes serve the purpose
 for software development and compiles in which additional system libraries may be requested
 to be installed that are normally not required for runtime. Also, the development nodes
-provide the only gateway for writing into the :code:`/apps/contrib/` directories.
+provide the only gateway for writing into the **/apps/contrib/** directories.
 
 The development nodes are:
 
@@ -92,8 +92,8 @@ The development nodes are:
 
 .. list-table::
 
-   * - MSU-HPC System
-     - Development Nodes
+   * - **MSU-HPC System**
+     - **Development Nodes**
    * - Orion
      - orion-devel-1 :raw-html:`<br />` orion-devel-2
    * - Hercules
@@ -135,10 +135,10 @@ environment was necessary. As such, the :code:`metplus_v6.1_py3.12` environment 
 
 .. list-table::
 
-   * - System
-     - Location
-     - Account Access
-     - Note  
+   * - **System**
+     - **Location**
+     - **Account Access**
+     - **Note**  
    * - Ursa
      - /scratch3/BMC/dtc/METplus/miniconda/miniconda3/envs/<environment-name>
      - role.metplus
@@ -193,4 +193,33 @@ and run the script:
 
    ./metplus_components_v6.1_py3.12.sh
 
+Install MET
+===========
 
+The table below lists the system name, the location for the MET installation, and the
+account used for the installation.
+
+.. list-table::
+
+   * - **System**
+     - **Location**
+     - **Account Access**
+   * - Ursa
+     - 
+     - role.metplus
+   * - Hera
+     - 
+     - role.metplus
+   * - Jet	
+     - 
+     - role.metplus
+   * - Gaea
+     - 
+     - role.metplus
+   * - Orion
+     - 
+     - role-ovp
+   * - Hercules
+     - 
+     - role-ovp
+   
