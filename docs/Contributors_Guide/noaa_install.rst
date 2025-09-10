@@ -17,8 +17,8 @@ configurations, and installation steps to ensure successful deployment
 and use of METplus on these systems.
 
 
-Log On
-======
+Logging On
+==========
 
 For these instructions, logging on to the RDHPCS systems is done using
 the Secure Shell (SSH) protocol to one of the system’s bastions. RDHPCS
@@ -118,6 +118,79 @@ account with the following command:
 This ensures that installations are done in the shared role environment rather than under an
 individual user account.
 
+Conda Environment
+=================
 
+Ensure the proper conda environment is set for the METplus installations. The table below
+lists the system name, the location of the conda environment, the account used to install
+the environment, any applicable notes. The :code:`<environment-name>` referred to below
+is in the format :code:`metplus_v<X1>.<Y1>_py<X2>.<Y2>`, where :code:`<X1>` is the major version of
+METplus release, :code:`<Y1>` is the minor version of the METplus release, :code:`<X2>` is the
+major version of the Python release, and :code:`<Y2>` is the minor version of the Python release.
+
+For example, METplus version 5.1 used version 3.10 of Python so the :code:`<environment-name>`
+used for the coordinated METplus-5.1 release is :code:`metplus_v5.1_py3.10`. However, with
+the coordinated METplus-6.1 release, METplus started using Python version 3.12, so a new
+environment was necessary. As such, the :code:`metplus_v6.1_py3.12` environment was created.
+
+.. list-table::
+
+   * - System
+     - Location
+     - Account Access
+     - Note  
+   * - Ursa
+     - /scratch3/BMC/dtc/METplus/miniconda/miniconda3/envs/<environment-name>
+     - role.metplus
+     - Replace <environment-name> with the environment name 
+   * - Hera
+     - /scratch3/BMC/dtc/METplus/miniconda/miniconda3/envs/<environment-name>
+     - role.metplus
+     - Replace <environment-name> with the environment name
+   * - Jet
+     - /mnt/lfs6/HFIP/dtc-hurr/METplus/miniconda/miniconda3/envs/<environment-name>
+     - role.metplus
+     - Replace <environment-name> with the environment name  
+   * - Gaea
+     - /ncrc/proj/nggps_psd/<user-name>/projects/miniconda/miniconda3/envs/<environment-name>
+     - personal
+     - Replace <user-name> with the username and <environment-name> with the environment name
+   * - Orion
+     - /work/noaa/ovp/miniconda/miniconda3/envs/<environment-name>
+     - role-ovp
+     - Replace <environment-name> with the environment name
+   * - Hercules
+     - /work/noaa/ovp/miniconda/miniconda3/envs/<environment-name>
+     - role-ovp
+     - Replace <environment-name> with the environment name
+
+If the appropriate conda environment does not currently exist, one will need to be added.
+The installation scripts for the conda environments can be found in the METplus GitHub
+repository in the **internal/scripts/installation** directory and are named
+:code:`metplus_components_v<X1>.<Y1>_py<X2>.<Y2>.sh`.
+
+This script should be placed in the :code:`miniconda` directory listed above. For example, on Orion,
+the script would be placed in **/work/noaa/ovp/miniconda/**. The script contains
+:code:`MINICONDA_PATH=/path/to/miniconda3`. Note that :code:`/path/to/miniconda3` should be
+replaced with the actual path. For example, on Orion, :code:`MINICONDA_PATH` would be set to
+**/work/noaa/ovp/miniconda/miniconda3/**.
+
+In the :code:`miniconda` directory, obtain the script. For example:
+
+.. code-block::
+
+   wget https://raw.githubusercontent.com/dtcenter/METplus/refs/heads/develop/internal/scripts/installation/metplus_components_v6.1_py3.12.sh
+
+Modify the line :code:`MINICONDA_PATH=/path/to/miniconda3`, make the script executable
+
+.. code-block::
+
+   chmod metplus_components_v6.1_py3.12.sh
+
+and run the script:
+
+.. code-block::
+
+   ./metplus_components_v6.1_py3.12.sh
 
 
