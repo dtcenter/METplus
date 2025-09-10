@@ -124,7 +124,7 @@ Conda Environment
 Ensure the proper conda environment is set for the METplus installations. The table below
 lists the system name, the location of the conda environment, the account used to install
 the environment, any applicable notes. The :code:`<environment-name>` referred to below
-is in the format :code:`metplus_v<X1>.<Y1>_py<X2>.<Y2>`, where :code:`<X1>` is the major version of
+is in the format *metplus_v<X1>.<Y1>_py<X2>.<Y2>*, where :code:`<X1>` is the major version of
 METplus release, :code:`<Y1>` is the minor version of the METplus release, :code:`<X2>` is the
 major version of the Python release, and :code:`<Y2>` is the minor version of the Python release.
 
@@ -165,9 +165,10 @@ environment was necessary. As such, the :code:`metplus_v6.1_py3.12` environment 
      - Replace <environment-name> with the environment name
 
 If the appropriate conda environment does not currently exist, one will need to be added.
-The installation scripts for the conda environments can be found in the METplus GitHub
-repository in the **internal/scripts/installation** directory and are named
-:code:`metplus_components_v<X1>.<Y1>_py<X2>.<Y2>.sh`.
+The installation scripts for the conda environments are stored in
+`METplus GitHub repository <https://github.com/dtcenter/METplus>`_
+in the **internal/scripts/installation** directory and are named with the format
+*metplus_components_v<X1>.<Y1>_py<X2>.<Y2>.sh*.
 
 This script should be placed in the :code:`miniconda` directory listed above. For example, on Orion,
 the script would be placed in **/work/noaa/ovp/miniconda/**. The script contains
@@ -181,11 +182,19 @@ In the :code:`miniconda` directory, obtain the script. For example:
 
    wget https://raw.githubusercontent.com/dtcenter/METplus/refs/heads/develop/internal/scripts/installation/metplus_components_v6.1_py3.12.sh
 
-Modify the line :code:`MINICONDA_PATH=/path/to/miniconda3`, make the script executable
+.. warning::
+
+   Note that the link above links to the **RAW** content of the file. It is essential to
+   download the raw format, otherwise the file will contain unwanted HTML information
+   and will not work appropriately. If a user simply runs
+   :code:`wget https://github.com/dtcenter/METplus/blob/develop/internal/scripts/installation/metplus_components_v6.1_py3.12.sh`
+   any attempts to run this code will be unsuccessful.
+   
+Modify the line :code:`MINICONDA_PATH=/path/to/miniconda3`, then make the script executable:
 
 .. code-block::
 
-   chmod metplus_components_v6.1_py3.12.sh
+   chmod 775 metplus_components_v6.1_py3.12.sh
 
 and run the script:
 
@@ -205,21 +214,162 @@ account used for the installation.
      - **Location**
      - **Account Access**
    * - Ursa
-     - 
+     - /contrib/met
      - role.metplus
    * - Hera
-     - 
+     - /contrib/met
      - role.metplus
    * - Jet	
-     - 
+     - /contrib/met
      - role.metplus
    * - Gaea
-     - 
+     - /usw/met
      - role.metplus
    * - Orion
-     - 
+     - /apps/contrib/MET
      - role-ovp
    * - Hercules
-     - 
+     - /apps/contrib/MET
      - role-ovp
    
+On the system, in the location listed above, create a directory using the version number
+for the version of MET to be installed (e.g. X.Y.Z or X.Y.Z-betaN or X.Y.Z-rcN) and change
+into that directory. For example:
+
+.. code-block::
+
+   mkdir 12.1.0
+   cd 12.1.0
+
+Download the compilation script, *compile_MET_all.sh*. For example:
+
+.. code-block::
+
+   wget https://raw.githubusercontent.com/dtcenter/MET/develop/internal/scripts/installation/compile_MET_all.sh
+
+.. warning::
+
+   Note	that the link above links to the **RAW** content of the	file. It is essential to
+   download the raw format, otherwise the file will contain unwanted HTML information
+   and will not	work appropriately. If a user simply runs
+   :code:`https://github.com/dtcenter/MET/blob/main_v12.1/internal/scripts/installation/compile_MET_all.sh`
+   any attempts	to run this code will be unsuccessful.
+   
+.. note::
+
+   The :code:`wget` command above will get the latest and greatest script from the
+   **develop** branch. If that is not desired, replace **develop** with the branch
+   of your choice (e.g. **main_v12.1** or other).
+
+Make the script executable:
+
+.. code-block::
+
+   chmod 775 compile_MET_all.sh
+
+The tar file dependency packages for the various versions of MET are located on the DTC website
+`here <https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/>`_. Download the desired
+package. For example, to get the latest tar files package, run:
+
+.. code-block::
+
+   wget https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.latest.tgz
+
+Unpack the tar files package and remove the .tgz file
+
+.. code-block::
+
+   tar -zxf tar_files.latest.tgz
+   rm tar_files.latest.tgz
+
+Change directories to the **tar_files** directory. Download the desired version of MET:
+
+.. code-block::
+
+   cd tar_files
+   wget https://github.com/dtcenter/MET/archive/refs/tags/v12.1.0.tar.gz
+
+.. note::
+
+   The :code:`wget` command above will get the **v12.1.0** releaese. If a different
+   release is desired, replace the *12.1.0* with the *X.Y.Z*, the *X.Y.Z-betaN*, or
+   the *X.Y.Z-rcN* version of your choice.
+
+Go up one directory from the **tar_files** directory.
+
+.. code-block::
+
+   cd ..
+
+Download the existing installation configuration file for the appropriate system.
+These configuration files are located in the
+`MET GitHub repository <https://github.com/dtcenter/MET>`_
+in the **internal/scripts/installation/config** directory and are named with the format
+*install_met_env.<system-name>*. For example, install_met_env.jet or install_met_env.ursa.
+
+To download the file for **Ursa** for MET version 12.1.0, for example, run:
+
+.. code-block::
+
+   wget https://raw.githubusercontent.com/dtcenter/MET/refs/heads/main_v12.1/internal/scripts/installation/config/install_met_env.ursa
+
+.. note::
+
+   The :code:`wget` command above will get the installation configuration file for the
+   MET 12.1.0 releaese. If a different release is desired, replace the *main_v12.1* with
+   *main_vX.Y* or with *develop* for a **beta** or **rc** release.
+   
+.. warning::
+
+   Note that the link above links to the **RAW** content of the file. It is essential to
+   download the raw format, otherwise the file will contain unwanted HTML information
+   and will not work appropriately. If a user simply runs
+   :code:`https://github.com/dtcenter/MET/blob/main_v12.1/internal/scripts/installation/config/install_met_env.ursa`
+   any attempts to run this code will be unsuccessful.
+
+This file includes the version number for official releases. For example, for the MET
+12.1.0 release, the file contains the following entries specific to the 12.1.0 release:
+
+.. code-block::
+
+   export TEST_BASE=/contrib/met/12.1.0
+   export MET_TARBALL=v12.1.0.tar.gz
+
+If installing a beta release (X.Y.Z-betaN) or a rc release (X.Y.Z-rcN), these values will
+need to be modified appropriately.
+
+Similarly, if installing with Python embedding functionality (recommended), there are
+references to the specific conda environment. For example:
+
+.. code-block::
+
+   export MET_PYTHON=/scratch3/BMC/dtc/METplus/miniconda/miniconda3/envs/metplus_v6.1_py3.12
+   export MET_PYTHON_CC=-I${MET_PYTHON}/include/python3.12
+   export MET_PYTHON_LD="-L${MET_PYTHON}/lib/python3.12/config-3.12-x86_64-linux-gnu -L${MET_PYTHON}/lib -lpython3.12 -lpthread -ldl  -lutil -lm"
+
+If a conda environment different from *metplus_v6.1_py3.12* is desired, these values will
+need to be updated.
+
+For more detailed information about the variables in the script, see the
+`Using the compile_MET_all.sh script <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/installation.html#using-the-compile-met-all-sh-script>`_
+section of the `MET User's Guide <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/index.html>`_
+for the version of MET being installed.
+
+Run the following to execute the script:
+
+.. code-block::
+
+   ./compile_MET_all.sh install_met_env.<machine_name>
+
+After the installation is complete, to confirm that MET was installed successfully, run the
+following command from the installation directory to check for errors in the test file:
+
+.. code-block::
+
+   grep -i error MET-X.Y.Z/met.make_test.log
+
+replacing :code:`X.Y.Z` with the installed version.
+
+Create a Modulefile for MET
+---------------------------
+
