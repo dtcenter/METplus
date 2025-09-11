@@ -23,16 +23,3 @@ display: block;
 overflow: auto;
 padding: 12px 12px;
 }
-
-/*
-.codeblock,div[class^='highlight'] {
-padding: 0;
-}
-*/
-
-/* copy button for code blocks is always visible */
-/*
-button.copybtn {
-   opacity: 1;
-}
-*/
