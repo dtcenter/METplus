@@ -17,7 +17,6 @@ Condition codes: 0 for success, 1 for failure
 import os
 import re
 import csv
-import datetime
 import glob
 
 from ..util import getlist, mkdir_p
@@ -567,7 +566,6 @@ class TCPairsWrapper(RuntimeFreqWrapper):
                  nothing - sets the environment variables
         """
         # STORM_ID
-        storm_id = '[]'
         if self.c_dict.get('STORM_ID'):
             storm_id = str(self.c_dict['STORM_ID']).replace("'", '"')
 
@@ -575,7 +573,6 @@ class TCPairsWrapper(RuntimeFreqWrapper):
             self.env_var_dict['METPLUS_STORM_ID'] = storm_id_fmt
 
         # BASIN
-        basin = '[]'
         if self.c_dict.get('BASIN'):
             basin = str(self.c_dict['BASIN']).replace("'", '"')
 
@@ -583,7 +580,6 @@ class TCPairsWrapper(RuntimeFreqWrapper):
             self.env_var_dict['METPLUS_BASIN'] = basin_fmt
 
         # CYCLONE
-        cyclone = '[]'
         if self.c_dict.get('CYCLONE'):
             cyclone = self.c_dict.get('CYCLONE')
             # add storm month to each cyclone item if reformatting SBU
@@ -612,71 +608,77 @@ class TCPairsWrapper(RuntimeFreqWrapper):
 
         # find corresponding adeck or edeck files
         for bdeck_file in bdeck_files:
-            self.clear()
-            self.logger.debug(f'Found BDECK: {bdeck_file}')
+            if not self._process_bdeck(bdeck_file, wildcard_used, time_info, basin, cyclone):
+                return
 
-            # get current basin/cyclone that corresponds to bdeck
-            current_basin, current_cyclone = (
-                self._get_basin_cyclone_from_bdeck(bdeck_file, wildcard_used,
-                                                   basin, cyclone, time_info)
-            )
-            if current_basin is None or current_cyclone is None:
-                continue
 
-            time_storm_info = time_info.copy()
-            time_storm_info['basin'] = current_basin
-            time_storm_info['cyclone'] = current_cyclone
+    def _process_bdeck(self, bdeck_file, wildcard_used, time_info, basin, cyclone):
+        self.clear()
+        self.logger.debug(f'Found BDECK: {bdeck_file}')
 
-            # create lists for deck files, put bdeck in list so it can
-            # be handled the same as a and e for reformatting even though
-            # it will always be size 1
-            bdeck_list = [bdeck_file]
-            adeck_list = []
-            edeck_list = []
+        # get current basin/cyclone that corresponds to bdeck
+        current_basin, current_cyclone = (
+            self._get_basin_cyclone_from_bdeck(bdeck_file, wildcard_used,
+                                               basin, cyclone, time_info)
+        )
+        if current_basin is None or current_cyclone is None:
+            return True
 
-            # get adeck files
-            if self.c_dict['GET_ADECK']:
-                adeck_list = self.find_a_or_e_deck_files('A', time_storm_info)
-            # get edeck files
-            if self.c_dict['GET_EDECK']:
-                edeck_list = self.find_a_or_e_deck_files('E', time_storm_info)
+        time_storm_info = time_info.copy()
+        time_storm_info['basin'] = current_basin
+        time_storm_info['cyclone'] = current_cyclone
 
-            if not adeck_list and not edeck_list:
-                msg = 'Could not find any corresponding ADECK or EDECK files'
-                self.log_error(msg)
-                continue
+        # create lists for deck files, put bdeck in list so it can
+        # be handled the same as a and e for reformatting even though
+        # it will always be size 1
+        bdeck_list = [bdeck_file]
+        adeck_list = []
+        edeck_list = []
 
-            # reformat extra tropical cyclone files if necessary
-            if self.c_dict['REFORMAT_DECK']:
-                adeck_list = self.reformat_files(adeck_list, 'A', time_info)
-                bdeck_list = self.reformat_files(bdeck_list, 'B', time_info)
-                edeck_list = self.reformat_files(edeck_list, 'E', time_info)
+        # get adeck files
+        if self.c_dict['GET_ADECK']:
+            adeck_list = self.find_a_or_e_deck_files('A', time_storm_info)
+        # get edeck files
+        if self.c_dict['GET_EDECK']:
+            edeck_list = self.find_a_or_e_deck_files('E', time_storm_info)
 
-            self.args.append(f"-bdeck {' '.join(bdeck_list)}")
-            if adeck_list:
-                self.args.append(f"-adeck {' '.join(adeck_list)}")
-            if edeck_list:
-                self.args.append(f"-edeck {' '.join(edeck_list)}")
+        if not adeck_list and not edeck_list:
+            self.log_error('Could not find any corresponding ADECK or EDECK files')
+            return True
 
-            # find -diag file if requested
-            if not self._get_diag_file(time_storm_info):
-                self.missing_input_count += 1
-                return []
+        # reformat extra tropical cyclone files if necessary
+        if self.c_dict['REFORMAT_DECK']:
+            adeck_list = self.reformat_files(adeck_list, 'A', time_info)
+            bdeck_list = self.reformat_files(bdeck_list, 'B', time_info)
+            edeck_list = self.reformat_files(edeck_list, 'E', time_info)
 
-            # change wildcard basin/cyclone to 'all' for output filename
-            if current_basin == self.WILDCARDS['basin']:
-                time_storm_info['basin'] = 'all'
-            if current_cyclone == self.WILDCARDS['cyclone']:
-                time_storm_info['cyclone'] = 'all'
+        self.args.append(f"-bdeck {' '.join(bdeck_list)}")
+        if adeck_list:
+            self.args.append(f"-adeck {' '.join(adeck_list)}")
+        if edeck_list:
+            self.args.append(f"-edeck {' '.join(edeck_list)}")
 
-            if not self.find_and_check_output_file(time_info=time_storm_info,
-                                                   check_extension='.tcst'):
-                return []
+        # find -diag file if requested
+        if not self._get_diag_file(time_storm_info):
+            self.missing_input_count += 1
+            return False
 
-            # Set up the environment variable to be used in the TCPairs Config
-            self.set_environment_variables(time_storm_info)
+        # change wildcard basin/cyclone to 'all' for output filename
+        if current_basin == self.WILDCARDS['basin']:
+            time_storm_info['basin'] = 'all'
+        if current_cyclone == self.WILDCARDS['cyclone']:
+            time_storm_info['cyclone'] = 'all'
 
-            self.build()
+        if not self.find_and_check_output_file(time_info=time_storm_info,
+                                               check_extension='.tcst'):
+            return False
+
+        # Set up the environment variable to be used in the TCPairs Config
+        self.set_environment_variables(time_storm_info)
+
+        self.build()
+        return True
+
 
     def _get_bdeck(self, basin, cyclone, time_info):
         """! Use glob to get all bdeck files that match the basin and cyclone

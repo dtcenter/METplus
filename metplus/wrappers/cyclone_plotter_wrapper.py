@@ -327,7 +327,7 @@ class CyclonePlotterWrapper(CommandBuilder):
             # If the user has specified a region of interest rather than the
             # global extent, subset the data even further to points that are within a bounding box.
             if not self.is_global_extent:
-                self.logger.debug(f"Subset the data based on the region of interest.")
+                self.logger.debug("Subset the data based on the region of interest.")
                 subset_by_region_df = self.subset_by_region(sanitized_df)
                 if subset_by_region_df.empty:
                     return None
