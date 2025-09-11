@@ -3303,6 +3303,11 @@ METplus Configuration Glossary
 
      | *Used by:*  PB2NC
 
+   PB2NC_MESSAGE_TYPE_GROUP_MAP
+     Specify the value for 'message_type_group_map' in the MET configuration file for PB2NC.
+
+     | *Used by:* PB2NC
+
    PB2NC_OBS_BUFR_VAR_LIST
      Specify which BUFR codes to use from the observation dataset when using the MET pb2nc tool. Format is comma separated list, e.g.:PMO, TOB, TDO
 
@@ -6021,6 +6026,11 @@ METplus Configuration Glossary
      Set the message_type option in the EnsembleStat MET config file.
 
      | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_MESSAGE_TYPE_GROUP_MAP
+     Specify the value for 'message_type_group_map' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
 
    ENSEMBLE_STAT_MASK_POLY
      Set the mask.poly entry in the EnsembleStat MET config file.
@@ -14541,12 +14551,60 @@ METplus Configuration Glossary
 
      | *Used by:*  DataIngest
 
-   PB2NC_MESSAGE_TYPE_GROUP_MAP
-     Specify the value for 'message_type_group_map' in the MET configuration file for PB2NC.
+   RMW_ANALYSIS_INIT_INC
+     Specify the value for 'init_inc' in the MET configuration file for RMWAnalysis.
 
-     | *Used by:* PB2NC
+     | *Used by:* RMWAnalysis
 
-   ENSEMBLE_STAT_MESSAGE_TYPE_GROUP_MAP
-     Specify the value for 'message_type_group_map' in the MET configuration file for EnsembleStat.
+   RMW_ANALYSIS_INIT_EXC
+     Specify the value for 'init_exc' in the MET configuration file for RMWAnalysis.
 
-     | *Used by:* EnsembleStat
+     | *Used by:* RMWAnalysis
+
+   RMW_ANALYSIS_VALID_INC
+     Specify the value for 'valid_inc' in the MET configuration file for RMWAnalysis.
+
+     | *Used by:* RMWAnalysis
+
+   RMW_ANALYSIS_VALID_EXC
+     Specify the value for 'valid_exc' in the MET configuration file for RMWAnalysis.
+
+     | *Used by:* RMWAnalysis
+
+   RMW_ANALYSIS_INIT_HOUR
+     Specify the value for 'init_hour' in the MET configuration file for RMWAnalysis.
+
+     | *Used by:* RMWAnalysis
+
+   RMW_ANALYSIS_VALID_HOUR
+     Specify the value for 'valid_hour' in the MET configuration file for RMWAnalysis.
+
+     | *Used by:* RMWAnalysis
+
+   RMW_ANALYSIS_LEAD
+     Specify the value for 'lead' in the MET configuration file for RMWAnalysis.
+
+     | *Used by:* RMWAnalysis
+
+   RMW_ANALYSIS_CATEGORY
+     Specify the value for 'category' in the MET configuration file for RMWAnalysis.
+
+     | *Used by:* RMWAnalysis
+
+   RMW_ANALYSIS_COLUMN_THRESH_NAME
+     Specify the value for 'column_thresh_name' in the MET configuration file for RMWAnalysis.
+
+     | *Used by:* RMWAnalysis
+
+   RMW_ANALYSIS_COLUMN_THRESH_VAL
+     Specify the value for 'column_thresh_val' in the MET configuration file for RMWAnalysis.
+
+     | *Used by:* RMWAnalysis
+
+   RMW_ANALYSIS_INIT_THRESH_NAME
+     Specify the value for 'init_thresh_name' in the MET configuration file for RMWAnalysis.
+
+     | *Used by:* RMWAnalysis
+
+   RMW_ANALYSIS_INIT_THRESH_VAL
+     Specify the value for 'init_thresh_val' in the MET configuration file for RMWAnalysis.
