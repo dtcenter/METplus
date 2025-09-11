@@ -41,10 +41,7 @@ def run_cmd(cmd, run_args):
 
     # if env not set, use os.environ
     env = os.environ if run_args.env is None else run_args.env
-    if run_args.logger is not None:
-        logger = run_args.logger
-    else:
-        logger = PrintLogger()
+    logger = PrintLogger() if run_args.logger is None else run_args.logger
 
     logger.info("COMMAND: %s" % cmd)
 
