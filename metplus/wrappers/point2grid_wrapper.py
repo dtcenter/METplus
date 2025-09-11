@@ -122,7 +122,7 @@ class Point2GridWrapper(ReformatPointWrapper):
                                         dict_name='var_name_map',
                                         dict_items={'key': 'string',
                                                     'val': 'string'}):
-            self.isOK = False
+            self.is_ok = False
 
         self.add_met_config(name='obs_quality_inc', data_type='list',
                             metplus_configs=['POINT2GRID_OBS_QUALITY_INC',

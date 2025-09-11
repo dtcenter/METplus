@@ -424,7 +424,7 @@ class TCPairsWrapper(RuntimeFreqWrapper):
                                                dict_name='consensus',
                                                dict_items=dict_items)
         if not return_code:
-            self.isOK = False
+            self.is_ok = False
 
     def _handle_diag_info_map(self):
         dict_items = {
@@ -440,7 +440,7 @@ class TCPairsWrapper(RuntimeFreqWrapper):
                                                dict_name='diag_info_map',
                                                dict_items=dict_items)
         if not return_code:
-            self.isOK = False
+            self.is_ok = False
 
     def _handle_diag_convert_map(self):
         dict_items = {
@@ -454,7 +454,7 @@ class TCPairsWrapper(RuntimeFreqWrapper):
                                                dict_name='diag_convert_map',
                                                dict_items=dict_items)
         if not return_code:
-            self.isOK = False
+            self.is_ok = False
 
     def _handle_diag(self, c_dict):
         diag_indices = list(

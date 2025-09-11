@@ -536,7 +536,7 @@ def test_gen_ens_prod_single_field(metplus_config, config_overrides,
     input_dir = handle_input_dir(config)
 
     wrapper = GenEnsProdWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"

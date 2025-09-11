@@ -202,7 +202,7 @@ def test_valid_init_env_vars(metplus_config, config_overrides,
         expected_env_vars['METPLUS_JOBS'] = f'jobs = ["{JOB_ARGS}"];'
 
     wrapper = StatAnalysisWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     time_input = {
         'custom': config_overrides.get('STAT_ANALYSIS_CUSTOM_LOOP_LIST', '')
@@ -265,7 +265,7 @@ def test_check_required_job_template(metplus_config, config_overrides,
     wrapper = StatAnalysisWrapper(config)
     print(wrapper.c_dict['JOBS'])
     print(wrapper.c_dict['MODEL_INFO_LIST'])
-    assert wrapper.isOK == expected_result
+    assert wrapper.is_ok == expected_result
 
 
 @pytest.mark.parametrize(

@@ -510,7 +510,7 @@ def test_add_met_config_bool(metplus_config, mp_config_name, met_config_name,
                        extra_args=extra_args)
 
     assert cbw.env_var_dict.get(f'METPLUS_{key}', '') == expected_output
-    assert cbw.isOK == is_ok
+    assert cbw.is_ok == is_ok
 
 
 @pytest.mark.parametrize(
@@ -553,7 +553,7 @@ def test_add_met_config_int(metplus_config, mp_config_name, met_config_name,
                        metplus_configs=[mp_config_name])
 
     assert cbw.env_var_dict.get(f'METPLUS_{key}', '') == expected_output
-    assert cbw.isOK == is_ok
+    assert cbw.is_ok == is_ok
 
 
 @pytest.mark.parametrize(
@@ -596,7 +596,7 @@ def test_add_met_config_float(metplus_config, mp_config_name, met_config_name,
                        metplus_configs=[mp_config_name])
 
     assert cbw.env_var_dict.get(f'METPLUS_{key}', '') == expected_output
-    assert cbw.isOK == is_ok
+    assert cbw.is_ok == is_ok
 
 
 @pytest.mark.parametrize(
@@ -648,7 +648,7 @@ def test_add_met_config_thresh(metplus_config, mp_config_name, met_config_name,
 
     print(f"KEY: {key}, ENV VARS: {cbw.env_var_dict}")
     assert cbw.env_var_dict.get(f'METPLUS_{key}', '') == expected_output
-    assert cbw.isOK == is_ok
+    assert cbw.is_ok == is_ok
 
 
 @pytest.mark.parametrize(
@@ -1164,7 +1164,7 @@ def test_errors_and_defaults(metplus_config):
 
     # smoke test run_all_times
     cb.run_all_times()
-    assert cb.isOK
+    assert cb.is_ok
 
     # test get_output_prefix without time_info
     actual = cb.get_output_prefix(time_info=None)
@@ -1186,11 +1186,11 @@ def test_errors_and_defaults(metplus_config):
     assert actual == '[]'
 
     # test add_met_config_dict not OK
-    assert cb.isOK
+    assert cb.is_ok
     with mock.patch.object(cb_wrapper, 'add_met_config_dict', return_value=False):
         actual = cb.add_met_config_dict('foo', 'bar')
     assert actual is False
-    assert not cb.isOK
+    assert not cb.is_ok
 
     # test build when no cmd
     with mock.patch.object(cb, 'get_command', return_value=None):
@@ -1218,9 +1218,9 @@ def test_errors_and_defaults(metplus_config):
     assert actual is None
 
     # test check_gempaktocf
-    cb.isOK = True
+    cb.is_ok = True
     cb.check_gempaktocf(False)
-    assert cb.isOK == False
+    assert cb.is_ok == False
     assert _in_last_err('[exe] GEMPAKTOCF_JAR was not set in configuration file.', cb.logger)
 
     # test expected ensemble mismatch

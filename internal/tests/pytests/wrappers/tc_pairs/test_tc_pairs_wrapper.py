@@ -73,7 +73,7 @@ def test_read_storm_info(metplus_config, config_overrides, is_ok):
         config.set('config', key, value)
 
     wrapper = TCPairsWrapper(config)
-    assert wrapper.isOK == is_ok
+    assert wrapper.is_ok == is_ok
 
 
 @pytest.mark.parametrize(
@@ -295,7 +295,7 @@ def test_tc_pairs_storm_id_lists(metplus_config, get_test_data_dir, config_overr
         config.set('config', 'TC_PAIRS_REFORMAT_DIR', '{OUTPUT_BASE}')
         
     wrapper = TCPairsWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     all_cmds = wrapper.run_all_times()
     print("ALL COMMANDS:")
@@ -649,7 +649,7 @@ def test_tc_pairs_run(metplus_config, get_test_data_dir, loop_by, config_overrid
         remove_match_points = True
 
     wrapper = TCPairsWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -747,7 +747,7 @@ def test_tc_pairs_read_all_files(metplus_config, get_test_data_dir, loop_by, con
     )
 
     wrapper = TCPairsWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -848,17 +848,17 @@ def test_bad_add_config(metplus_config):
     with mock.patch.object(tcp,
                            "add_met_config_dict_list",
                            return_value=False):
-        wrapper.isOK = True
+        wrapper.is_ok = True
         wrapper._handle_consensus()
-        assert not wrapper.isOK
+        assert not wrapper.is_ok
 
-        wrapper.isOK = True
+        wrapper.is_ok = True
         wrapper._handle_diag_info_map()
-        assert not wrapper.isOK
+        assert not wrapper.is_ok
         
-        wrapper.isOK = True
+        wrapper.is_ok = True
         wrapper._handle_diag_convert_map()
-        assert not wrapper.isOK
+        assert not wrapper.is_ok
 
 
 # Test data for test_read_modify_write_file

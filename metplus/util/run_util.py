@@ -259,7 +259,7 @@ def _check_wrapper_init_errors(processes, logger=None):
     all_ok = True
     errors = 0
     for process in processes:
-        if process.isOK:
+        if process.is_ok:
             continue
         all_ok = False
         errors += process.errors

@@ -79,12 +79,12 @@ def test_grid_stat_missing_inputs(metplus_config, tmp_path_factory,
             os.remove(file_path)
 
     wrapper = DataIngestWrapper(config)
-    if not wrapper.isOK:
-        assert wrapper.isOK == is_ok
+    if not wrapper.is_ok:
+        assert wrapper.is_ok == is_ok
         return
 
     wrapper.run_all_times()
-    assert wrapper.isOK == is_ok
-    if wrapper.isOK:
+    assert wrapper.is_ok == is_ok
+    if wrapper.is_ok:
         for file_path in expected_files:
             assert os.path.exists(file_path)

@@ -92,7 +92,7 @@ def test_met_dictionary_in_var_options(metplus_config, fcst_and_obs_data):
                'interp = { type = [ { method = NEAREST; width = 1; } ] };')
 
     wrapper = PointStatWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     wrapper.run_all_times()
 
@@ -886,7 +886,7 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
         config.set('config', key, value)
 
     wrapper = PointStatWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"

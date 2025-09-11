@@ -171,7 +171,7 @@ class TCDiagWrapper(RuntimeFreqWrapper):
                                         output_dict=self.env_var_dict,
                                         dict_name='domain_info',
                                         dict_items=dict_items):
-            self.isOK = False
+            self.is_ok = False
 
         # handle data dictionary, including field, domain, level, and file_type
         c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
