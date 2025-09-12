@@ -1064,11 +1064,11 @@ Update the Existing Builds Section
 
 Update the Existing Builds section in the
 `METplus GitHub Repository <https://github.com/dtcenter/METplus>`_
-in the docs/Users_Guide/existing_builds.rst file for the appropriate branch
+in the **docs/Users_Guide/existing_builds.rst** file for the appropriate branch
 with an information that needs to be updated, including the *Last updated:*
-date.
-For example:
-* If installing an official release, update in the *main_X.Y* branch.
-* If installing a betaN release, update in the *develop* branch.
-* If installing a rcN release, update in both the *main_X.Y* branch AND the *develop* branch.
+date. For example:
+
+  * If installing an official release, update in the *main_X.Y* branch.
+  * If installing a betaN release, update in the *develop* branch.
+  * If installing a rcN release, update in both the *main_X.Y* branch AND the *develop* branch.
 
