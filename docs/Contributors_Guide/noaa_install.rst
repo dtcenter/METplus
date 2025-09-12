@@ -293,7 +293,7 @@ Change directories to the **tar_files** directory. Download the desired version 
 
 .. note::
 
-   The :code:`wget` command above will get the **v12.1.0** releaese. If a different
+   The :code:`wget` command above will get the **v12.1.0** release. If a different
    release is desired, replace the *12.1.0* with the *X.Y.Z*, the *X.Y.Z-betaN*, or
    the *X.Y.Z-rcN* version of your choice.
 
@@ -318,7 +318,7 @@ To download the file for **Ursa** for MET version 12.1.0, for example, run:
 .. note::
 
    The :code:`wget` command above will get the installation configuration file for the
-   MET 12.1.0 releaese. If a different release is desired, replace the *main_v12.1* with
+   MET 12.1.0 release. If a different release is desired, replace the *main_v12.1* with
    *main_vX.Y* or with *develop* for a **beta** or **rc** release.
    
 .. warning::
@@ -415,7 +415,7 @@ To download the file for **Ursa** for MET version 12.1.0, for example, run:
 .. note::
 
    The :code:`wget` command above will get the modulefile for the
-   MET 12.1.0 releaese. If a different release is desired, replace the *main_v12.1* with
+   MET 12.1.0 release. If a different release is desired, replace the *main_v12.1* with
    the desired *main_vX.Y* version or with *develop* for a **beta** or **rc** release and
    the *X.Y.Z* in the *X.Y.Z_<system-name>* filename.
 
@@ -539,7 +539,7 @@ Download the desired version of METplus:
 
 .. note::
 
-   The :code:`wget` command above will get the **v6.1.0** releaese. If a different
+   The :code:`wget` command above will get the **v6.1.0** release. If a different
    release is desired, replace the *6.1.0* with the *X.Y.Z*, the *X.Y.Z-betaN*, or
    the *X.Y.Z-rcN* version of your choice.
 
@@ -606,7 +606,7 @@ To download the file for **Ursa** for METplus version 6.1.0, for example, run:
 .. note::
 
    The :code:`wget` command above will get the modulefile for the
-   METplus 6.1.0 releaese. If a different release is desired, replace the *main_v6.1* with
+   METplus 6.1.0 release. If a different release is desired, replace the *main_v6.1* with
    the desired *main_vX.Y* version or with *develop* for a **beta** or **rc** release and
    the *X.Y.Z* in the *X.Y.Z_<system-name>* filename.
 
@@ -675,6 +675,32 @@ and the account used for the installation.
      - /apps/contrib/MET/METdataio
      - role-ovp
 
+Installation Process
+--------------------
+
+Download the desired version of METdataio:
+
+.. code-block::
+
+   wget https://github.com/dtcenter/METdataio/archive/refs/tags/v3.1.0.tar.gz
+
+.. note::
+
+   The :code:`wget` command above will get the **v3.1.0** release. If a different
+   release is desired, replace the *3.1.0* with the *X.Y.Z*, the *X.Y.Z-betaN*, or
+   the *X.Y.Z-rcN* version of your choice.
+
+Unpack the tar files package and remove the .tgz file:
+
+.. code-block::
+
+   tar -zxf v3.1.0.tar.gz
+   rm v3.1.0.tar.gz
+
+
+Create a Modulefile
+-------------------
+
 Download the existing installation modulefile for the appropriate system.
 These modulefiles are located in the
 `METdataio GitHub repository <https://github.com/dtcenter/METdataio>`_
@@ -685,12 +711,12 @@ To download the file for **Ursa** for METplus version 3.1.0, for example, run:
 
 .. code-block::
 
-   wget https://github.com/dtcenter/METdataio/blob/main_v3.1/internal/scripts/installation/modulefiles/3.1.0_ursa
+   wget https://raw.githubusercontent.com/dtcenter/METdataio/refs/heads/main_v3.1/internal/scripts/installation/modulefiles/3.1.0_ursa
 
 .. note::
 
    The :code:`wget` command above will get the modulefile for the
-   METdataio 3.1.0 releaese. If a different release is desired, replace the *main_v3.1* with
+   METdataio 3.1.0 release. If a different release is desired, replace the *main_v3.1* with
    the desired *main_vX.Y* version or with *develop* for a **beta** or **rc** release and
    the *X.Y.Z* in the *X.Y.Z_<system-name>* filename.
 
@@ -759,6 +785,32 @@ and the account used for the installation.
      - /apps/contrib/MET/METcalcpy
      - role-ovp
 
+Installation Process
+--------------------
+
+Download the desired version of METcalcpy:
+
+.. code-block::
+
+   wget https://github.com/dtcenter/METcalcpy/archive/refs/tags/v3.1.0.tar.gz
+
+.. note::
+
+   The :code:`wget` command above will get the **v3.1.0** release. If a different
+   release is desired, replace the *3.1.0* with the *X.Y.Z*, the *X.Y.Z-betaN*, or
+   the *X.Y.Z-rcN* version of your choice.
+
+Unpack the tar files package and remove the .tgz file:
+
+.. code-block::
+
+   tar -zxf v3.1.0.tar.gz
+   rm v3.1.0.tar.gz
+
+
+Create a Modulefile
+-------------------
+
 Download the existing installation modulefile for the appropriate system.
 These modulefiles are located in the
 `METcalcpy GitHub repository <https://github.com/dtcenter/METcalcpy>`_
@@ -769,12 +821,12 @@ To download the file for **Ursa** for METplus version 3.1.0, for example, run:
 
 .. code-block::
 
-   wget https://github.com/dtcenter/METcalcpy/blob/main_v3.1/internal/scripts/installation/modulefiles/3.1.0_ursa
+   wget https://raw.githubusercontent.com/dtcenter/METcalcpy/refs/heads/main_v3.1/internal/scripts/installation/modulefiles/3.1.0_ursa
 
 .. note::
 
    The :code:`wget` command above will get the modulefile for the
-   METcalcpy 3.1.0 releaese. If a different release is desired, replace the *main_v3.1* with
+   METcalcpy 3.1.0 release. If a different release is desired, replace the *main_v3.1* with
    the desired *main_vX.Y* version or with *develop* for a **beta** or **rc** release and
    the *X.Y.Z* in the *X.Y.Z_<system-name>* filename.
 
@@ -843,6 +895,32 @@ and the account used for the installation.
      - /apps/contrib/MET/METplotpy
      - role-ovp
 
+Installation Process
+--------------------
+
+Download the desired version of METplotpy:
+
+.. code-block::
+
+   wget https://github.com/dtcenter/METplotpy/archive/refs/tags/v3.1.0.tar.gz
+
+.. note::
+
+   The :code:`wget` command above will get the **v3.1.0** release. If a different
+   release is desired, replace the *3.1.0* with the *X.Y.Z*, the *X.Y.Z-betaN*, or
+   the *X.Y.Z-rcN* version of your choice.
+
+Unpack the tar files package and remove the .tgz file:
+
+.. code-block::
+
+   tar -zxf v3.1.0.tar.gz
+   rm v3.1.0.tar.gz
+
+
+Create a Modulefile
+-------------------
+
 Download the existing installation modulefile for the appropriate system.
 These modulefiles are located in the
 `METplotpy GitHub repository <https://github.com/dtcenter/METplotpy>`_
@@ -853,12 +931,12 @@ To download the file for **Ursa** for METplus version 3.1.0, for example, run:
 
 .. code-block::
 
-   wget https://github.com/dtcenter/METplotpy/blob/main_v3.1/internal/scripts/installation/modulefiles/3.1.0_ursa
+   wget https://raw.githubusercontent.com/dtcenter/METplotpy/refs/heads/main_v3.1/internal/scripts/installation/modulefiles/3.1.0_ursa
 
 .. note::
 
    The :code:`wget` command above will get the modulefile for the
-   METplotpy 3.1.0 releaese. If a different release is desired, replace the *main_v3.1* with
+   METplotpy 3.1.0 release. If a different release is desired, replace the *main_v3.1* with
    the desired *main_vX.Y* version or with *develop* for a **beta** or **rc** release and
    the *X.Y.Z* in the *X.Y.Z_<system-name>* filename.
 
