@@ -154,8 +154,8 @@ def run_rmm_steps(inlabel, spd, eof1, eof2, oplot_dir):
 
     # Get times for the PC time series plot
     timeseries_plot_time_format = os.environ['TIMESERIES_PLOT_TIME_FMT']
-    timeseries_plot_start_time = datetime.datetime.strptime(os.environ['TIMESERIES_PLOT_TIME_BEG'],plase_plot_time_format)
-    timeseries_plot_end_time = datetime.datetime.strptime(os.environ['TIMESERIES_PLOT_TIME_END'],plase_plot_time_format)
+    timeseries_plot_start_time = datetime.datetime.strptime(os.environ['TIMESERIES_PLOT_TIME_BEG'], timeseries_plot_time_format)
+    timeseries_plot_end_time = datetime.datetime.strptime(os.environ['TIMESERIES_PLOT_TIME_END'], timeseries_plot_time_format)
     pc1_tsplot = PC1.sel(time=slice(timeseries_plot_start_time,timeseries_plot_end_time))
     pc2_tsplot = PC2.sel(time=slice(timeseries_plot_start_time,timeseries_plot_end_time))
     ts_ntim_plot = len(pc1_tsplot)
