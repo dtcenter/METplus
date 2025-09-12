@@ -648,7 +648,7 @@ Installing METdataio
 Installation Location
 ---------------------
 
-The table below lists the system name, the location for the METplus installation,
+The table below lists the system name, the location for the METdataio installation,
 and the account used for the installation.
 
 .. list-table::
@@ -707,7 +707,7 @@ These modulefiles are located in the
 in the **internal/scripts/installation/modulefiles** directory and are named with the format
 *<X.Y.Z>_<system-name>*. For example, *3.1.0_jet* or *3.1.0_ursa*.
 
-To download the file for **Ursa** for METplus version 3.1.0, for example, run:
+To download the file for **Ursa** for METdataio version 3.1.0, for example, run:
 
 .. code-block::
 
@@ -758,7 +758,7 @@ Installing METcalcpy
 Installation Location
 ---------------------
 
-The table below lists the system name, the location for the METplus installation,
+The table below lists the system name, the location for the METcalcpy installation,
 and the account used for the installation.
 
 .. list-table::
@@ -817,7 +817,7 @@ These modulefiles are located in the
 in the **internal/scripts/installation/modulefiles** directory and are named with the format
 *<X.Y.Z>_<system-name>*. For example, *3.1.0_jet* or *3.1.0_ursa*.
 
-To download the file for **Ursa** for METplus version 3.1.0, for example, run:
+To download the file for **Ursa** for METcalcpy version 3.1.0, for example, run:
 
 .. code-block::
 
@@ -868,7 +868,7 @@ Installing METplotpy
 Installation Location
 ---------------------
 
-The table below lists the system name, the location for the METplus installation,
+The table below lists the system name, the location for the METplotpy installation,
 and the account used for the installation.
 
 .. list-table::
@@ -927,7 +927,7 @@ These modulefiles are located in the
 in the **internal/scripts/installation/modulefiles** directory and are named with the format
 *<X.Y.Z>_<system-name>*. For example, *3.1.0_jet* or *3.1.0_ursa*.
 
-To download the file for **Ursa** for METplus version 3.1.0, for example, run:
+To download the file for **Ursa** for METplotpy version 3.1.0, for example, run:
 
 .. code-block::
 
