@@ -203,10 +203,7 @@ def main():
     filty2fil = os.environ['TAUY_Filter2_TEXTFILE']
     
     # Read in the weights of the filters
-    filtx1,filtx2,filty1,filty2 = read_filters(filtx1fil,filtx2fil,filtx2fil,filty2fil)
-
-    # Get Number of Obs per day
-    spd = os.environ.get('OBS_PER_DAY',1)
+    filtx1,filtx2,filty1,filty2 = read_filters(filtx1fil,filtx2fil,filty1fil,filty2fil)
 
    # Check for an output plot directory
     oplot_dir = os.environ.get('PLOT_OUTPUT_DIR','')
