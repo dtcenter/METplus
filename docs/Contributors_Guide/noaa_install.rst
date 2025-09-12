@@ -701,6 +701,33 @@ Unpack the tar files package and remove the .tgz file:
 Create a Modulefile
 -------------------
 
+The table below lists the system name, the location for the METdataio modulefile, and the
+account used for the installation.
+
+.. list-table::
+
+   * - **System**
+     - **Location**
+     - **Account Access**
+   * - Ursa
+     - /contrib/METdataio/modulefiles/metdataio
+     - role.metplus
+   * - Hera
+     - /contrib/METdataio/modulefiles/metdataio
+     - role.metplus
+   * - Jet
+     - /contrib/met/METdataio/modulefiles/metdataio
+     - role.metplus
+   * - Gaea
+     - /usw/met/METdataio/modulefiles/metdataio
+     - personal
+   * - Orion
+     - /apps/contrib/modulefiles/metdataio
+     - role-ovp
+   * - Hercules
+     - /apps/contrib/modulefiles/metdataio
+     - role-ovp
+
 Download the existing installation modulefile for the appropriate system.
 These modulefiles are located in the
 `METdataio GitHub repository <https://github.com/dtcenter/METdataio>`_
@@ -811,6 +838,34 @@ Unpack the tar files package and remove the .tgz file:
 Create a Modulefile
 -------------------
 
+The table below lists the system name, the location for the METcalcpy modulefile, and the
+account used for the installation.
+
+.. list-table::
+
+   * - **System**
+     - **Location**
+     - **Account Access**
+   * - Ursa
+     - /contrib/METcalcpy/modulefiles/metcalcpy
+     - role.metplus
+   * - Hera
+     - /contrib/METcalcpy/modulefiles/metcalcpy
+     - role.metplus
+   * - Jet
+     - /contrib/met/METcalcpy/modulefiles/metcalcpy
+     - role.metplus
+   * - Gaea
+     - /usw/met/METcalcpy/modulefiles/metcalcpy
+     - personal
+   * - Orion
+     - /apps/contrib/modulefiles/metcalcpy
+     - role-ovp
+   * - Hercules
+     - /apps/contrib/modulefiles/metcalcpy
+     - role-ovp
+
+
 Download the existing installation modulefile for the appropriate system.
 These modulefiles are located in the
 `METcalcpy GitHub repository <https://github.com/dtcenter/METcalcpy>`_
@@ -920,6 +975,32 @@ Unpack the tar files package and remove the .tgz file:
 
 Create a Modulefile
 -------------------
+The table below lists the system name, the location for the METplotpy modulefile, and the
+account used for the installation.
+
+.. list-table::
+
+   * - **System**
+     - **Location**
+     - **Account Access**
+   * - Ursa
+     - /contrib/METplotpy/modulefiles/metplotpy
+     - role.metplus
+   * - Hera
+     - /contrib/METplotpy/modulefiles/metplotpy
+     - role.metplus
+   * - Jet
+     - /contrib/met/METplotpy/modulefiles/metplotpy
+     - role.metplus
+   * - Gaea
+     - /usw/met/METplotpy/modulefiles/metplotpy
+     - personal
+   * - Orion
+     - /apps/contrib/modulefiles/metplotpy
+     - role-ovp
+   * - Hercules
+     - /apps/contrib/modulefiles/metplotpy
+     - role-ovp
 
 Download the existing installation modulefile for the appropriate system.
 These modulefiles are located in the
