@@ -420,14 +420,14 @@ in the
      .. dropdown:: JET
 
         | **NOAA MACHINE JET**
-        | *Last updated: April 11, 2025*
+        | *Last updated: September 12, 2025*
         | *Compiler and version: Intel oneAPI 2024.2.1*
 
-          * **METplus-6.1.0-beta2** 
+          * **METplus-6.1.0** 
 
-            * METplus-6.1.0-beta2 Installation
+            * METplus-6.1.0 Installation
 
-              * /contrib/met/METplus/METplus-6.1.0-beta2
+              * /contrib/met/METplus/METplus-6.1.0
 
             * METplus-6.1 Sample Data
 
@@ -444,11 +444,11 @@ in the
                  module load wgrib2/3.1.2_wmo
                  module load R/4.0.2
                  module use /contrib/met/modulefiles
-                 module load met/12.1.0-beta2
+                 module load met/12.1.0
                  module use /contrib/met/METplus/modulefiles
-                 module load metplus/6.1.0-beta2
+                 module load metplus/6.1.0
 
-          * **METv12.1.0-beta2**
+          * **METv12.1.0**
 
             * MODULES:
 
@@ -457,9 +457,9 @@ in the
                  module load intel/2024.2.1
                  module load contrib
                  module use /contrib/met/modulefiles
-                 module load met/12.1.0-beta2
+                 module load met/12.1.0
 
-          * **METcalcpy-3.1.0-beta2 / METplotpy-3.1.0-beta2**
+          * **METcalcpy-3.1.0 / METplotpy-3.1.0**
 
             * MODULES:
 
@@ -467,11 +467,11 @@ in the
 
                  module load intel/2024.2.1
                  module use /contrib/met/METcalcpy/modulefiles
-                 module load metcalcpy/3.1.0-beta2
+                 module load metcalcpy/3.1.0
                  module use /contrib/met/METplotpy/modulefiles
-                 module load metplotpy/3.1.0-beta2
+                 module load metplotpy/3.1.0
 
-          * **METdataio-3.1.0-beta2**
+          * **METdataio-3.1.0**
 
             * MODULES:
 
@@ -479,7 +479,7 @@ in the
 
                  module load intel/2024.2.1
                  module use /contrib/met/METdataio/modulefiles
-                 module load metdataio/3.1.0-beta2
+                 module load metdataio/3.1.0
 
      .. dropdown:: GAEA
 
