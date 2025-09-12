@@ -239,8 +239,8 @@ into that directory. For example:
 
 .. code-block::
 
-   mkdir 12.1.0
-   cd 12.1.0
+   mkdir X.Y.Z
+   cd X.Y.Z
 
 Installation Process
 --------------------
@@ -289,13 +289,12 @@ Change directories to the **tar_files** directory. Download the desired version 
 .. code-block::
 
    cd tar_files
-   wget https://github.com/dtcenter/MET/archive/refs/tags/v12.1.0.tar.gz
+   wget https://github.com/dtcenter/MET/archive/refs/tags/vX.Y.Z.tar.gz
 
 .. note::
 
-   The :code:`wget` command above will get the **v12.1.0** release. If a different
-   release is desired, replace the *12.1.0* with the *X.Y.Z*, the *X.Y.Z-betaN*, or
-   the *X.Y.Z-rcN* version of your choice.
+   The :code:`wget` command above will get the **vX.Y.Z** release. Replace the *X.Y.Z* with
+   the desired version numbers, which may take the format of *X.Y.Z-betaN* or the *X.Y.Z-rcN*.
 
 Go up one directory from the **tar_files** directory:
 
@@ -309,17 +308,17 @@ These configuration files are located in the
 in the **internal/scripts/installation/config** directory and are named with the format
 *install_met_env.<system-name>*. For example, install_met_env.jet or install_met_env.ursa.
 
-To download the file for **Ursa** for MET version 12.1.0, for example, run:
+To download the file for **Ursa** for MET version X.Y.Z, for example, run:
 
 .. code-block::
 
-   wget https://raw.githubusercontent.com/dtcenter/MET/refs/heads/main_v12.1/internal/scripts/installation/config/install_met_env.ursa
+   wget https://raw.githubusercontent.com/dtcenter/MET/refs/heads/main_vX.Y/internal/scripts/installation/config/install_met_env.ursa
 
 .. note::
 
    The :code:`wget` command above will get the installation configuration file for the
-   MET 12.1.0 release. If a different release is desired, replace the *main_v12.1* with
-   *main_vX.Y* or with *develop* for a **beta** or **rc** release.
+   MET X.Y release. Replace the *main_vX.Y* with the actual version number for an
+   official release or with *develop* for a betaN or rcN release.
    
 .. warning::
 
@@ -328,12 +327,12 @@ To download the file for **Ursa** for MET version 12.1.0, for example, run:
    and will not work appropriately. 
 
 This file includes the version number for official releases. For example, for the MET
-12.1.0 release, the file contains the following entries specific to the 12.1.0 release:
+X.Y.Z release, the file contains the following entries specific to the X.Y.Z release:
 
 .. code-block::
 
-   export TEST_BASE=/contrib/met/12.1.0
-   export MET_TARBALL=v12.1.0.tar.gz
+   export TEST_BASE=/contrib/met/X.Y.Z
+   export MET_TARBALL=vX.Y.Z.tar.gz
 
 If installing a beta release (X.Y.Z-betaN) or a rc release (X.Y.Z-rcN), these values will
 need to be modified appropriately.
@@ -406,18 +405,18 @@ These modulefiles are located in the
 in the **internal/scripts/installation/modulefiles** directory and are named with the format
 *<X.Y.Z>_<system-name>*. For example, *12.1.0_jet* or *12.1.0_ursa*.
 
-To download the file for **Ursa** for MET version 12.1.0, for example, run:
+To download the file for **Ursa** for MET version X.Y.Z, for example, run:
 
 .. code-block::
 
-   wget https://raw.githubusercontent.com/dtcenter/MET/refs/heads/main_v12.1/internal/scripts/installation/modulefiles/12.1.0_ursa
+   wget https://raw.githubusercontent.com/dtcenter/MET/refs/heads/main_vX.Y/internal/scripts/installation/modulefiles/X.Y.Z_ursa
 
 .. note::
 
    The :code:`wget` command above will get the modulefile for the
-   MET 12.1.0 release. If a different release is desired, replace the *main_v12.1* with
-   the desired *main_vX.Y* version or with *develop* for a **beta** or **rc** release and
-   the *X.Y.Z* in the *X.Y.Z_<system-name>* filename.
+   MET X.Y.Z release. Replace the *main_vX.Y* with the actual version numbers or
+   with *develop* for a betaN or rcN release, and replace
+   the *X.Y.Z* in the *X.Y.Z_<system-name>* filename with the actual version numbers.
 
 .. warning::
 
@@ -429,13 +428,13 @@ If installing an official release, rename the file simply X.Y.Z. For example:
 
 .. code-block::
 
-   mv 12.1.0_ursa 12.1.0
+   mv X.Y.Z_ursa X.Y.Z
 
 If installing a beta release, rename the file X.Y.Z-betaN. For example:
 
 .. code-block::
    
-   mv 12.1.0_ursa 12.1.0-beta1
+   mv X.Y.Z_ursa X.Y.Z-betaN
 
 Open the file using the editor of your choice and change any references to
 X.Y.Z to X.Y.Z-betaN. Save the file.
@@ -444,7 +443,7 @@ If installing a rc release, rename the file X.Y.Z-rcN. For example:
 
 .. code-block::
 
-   mv 12.1.0_ursa 12.1.0-rc1
+   mv X.Y.Z_ursa X.Y.Z-rcN
 
 Open the file using the	editor of your choice and change any references	to
 X.Y.Z to X.Y.Z-rcN. Save the file.
@@ -535,20 +534,20 @@ Download the desired version of METplus:
 
 .. code-block::
 
-   wget https://github.com/dtcenter/METplus/archive/refs/tags/v6.1.0.tar.gz
+   wget https://github.com/dtcenter/METplus/archive/refs/tags/vX.Y.Z.tar.gz
 
 .. note::
 
-   The :code:`wget` command above will get the **v6.1.0** release. If a different
-   release is desired, replace the *6.1.0* with the *X.Y.Z*, the *X.Y.Z-betaN*, or
-   the *X.Y.Z-rcN* version of your choice.
+   The :code:`wget` command above will get the **vX.Y.Z** release. Replace the *X.Y.Z* with
+   the desired version numbers, which may take the format of *X.Y.Z-betaN* or the *X.Y.Z-rcN*.
+
 
 Unpack the tar files package and remove the .tgz file:
 
 .. code-block::
 
-   tar -zxf v6.1.0.tar.gz
-   rm v6.1.0.tar.gz
+   tar -zxf vX.Y.X.tar.gz
+   rm vX.Y.Z.tar.gz
 
 Open the METplus-X.Y.Z/parm/metplus_config/defaults.conf file using the editor of
 your choice and update the values for :code:`MET_INSTALL_DIR` and
@@ -597,18 +596,18 @@ These modulefiles are located in the
 in the **internal/scripts/installation/modulefiles** directory and are named with the format
 *<X.Y.Z>_<system-name>*. For example, *6.1.0_jet* or *6.1.0_ursa*.
 
-To download the file for **Ursa** for METplus version 6.1.0, for example, run:
+To download the file for **Ursa** for METplus version X.Y.Z, for example, run:
 
 .. code-block::
 
-   wget https://raw.githubusercontent.com/dtcenter/METplus/refs/heads/main_v6.1/internal/scripts/installation/modulefiles/6.1.0_ursa
+   wget https://raw.githubusercontent.com/dtcenter/METplus/refs/heads/main_vX.Y/internal/scripts/installation/modulefiles/X.Y.Z_ursa
 
 .. note::
 
    The :code:`wget` command above will get the modulefile for the
-   METplus 6.1.0 release. If a different release is desired, replace the *main_v6.1* with
-   the desired *main_vX.Y* version or with *develop* for a **beta** or **rc** release and
-   the *X.Y.Z* in the *X.Y.Z_<system-name>* filename.
+   METplus X.Y.Z release. Replace the *main_v6.1* with the actual version numbers or
+   with *develop* for a **beta** or **rc** release, and
+   the *X.Y.Z* in the *X.Y.Z_<system-name>* filename with tha actual version numbers.
 
 .. warning::
 
@@ -620,13 +619,13 @@ If installing an official release, rename the file simply X.Y.Z. For example:
 
 .. code-block::
 
-   mv 6.1.0_ursa 6.1.0
+   mv X.Y.Z_ursa X.Y.Z
 
 If installing a beta release, rename the file X.Y.Z-betaN. For example:
 
 .. code-block::
 
-   mv 6.1.0_ursa 6.1.0-beta1
+   mv X.Y.Z_ursa X.Y.Z-betaN
 
 Open the file using the editor of your choice and change any references to
 X.Y.Z to X.Y.Z-betaN. Save the file.
@@ -635,7 +634,7 @@ If installing a rc release, rename the file X.Y.Z-rcN. For example:
 
 .. code-block::
 
-   mv 6.1.0_ursa 6.1.0-rc1
+   mv X.Y.Z_ursa X.Y.Z-rcN
 
 Open the file using the editor of your choice and change any references to
 X.Y.Z to X.Y.Z-rcN. Save the file.
@@ -682,20 +681,19 @@ Download the desired version of METdataio:
 
 .. code-block::
 
-   wget https://github.com/dtcenter/METdataio/archive/refs/tags/v3.1.0.tar.gz
+   wget https://github.com/dtcenter/METdataio/archive/refs/tags/vX.Y.Z.tar.gz
 
 .. note::
 
-   The :code:`wget` command above will get the **v3.1.0** release. If a different
-   release is desired, replace the *3.1.0* with the *X.Y.Z*, the *X.Y.Z-betaN*, or
-   the *X.Y.Z-rcN* version of your choice.
+   The :code:`wget` command above will get the **vX.Y.Z** release. Replace the *X.Y.Z* with
+   the desired version numbers, which may take the format of *X.Y.Z-betaN* or the *X.Y.Z-rcN*.
 
 Unpack the tar files package and remove the .tgz file:
 
 .. code-block::
 
-   tar -zxf v3.1.0.tar.gz
-   rm v3.1.0.tar.gz
+   tar -zxf vX.Y.Z.tar.gz
+   rm vX.Y.Z.tar.gz
 
 
 Create a Modulefile
@@ -734,18 +732,18 @@ These modulefiles are located in the
 in the **internal/scripts/installation/modulefiles** directory and are named with the format
 *<X.Y.Z>_<system-name>*. For example, *3.1.0_jet* or *3.1.0_ursa*.
 
-To download the file for **Ursa** for METdataio version 3.1.0, for example, run:
+To download the file for **Ursa** for METdataio version X.Y.Z, for example, run:
 
 .. code-block::
 
-   wget https://raw.githubusercontent.com/dtcenter/METdataio/refs/heads/main_v3.1/internal/scripts/installation/modulefiles/3.1.0_ursa
+   wget https://raw.githubusercontent.com/dtcenter/METdataio/refs/heads/main_vX.Y/internal/scripts/installation/modulefiles/X.Y.Z_ursa
 
 .. note::
 
    The :code:`wget` command above will get the modulefile for the
-   METdataio 3.1.0 release. If a different release is desired, replace the *main_v3.1* with
-   the desired *main_vX.Y* version or with *develop* for a **beta** or **rc** release and
-   the *X.Y.Z* in the *X.Y.Z_<system-name>* filename.
+   METdataio X.Y.Z release. Replace the *main_vX.Y* with the actual version numbers or
+   with *develop* for a betaN or rcN release and
+   the *X.Y.Z* in the *X.Y.Z_<system-name>* filename with the actual version numbers.
 
 .. warning::
 
@@ -757,13 +755,13 @@ If installing an official release, rename the file simply X.Y.Z. For example:
 
 .. code-block::
 
-   mv 3.1.0_ursa 3.1.0
+   mv X.Y.Z_ursa X.Y.Z
 
 If installing a beta release, rename the file X.Y.Z-betaN. For example:
 
 .. code-block::
 
-   mv 3.1.0_ursa 3.1.0-beta1
+   mv X.Y.Z_ursa X.Y.Z-betaN
 
 Open the file using the editor of your choice and change any references to
 X.Y.Z to X.Y.Z-betaN. Save the file.
@@ -772,7 +770,7 @@ If installing a rc release, rename the file X.Y.Z-rcN. For example:
 
 .. code-block::
 
-   mv 3.1.0_ursa 3.1.0-rc1
+   mv X.Y.Z_ursa X.Y.Z-rcN
 
 Open the file using the editor of your choice and change any references to
 X.Y.Z to X.Y.Z-rcN. Save the file.
@@ -819,20 +817,19 @@ Download the desired version of METcalcpy:
 
 .. code-block::
 
-   wget https://github.com/dtcenter/METcalcpy/archive/refs/tags/v3.1.0.tar.gz
+   wget https://github.com/dtcenter/METcalcpy/archive/refs/tags/vX.Y.Z.tar.gz
 
 .. note::
 
-   The :code:`wget` command above will get the **v3.1.0** release. If a different
-   release is desired, replace the *3.1.0* with the *X.Y.Z*, the *X.Y.Z-betaN*, or
-   the *X.Y.Z-rcN* version of your choice.
+   The :code:`wget` command above will get the **vX.Y.Z** release. Replace the *X.Y.Z* with
+   the desired version numbers, which may take the format of *X.Y.Z-betaN* or the *X.Y.Z-rcN*.
 
 Unpack the tar files package and remove the .tgz file:
 
 .. code-block::
 
-   tar -zxf v3.1.0.tar.gz
-   rm v3.1.0.tar.gz
+   tar -zxf vX.Y.Z.tar.gz
+   rm vX.Y.Z.tar.gz
 
 
 Create a Modulefile
@@ -872,18 +869,18 @@ These modulefiles are located in the
 in the **internal/scripts/installation/modulefiles** directory and are named with the format
 *<X.Y.Z>_<system-name>*. For example, *3.1.0_jet* or *3.1.0_ursa*.
 
-To download the file for **Ursa** for METcalcpy version 3.1.0, for example, run:
+To download the file for **Ursa** for METcalcpy version X.Y.Z, for example, run:
 
 .. code-block::
 
-   wget https://raw.githubusercontent.com/dtcenter/METcalcpy/refs/heads/main_v3.1/internal/scripts/installation/modulefiles/3.1.0_ursa
+   wget https://raw.githubusercontent.com/dtcenter/METcalcpy/refs/heads/main_vX.Y/internal/scripts/installation/modulefiles/X.Y.Z_ursa
 
 .. note::
 
    The :code:`wget` command above will get the modulefile for the
-   METcalcpy 3.1.0 release. If a different release is desired, replace the *main_v3.1* with
-   the desired *main_vX.Y* version or with *develop* for a **beta** or **rc** release and
-   the *X.Y.Z* in the *X.Y.Z_<system-name>* filename.
+   METcalcpy X.Y.Z release. Replace the *main_vX.Y* with the actual version numbers
+   with *develop* for a betaN or rcN release, and replace
+   the *X.Y.Z* in the *X.Y.Z_<system-name>* filename with the actual version numbers.
 
 .. warning::
 
@@ -895,13 +892,13 @@ If installing an official release, rename the file simply X.Y.Z. For example:
 
 .. code-block::
 
-   mv 3.1.0_ursa 3.1.0
+   mv X.Y.Z_ursa X.Y.Z
 
 If installing a beta release, rename the file X.Y.Z-betaN. For example:
 
 .. code-block::
 
-   mv 3.1.0_ursa 3.1.0-beta1
+   mv X.Y.Z_ursa X.Y.Z-betaN
 
 Open the file using the editor of your choice and change any references to
 X.Y.Z to X.Y.Z-betaN. Save the file.
@@ -910,7 +907,7 @@ If installing a rc release, rename the file X.Y.Z-rcN. For example:
 
 .. code-block::
 
-   mv 3.1.0_ursa 3.1.0-rc1
+   mv X.Y.Z_ursa X.Y.Z-rcN
 
 Open the file using the editor of your choice and change any references to
 X.Y.Z to X.Y.Z-rcN. Save the file.
@@ -957,20 +954,19 @@ Download the desired version of METplotpy:
 
 .. code-block::
 
-   wget https://github.com/dtcenter/METplotpy/archive/refs/tags/v3.1.0.tar.gz
+   wget https://github.com/dtcenter/METplotpy/archive/refs/tags/vX.Y.Z.tar.gz
 
 .. note::
 
-   The :code:`wget` command above will get the **v3.1.0** release. If a different
-   release is desired, replace the *3.1.0* with the *X.Y.Z*, the *X.Y.Z-betaN*, or
-   the *X.Y.Z-rcN* version of your choice.
+   The :code:`wget` command above will get the **vX.Y.Z** release. Replace the *X.Y.Z* with
+   the desired version numbers, which may take the format of *X.Y.Z-betaN* or the *X.Y.Z-rcN*.
 
 Unpack the tar files package and remove the .tgz file:
 
 .. code-block::
 
-   tar -zxf v3.1.0.tar.gz
-   rm v3.1.0.tar.gz
+   tar -zxf vX.Y.Z.tar.gz
+   rm vX.Y.Z.tar.gz
 
 
 Create a Modulefile
@@ -1008,18 +1004,18 @@ These modulefiles are located in the
 in the **internal/scripts/installation/modulefiles** directory and are named with the format
 *<X.Y.Z>_<system-name>*. For example, *3.1.0_jet* or *3.1.0_ursa*.
 
-To download the file for **Ursa** for METplotpy version 3.1.0, for example, run:
+To download the file for **Ursa** for METplotpy version X.Y.Z, for example, run:
 
 .. code-block::
 
-   wget https://raw.githubusercontent.com/dtcenter/METplotpy/refs/heads/main_v3.1/internal/scripts/installation/modulefiles/3.1.0_ursa
+   wget https://raw.githubusercontent.com/dtcenter/METplotpy/refs/heads/main_vX.Y/internal/scripts/installation/modulefiles/X.Y.Z_ursa
 
 .. note::
 
    The :code:`wget` command above will get the modulefile for the
-   METplotpy 3.1.0 release. If a different release is desired, replace the *main_v3.1* with
-   the desired *main_vX.Y* version or with *develop* for a **beta** or **rc** release and
-   the *X.Y.Z* in the *X.Y.Z_<system-name>* filename.
+   METplotpy X.Y.Z release. Replace the *main_vX.Y* with the actual version numbers or
+   with *develop* for a betaN or rcN release and
+   the *X.Y.Z* in the *X.Y.Z_<system-name>* filename with the actual version numbers.
 
 .. warning::
 
@@ -1031,13 +1027,13 @@ If installing an official release, rename the file simply X.Y.Z. For example:
 
 .. code-block::
 
-   mv 3.1.0_ursa 3.1.0
+   mv X.Y.Z_ursa X.Y.Z
 
 If installing a beta release, rename the file X.Y.Z-betaN. For example:
 
 .. code-block::
 
-   mv 3.1.0_ursa 3.1.0-beta1
+   mv X.Y.Z_ursa X.Y.Z-betaN
 
 Open the file using the editor of your choice and change any references to
 X.Y.Z to X.Y.Z-betaN. Save the file.
@@ -1046,11 +1042,34 @@ If installing a rc release, rename the file X.Y.Z-rcN. For example:
 
 .. code-block::
 
-   mv 3.1.0_ursa 3.1.0-rc1
+   mv X.Y.Z_ursa X.Y.Z-rcN
 
 Open the file using the editor of your choice and change any references to
 X.Y.Z to X.Y.Z-rcN. Save the file.
 
 **Review the file to ensure no other updates need to be made.**
 
+Test the Installation
+=====================
+
+Use the
+`Existing Builds <https://metplus.readthedocs.io/en/latest/Users_Guide/release-notes.html#existing-builds>`_
+page for the latest release as an example to see how to load the modulefiles
+for the system where the software was installed. Run the commands to load
+the modulefiles that were just created to ensure they load with no errors.
+Troubleshoot any errors received until all modules load successfully.
+
+Update the Existing Builds Section
+==================================
+
+Update the Existing Builds section in the
+`METplus GitHub Repository <https://github.com/dtcenter/METplus>`_
+in the docs/Users_Guide/existing_builds.rst file for the appropriate branch
+with an information that needs to be updated, including the *Last updated:*
+date.
+For example:
+* If installing an official release, update in the *main_X.Y* branch.
+* If installing a betaN release, update in the *develop* branch.
+* If installing a rcN release, update in both the *main_X.Y* branch AND
+  the *develop* branch.
 
