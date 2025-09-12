@@ -307,7 +307,7 @@ def _get_total_errors_and_log_counts(processes, logger=None):
         if not logger:
             continue
 
-        process_name = process.__class__.__name__.replace('Wrapper', '')
+        process_name = process.get_wrapper_instance_name()
 
         # log number of times each command was run
         for cmd_basename, count in run_count.items():
