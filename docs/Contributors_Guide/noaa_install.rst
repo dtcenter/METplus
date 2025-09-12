@@ -466,7 +466,7 @@ Data Installation Location
 --------------------------
 
 The table below lists the system name, the location for the installation of the
-METplus sample data, and the account used for the installation of the sample data.
+METplus sample data and the account used for the installation of the sample data.
 Check to see if a directory exists with the format *METplus-X.Y_sample_data* for the
 desired version of METplus. If no data exists, create a new directory for the sample
 data. Note the directory should be named *METplus-X.Y_sample_data* even for a
@@ -501,7 +501,7 @@ Download and unpack the sample data as directed in the **Sample Data** section a
 Installation Location
 ---------------------
 
-The table below lists the system name, the location for the METplus installation,
+The table below lists the system name, the location for the METplus installation
 and the account used for the installation.
 
 .. list-table::
@@ -648,7 +648,7 @@ Installing METdataio
 Installation Location
 ---------------------
 
-The table below lists the system name, the location for the METdataio installation,
+The table below lists the system name, the location for the METdataio installation
 and the account used for the installation.
 
 .. list-table::
@@ -758,7 +758,7 @@ Installing METcalcpy
 Installation Location
 ---------------------
 
-The table below lists the system name, the location for the METcalcpy installation,
+The table below lists the system name, the location for the METcalcpy installation
 and the account used for the installation.
 
 .. list-table::
@@ -868,7 +868,7 @@ Installing METplotpy
 Installation Location
 ---------------------
 
-The table below lists the system name, the location for the METplotpy installation,
+The table below lists the system name, the location for the METplotpy installation
 and the account used for the installation.
 
 .. list-table::
