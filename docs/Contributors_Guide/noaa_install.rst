@@ -186,9 +186,7 @@ In the :code:`miniconda` directory, obtain the script. For example:
 
    Note that the link above links to the **RAW** content of the file. It is essential to
    download the raw format, otherwise the file will contain unwanted HTML information
-   and will not work appropriately. If a user simply runs
-   **wget https://github.com/dtcenter/METplus/blob/develop/internal/scripts/installation/metplus_components_v6.1_py3.12.sh**
-   any attempts to run this code will be unsuccessful.
+   and will not work appropriately. 
    
 Modify the line :code:`MINICONDA_PATH=/path/to/miniconda3`, then make the script executable:
 
@@ -202,8 +200,11 @@ and run the script:
 
    ./metplus_components_v6.1_py3.12.sh
 
-Install MET
-===========
+Installing MET
+==============
+
+Installation Location
+---------------------
 
 The table below lists the system name, the location for the MET installation, and the
 account used for the installation.
@@ -224,7 +225,7 @@ account used for the installation.
      - role.metplus
    * - Gaea
      - /usw/met
-     - role.metplus
+     - personal
    * - Orion
      - /apps/contrib/MET
      - role-ovp
@@ -241,6 +242,9 @@ into that directory. For example:
    mkdir 12.1.0
    cd 12.1.0
 
+Installation Process
+--------------------
+   
 Download the compilation script, *compile_MET_all.sh*. For example:
 
 .. code-block::
@@ -251,9 +255,7 @@ Download the compilation script, *compile_MET_all.sh*. For example:
 
    Note	that the link above links to the **RAW** content of the	file. It is essential to
    download the raw format, otherwise the file will contain unwanted HTML information
-   and will not	work appropriately. If a user simply runs
-   **wget https://github.com/dtcenter/MET/blob/main_v12.1/internal/scripts/installation/compile_MET_all.sh**
-   any attempts	to run this code will be unsuccessful.
+   and will not	work appropriately. 
    
 .. note::
 
@@ -275,7 +277,7 @@ package. For example, to get the latest tar files package, run:
 
    wget https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.latest.tgz
 
-Unpack the tar files package and remove the .tgz file
+Unpack the tar files package and remove the .tgz file:
 
 .. code-block::
 
@@ -295,7 +297,7 @@ Change directories to the **tar_files** directory. Download the desired version 
    release is desired, replace the *12.1.0* with the *X.Y.Z*, the *X.Y.Z-betaN*, or
    the *X.Y.Z-rcN* version of your choice.
 
-Go up one directory from the **tar_files** directory.
+Go up one directory from the **tar_files** directory:
 
 .. code-block::
 
@@ -323,9 +325,7 @@ To download the file for **Ursa** for MET version 12.1.0, for example, run:
 
    Note that the link above links to the **RAW** content of the file. It is essential to
    download the raw format, otherwise the file will contain unwanted HTML information
-   and will not work appropriately. If a user simply runs
-   **wget https://github.com/dtcenter/MET/blob/main_v12.1/internal/scripts/installation/config/install_met_env.ursa**
-   any attempts to run this code will be unsuccessful.
+   and will not work appropriately. 
 
 This file includes the version number for official releases. For example, for the MET
 12.1.0 release, the file contains the following entries specific to the 12.1.0 release:
@@ -370,8 +370,8 @@ following command from the installation directory to check for errors in the tes
 
 replacing :code:`X.Y.Z` with the installed version.
 
-Create a Modulefile for MET
----------------------------
+Create a Modulefile
+-------------------
 
 The table below lists the system name, the location for the MET modulefile, and the
 account used for the installation.
@@ -392,7 +392,7 @@ account used for the installation.
      - role.metplus
    * - Gaea
      - /usw/met/modulefiles/met
-     - role.metplus
+     - personal
    * - Orion
      - /apps/contrib/modulefiles/met
      - role-ovp
@@ -404,7 +404,7 @@ Download the existing installation modulefile for the appropriate system.
 These modulefiles are located in the
 `MET GitHub repository <https://github.com/dtcenter/MET>`_
 in the **internal/scripts/installation/modulefiles** directory and are named with the format
-*<X.Y.Z>_<system-name>*. For example, 12.1.0_jet or 12.1.0_ursa.
+*<X.Y.Z>_<system-name>*. For example, *12.1.0_jet* or *12.1.0_ursa*.
 
 To download the file for **Ursa** for MET version 12.1.0, for example, run:
 
@@ -416,24 +416,22 @@ To download the file for **Ursa** for MET version 12.1.0, for example, run:
 
    The :code:`wget` command above will get the modulefile for the
    MET 12.1.0 releaese. If a different release is desired, replace the *main_v12.1* with
-   *main_vX.Y* or with *develop* for a **beta** or **rc** release.
+   the desired *main_vX.Y* version or with *develop* for a **beta** or **rc** release and
+   the *X.Y.Z* in the *X.Y.Z_<system-name>* filename.
 
 .. warning::
 
    Note that the link above links to the **RAW** content of the file. It is essential to
    download the raw format, otherwise the file will contain unwanted HTML information
-   and will not work appropriately. If a user simply runs
-   **wget https://github.com/dtcenter/MET/blob/main_v12.1/internal/scripts/installation/modulefiles/12.1.0_ursa**
-   any attempts to run this code will be unsuccessful.
+   and will not work appropriately. 
 
-
-If installing an official release, rename the file simply X.Y.Z. For example,
+If installing an official release, rename the file simply X.Y.Z. For example:
 
 .. code-block::
 
    mv 12.1.0_ursa 12.1.0
 
-If installing a beta release, rename the file X.Y.Z-betaN. For example,
+If installing a beta release, rename the file X.Y.Z-betaN. For example:
 
 .. code-block::
    
@@ -442,7 +440,7 @@ If installing a beta release, rename the file X.Y.Z-betaN. For example,
 Open the file using the editor of your choice and change any references to
 X.Y.Z to X.Y.Z-betaN. Save the file.
    
-If installing a rc release, rename the file X.Y.Z-rcN. For example,
+If installing a rc release, rename the file X.Y.Z-rcN. For example:
 
 .. code-block::
 
@@ -451,9 +449,448 @@ If installing a rc release, rename the file X.Y.Z-rcN. For example,
 Open the file using the	editor of your choice and change any references	to
 X.Y.Z to X.Y.Z-rcN. Save the file.
 
-Review the file to ensure no other updates need to be made.
+**Review the file to ensure no other updates need to be made.**
 
 
 Installing METplus
 ==================
+
+Sample Data
+-----------
+
+The METplus Sample Data is available online `here <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/>`_.
+Click on the link for the desired version of METplus to access the data for that version.
+
+Data Installation Location
+--------------------------
+
+The table below lists the system name, the location for the installation of the
+METplus sample data, and the account used for the installation of the sample data.
+Check to see if a directory exists with the format *METplus-X.Y_sample_data* for the
+desired version of METplus. If no data exists, create a new directory for the sample
+data. Note the directory should be named *METplus-X.Y_sample_data* even for a
+beta or rc installation as the data is the same for development and official releases.
+Download and unpack the sample data as directed in the **Sample Data** section above.
+
+.. list-table::
+
+   * - **System**
+     - **Location**
+     - **Account Access**
+   * - Ursa
+     - /scratch3/BMC/dtc/METplus/
+     - role.metplus
+   * - Hera
+     - /scratch3/BMC/dtc/METplus/
+     - role.metplus
+   * - Jet
+     - /mnt/lfs6/HFIP/dtc-hurr/METplus/sample_data/
+     - role.metplus
+   * - Gaea
+     - /usw/met/METplus/
+     - personal
+   * - Orion
+     - /work/noaa/ovp/METplus/sample_data
+     - role-ovp
+   * - Hercules
+     - /work/noaa/ovp/METplus/sample_data
+     - role-ovp
+
+
+Installation Location
+---------------------
+
+The table below lists the system name, the location for the METplus installation,
+and the account used for the installation.
+
+.. list-table::
+
+   * - **System**
+     - **Location**
+     - **Account Access**
+   * - Ursa
+     - /contrib/METplus
+     - role.metplus
+   * - Hera
+     - /contrib/METplus
+     - role.metplus
+   * - Jet
+     - /contrib/met/METplus
+     - role.metplus
+   * - Gaea
+     - /usw/met/METplus
+     - personal
+   * - Orion
+     - /apps/contrib/MET/METplus
+     - role-ovp
+   * - Hercules
+     - /apps/contrib/MET/METplus
+     - role-ovp
+
+Installation Process
+--------------------
+       
+Download the desired version of METplus:
+
+.. code-block::
+
+   wget https://github.com/dtcenter/METplus/archive/refs/tags/v6.1.0.tar.gz
+
+.. note::
+
+   The :code:`wget` command above will get the **v6.1.0** releaese. If a different
+   release is desired, replace the *6.1.0* with the *X.Y.Z*, the *X.Y.Z-betaN*, or
+   the *X.Y.Z-rcN* version of your choice.
+
+Unpack the tar files package and remove the .tgz file:
+
+.. code-block::
+
+   tar -zxf v6.1.0.tar.gz
+   rm v6.1.0.tar.gz
+
+Open the METplus-X.Y.Z/parm/metplus_config/defaults.conf file using the editor of
+your choice and update the values for :code:`MET_INSTALL_DIR` and
+:code:`INPUT_BASE`.
+
+Update the location of :code:`MET_INSTALL_DIR` to be the location of the recent
+MET installation. For example, **/contrib/met/X.Y.Z**, **/contrib/met/X.Y.Z-betaN**,
+or **/contrib/met/X.Y.Z-rcN**.
+
+Update the location of :code:`INPUT_BASE` to be the location for the corresponding
+version of the METplus sample data. For example, **/contrib/METplus/METplus-X.Y_sample_data**.
+
+Create a Modulefile
+-------------------
+
+The table below lists the system name, the location for the METplus modulefile, and the
+account used for the installation.
+
+.. list-table::
+
+   * - **System**
+     - **Location**
+     - **Account Access**
+   * - Ursa
+     - /contrib/METplus/modulefiles/metplus
+     - role.metplus
+   * - Hera
+     - /contrib/METplus/modulefiles/metplus
+     - role.metplus
+   * - Jet
+     - /contrib/met/METplus/modulefiles/metplus
+     - role.metplus
+   * - Gaea
+     - /usw/met/METplus/modulefiles/metplus
+     - personal
+   * - Orion
+     - /apps/contrib/modulefiles/metplus
+     - role-ovp
+   * - Hercules
+     - /apps/contrib/modulefiles/metplus
+     - role-ovp
+
+Download the existing installation modulefile for the appropriate system.
+These modulefiles are located in the
+`METplus GitHub repository <https://github.com/dtcenter/METplus>`_
+in the **internal/scripts/installation/modulefiles** directory and are named with the format
+*<X.Y.Z>_<system-name>*. For example, *6.1.0_jet* or *6.1.0_ursa*.
+
+To download the file for **Ursa** for METplus version 6.1.0, for example, run:
+
+.. code-block::
+
+   wget https://raw.githubusercontent.com/dtcenter/METplus/refs/heads/main_v6.1/internal/scripts/installation/modulefiles/6.1.0_ursa
+
+.. note::
+
+   The :code:`wget` command above will get the modulefile for the
+   METplus 6.1.0 releaese. If a different release is desired, replace the *main_v6.1* with
+   the desired *main_vX.Y* version or with *develop* for a **beta** or **rc** release and
+   the *X.Y.Z* in the *X.Y.Z_<system-name>* filename.
+
+.. warning::
+
+   Note that the link above links to the **RAW** content of the file. It is essential to
+   download the raw format, otherwise the file will contain unwanted HTML information
+   and will not work appropriately.
+
+If installing an official release, rename the file simply X.Y.Z. For example:
+
+.. code-block::
+
+   mv 6.1.0_ursa 6.1.0
+
+If installing a beta release, rename the file X.Y.Z-betaN. For example:
+
+.. code-block::
+
+   mv 6.1.0_ursa 6.1.0-beta1
+
+Open the file using the editor of your choice and change any references to
+X.Y.Z to X.Y.Z-betaN. Save the file.
+
+If installing a rc release, rename the file X.Y.Z-rcN. For example:
+
+.. code-block::
+
+   mv 6.1.0_ursa 6.1.0-rc1
+
+Open the file using the editor of your choice and change any references to
+X.Y.Z to X.Y.Z-rcN. Save the file.
+
+**Review the file to ensure no other updates need to be made.**
+
+Installing METdataio
+====================
+
+Installation Location
+---------------------
+
+The table below lists the system name, the location for the METplus installation,
+and the account used for the installation.
+
+.. list-table::
+
+   * - **System**
+     - **Location**
+     - **Account Access**
+   * - Ursa
+     - /contrib/METdataio
+     - role.metplus
+   * - Hera
+     - /contrib/METdataio
+     - role.metplus
+   * - Jet
+     - /contrib/met/METdataio
+     - role.metplus
+   * - Gaea
+     - /usw/met/METdataio
+     - personal
+   * - Orion
+     - /apps/contrib/MET/METdataio
+     - role-ovp
+   * - Hercules
+     - /apps/contrib/MET/METdataio
+     - role-ovp
+
+Download the existing installation modulefile for the appropriate system.
+These modulefiles are located in the
+`METdataio GitHub repository <https://github.com/dtcenter/METdataio>`_
+in the **internal/scripts/installation/modulefiles** directory and are named with the format
+*<X.Y.Z>_<system-name>*. For example, *3.1.0_jet* or *3.1.0_ursa*.
+
+To download the file for **Ursa** for METplus version 3.1.0, for example, run:
+
+.. code-block::
+
+   wget https://github.com/dtcenter/METdataio/blob/main_v3.1/internal/scripts/installation/modulefiles/3.1.0_ursa
+
+.. note::
+
+   The :code:`wget` command above will get the modulefile for the
+   METdataio 3.1.0 releaese. If a different release is desired, replace the *main_v3.1* with
+   the desired *main_vX.Y* version or with *develop* for a **beta** or **rc** release and
+   the *X.Y.Z* in the *X.Y.Z_<system-name>* filename.
+
+.. warning::
+
+   Note that the link above links to the **RAW** content of the file. It is essential to
+   download the raw format, otherwise the file will contain unwanted HTML information
+   and will not work appropriately.
+
+If installing an official release, rename the file simply X.Y.Z. For example:
+
+.. code-block::
+
+   mv 3.1.0_ursa 3.1.0
+
+If installing a beta release, rename the file X.Y.Z-betaN. For example:
+
+.. code-block::
+
+   mv 3.1.0_ursa 3.1.0-beta1
+
+Open the file using the editor of your choice and change any references to
+X.Y.Z to X.Y.Z-betaN. Save the file.
+
+If installing a rc release, rename the file X.Y.Z-rcN. For example:
+
+.. code-block::
+
+   mv 3.1.0_ursa 3.1.0-rc1
+
+Open the file using the editor of your choice and change any references to
+X.Y.Z to X.Y.Z-rcN. Save the file.
+
+**Review the file to ensure no other updates need to be made.**
+
+Installing METcalcpy
+====================
+
+Installation Location
+---------------------
+
+The table below lists the system name, the location for the METplus installation,
+and the account used for the installation.
+
+.. list-table::
+
+   * - **System**
+     - **Location**
+     - **Account Access**
+   * - Ursa
+     - /contrib/METcalcpy
+     - role.metplus
+   * - Hera
+     - /contrib/METcalcpy
+     - role.metplus
+   * - Jet
+     - /contrib/met/METcalcpy
+     - role.metplus
+   * - Gaea
+     - /usw/met/METcalcpy
+     - personal
+   * - Orion
+     - /apps/contrib/MET/METcalcpy
+     - role-ovp
+   * - Hercules
+     - /apps/contrib/MET/METcalcpy
+     - role-ovp
+
+Download the existing installation modulefile for the appropriate system.
+These modulefiles are located in the
+`METcalcpy GitHub repository <https://github.com/dtcenter/METcalcpy>`_
+in the **internal/scripts/installation/modulefiles** directory and are named with the format
+*<X.Y.Z>_<system-name>*. For example, *3.1.0_jet* or *3.1.0_ursa*.
+
+To download the file for **Ursa** for METplus version 3.1.0, for example, run:
+
+.. code-block::
+
+   wget https://github.com/dtcenter/METcalcpy/blob/main_v3.1/internal/scripts/installation/modulefiles/3.1.0_ursa
+
+.. note::
+
+   The :code:`wget` command above will get the modulefile for the
+   METcalcpy 3.1.0 releaese. If a different release is desired, replace the *main_v3.1* with
+   the desired *main_vX.Y* version or with *develop* for a **beta** or **rc** release and
+   the *X.Y.Z* in the *X.Y.Z_<system-name>* filename.
+
+.. warning::
+
+   Note that the link above links to the **RAW** content of the file. It is essential to
+   download the raw format, otherwise the file will contain unwanted HTML information
+   and will not work appropriately.
+
+If installing an official release, rename the file simply X.Y.Z. For example:
+
+.. code-block::
+
+   mv 3.1.0_ursa 3.1.0
+
+If installing a beta release, rename the file X.Y.Z-betaN. For example:
+
+.. code-block::
+
+   mv 3.1.0_ursa 3.1.0-beta1
+
+Open the file using the editor of your choice and change any references to
+X.Y.Z to X.Y.Z-betaN. Save the file.
+
+If installing a rc release, rename the file X.Y.Z-rcN. For example:
+
+.. code-block::
+
+   mv 3.1.0_ursa 3.1.0-rc1
+
+Open the file using the editor of your choice and change any references to
+X.Y.Z to X.Y.Z-rcN. Save the file.
+
+**Review the file to ensure no other updates need to be made.**
+
+Installing METplotpy
+====================
+
+Installation Location
+---------------------
+
+The table below lists the system name, the location for the METplus installation,
+and the account used for the installation.
+
+.. list-table::
+
+   * - **System**
+     - **Location**
+     - **Account Access**
+   * - Ursa
+     - /contrib/METplotpy
+     - role.metplus
+   * - Hera
+     - /contrib/METplotpy
+     - role.metplus
+   * - Jet
+     - /contrib/met/METplotpy
+     - role.metplus
+   * - Gaea
+     - /usw/met/METplotpy
+     - personal
+   * - Orion
+     - /apps/contrib/MET/METplotpy
+     - role-ovp
+   * - Hercules
+     - /apps/contrib/MET/METplotpy
+     - role-ovp
+
+Download the existing installation modulefile for the appropriate system.
+These modulefiles are located in the
+`METplotpy GitHub repository <https://github.com/dtcenter/METplotpy>`_
+in the **internal/scripts/installation/modulefiles** directory and are named with the format
+*<X.Y.Z>_<system-name>*. For example, *3.1.0_jet* or *3.1.0_ursa*.
+
+To download the file for **Ursa** for METplus version 3.1.0, for example, run:
+
+.. code-block::
+
+   wget https://github.com/dtcenter/METplotpy/blob/main_v3.1/internal/scripts/installation/modulefiles/3.1.0_ursa
+
+.. note::
+
+   The :code:`wget` command above will get the modulefile for the
+   METplotpy 3.1.0 releaese. If a different release is desired, replace the *main_v3.1* with
+   the desired *main_vX.Y* version or with *develop* for a **beta** or **rc** release and
+   the *X.Y.Z* in the *X.Y.Z_<system-name>* filename.
+
+.. warning::
+
+   Note that the link above links to the **RAW** content of the file. It is essential to
+   download the raw format, otherwise the file will contain unwanted HTML information
+   and will not work appropriately.
+
+If installing an official release, rename the file simply X.Y.Z. For example:
+
+.. code-block::
+
+   mv 3.1.0_ursa 3.1.0
+
+If installing a beta release, rename the file X.Y.Z-betaN. For example:
+
+.. code-block::
+
+   mv 3.1.0_ursa 3.1.0-beta1
+
+Open the file using the editor of your choice and change any references to
+X.Y.Z to X.Y.Z-betaN. Save the file.
+
+If installing a rc release, rename the file X.Y.Z-rcN. For example:
+
+.. code-block::
+
+   mv 3.1.0_ursa 3.1.0-rc1
+
+Open the file using the editor of your choice and change any references to
+X.Y.Z to X.Y.Z-rcN. Save the file.
+
+**Review the file to ensure no other updates need to be made.**
+
 
