@@ -51,7 +51,7 @@ def run_phasediagram_steps(inlabel, alldata_timefile, oplot_dir):
 
     keepdata = []
     for dd in alldata_time:
-        timeloc = np.where(data.dtime == datetime.datetime.strptime(dd,alldata_timefmt))
+        timeloc = np.nonzero(data.dtime == datetime.datetime.strptime(dd,alldata_timefmt))
         if len(timeloc[0]) > 0:
             for l in timeloc[0]:
                 keepdata.append(l)

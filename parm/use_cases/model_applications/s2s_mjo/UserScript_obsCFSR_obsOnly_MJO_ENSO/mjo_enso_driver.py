@@ -3,7 +3,6 @@
 import xarray as xr
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import os
 import datetime
 import warnings
@@ -29,7 +28,7 @@ def read_filters(filtx1fil,filtx2fil,filty1fil,filty2fil):
 
     return filtx1,filtx2,filty1,filty2
 
-def run_mjo_enso_steps(inlabel,spd,filtx1,filtx2,filty1,filty2,taux_eofs,tauy_eofs,meofs,oplot_dir):
+def run_mjo_enso_steps(inlabel,filtx1,filtx2,filty1,filty2,taux_eofs,tauy_eofs,meofs,oplot_dir):
     
     # Get TAUX, TAUY, SST, UCURRENT, VCURRENT file listings and variable names
     taux_filetxt = os.environ['METPLUS_FILELIST_'+inlabel+'_TAUX_INPUT']
@@ -101,29 +100,8 @@ def run_mjo_enso_steps(inlabel,spd,filtx1,filtx2,filty1,filty2,taux_eofs,tauy_eo
     time = []
     for din in range(len(ds_taux)):
         ctaux = ds_taux[din]
-        #ctime =  datetime.datetime.strptime(ctaux[taux_var].valid_time,'%Y%m%d_%H%M%S')
         ctime =  datetime.datetime.strptime(str(ctaux['time'][0].values)[0:10],'%Y-%m-%d')
         time.append(ctime.strftime('%Y-%m-%d'))
-        #ctaux = ctaux.assign_coords(time=ctime)
-        #ds_taux[din] = ctaux.expand_dims("time")
-
-        ctauy = ds_tauy[din]
-        #ctauy = ctauy.assign_coords(time=ctime)
-        #ds_tauy[din] = ctauy.expand_dims("time")
-
-        csst = ds_sst[din]
-        #csst = csst.assign_coords(time=ctime)
-        #ds_sst[din] = csst.expand_dims("time")
-
-        cucur = ds_ucur[din]
-        #cucur = cucur.assign_coords(time=ctime)
-        #ds_ucur[din] = cucur.expand_dims("time")
-
-        cvcur = ds_vcur[din]
-        #cvcur = cvcur.assign_coords(time=ctime)
-        #ds_vcur[din] = cvcur.expand_dims("time")
-
-    time = np.array(time,dtype='datetime64[D]')
 
     everything_taux = xr.concat(ds_taux,"time")
     uflxa = everything_taux[taux_var]
@@ -148,7 +126,6 @@ def run_mjo_enso_steps(inlabel,spd,filtx1,filtx2,filty1,filty2,taux_eofs,tauy_eo
    
     wpower=mj.calc_wpower_MJO(u,v,uflx_mjo,vflx_mjo)
 
-    #sst = ds.sst.sel(lat=slice(-5,5)).mean(dim='lat',skipna=True)
     sst = sst.sel(lat=slice(-5,5)).mean(dim='lat',skipna=True)
 
     wmjoks = wpower.sel(lat=slice(-5,5)).mean(dim='lat',skipna=True)
@@ -159,9 +136,9 @@ def run_mjo_enso_steps(inlabel,spd,filtx1,filtx2,filty1,filty2,taux_eofs,tauy_eo
     index_file = os.environ['MAKE_MAKI_OUTPUT_TEXT_FILE']
     import csv
     date_format = '%Y-%m-%d'
-    strDate=datetime.datetime.strptime(str(sst['time'][0].values)[0:10],date_format)
-    endDate=datetime.datetime.strptime(str(sst['time'][-1].values)[0:10],date_format) 
-    time_mon = pd.date_range(strDate, endDate, freq='MS')#.to_pydatetime().tolist()
+    str_date = datetime.datetime.strptime(str(sst['time'][0].values)[0:10],date_format)
+    end_date = datetime.datetime.strptime(str(sst['time'][-1].values)[0:10],date_format)
+    time_mon = pd.date_range(str_date, end_date, freq='MS')#.to_pydatetime().tolist()
     with open(index_file+'.csv', 'w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(["Date", "MaKE", "MaKI"])
@@ -218,10 +195,10 @@ def main():
     run_fcst_mjo_enso = os.environ.get('RUN_FCST', 'False').lower()
 
     if (run_obs_mjo_enso == 'true'):
-        run_mjo_enso_steps('OBS', spd, filtx1, filtx2, filty1, filty2, taux_eofs, tauy_eofs, meofs,oplot_dir)
+        run_mjo_enso_steps('OBS', filtx1, filtx2, filty1, filty2, taux_eofs, tauy_eofs, meofs,oplot_dir)
 
     if (run_fcst_mjo_enso == 'true'):
-        run_mjo_enso_steps('FCST', spd, filtx1, filtx2, filty1, filty2, taux_eofs, tauy_eofs, meofs,oplot_dir)
+        run_mjo_enso_steps('FCST', filtx1, filtx2, filty1, filty2, taux_eofs, tauy_eofs, meofs,oplot_dir)
 
     # nothing selected
     if (run_obs_mjo_enso == 'false') and (run_fcst_mjo_enso == 'false'):
