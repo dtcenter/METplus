@@ -458,7 +458,8 @@ Installing METplus
 Sample Data
 -----------
 
-The METplus Sample Data is available online `here <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/>`_.
+The METplus Sample Data is available online at this
+`loction <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/>`_.
 Click on the link for the desired version of METplus to access the data for that version.
 
 Data Installation Location
