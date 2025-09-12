@@ -459,7 +459,7 @@ Sample Data
 -----------
 
 The METplus Sample Data is available online at this
-`loction <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/>`_.
+`location <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/>`_.
 Click on the link for the desired version of METplus to access the data for that version.
 
 Data Installation Location
