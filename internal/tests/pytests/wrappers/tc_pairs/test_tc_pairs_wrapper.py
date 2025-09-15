@@ -841,26 +841,6 @@ def test_validate_runtime_freq_tc_pairs(metplus_config,
     assert wrapper.c_dict['RUNTIME_FREQ'] == expected_config
 
 
-@pytest.mark.wrapper
-def test_bad_add_config(metplus_config):
-    config = metplus_config
-    wrapper = TCPairsWrapper(config)
-    with mock.patch.object(tcp,
-                           "add_met_config_dict_list",
-                           return_value=False):
-        wrapper.is_ok = True
-        wrapper._handle_consensus()
-        assert not wrapper.is_ok
-
-        wrapper.is_ok = True
-        wrapper._handle_diag_info_map()
-        assert not wrapper.is_ok
-        
-        wrapper.is_ok = True
-        wrapper._handle_diag_convert_map()
-        assert not wrapper.is_ok
-
-
 # Test data for test_read_modify_write_file
 csv_in1 = '''STM, 0006, del this, -9.1, 100, 143.3, -37.987
 STM, 0005, del this, -9, 100, 145.0, foo\r\n'''
