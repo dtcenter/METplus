@@ -417,13 +417,11 @@ class TCPairsWrapper(RuntimeFreqWrapper):
             'diag_min_req': 'int',
             'write_members': 'bool',
         }
-        return_code = add_met_config_dict_list(config=self.config,
-                                               app_name=self.app_name,
-                                               output_dict=self.env_var_dict,
-                                               dict_name='consensus',
-                                               dict_items=dict_items)
-        if not return_code:
-            self.is_ok = False
+        add_met_config_dict_list(config=self.config,
+                                 app_name=self.app_name,
+                                 output_dict=self.env_var_dict,
+                                 dict_name='consensus',
+                                 dict_items=dict_items)
 
     def _handle_diag_info_map(self):
         dict_items = {
@@ -433,13 +431,11 @@ class TCPairsWrapper(RuntimeFreqWrapper):
             'match_to_track': ('list', 'allow_empty'),
             'diag_name': ('list', 'allow_empty'),
         }
-        return_code = add_met_config_dict_list(config=self.config,
-                                               app_name=self.app_name,
-                                               output_dict=self.env_var_dict,
-                                               dict_name='diag_info_map',
-                                               dict_items=dict_items)
-        if not return_code:
-            self.is_ok = False
+        add_met_config_dict_list(config=self.config,
+                                 app_name=self.app_name,
+                                 output_dict=self.env_var_dict,
+                                 dict_name='diag_info_map',
+                                 dict_items=dict_items)
 
     def _handle_diag_convert_map(self):
         dict_items = {
@@ -447,13 +443,11 @@ class TCPairsWrapper(RuntimeFreqWrapper):
             'key': 'list',
             'convert': ('string', 'remove_quotes,add_x'),
         }
-        return_code = add_met_config_dict_list(config=self.config,
-                                               app_name=self.app_name,
-                                               output_dict=self.env_var_dict,
-                                               dict_name='diag_convert_map',
-                                               dict_items=dict_items)
-        if not return_code:
-            self.is_ok = False
+        add_met_config_dict_list(config=self.config,
+                                 app_name=self.app_name,
+                                 output_dict=self.env_var_dict,
+                                 dict_name='diag_convert_map',
+                                 dict_items=dict_items)
 
     def _handle_diag(self, c_dict):
         diag_indices = list(

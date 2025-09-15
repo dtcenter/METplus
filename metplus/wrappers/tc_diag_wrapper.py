@@ -166,12 +166,11 @@ class TCDiagWrapper(RuntimeFreqWrapper):
             'diag_script': 'list',
             'override_diags': ('list', 'allow_empty'),
         }
-        if not add_met_config_dict_list(config=self.config,
-                                        app_name=self.app_name,
-                                        output_dict=self.env_var_dict,
-                                        dict_name='domain_info',
-                                        dict_items=dict_items):
-            self.is_ok = False
+        add_met_config_dict_list(config=self.config,
+                                 app_name=self.app_name,
+                                 output_dict=self.env_var_dict,
+                                 dict_name='domain_info',
+                                 dict_items=dict_items)
 
         # handle data dictionary, including field, domain, level, and file_type
         c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
