@@ -493,7 +493,7 @@ class TCPairsWrapper(RuntimeFreqWrapper):
             # pull out basin, cyclone, and year from storm ID
             basin, cyclone = self._parse_storm_id(storm_id)
             if not basin:
-                return
+                return False
 
             # set storm ID in time dict so it can be used in filename templates
             time_info['storm_id'] = storm_id
