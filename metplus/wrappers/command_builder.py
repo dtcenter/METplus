@@ -17,9 +17,9 @@ from inspect import getframeinfo, stack
 
 from ..util.constants import PYTHON_EMBEDDING_TYPES, COMPRESSION_EXTENSIONS
 from ..util.constants import MULTIPLE_INPUT_WRAPPERS, TIME_OFFSET_WARNING_WRAPPERS
-from ..util import getlist, preprocess_file, loop_over_times_and_call
+from ..util import getlist, preprocess_file
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
-from ..util import get_time_from_file, shift_time_seconds, seconds_to_met_time
+from ..util import shift_time_seconds, seconds_to_met_time
 from ..util import replace_config_from_section
 from ..util import METConfig
 from ..util import MISSING_DATA_VALUE
@@ -29,8 +29,8 @@ from ..util import remove_quotes, split_level
 from ..util import get_field_info, format_field_info
 from ..util import get_wrapper_name, is_python_script
 from ..util.met_config import add_met_config_dict, handle_climo_dict
-from ..util import mkdir_p, get_skip_times
-from ..util import get_log_path, RunArgs, run_cmd, traverse_dir
+from ..util import mkdir_p, get_skip_times, split_dir_and_template
+from ..util import get_log_path, RunArgs, run_cmd, get_files_and_time_info
 
 
 # pylint:disable=pointless-string-statement
@@ -729,6 +729,9 @@ class CommandBuilder:
         template = self.c_dict[f'{data_type}INPUT_TEMPLATE']
         data_dir = self.c_dict[f'{data_type}INPUT_DIR']
 
+        # ensure all template tags are in template
+        data_dir, template = split_dir_and_template(data_dir, template)
+
         # convert valid_time to unix time
         valid_time = time_info['valid_fmt']
 
@@ -736,9 +739,10 @@ class CommandBuilder:
         valid_range_lower = self.c_dict.get(data_type + 'FILE_WINDOW_BEGIN', 0)
         valid_range_upper = self.c_dict.get(data_type + 'FILE_WINDOW_END', 0)
 
-        msg = f"Looking for {data_type}INPUT files under {data_dir} within range " +\
-              f"[{valid_range_lower},{valid_range_upper}] using template {template}"
-        self.logger.debug(msg)
+        self.logger.debug(
+            f"Looking for {data_type}INPUT files under {data_dir} within range "
+            f"[{valid_range_lower},{valid_range_upper}] using template {template}"
+        )
 
         if not data_dir:
             self.log_error('Must set INPUT_DIR if looking for files within a time window')
@@ -798,22 +802,20 @@ class CommandBuilder:
                                             "%Y%m%d%H%M%S").strftime("%s"))
 
         # step through all files under input directory in sorted order
-        for fullpath in traverse_dir(data_dir):
-            # remove input data directory to get relative path
-            rel_path = fullpath.replace(f'{data_dir}/', "")
-            # extract time information from relative path using template
-            file_time_info = get_time_from_file(rel_path, template,
-                                                self.logger)
-            if file_time_info is None:
-                continue
+        files_and_time_info = get_files_and_time_info(data_dir, template,
+                                                      sort_by='valid',
+                                                      logger=self.config.logger)
 
+        for fullpath, file_time_info in files_and_time_info:
             # get valid time and check if it is within the time range
             file_valid_time = file_time_info['valid'].strftime("%Y%m%d%H%M%S")
             # skip if could not extract valid time
             if not file_valid_time:
                 continue
+
             file_valid_dt = datetime.strptime(file_valid_time, "%Y%m%d%H%M%S")
             file_valid_seconds = int(file_valid_dt.strftime("%s"))
+
             # skip if outside time range
             if file_valid_seconds < lower_limit or file_valid_seconds > upper_limit:
                 continue
@@ -1365,13 +1367,13 @@ class CommandBuilder:
     def run_cmd(self, cmd, run_args):
         return run_cmd(cmd, run_args)
 
-    def run_all_times(self, custom=None):
-        """! Loop over time range specified in conf file and
-        call METplus wrapper for each time
+    def run_all_times(self):
+        """!Error because wrappers should either inherit from RuntimeFreq
+        wrapper or override this method.
 
-        @param custom (optional) custom loop string value
         """
-        return loop_over_times_and_call(self.config, self, custom=custom)
+        self.log_error('run_all_times() function not implemented for wrapper')
+        return None
 
     @staticmethod
     def format_met_config_dict(c_dict, name, keys=None):

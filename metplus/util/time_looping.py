@@ -1,16 +1,17 @@
 import re
 from datetime import datetime, timedelta
 
-from .string_manip import getlist, getlistint
-from .time_util import get_relativedelta, add_to_time_input
+from .string_manip import getlist, getlistint, split_dir_and_template
+from .system_util import traverse_dir
+from .time_util import get_relativedelta
 from .time_util import ti_get_hours_from_relativedelta
 from .time_util import ti_get_seconds_from_relativedelta
-from .string_template_substitution import do_string_sub
-from .config_util import log_runtime_banner
+from .time_util import ti_get_lead_string
+from .string_template_substitution import do_string_sub, get_time_from_file
 
 
 def time_generator(config):
-    """! Generator used to read METplusConfig variables for time looping
+    """!Generator used to read METplusConfig variables for time looping
 
     @param config METplusConfig object to read
     @returns None if not enough information is available on config.
@@ -27,6 +28,18 @@ def time_generator(config):
         config.getstr('config', 'CLOCK_TIME'),
         '%Y%m%d%H%M%S'
     )
+
+    # use TIME_GENERATOR_INPUT_DIR/TEMPLATE to find times if set
+    if _is_time_generator_dir_or_template_set(config):
+        config.logger.debug(f"Using TIME_GENERATOR_INPUT_DIR/TEMPLATE to find {prefix} times")
+        # Get unique datetime values that appear in ALL directory / template combinations.
+        unique_dts = _get_intersected_unique_times(config, time_type=prefix, sort_by=prefix)
+        config.logger.debug(f"Found {len(unique_dts)} {prefix.lower()} times that match all search criteria")
+        for file_dt in unique_dts:
+            file_time_info = _create_time_input_dict(prefix, file_dt, clock_dt)
+            yield file_time_info
+
+        return
 
     time_format = config.getraw('config', f'{prefix}_TIME_FMT', '')
     if not time_format:
@@ -59,11 +72,7 @@ def time_generator(config):
     start_string = config.getraw('config', f'{prefix}_BEG')
     end_string = config.getraw('config', f'{prefix}_END', start_string)
 
-    time_interval = config.getstr('config', f'{prefix}_INCREMENT', '60')
-    # if [INIT/VALID]_INCREMENT is an empty string, set it to prevent crash
-    if not time_interval:
-        time_interval = '60'
-    time_interval = get_relativedelta(time_interval)
+    time_interval = _get_time_interval(config, prefix)
 
     start_dt = _get_current_dt(start_string,
                                time_format,
@@ -90,6 +99,328 @@ def time_generator(config):
 
         current_dt += time_interval
 
+def _is_time_generator_dir_or_template_set(config):
+    """!Check if any of the time generator input configs are set."""
+    return (config.has_option('config', 'TIME_GENERATOR_INPUT_DIR') or
+            config.has_option('config', 'TIME_GENERATOR_INPUT_TEMPLATE'))
+
+def _get_dir_template_pairs(config):
+    """!Get directory/template pairs from config variables.
+
+    @returns List of (input_dir, input_template) tuples, or empty list on error
+    """
+    input_dirs = getlist(config.getdir('TIME_GENERATOR_INPUT_DIR'))
+    input_templates = getlist(config.getraw('config', 'TIME_GENERATOR_INPUT_TEMPLATE'))
+
+    # read input dirs and templates, substituting custom and instance strings
+    custom = config.getraw('config', 'CURRENT_CUSTOM', '')
+    instance = config.getraw('config', 'CURRENT_INSTANCE', '')
+    input_dirs = [do_string_sub(item, custom=custom, instance=instance, skip_missing_tags=True)
+                  for item in input_dirs]
+    input_templates = [do_string_sub(item, custom=custom, instance=instance, skip_missing_tags=True)
+                       for item in input_templates]
+
+    # Handle pairing logic
+    if len(input_dirs) == 1:
+        # Use the single directory for each template, applying smart splitting
+        dir_template_pairs = []
+        for template in input_templates:
+            clean_dir, clean_template = split_dir_and_template(input_dirs[0], template)
+            if clean_template:  # Only add pairs that have a valid template
+                dir_template_pairs.append((clean_dir, clean_template))
+        return dir_template_pairs
+
+    else:
+        # Lists must be the same length for pairing
+        if len(input_dirs) != len(input_templates):
+            config.logger.error(f"TIME_GENERATOR_INPUT_DIR list length ({len(input_dirs)}) "
+                                f"must match TIME_GENERATOR_INPUT_TEMPLATE list length ({len(input_templates)}) "
+                                f"or TIME_GENERATOR_INPUT_DIR must contain exactly one item")
+            return []
+
+        # Pair up directories and templates using zip, applying smart splitting
+        dir_template_pairs = []
+        for input_dir, input_template in zip(input_dirs, input_templates):
+            clean_dir, clean_template = split_dir_and_template(input_dir, input_template)
+            if clean_template:  # Only add pairs that have a valid template
+                dir_template_pairs.append((clean_dir, clean_template))
+
+        return dir_template_pairs
+
+
+def _template_is_forecast(input_dir, input_template):
+    """!Determine if a template contains forecast lead time information.
+    This is done by checking if the template contains a lead tag or both
+    init and valid tags.
+
+    @param input_dir Input directory path
+    @param input_template Input template path
+    @returns True if template is a forecast, False otherwise
+    """
+    # Use existing logic to properly combine dir and template
+    _, combined_template = split_dir_and_template(input_dir, input_template)
+
+    return ('{lead' in combined_template or
+            '{init' in combined_template and '{valid' in combined_template)
+
+
+def _get_intersected_unique_times(config, time_type, sort_by=None, input_dict=None):
+    """!Get unique times that appear in ALL directory/template combinations.
+    Enhanced to handle mixed template types (forecast vs analysis).
+
+    @param config METplusConfig object
+    @param time_type Type of time to extract ('init', 'valid', 'lead')
+    @param sort_by Optional sort parameter for get_files_and_time_info
+    @param input_dict Optional filtering dictionary for filtering leads by template
+
+    @returns Sorted list of unique times that appear in all combinations
+    """
+    dir_template_pairs = _get_dir_template_pairs(config)
+    if not dir_template_pairs:
+        return []
+
+    # Separate templates into forecast (has lead times) and analysis (valid only)
+    forecast_templates = []
+    analysis_templates = []
+
+    for input_dir, input_template in dir_template_pairs:
+        # Check if this template has lead time information
+        is_forecast = _template_is_forecast(input_dir, input_template)
+
+        config.logger.debug(f"Searching for files in {input_dir} using template {input_template}")
+        files_and_time_info = get_files_and_time_info(input_dir, input_template,
+                                                      sort_by=sort_by,
+                                                      logger=config.logger)
+        config.logger.debug(f"Found {len(files_and_time_info)} file{'s' if len(files_and_time_info) >1 else ''}")
+
+        # If input_dict is provided, apply filtering
+        # only filter analysis files if input_dict contains valid time
+        # to avoid filtering out init times incorrectly when init == valid
+        if input_dict is not None and (is_forecast or 'valid' in input_dict):
+            files_and_time_info = _filter_files_by_input_dict(files_and_time_info,
+                                                              input_dict, config)
+            if files_and_time_info is None:
+                return []
+
+        if is_forecast:
+            forecast_templates.append((input_dir, input_template, files_and_time_info))
+        else:
+            analysis_templates.append((input_dir, input_template, files_and_time_info))
+
+    return _get_enhanced_times(time_type, forecast_templates, analysis_templates)
+
+
+def _get_enhanced_times(time_type, forecast_templates, analysis_templates):
+    """!Call the appropriate _get_enhanced_*_times function depending on the time type.
+
+    @param time_type Type of time to extract ('init', 'valid', 'lead')
+    @param forecast_templates List of (dir, template, files_and_time_info) for forecast data
+    @param analysis_templates List of (dir, template, files_and_time_info) for analysis data
+    @returns Sorted list of unique times or empty list if invalid time_type provided
+    """
+    # Handle the case based on what time_type is requested
+    if time_type.lower() == 'lead':
+        return _get_enhanced_lead_times(forecast_templates, analysis_templates)
+    elif time_type.lower() == 'valid':
+        return _get_enhanced_valid_times(forecast_templates, analysis_templates)
+    elif time_type.lower() == 'init':
+        return _get_enhanced_init_times(forecast_templates, analysis_templates)
+
+    return []
+
+def _get_enhanced_lead_times(forecast_templates, analysis_templates):
+    """!Get forecast lead times, considering analysis templates for valid time constraints.
+
+    @param forecast_templates List of (dir, template, files_and_time_info) for forecast data
+    @param analysis_templates List of (dir, template, files_and_time_info) for analysis data
+    @returns Sorted list of unique lead times
+    """
+    if not forecast_templates:
+        # No forecast templates, use 0 forecast lead
+        return [0]
+
+    skip_analysis_filter = bool(not analysis_templates)
+
+    # Get all valid times from analysis templates (if any)
+    analysis_valid_times = set()
+    for _, _, files_and_time_info in analysis_templates:
+        valid_times = get_unique_times(files_and_time_info, time_type='valid')
+        analysis_valid_times.update(valid_times)
+
+    # Get lead times from forecast templates
+    all_lead_sets = []
+    for _, _, files_and_time_info in forecast_templates:
+        if analysis_valid_times:
+            # Filter forecast files to only include those with valid times matching analysis
+            filtered_files = []
+            for filepath, time_info in files_and_time_info:
+                if time_info.get('valid') in analysis_valid_times:
+                    filtered_files.append((filepath, time_info))
+            unique_leads = get_unique_times(filtered_files, time_type='lead')
+        elif skip_analysis_filter:
+            # use all times if no analysis templates were specified
+            unique_leads = get_unique_times(files_and_time_info, time_type='lead')
+        else:
+            # No analysis times match, so filter out all times
+            continue
+
+        all_lead_sets.append(set(unique_leads))
+
+    # Take intersection of lead times across forecast templates
+    if not all_lead_sets:
+        return []
+
+    return _get_intersection_times(all_lead_sets)
+
+
+def _get_enhanced_valid_times(forecast_templates, analysis_templates):
+    """!Get valid times from both forecast and analysis templates.
+
+    @param forecast_templates List of (dir, template, files_and_time_info) for forecast data
+    @param analysis_templates List of (dir, template, files_and_time_info) for analysis data
+    @returns Sorted list of unique valid times that appear in all template types
+    """
+    all_valid_sets = []
+
+    # Get valid times from forecast templates
+    for _, _, files_and_time_info in forecast_templates:
+        valid_times = get_unique_times(files_and_time_info, time_type='valid')
+        all_valid_sets.append(set(valid_times))
+
+    # Get valid times from analysis templates
+    for _, _, files_and_time_info in analysis_templates:
+        valid_times = get_unique_times(files_and_time_info, time_type='valid')
+        all_valid_sets.append(set(valid_times))
+
+    if not all_valid_sets:
+        return []
+
+    # Take intersection of all valid time sets
+    return _get_intersection_times(all_valid_sets)
+
+
+def _get_enhanced_init_times(forecast_templates, analysis_templates):
+    """!Get init times, primarily from forecast templates.
+
+    @param forecast_templates List of (dir, template, files_and_time_info) for forecast data
+    @param analysis_templates List of (dir, template, files_and_time_info) for analysis data
+    @returns Sorted list of unique init times
+    """
+    all_init_sets = []
+
+    # Get init times from forecast templates (these are meaningful)
+    for _, _, files_and_time_info in forecast_templates:
+        init_times = get_unique_times(files_and_time_info, time_type='init')
+        all_init_sets.append(set(init_times))
+
+    # For analysis templates, init == valid, but we may not want to include these
+    # in the intersection since they would filter out all init times except init == valid
+    # Only include if there are no forecast templates
+    if not forecast_templates:
+        for _, _, files_and_time_info in analysis_templates:
+            init_times = get_unique_times(files_and_time_info, time_type='init')
+            all_init_sets.append(set(init_times))
+
+    if not all_init_sets:
+        return []
+
+    # Take intersection
+    return _get_intersection_times(all_init_sets)
+
+
+def _get_intersection_times(all_sets):
+    intersected_times = all_sets[0]
+    for lead_set in all_sets[1:]:
+        intersected_times = intersected_times.intersection(lead_set)
+
+    return sorted(list(intersected_times))
+
+
+def _filter_files_by_input_dict(files_and_time_info, input_dict, config):
+    """!Filter files_and_time_info based on input_dict constraints.
+
+    @param files_and_time_info List of (filepath, time_info_dict) tuples
+    @param input_dict Dictionary with 'init' and/or 'valid' keys
+    @param config METplusConfig object for logging
+
+    @returns Filtered list of (filepath, time_info_dict) tuples, or None on error
+    """
+    # Validate that input_dict contains either 'init' or 'valid' but not both
+    # (or if both are present, one should be '*')
+    has_init = 'init' in input_dict and input_dict['init'] != '*'
+    has_valid = 'valid' in input_dict and input_dict['valid'] != '*'
+
+    if has_init and has_valid and input_dict['init'] != input_dict['valid']:
+        config.logger.error("input_dict contains both 'init' and 'valid' keys "
+                            "without one being set to '*'. This is not supported.")
+        return None
+
+    if has_init or has_valid:
+        # Determine which time type to filter by
+        filter_time_type = 'init' if has_init else 'valid'
+        filter_time_value = input_dict[filter_time_type]
+
+        # Filter files to only include those matching the specified time
+        filtered_files_and_time_info = []
+        for filepath, file_time_info in files_and_time_info:
+            if file_time_info.get(filter_time_type) == filter_time_value:
+                filtered_files_and_time_info.append((filepath, file_time_info))
+
+        config.logger.debug(f"Filtered input files to {len(filtered_files_and_time_info)} "
+                            f"file{'s' if len(filtered_files_and_time_info) > 1 else ''} "
+                            f"matching {filter_time_type}={filter_time_value}")
+        return filtered_files_and_time_info
+
+    return files_and_time_info
+
+
+def _get_time_interval(config, prefix):
+    time_interval = config.getstr('config', f'{prefix}_INCREMENT', '60')
+    # if [INIT/VALID]_INCREMENT is an empty string, set it to prevent crash
+    if not time_interval:
+        time_interval = '60'
+    return get_relativedelta(time_interval)
+
+
+def get_files_and_time_info(data_dir, template, sort_by=None, logger=None):
+    files_and_time_info = []
+    for fullpath in traverse_dir(data_dir):
+        # remove input data directory to get relative path
+        rel_path = fullpath.replace(f"{data_dir}/", "")
+        # extract time information from relative path using template
+        file_time_info = get_time_from_file(rel_path, template, logger)
+        if file_time_info is None:
+            continue
+
+        files_and_time_info.append((fullpath, file_time_info))
+
+    if sort_by:
+        # Sort by the sort_by, e.g. init or valid, datetime in the time info dictionary
+        files_and_time_info.sort(key=lambda x: x[1].get(sort_by.lower(), datetime.min))
+
+    return files_and_time_info
+
+
+def get_unique_times(files_and_time_info, time_type):
+    """!Extract unique time info dictionaries from files and time info list.
+
+    @param files_and_time_info: List of tuples (filepath, time_info_dict)
+    @param time_type: String of the type of time to extract, e.g. "init" or "valid"
+    @returns: List of unique datetimes
+    """
+    seen = set()
+    unique_times = []
+
+    for filepath, time_info in files_and_time_info:
+        time_value = time_info.get(time_type.lower())
+        if not time_value: continue
+
+        if time_value not in seen:
+            seen.add(time_value)
+            unique_times.append(time_value)
+
+    return unique_times
+
 
 def get_start_and_end_times(config):
     times = list(time_generator(config))
@@ -99,41 +430,6 @@ def get_start_and_end_times(config):
     start_dt = times[0][times[0]['loop_by']]
     end_dt = times[-1][times[-1]['loop_by']]
     return start_dt, end_dt
-
-
-def loop_over_times_and_call(config, processes, custom=None):
-    """! Loop over all run times and call wrappers listed in config
-
-    @param config METplusConfig object
-    @param processes list of CommandBuilder subclass objects (Wrappers) to call
-    @param custom (optional) custom loop string value
-    @returns list of tuples with all commands run and the environment variables
-    that were set for each
-    """
-    # keep track of commands that were run
-    all_commands = []
-    for time_input in time_generator(config):
-        if not isinstance(processes, list):
-            processes = [processes]
-
-        for process in processes:
-            # if time could not be read, increment errors for each process
-            if time_input is None:
-                process.errors += 1
-                continue
-
-            log_runtime_banner(config, time_input, process)
-            add_to_time_input(time_input,
-                              instance=process.instance,
-                              custom=custom)
-
-            process.clear()
-            process.run_at_time(time_input)
-            if process.all_commands:
-                all_commands.extend(process.all_commands)
-            process.all_commands.clear()
-
-    return all_commands
 
 
 def _validate_time_values(start_dt, end_dt, time_interval, prefix, logger):
@@ -169,7 +465,7 @@ def _create_time_input_dict(prefix, current_dt, clock_dt):
 
 
 def get_time_prefix(config):
-    """! Read the METplusConfig object and determine the prefix for the time
+    """!Read the METplusConfig object and determine the prefix for the time
     looping variables.
 
     @param config METplusConfig object to read
@@ -197,7 +493,7 @@ def get_time_prefix(config):
 
 
 def _get_current_dt(time_string, time_format, clock_dt, logger):
-    """! Use time format to get datetime object from time string, substituting
+    """!Use time format to get datetime object from time string, substituting
      values for today or now template tags if specified.
 
     @param time_string string value read from the config that
@@ -351,16 +647,31 @@ def _found_time_match(time_info, time_dict, init_or_valid):
 def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
     """!Get forecast lead list from LEAD_SEQ or compute it from INIT_SEQ.
         Restrict list by LEAD_SEQ_[MIN/MAX] if set. Now returns list of relativedelta objects
-        Args:
-            @param config METplusConfig object to query config variable values
-            @param input_dict time dictionary needed to handle using INIT_SEQ. Must contain
-               valid key if processing INIT_SEQ
-            @param wildcard_if_empty if no lead sequence was set, return a
-             list with '*' if this is True, otherwise return a list with 0
-            @returns list of relativedelta objects or a list containing 0 if none are found
+
+        @param config METplusConfig object to query config variable values
+        @param input_dict time dictionary needed to handle using INIT_SEQ. Must contain
+          valid key if processing INIT_SEQ
+        @param wildcard_if_empty if no lead sequence was set, return a
+         list with '*' if this is True, otherwise return a list with 0
+        @returns list of relativedelta objects or a list containing 0 if none are found
     """
 
     out_leads = []
+
+    # use TIME_GENERATOR_INPUT_DIR/TEMPLATE to find forecast leads if set
+    if _is_time_generator_dir_or_template_set(config):
+        config.logger.debug("Using TIME_GENERATOR_INPUT_DIR/TEMPLATE to find lead times")
+        unique_leads = _get_intersected_unique_times(config, time_type='lead', sort_by='lead',
+                                                     input_dict=input_dict)
+        lead_seq = _handle_lead_seq(config, unique_leads, default_unit='S')
+        if lead_seq:
+            leads_fmt = [ti_get_lead_string(lead, plural=False) for lead in lead_seq]
+            config.logger.debug(f"Found {len(lead_seq)} lead times that match "
+                                f"all search criteria: {', '.join(leads_fmt)}")
+        else:
+            config.logger.debug("No lead times found that match all search criteria")
+        return lead_seq
+
     lead_min, lead_max, no_max = _get_lead_min_max(config)
 
     # check if LEAD_SEQ, INIT_SEQ, or LEAD_SEQ_<n> are set
@@ -425,24 +736,25 @@ def _are_lead_configs_ok(lead_seq, init_seq, lead_groups,
         config.logger.error(f'INIT_SEQ and LEAD_SEQ_<n> {error_message}')
         return False
 
-    if init_seq:
-        # if input dictionary not passed in,
-        # cannot compute lead sequence from it, so exit
-        if input_dict is None:
-            config.logger.error('Cannot run using INIT_SEQ for this wrapper')
-            return False
+    if not init_seq:
+        return True
 
-        # if looping by init, fail and exit
-        if 'valid' not in input_dict.keys() or input_dict['valid'] == '*':
-            log_msg = ('INIT_SEQ specified while looping by init time.'
-                       ' Use LEAD_SEQ or change to loop by valid time')
-            config.logger.error(log_msg)
-            return False
+    # if input dictionary not passed in,
+    # cannot compute lead sequence from it, so exit
+    if input_dict is None:
+        config.logger.error('Cannot run using INIT_SEQ for this wrapper')
+        return False
 
-        # maximum lead must be specified to run with INIT_SEQ
-        if no_max:
-            config.logger.error('LEAD_SEQ_MAX must be set to use INIT_SEQ')
-            return False
+    # if looping by init, fail and exit
+    if 'valid' not in input_dict.keys() or input_dict['valid'] == '*':
+        config.logger.error('INIT_SEQ specified while looping by init time.'
+                            ' Use LEAD_SEQ or change to loop by valid time')
+        return False
+
+    # maximum lead must be specified to run with INIT_SEQ
+    if no_max:
+        config.logger.error('LEAD_SEQ_MAX must be set to use INIT_SEQ')
+        return False
 
     return True
 
@@ -463,11 +775,11 @@ def _get_lead_min_max(config):
     return lead_min, lead_max, no_max
 
 
-def _handle_lead_seq(config, lead_strings, lead_min=None, lead_max=None):
+def _handle_lead_seq(config, lead_strings, lead_min=None, lead_max=None, default_unit='H'):
     out_leads = []
     leads = []
     for lead in lead_strings:
-        relative_delta = get_relativedelta(lead, 'H')
+        relative_delta = get_relativedelta(lead, default_unit)
         if relative_delta is not None:
             leads.append(relative_delta)
         else:

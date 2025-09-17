@@ -46,6 +46,8 @@ class ExampleWrapper(RuntimeFreqWrapper):
         self.logger.info(f"Input template is {c_dict['INPUT_TEMPLATE']}")
         self.logger.info(f"Full input template path is {full_path}")
 
+        c_dict['ALLOW_MULTIPLE_FILES'] = True
+
         return c_dict
 
     def run_at_time_once(self, time_info):
