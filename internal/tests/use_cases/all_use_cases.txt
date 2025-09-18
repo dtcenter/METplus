@@ -68,6 +68,8 @@ Category: met_tool_wrapper
 66::PairStat:: met_tool_wrapper/PairStat/PairStat.conf
 67::RMWAnalysis:: met_tool_wrapper/RMWAnalysis/RMWAnalysis.conf
 68::DataIngest:: met_tool_wrapper/DataIngest/DataIngest.conf
+69::GridStat_times_from_template:: met_tool_wrapper/GridStat/GridStat_times_from_template.conf
+
 
 Category: air_quality_and_comp
 0::EnsembleStat_fcstICAP_obsMODIS_aod::model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf

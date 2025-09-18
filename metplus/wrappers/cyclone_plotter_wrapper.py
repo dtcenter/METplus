@@ -36,7 +36,7 @@ except Exception as err_msg:
     EXCEPTION_ERR = err_msg
 
 from ..util import do_string_sub
-from ..util import time_generator, add_to_time_input
+from ..util import time_generator
 from ..util import mkdir_p, get_files
 from . import CommandBuilder
 

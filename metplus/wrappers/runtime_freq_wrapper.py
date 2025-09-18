@@ -22,6 +22,8 @@ from . import CommandBuilder
 @endcode
 '''
 
+SKIPPING_FOR_NO_LEADS_LOG = 'Skipping because no leads were found'
+
 
 class RuntimeFreqWrapper(CommandBuilder):
 
@@ -202,9 +204,15 @@ class RuntimeFreqWrapper(CommandBuilder):
     def run_all_times(self):
         wrapper_instance_name = self.get_wrapper_instance_name()
         self.logger.info(f'Running wrapper: {wrapper_instance_name}')
+        # set CURRENT_INSTANCE to instance string or empty string if None
+        # this is done so instance can be substituted for template-based time generation
+        self.config.set('config', 'CURRENT_INSTANCE', self.instance if self.instance else '')
 
         # loop over all custom strings
         for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+            # set CURRENT_CUSTOM to custom string
+            # this is done so custom can be substituted for template-based time generation
+            self.config.set('config', 'CURRENT_CUSTOM', custom_string)
             if custom_string:
                 self.logger.info(
                     f"Processing custom string: {custom_string}"
@@ -346,6 +354,9 @@ class RuntimeFreqWrapper(CommandBuilder):
     def run_once_per_lead_group(self, lead_groups, time_input):
         success = True
         for label, lead_seq in lead_groups.items():
+            if not lead_seq:
+                self.logger.debug(SKIPPING_FOR_NO_LEADS_LOG)
+                continue
             self._log_lead_group(label, lead_seq)
             time_input['label'] = label
             self.c_dict['ALL_FILES'] = (
@@ -382,6 +393,10 @@ class RuntimeFreqWrapper(CommandBuilder):
         success = True
 
         lead_seq = get_lead_sequence(self.config, input_dict=None)
+        if not lead_seq:
+            self.logger.debug(SKIPPING_FOR_NO_LEADS_LOG)
+            return True
+
         for lead in lead_seq:
             # add forecast lead to time input
             time_input['lead'] = lead
@@ -431,6 +446,10 @@ class RuntimeFreqWrapper(CommandBuilder):
             lead_seq = [0]
         else:
             lead_seq = get_lead_sequence(self.config, input_dict)
+
+        if not lead_seq:
+            self.logger.debug(SKIPPING_FOR_NO_LEADS_LOG)
+            return True
 
         for lead in lead_seq:
             input_dict['lead'] = lead
@@ -517,6 +536,10 @@ class RuntimeFreqWrapper(CommandBuilder):
             lead_seq = get_lead_sequence(self.config,
                                          time_input,
                                          wildcard_if_empty=use_wildcard)
+            if not lead_seq:
+                self.logger.debug(SKIPPING_FOR_NO_LEADS_LOG)
+                continue
+
             lead_files = self.get_all_files_from_leads(time_input, lead_seq)
             self._update_list_with_new_files(lead_files, all_files)
 

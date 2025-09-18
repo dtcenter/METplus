@@ -391,7 +391,7 @@ def test__check_wrapper_run_errors(
     if not use_logger:
         mock_logger.__bool__.return_value = False
 
-    actual = ru._check_wrapper_run_errors(processes, mock_logger)
+    actual = ru._get_total_errors_and_log_counts(processes, mock_logger)
     assert actual == errors_1 + errors_2
 
     if use_logger:

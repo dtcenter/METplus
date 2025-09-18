@@ -1,8 +1,8 @@
 """
-GridStat: Basic Use Case
-========================
+GridStat: Times from Template
+=============================
 
-met_tool_wrapper/GridStat/GridStat.conf
+met_tool_wrapper/GridStat/GridStat_times_from_template.conf
 
 """
 
@@ -18,12 +18,18 @@ met_tool_wrapper/GridStat/GridStat.conf
 #
 # Compare 3 hour forecast precipitation accumulations to observations
 # of 3 hour precipitation accumulation. Generate statistics of the results.
+#
+# This use case is similar to the basic GridStat use case,
+# but it uses filename templates to build the list
+# of run times to process based on existing files on disk.
+# The basic use case only processes a single forecast lead, but this use case
+# processes 4 forecast leads because the input data are available.
 
 ##############################################################################
 # Version Added
 # -------------
 #
-# METplus version 3.0
+# METplus version 6.2
 
 ##############################################################################
 # Datasets
@@ -52,17 +58,17 @@ met_tool_wrapper/GridStat/GridStat.conf
 # run times:
 #
 # | **Init:** 2005-08-07_0Z
-# | **Forecast lead:** 12 hour
+# | **Forecast lead:** 3, 6, 9, 12 hours
 # |
 
 ##############################################################################
 # METplus Configuration
 # ---------------------
 #
-# parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
+# parm/use_cases/met_tool_wrapper/GridStat/GridStat_times_from_template.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/GridStat/GridStat_times_from_template.conf
 
 ##############################################################################
 # MET Configuration
@@ -102,7 +108,7 @@ met_tool_wrapper/GridStat/GridStat.conf
 # Pass the use case configuration file to the run_metplus.py script along
 # with any user-specific system configuration files if desired::
 #
-#   run_metplus.py /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat_times_from_template.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 #
@@ -119,6 +125,15 @@ met_tool_wrapper/GridStat/GridStat.conf
 # Output for this use case will be found in met_tool_wrapper/GridStat/GridStat/2005080700 (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
+# * grid_stat_WRF_APCP_vs_MC_PCP_APCP_03_030000L_20050807_030000V_eclv.txt
+# * grid_stat_WRF_APCP_vs_MC_PCP_APCP_03_030000L_20050807_030000V_grad.txt
+# * grid_stat_WRF_APCP_vs_MC_PCP_APCP_03_030000L_20050807_030000V.stat
+# * grid_stat_WRF_APCP_vs_MC_PCP_APCP_03_060000L_20050807_060000V_eclv.txt
+# * grid_stat_WRF_APCP_vs_MC_PCP_APCP_03_060000L_20050807_060000V_grad.txt
+# * grid_stat_WRF_APCP_vs_MC_PCP_APCP_03_060000L_20050807_060000V.stat
+# * grid_stat_WRF_APCP_vs_MC_PCP_APCP_03_090000L_20050807_090000V_eclv.txt
+# * grid_stat_WRF_APCP_vs_MC_PCP_APCP_03_090000L_20050807_090000V_grad.txt
+# * grid_stat_WRF_APCP_vs_MC_PCP_APCP_03_090000L_20050807_090000V.stat
 # * grid_stat_WRF_APCP_vs_MC_PCP_APCP_03_120000L_20050807_120000V_eclv.txt
 # * grid_stat_WRF_APCP_vs_MC_PCP_APCP_03_120000L_20050807_120000V_grad.txt
 # * grid_stat_WRF_APCP_vs_MC_PCP_APCP_03_120000L_20050807_120000V.stat
@@ -130,6 +145,7 @@ met_tool_wrapper/GridStat/GridStat.conf
 # .. note::
 #
 #   * GridStatToolUseCase
+#   * TimesFromTemplateUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

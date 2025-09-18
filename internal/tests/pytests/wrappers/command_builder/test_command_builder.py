@@ -1163,8 +1163,11 @@ def test_errors_and_defaults(metplus_config):
     cb.app_name = app_name
 
     # smoke test run_all_times
+    # should have an error because run_all_times is not implemented
     cb.run_all_times()
-    assert cb.is_ok
+    assert not cb.is_ok
+    # set is_ok to True to test that subsequent function calls are OK
+    cb.is_ok = True
 
     # test get_output_prefix without time_info
     actual = cb.get_output_prefix(time_info=None)
@@ -1187,6 +1190,9 @@ def test_errors_and_defaults(metplus_config):
 
     # test add_met_config_dict not OK
     assert cb.is_ok
+
+    # set is_ok to True to test that add_met_config_dict is not OK
+    cb.is_ok = True
     with mock.patch.object(cb_wrapper, 'add_met_config_dict', return_value=False):
         actual = cb.add_met_config_dict('foo', 'bar')
     assert actual is False
