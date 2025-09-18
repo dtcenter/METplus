@@ -14608,3 +14608,60 @@ METplus Configuration Glossary
 
    RMW_ANALYSIS_INIT_THRESH_VAL
      Specify the value for 'init_thresh_val' in the MET configuration file for RMWAnalysis.
+
+     | *Used by:* RMWAnalysis
+
+   ENSEMBLE_STAT_LAND_MASK_FLAG
+     Specify the value for 'land_mask.flag' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_LAND_MASK_FILE_NAME
+     Specify the value for 'land_mask.file_name' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_LAND_MASK_FIELD
+     Specify the value for 'land_mask.field' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_LAND_MASK_REGRID
+     Specify the value for 'land_mask.regrid' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_LAND_MASK_THRESH
+     Specify the value for 'land_mask.thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_TOPO_MASK_FLAG
+     Specify the value for 'topo_mask.flag' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_TOPO_MASK_FILE_NAME
+     Specify the value for 'topo_mask.file_name' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_TOPO_MASK_FIELD
+     Specify the value for 'topo_mask.field' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_TOPO_MASK_REGRID
+     Specify the value for 'topo_mask.regrid' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_TOPO_MASK_USE_OBS_THRESH
+     Specify the value for 'topo_mask.use_obs_thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_TOPO_MASK_INTERP_FCST_THRESH
+     Specify the value for 'topo_mask.interp_fcst_thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat

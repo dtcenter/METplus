@@ -810,7 +810,57 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
          {'METPLUS_OBTYPE_AS_GROUP_VAL_FLAG': 'obtype_as_group_val_flag = FALSE;'}),
         ({'ENSEMBLE_STAT_MESSAGE_TYPE_GROUP_MAP': '{ key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";},{ key = "ANYAIR";  val = "AIRCAR,AIRCFT";}', },
          {'METPLUS_MESSAGE_TYPE_GROUP_MAP': 'message_type_group_map = [{ key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";}, { key = "ANYAIR";  val = "AIRCAR,AIRCFT";}];'}),
-
+        # land_mask dictionary
+        ({'ENSEMBLE_STAT_LAND_MASK_FLAG': 'false', },
+         {'METPLUS_LAND_MASK_DICT': 'land_mask = {flag = FALSE;}'}),
+        ({'ENSEMBLE_STAT_LAND_MASK_FILE_NAME': '/some/file/path.nc', },
+         {'METPLUS_LAND_MASK_DICT': 'land_mask = {file_name = ["/some/file/path.nc"];}'}),
+        ({'ENSEMBLE_STAT_LAND_MASK_FIELD_NAME': 'LAND',
+          'ENSEMBLE_STAT_LAND_MASK_FIELD_LEVEL': 'L0'},
+         {'METPLUS_LAND_MASK_DICT': 'land_mask = {field = {name = "LAND";level = "L0";}}'}),
+        ({'ENSEMBLE_STAT_LAND_MASK_REGRID_METHOD': 'NEAREST',
+          'ENSEMBLE_STAT_LAND_MASK_REGRID_WIDTH': '1'},
+         {'METPLUS_LAND_MASK_DICT': 'land_mask = {regrid = {method = NEAREST;width = 1;}}'}),
+        ({'ENSEMBLE_STAT_LAND_MASK_THRESH': 'eq1', },
+         {'METPLUS_LAND_MASK_DICT': 'land_mask = {thresh = eq1;}'}),
+        ({'ENSEMBLE_STAT_LAND_MASK_FLAG': 'false',
+          'ENSEMBLE_STAT_LAND_MASK_FILE_NAME': '/some/file/path.nc',
+          'ENSEMBLE_STAT_LAND_MASK_FIELD_NAME': 'LAND',
+          'ENSEMBLE_STAT_LAND_MASK_FIELD_LEVEL': 'L0',
+          'ENSEMBLE_STAT_LAND_MASK_REGRID_METHOD': 'NEAREST',
+          'ENSEMBLE_STAT_LAND_MASK_REGRID_WIDTH': '1',
+          'ENSEMBLE_STAT_LAND_MASK_THRESH': 'eq1',
+          },
+         {'METPLUS_LAND_MASK_DICT': ('land_mask = {flag = FALSE;file_name = ["/some/file/path.nc"];'
+                                     'field = {name = "LAND";level = "L0";}'
+                                     'regrid = {method = NEAREST;width = 1;}thresh = eq1;}')}),
+        # topo_mask dictionary
+        ({'ENSEMBLE_STAT_TOPO_MASK_FLAG': 'false', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {flag = FALSE;}'}),
+        ({'ENSEMBLE_STAT_TOPO_MASK_FILE_NAME': '/some/file/path.nc', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {file_name = ["/some/file/path.nc"];}'}),
+        ({'ENSEMBLE_STAT_TOPO_MASK_FIELD_NAME': 'TOPO',
+          'ENSEMBLE_STAT_TOPO_MASK_FIELD_LEVEL': 'L0'},
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {field = {name = "TOPO";level = "L0";}}'}),
+        ({'ENSEMBLE_STAT_TOPO_MASK_REGRID_METHOD': 'NEAREST',
+          'ENSEMBLE_STAT_TOPO_MASK_REGRID_WIDTH': '1'},
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {regrid = {method = NEAREST;width = 1;}}'}),
+        ({'ENSEMBLE_STAT_TOPO_MASK_USE_OBS_THRESH': 'ge-100&&le100', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {use_obs_thresh = ge-100&&le100;}'}),
+        ({'ENSEMBLE_STAT_TOPO_MASK_INTERP_FCST_THRESH': 'ge-50&&le50', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {interp_fcst_thresh = ge-50&&le50;}'}),
+        ({'ENSEMBLE_STAT_TOPO_MASK_FLAG': 'false',
+          'ENSEMBLE_STAT_TOPO_MASK_FILE_NAME': '/some/file/path.nc',
+          'ENSEMBLE_STAT_TOPO_MASK_FIELD_NAME': 'TOPO',
+          'ENSEMBLE_STAT_TOPO_MASK_FIELD_LEVEL': 'L0',
+          'ENSEMBLE_STAT_TOPO_MASK_REGRID_METHOD': 'NEAREST',
+          'ENSEMBLE_STAT_TOPO_MASK_REGRID_WIDTH': '1',
+          'ENSEMBLE_STAT_TOPO_MASK_USE_OBS_THRESH': 'ge-100&&le100',
+          'ENSEMBLE_STAT_TOPO_MASK_INTERP_FCST_THRESH': 'ge-50&&le50'
+          },
+         {'METPLUS_TOPO_MASK_DICT': ('topo_mask = {flag = FALSE;file_name = ["/some/file/path.nc"];'
+                                     'field = {name = "TOPO";level = "L0";}regrid = {method = NEAREST;width = 1;}'
+                                     'use_obs_thresh = ge-100&&le100;interp_fcst_thresh = ge-50&&le50;}')}),
     ]
 )
 @pytest.mark.wrapper_c

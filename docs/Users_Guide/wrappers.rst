@@ -274,6 +274,17 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_CLIMO_CDF_CENTER_BINS`
 | :term:`ENSEMBLE_STAT_CLIMO_CDF_WRITE_BINS`
 | :term:`ENSEMBLE_STAT_CLIMO_CDF_DIRECT_PROB`
+| :term:`ENSEMBLE_STAT_LAND_MASK_FLAG`
+| :term:`ENSEMBLE_STAT_LAND_MASK_FILE_NAME`
+| :term:`ENSEMBLE_STAT_LAND_MASK_FIELD`
+| :term:`ENSEMBLE_STAT_LAND_MASK_REGRID`
+| :term:`ENSEMBLE_STAT_LAND_MASK_THRESH`
+| :term:`ENSEMBLE_STAT_TOPO_MASK_FLAG`
+| :term:`ENSEMBLE_STAT_TOPO_MASK_FILE_NAME`
+| :term:`ENSEMBLE_STAT_TOPO_MASK_FIELD`
+| :term:`ENSEMBLE_STAT_TOPO_MASK_REGRID`
+| :term:`ENSEMBLE_STAT_TOPO_MASK_USE_OBS_THRESH`
+| :term:`ENSEMBLE_STAT_TOPO_MASK_INTERP_FCST_THRESH`
 | :term:`ENSEMBLE_STAT_DUPLICATE_FLAG`
 | :term:`ENSEMBLE_STAT_SKIP_CONST`
 | :term:`ENSEMBLE_STAT_CENSOR_THRESH`
@@ -1038,6 +1049,48 @@ ${METPLUS_OBS_WINDOW_DICT}
      - climo_cdv.write_bins
    * - :term:`ENSEMBLE_STAT_CLIMO_CDF_DIRECT_PROB`
      - climo_cdf.direct_prob
+
+${METPLUS_LAND_MASK_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_LAND_MASK_FLAG`
+     - land_mask.flag
+   * - :term:`ENSEMBLE_STAT_LAND_MASK_FILE_NAME`
+     - land_mask.file_name
+   * - :term:`ENSEMBLE_STAT_LAND_MASK_FIELD`
+     - land_mask.field
+   * - :term:`ENSEMBLE_STAT_LAND_MASK_REGRID`
+     - land_mask.regrid
+   * - :term:`ENSEMBLE_STAT_LAND_MASK_THRESH`
+     - land_mask.thresh
+
+${METPLUS_TOPO_MASK_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_TOPO_MASK_FLAG`
+     - topo_mask.flag
+   * - :term:`ENSEMBLE_STAT_TOPO_MASK_FILE_NAME`
+     - topo_mask.file_name
+   * - :term:`ENSEMBLE_STAT_TOPO_MASK_FIELD`
+     - topo_mask.field
+   * - :term:`ENSEMBLE_STAT_TOPO_MASK_REGRID`
+     - topo_mask.regrid
+   * - :term:`ENSEMBLE_STAT_TOPO_MASK_USE_OBS_THRESH`
+     - topo_mask.use_obs_thresh
+   * - :term:`ENSEMBLE_STAT_TOPO_MASK_INTERP_FCST_THRESH`
+     - topo_mask.interp_fcst_thresh
 
 ${METPLUS_MASK_GRID}
 """"""""""""""""""""

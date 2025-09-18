@@ -55,6 +55,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_CLIMO_MEAN_DICT',
         'METPLUS_CLIMO_STDEV_DICT',
         'METPLUS_CLIMO_CDF_DICT',
+        'METPLUS_LAND_MASK_DICT',
+        'METPLUS_TOPO_MASK_DICT',
         'METPLUS_OBS_WINDOW_DICT',
         'METPLUS_MASK_GRID',
         'METPLUS_MASK_POLY',
@@ -251,6 +253,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         # set climo_cdf dictionary variables
         self.handle_climo_cdf_dict()
+
+        self.handle_land_mask()
+        self.handle_topo_mask()
 
         # interp dictionary values
         self.handle_interp_dict()
