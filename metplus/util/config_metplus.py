@@ -929,18 +929,18 @@ class METplusLogFormatter(logging.Formatter):
 
 def parse_var_list(config, time_info=None, data_type=None, met_tool=None,
                    levels_as_list=False):
-    """ read conf items and populate list of dictionaries containing
+    """!Read conf items and populate list of dictionaries containing
     information about each variable to be compared
 
-            @param config: METplusConfig object
-            @param time_info: time object for string sub, optional
-            @param data_type: data type to find. Can be FCST, OBS, or ENS.
-             If not set, get FCST/OBS/BOTH
-            @param met_tool: optional name of MET tool to look for wrapper
-             specific var items
-            @param levels_as_list If true, store levels and output names as
-             a list instead of creating a field info dict for each name/level
-        @returns list of dictionaries with variable information
+    @param config: METplusConfig object
+    @param time_info: time object for string sub, optional
+    @param data_type: data type to find. Can be FCST, OBS, or ENS.
+     If not set, get FCST/OBS/BOTH
+    @param met_tool: optional name of MET tool to look for wrapper
+     specific var items
+    @param levels_as_list If true, store levels and output names as
+     a list instead of creating a field info dict for each name/level
+    @returns list of dictionaries with variable information
     """
 
     # validate configs again in case wrapper is not running from run_metplus
