@@ -44,3 +44,4 @@
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] dtcenter/MET#3185 - dtcenter/MET#3185 added the TrackPoint_count variable to the rmw_analysis NetCDF output
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3084 - #3084 adds new basic use case for DataIngest wrapper that has produces new output data
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3037 - Updating files, truth data for v6.2
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3089 - #3089 adds a new use case for running GridStat using the template-based time generation utility. Also moved this use case and the DataIngest use case to another met_tool_wrapper use case group

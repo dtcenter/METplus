@@ -53,19 +53,42 @@ def run_cmd(cmd, run_args):
         logger.info("Not running command (DO_NOT_RUN_EXE = True)")
         return 0
 
-    log_path = run_args.log_path
+    cmd_exe = _get_command_to_run(cmd, run_args.log_path, env)
 
-    # determine if command must be run in a shell
+    # log path to the log file if used
+    if run_args.log_path:
+        logger.debug("Logging command output to: %s" % run_args.log_path)
+        _log_header_info(run_args.log_path, run_args.copyable_env, cmd, run_args.log_met_to_metplus)
+
+    # get current time to calculate total time to run command
+    start_cmd_time = datetime.now()
+
+    # run command
+    try:
+        ret = run(cmd_exe)
+    except Exception as err:
+        logger.error('Exception occurred: %s' % err)
+        return -1
+
+    # calculate time taken to run
+    end_cmd_time = datetime.now()
+    total_cmd_time = end_cmd_time - start_cmd_time
+    exe_name = os.path.basename(shlex.split(cmd)[0].rstrip(';'))
+    logger.info('Finished running %s - took %s' % (exe_name, total_cmd_time))
+
+    return ret
+
+
+def _get_command_to_run(cmd, log_path, env):
+    # determine if the command must be run in a shell
     run_in_shell = '*' in cmd or ';' in cmd or '<' in cmd or '>' in cmd
 
     # Run the executable and pass the arguments as a sequence.
     # Split the command in to a sequence using shell syntax.
     the_exe = shlex.split(cmd)[0]
     the_args = shlex.split(cmd)[1:]
-    if log_path:
-        logger.debug("Logging command output to: %s" % log_path)
-        _log_header_info(log_path, run_args.copyable_env, cmd, run_args.log_met_to_metplus)
 
+    if log_path:
         if run_in_shell:
             cmd_exe = exe('sh')['-c', cmd].env(**env).err2out() >> log_path
         else:
@@ -76,22 +99,7 @@ def run_cmd(cmd, run_args):
         else:
             cmd_exe = exe(the_exe)[the_args].env(**env).err2out()
 
-    # get current time to calculate total time to run command
-    start_cmd_time = datetime.now()
-
-    # run command
-    try:
-        ret = run(cmd_exe)
-    except Exception as err:
-        logger.error(f'Exception occurred: {err}')
-        ret = -1
-    else:
-        # calculate time to run
-        end_cmd_time = datetime.now()
-        total_cmd_time = end_cmd_time - start_cmd_time
-        logger.info(f'Finished running {the_exe} - took {total_cmd_time}')
-
-    return ret
+    return cmd_exe
 
 
 def _log_header_info(log_path, copyable_env, cmd, log_met_to_metplus):
@@ -223,7 +231,7 @@ def run_metplus(config):
         write_all_commands(all_commands, config)
 
         # compute total number of errors that occurred and output results
-        return _check_wrapper_run_errors(processes, config.logger)
+        return _get_total_errors_and_log_counts(processes, config.logger)
     except Exception:
         config.logger.exception("Fatal error occurred")
         config.logger.info("Check the log file for more information: "
@@ -281,16 +289,34 @@ def _check_wrapper_init_errors(processes, logger=None):
     return errors
 
 
-def _check_wrapper_run_errors(processes, logger=None):
+def _get_total_errors_and_log_counts(processes, logger=None):
     total_errors = 0
     for process in processes:
-        if not process.errors:
-            continue
+        # gather the number of times each command was run
+        run_count = {}
+        for cmd, _ in process.all_commands:
+            # get the basename of the first command
+            cmd_basename = os.path.basename(cmd.split()[0])
+            if cmd_basename not in run_count:
+                run_count[cmd_basename] = 0
+            run_count[cmd_basename] += 1
+
+        # add errors from process to total number of errors
         total_errors += process.errors
 
         if not logger:
             continue
-        process_name = process.__class__.__name__.replace('Wrapper', '')
+
+        process_name = process.get_wrapper_instance_name()
+
+        # log number of times each command was run
+        for cmd_basename, count in run_count.items():
+            logger.info(f"{process_name}: {cmd_basename} was run {count} times")
+
+        # log number of errors that occurred if any occurred
+        if not process.errors:
+            continue
+
         error_msg = f'{process_name} had {process.errors} error'
         if process.errors > 1:
             error_msg += 's'

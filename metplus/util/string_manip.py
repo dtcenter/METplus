@@ -625,3 +625,73 @@ def log_terminal_includes_info(config):
                               config.getstr('runtime', 'LOG_LEVEL_TERMINAL'))
     )
     return log_terminal_level <= logging.INFO
+
+
+def split_dir_and_template(input_dir, input_template):
+    """!Split a path containing filename template tags into directory and template parts.
+
+    This function finds the first occurrence of filename template tags (like {init?fmt=%Y%m%d%H}
+    or {lead}) and splits the path so that:
+    - The directory part contains everything before the first template tag
+    - The template part contains everything from the first template tag onward
+
+    If no template tags are found, returns the full path as directory and empty string as template.
+
+    @param input_dir (str): Input directory path (may contain template tags)
+    @param input_template (str): Input template path (may contain template tags)
+    @returns tuple: (directory_path, template_path)
+
+    Examples:
+        >>> split_dir_and_template("/data/input/{init?fmt=%Y%m%d%H}", "wrfprs_{lead?fmt=%HH}.nc")
+        ("/data/input", "{init?fmt=%Y%m%d%H}/wrfprs_{lead?fmt=%HH}.nc")
+
+        >>> split_dir_and_template("/data", "input/{valid}/file_{lead}.nc")
+        ("/data/input", "{valid}/file_{lead}.nc")
+
+        >>> split_dir_and_template("", "/data/input/file.nc")
+        ("/data/input", "file.nc")
+    """
+    # Pattern to match filename template tags like {init}, {valid}, {lead},
+    # {init?fmt=%Y%m%d%H}, etc. - anything within curly braces
+    template_pattern = r'\{[^}]+\}'
+
+    # Combine the directory and template paths
+    if input_dir and input_template:
+        combined_path = os.path.join(input_dir, input_template)
+    elif input_dir:
+        combined_path = input_dir
+    elif input_template:
+        combined_path = input_template
+    else:
+        return "", ""
+
+    # Split the combined path intelligently
+
+    # Find the first occurrence of a template tag
+    match = re.search(template_pattern, combined_path)
+
+    if not match:
+        # No template tags found - split at the last directory separator
+        # to separate directory from filename
+        dir_path = os.path.dirname(combined_path)
+        template_part = os.path.basename(combined_path)
+        return dir_path, template_part
+
+    # Find the start position of the first template tag
+    template_start = match.start()
+
+    # Find the last directory separator before the template tag
+    # This ensures we split at a directory boundary, not in the middle of a filename
+    path_before_template = combined_path[:template_start]
+    last_separator = path_before_template.rfind(os.sep)
+
+    if last_separator == -1:
+        # No separator found before template, so template starts at the beginning
+        return "", combined_path
+
+    # Split at the last directory separator before the template
+    # Handle special case where separator is at position 0 (root directory)
+    dir_path = os.sep if last_separator == 0 else combined_path[:last_separator]
+    template_part = combined_path[last_separator + 1:]
+
+    return dir_path, template_part
