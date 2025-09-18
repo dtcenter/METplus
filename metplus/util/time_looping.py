@@ -112,20 +112,30 @@ def _get_dir_template_pairs(config):
     input_dirs = getlist(config.getdir('TIME_GENERATOR_INPUT_DIR'))
     input_templates = getlist(config.getraw('config', 'TIME_GENERATOR_INPUT_TEMPLATE'))
 
-    # read input dirs and templates, substituting custom and instance strings
-    custom = config.getraw('config', 'CURRENT_CUSTOM', '')
-    instance = config.getraw('config', 'CURRENT_INSTANCE', '')
-    input_dirs = [do_string_sub(item, custom=custom, instance=instance, skip_missing_tags=True)
+    # read input dirs and templates, substituting custom/instance/now/today
+    clock_dt = datetime.strptime(
+        config.getstr('config', 'CLOCK_TIME'),
+        '%Y%m%d%H%M%S'
+    )
+    replace_args = {
+        'custom': config.getraw('config', 'CURRENT_CUSTOM', ''),
+        'instance': config.getraw('config', 'CURRENT_INSTANCE', ''),
+        'now': clock_dt,
+        'today': clock_dt.strftime('%Y%m%d'),
+    }
+    input_dirs = [do_string_sub(item, **replace_args, skip_missing_tags=True)
                   for item in input_dirs]
-    input_templates = [do_string_sub(item, custom=custom, instance=instance, skip_missing_tags=True)
+    input_templates = [do_string_sub(item, **replace_args, skip_missing_tags=True)
                        for item in input_templates]
 
     # Handle pairing logic
-    if len(input_dirs) == 1:
+    if len(input_dirs) < 2:
         # Use the single directory for each template, applying smart splitting
         dir_template_pairs = []
+        # handle if input directory was not provided and entire path is in template
+        input_dir = '' if not input_dirs else input_dirs[0]
         for template in input_templates:
-            clean_dir, clean_template = split_dir_and_template(input_dirs[0], template)
+            clean_dir, clean_template = split_dir_and_template(input_dir, template)
             if clean_template:  # Only add pairs that have a valid template
                 dir_template_pairs.append((clean_dir, clean_template))
         return dir_template_pairs
