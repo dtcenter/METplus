@@ -821,6 +821,34 @@ def test_met_dictionary_in_var_options(metplus_config, fcst_and_obs_data):
          {'METPLUS_OBTYPE_AS_GROUP_VAL_FLAG': 'obtype_as_group_val_flag = FALSE;'}),
         ({'OBS_POINT_STAT_INPUT_TEMPLATE': 'PYTHON_NUMPY= examples/read_met_point_obs.py /met_test/out/pb2nc/sample_pb.nc',
           'OBS_POINT_STAT_INPUT_DIR': ''}, {}),
+        ({'POINT_STAT_LAPSE_RATE_CORRECTION_APPLY_TO': 'FCST', },
+         {'METPLUS_LAPSE_RATE_CORRECTION_DICT': 'lapse_rate_correction = {apply_to = FCST;}'}),
+
+        ({'POINT_STAT_LAPSE_RATE_CORRECTION_VALUE': 'DRY_LAPSE_RATE_K_per_M', },
+         {'METPLUS_LAPSE_RATE_CORRECTION_DICT': 'lapse_rate_correction = {value = DRY_LAPSE_RATE_K_per_M;}'}),
+
+        ({'POINT_STAT_LAPSE_RATE_CORRECTION_APPLY_TO': 'FCST',
+          'POINT_STAT_LAPSE_RATE_CORRECTION_VALUE': 'DRY_LAPSE_RATE_K_per_M',
+          },
+         {'METPLUS_LAPSE_RATE_CORRECTION_DICT': 'lapse_rate_correction = {apply_to = FCST;value = DRY_LAPSE_RATE_K_per_M;}'}),
+        ({'POINT_STAT_MSL_AGL_CONVERSION_APPLY_TO': 'FCST', },
+         {'METPLUS_MSL_AGL_CONVERSION_DICT': 'msl_agl_conversion = {apply_to = FCST;}'}),
+
+        ({'POINT_STAT_MSL_AGL_CONVERSION_APPLY_FROM': 'OBS', },
+         {'METPLUS_MSL_AGL_CONVERSION_DICT': 'msl_agl_conversion = {apply_from = OBS;}'}),
+
+        ({'POINT_STAT_MSL_AGL_CONVERSION_THRESH': 'ne99999', },
+         {'METPLUS_MSL_AGL_CONVERSION_DICT': 'msl_agl_conversion = {thresh = ne99999;}'}),
+
+        ({'POINT_STAT_MSL_AGL_CONVERSION_MSL_TO_AGL': 'false', },
+         {'METPLUS_MSL_AGL_CONVERSION_DICT': 'msl_agl_conversion = {msl_to_agl = FALSE;}'}),
+
+        ({'POINT_STAT_MSL_AGL_CONVERSION_APPLY_TO': 'FCST',
+          'POINT_STAT_MSL_AGL_CONVERSION_APPLY_FROM': 'OBS',
+          'POINT_STAT_MSL_AGL_CONVERSION_THRESH': 'ne99999',
+          'POINT_STAT_MSL_AGL_CONVERSION_MSL_TO_AGL': 'false',
+          },
+         {'METPLUS_MSL_AGL_CONVERSION_DICT': 'msl_agl_conversion = {apply_to = FCST;apply_from = OBS;thresh = ne99999;msl_to_agl = FALSE;}'}),
 
     ]
 )

@@ -14665,3 +14665,63 @@ METplus Configuration Glossary
      Specify the value for 'topo_mask.interp_fcst_thresh' in the MET configuration file for EnsembleStat.
 
      | *Used by:* EnsembleStat
+
+   POINT_STAT_LAPSE_RATE_CORRECTION_APPLY_TO
+     Specify the value for 'lapse_rate_correction.apply_to' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_LAPSE_RATE_CORRECTION_VALUE
+     Specify the value for 'lapse_rate_correction.value' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_MSL_AGL_CONVERSION_APPLY_TO
+     Specify the value for 'msl_agl_conversion.apply_to' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_MSL_AGL_CONVERSION_APPLY_FROM
+     Specify the value for 'msl_agl_conversion.apply_from' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_MSL_AGL_CONVERSION_THRESH
+     Specify the value for 'msl_agl_conversion.thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_MSL_AGL_CONVERSION_MSL_TO_AGL
+     Specify the value for 'msl_agl_conversion.msl_to_agl' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   ENSEMBLE_STAT_LAPSE_RATE_CORRECTION_APPLY_TO
+     Specify the value for 'lapse_rate_correction.apply_to' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_LAPSE_RATE_CORRECTION_VALUE
+     Specify the value for 'lapse_rate_correction.value' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_MSL_AGL_CONVERSION_APPLY_TO
+     Specify the value for 'msl_agl_conversion.apply_to' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_MSL_AGL_CONVERSION_APPLY_FROM
+     Specify the value for 'msl_agl_conversion.apply_from' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_MSL_AGL_CONVERSION_THRESH
+     Specify the value for 'msl_agl_conversion.thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_MSL_AGL_CONVERSION_MSL_TO_AGL
+     Specify the value for 'msl_agl_conversion.msl_to_agl' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat

@@ -285,6 +285,12 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_TOPO_MASK_REGRID`
 | :term:`ENSEMBLE_STAT_TOPO_MASK_USE_OBS_THRESH`
 | :term:`ENSEMBLE_STAT_TOPO_MASK_INTERP_FCST_THRESH`
+| :term:`ENSEMBLE_STAT_LAPSE_RATE_CORRECTION_APPLY_TO`
+| :term:`ENSEMBLE_STAT_LAPSE_RATE_CORRECTION_VALUE`
+| :term:`ENSEMBLE_STAT_MSL_AGL_CONVERSION_APPLY_TO`
+| :term:`ENSEMBLE_STAT_MSL_AGL_CONVERSION_APPLY_FROM`
+| :term:`ENSEMBLE_STAT_MSL_AGL_CONVERSION_THRESH`
+| :term:`ENSEMBLE_STAT_MSL_AGL_CONVERSION_MSL_TO_AGL`
 | :term:`ENSEMBLE_STAT_DUPLICATE_FLAG`
 | :term:`ENSEMBLE_STAT_SKIP_CONST`
 | :term:`ENSEMBLE_STAT_CENSOR_THRESH`
@@ -1091,6 +1097,38 @@ ${METPLUS_TOPO_MASK_DICT}
      - topo_mask.use_obs_thresh
    * - :term:`ENSEMBLE_STAT_TOPO_MASK_INTERP_FCST_THRESH`
      - topo_mask.interp_fcst_thresh
+
+${METPLUS_LAPSE_RATE_CORRECTION_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_LAPSE_RATE_CORRECTION_APPLY_TO`
+     - lapse_rate_correction.apply_to
+   * - :term:`ENSEMBLE_STAT_LAPSE_RATE_CORRECTION_VALUE`
+     - lapse_rate_correction.value
+
+${METPLUS_MSL_AGL_CONVERSION_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_MSL_AGL_CONVERSION_APPLY_TO`
+     - msl_agl_conversion.apply_to
+   * - :term:`ENSEMBLE_STAT_MSL_AGL_CONVERSION_APPLY_FROM`
+     - msl_agl_conversion.apply_from
+   * - :term:`ENSEMBLE_STAT_MSL_AGL_CONVERSION_THRESH`
+     - msl_agl_conversion.thresh
+   * - :term:`ENSEMBLE_STAT_MSL_AGL_CONVERSION_MSL_TO_AGL`
+     - msl_agl_conversion.msl_to_agl
 
 ${METPLUS_MASK_GRID}
 """"""""""""""""""""
@@ -8223,6 +8261,12 @@ Configuration
 | :term:`POINT_STAT_TOPO_MASK_REGRID_WIDTH`
 | :term:`POINT_STAT_TOPO_MASK_USE_OBS_THRESH`
 | :term:`POINT_STAT_TOPO_MASK_INTERP_FCST_THRESH`
+| :term:`POINT_STAT_LAPSE_RATE_CORRECTION_APPLY_TO`
+| :term:`POINT_STAT_LAPSE_RATE_CORRECTION_VALUE`
+| :term:`POINT_STAT_MSL_AGL_CONVERSION_APPLY_TO`
+| :term:`POINT_STAT_MSL_AGL_CONVERSION_APPLY_FROM`
+| :term:`POINT_STAT_MSL_AGL_CONVERSION_THRESH`
+| :term:`POINT_STAT_MSL_AGL_CONVERSION_MSL_TO_AGL`
 | :term:`POINT_STAT_OBS_QUALITY_INC`
 | :term:`POINT_STAT_OBS_QUALITY_EXC`
 | :term:`POINT_STAT_DUPLICATE_FLAG`
@@ -8898,6 +8942,38 @@ ${METPLUS_TOPO_MASK_DICT}
      - topo_mask.use_obs_thresh
    * - :term:`POINT_STAT_TOPO_MASK_INTERP_FCST_THRESH`
      - topo_mask.interp_fcst_thresh
+
+${METPLUS_LAPSE_RATE_CORRECTION_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_LAPSE_RATE_CORRECTION_APPLY_TO`
+     - lapse_rate_correction.apply_to
+   * - :term:`POINT_STAT_LAPSE_RATE_CORRECTION_VALUE`
+     - lapse_rate_correction.value
+
+${METPLUS_MSL_AGL_CONVERSION_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_MSL_AGL_CONVERSION_APPLY_TO`
+     - msl_agl_conversion.apply_to
+   * - :term:`POINT_STAT_MSL_AGL_CONVERSION_APPLY_FROM`
+     - msl_agl_conversion.apply_from
+   * - :term:`POINT_STAT_MSL_AGL_CONVERSION_THRESH`
+     - msl_agl_conversion.thresh
+   * - :term:`POINT_STAT_MSL_AGL_CONVERSION_MSL_TO_AGL`
+     - msl_agl_conversion.msl_to_agl
 
 ${METPLUS_OBS_WINDOW_DICT}
 """"""""""""""""""""""""""

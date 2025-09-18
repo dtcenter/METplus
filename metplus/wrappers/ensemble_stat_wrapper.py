@@ -57,6 +57,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_CLIMO_CDF_DICT',
         'METPLUS_LAND_MASK_DICT',
         'METPLUS_TOPO_MASK_DICT',
+        'METPLUS_LAPSE_RATE_CORRECTION_DICT',
+        'METPLUS_MSL_AGL_CONVERSION_DICT',
         'METPLUS_OBS_WINDOW_DICT',
         'METPLUS_MASK_GRID',
         'METPLUS_MASK_POLY',
@@ -256,6 +258,18 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         self.handle_land_mask()
         self.handle_topo_mask()
+
+        self.add_met_config_dict('lapse_rate_correction', {
+            'apply_to': ('string', 'remove_quotes, uppercase'),
+            'value': ('string', 'remove_quotes'),
+        })
+
+        self.add_met_config_dict('msl_agl_conversion', {
+            'apply_to': ('string', 'remove_quotes, uppercase'),
+            'apply_from': ('string', 'remove_quotes, uppercase'),
+            'thresh': ('string', 'remove_quotes'),
+            'msl_to_agl': 'bool',
+        })
 
         # interp dictionary values
         self.handle_interp_dict()

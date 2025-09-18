@@ -861,6 +861,35 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
          {'METPLUS_TOPO_MASK_DICT': ('topo_mask = {flag = FALSE;file_name = ["/some/file/path.nc"];'
                                      'field = {name = "TOPO";level = "L0";}regrid = {method = NEAREST;width = 1;}'
                                      'use_obs_thresh = ge-100&&le100;interp_fcst_thresh = ge-50&&le50;}')}),
+        ({'ENSEMBLE_STAT_LAPSE_RATE_CORRECTION_APPLY_TO': 'FCST', },
+         {'METPLUS_LAPSE_RATE_CORRECTION_DICT': 'lapse_rate_correction = {apply_to = FCST;}'}),
+
+        ({'ENSEMBLE_STAT_LAPSE_RATE_CORRECTION_VALUE': 'DRY_LAPSE_RATE_K_per_M', },
+         {'METPLUS_LAPSE_RATE_CORRECTION_DICT': 'lapse_rate_correction = {value = DRY_LAPSE_RATE_K_per_M;}'}),
+
+        ({'ENSEMBLE_STAT_LAPSE_RATE_CORRECTION_APPLY_TO': 'FCST',
+          'ENSEMBLE_STAT_LAPSE_RATE_CORRECTION_VALUE': 'DRY_LAPSE_RATE_K_per_M',
+         },
+         {'METPLUS_LAPSE_RATE_CORRECTION_DICT': 'lapse_rate_correction = {apply_to = FCST;value = DRY_LAPSE_RATE_K_per_M;}'}),
+        ({'ENSEMBLE_STAT_MSL_AGL_CONVERSION_APPLY_TO': 'FCST', },
+         {'METPLUS_MSL_AGL_CONVERSION_DICT': 'msl_agl_conversion = {apply_to = FCST;}'}),
+
+        ({'ENSEMBLE_STAT_MSL_AGL_CONVERSION_APPLY_FROM': 'OBS', },
+         {'METPLUS_MSL_AGL_CONVERSION_DICT': 'msl_agl_conversion = {apply_from = OBS;}'}),
+
+        ({'ENSEMBLE_STAT_MSL_AGL_CONVERSION_THRESH': 'ne99999', },
+         {'METPLUS_MSL_AGL_CONVERSION_DICT': 'msl_agl_conversion = {thresh = ne99999;}'}),
+
+        ({'ENSEMBLE_STAT_MSL_AGL_CONVERSION_MSL_TO_AGL': 'false', },
+         {'METPLUS_MSL_AGL_CONVERSION_DICT': 'msl_agl_conversion = {msl_to_agl = FALSE;}'}),
+
+        ({'ENSEMBLE_STAT_MSL_AGL_CONVERSION_APPLY_TO': 'FCST',
+          'ENSEMBLE_STAT_MSL_AGL_CONVERSION_APPLY_FROM': 'OBS',
+          'ENSEMBLE_STAT_MSL_AGL_CONVERSION_THRESH': 'ne99999',
+          'ENSEMBLE_STAT_MSL_AGL_CONVERSION_MSL_TO_AGL': 'false',
+         },
+         {'METPLUS_MSL_AGL_CONVERSION_DICT': 'msl_agl_conversion = {apply_to = FCST;apply_from = OBS;thresh = ne99999;msl_to_agl = FALSE;}'}),
+
     ]
 )
 @pytest.mark.wrapper_c
