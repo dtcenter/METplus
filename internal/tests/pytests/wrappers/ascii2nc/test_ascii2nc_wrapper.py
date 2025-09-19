@@ -3,10 +3,17 @@
 import pytest
 
 import os
-import shutil
 
 from metplus.wrappers.ascii2nc_wrapper import ASCII2NCWrapper
 
+
+DEFAULT_TIME_SUMMARY = (
+    'time_summary = {flag = FALSE;raw_data = FALSE;beg = "000000";'
+    'end = "235959";step = 300;width = 600;'
+    'grib_code = [11, 204, 211];obs_var = [];'
+    'type = ["min", "max", "range", "mean", "stdev", "median", "p80"];'
+    'vld_freq = 0;vld_thresh = 0.0;}'
+)
 
 def ascii2nc_wrapper(metplus_config, config_overrides=None):
     config = metplus_config
@@ -71,12 +78,7 @@ def test_ascii2nc_missing_inputs(metplus_config, get_test_data_dir, run_all_and_
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
         ({},
-         {'METPLUS_TIME_SUMMARY_DICT':
-          ('time_summary = {flag = FALSE;raw_data = FALSE;beg = "000000";'
-           'end = "235959";step = 300;width = 600;'
-           'grib_code = [11, 204, 211];obs_var = [];'
-           'type = ["min", "max", "range", "mean", "stdev", "median", "p80"];'
-           'vld_freq = 0;vld_thresh = 0.0;}')}),
+         {'METPLUS_TIME_SUMMARY_DICT': DEFAULT_TIME_SUMMARY}),
 
         ({'ASCII2NC_TIME_SUMMARY_FLAG': 'True'},
          {'METPLUS_TIME_SUMMARY_DICT':
@@ -174,6 +176,20 @@ def test_ascii2nc_missing_inputs(metplus_config, get_test_data_dir, run_all_and_
            'type = ["min", "max", "range", "mean", "stdev", "median", "p80"];'
            'vld_freq = 0;vld_thresh = 0.5;}')}),
 
+        ({'ASCII2NC_INPUT_FORMAT': 'ismn'},
+         {'METPLUS_TIME_SUMMARY_DICT': DEFAULT_TIME_SUMMARY}),
+        ({'ASCII2NC_VALID_BEG': '20240201_12'},
+         {'METPLUS_TIME_SUMMARY_DICT': DEFAULT_TIME_SUMMARY}),
+        ({'ASCII2NC_VALID_END': '20240202_00'},
+         {'METPLUS_TIME_SUMMARY_DICT': DEFAULT_TIME_SUMMARY}),
+        ({'ASCII2NC_MASK_GRID': 'DTC165'},
+         {'METPLUS_TIME_SUMMARY_DICT': DEFAULT_TIME_SUMMARY}),
+        ({'ASCII2NC_MASK_POLY': 'MET_BASE/poly/SAO.poly'},
+         {'METPLUS_TIME_SUMMARY_DICT': DEFAULT_TIME_SUMMARY}),
+        ({'ASCII2NC_MASK_SID': 'SID1'},
+         {'METPLUS_TIME_SUMMARY_DICT': DEFAULT_TIME_SUMMARY}),
+        ({'ASCII2NC_INPUTRX': '*.stm$'},
+         {'METPLUS_TIME_SUMMARY_DICT': DEFAULT_TIME_SUMMARY}),
     ]
 )
 @pytest.mark.wrapper
@@ -198,13 +214,26 @@ def test_ascii2nc_wrapper(metplus_config, config_overrides, env_var_values,
     app_path = os.path.join(wrapper.config.getdir('MET_BIN_DIR'),
                             wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
+
+    extra_args = []
+    if 'ASCII2NC_INPUT_FORMAT' in config_overrides:
+        extra_args.append(f" -format {config_overrides['ASCII2NC_INPUT_FORMAT']}")
+
     config_file = wrapper.c_dict.get('CONFIG_FILE')
+    extra_args.append(f" -config {config_file}")
+
+    for command_line_arg in ('valid_beg', 'valid_end', 'mask_grid', 'mask_poly', 'mask_sid'):
+        if f'ASCII2NC_{command_line_arg.upper()}' in config_overrides:
+            extra_args.append(f" -{command_line_arg} {config_overrides[f'ASCII2NC_{command_line_arg.upper()}']}")
+
+    if 'ASCII2NC_INPUTRX' in config_overrides:
+        extra_args.append(f' -inputrx "{config_overrides['ASCII2NC_INPUTRX']}"')
 
     expected_cmds = [
-        (f"{app_path} {input_dir}/{input_file1} {output_dir}/{output_file1} "
-         f"-config {config_file} {verbosity}"),
-        (f"{app_path} {input_dir}/{input_file2} {output_dir}/{output_file2} "
-         f"-config {config_file} {verbosity}"),
+        (f"{app_path} {input_dir}/{input_file1} {output_dir}/{output_file1}"
+         f"{''.join(extra_args)} {verbosity}"),
+        (f"{app_path} {input_dir}/{input_file2} {output_dir}/{output_file2}"
+         f"{''.join(extra_args)} {verbosity}"),
     ]
 
     compare_command_and_env_vars(all_commands, expected_cmds, env_var_values, wrapper)
