@@ -274,3 +274,45 @@ that reformat gridded data
             'use_obs_thresh': 'thresh',
             'interp_fcst_thresh': 'thresh',
         })
+
+    @staticmethod
+    def handle_land_mask_var_options(var_options):
+        var_options['obs']['land_mask'] = {
+            'data_type': 'dict',
+            'items': {
+                'flag': 'bool',
+            }
+        }
+
+    @staticmethod
+    def handle_topo_mask_var_options(var_options):
+        var_options['obs']['topo_mask'] = {
+            'data_type': 'dict',
+            'items': {
+                'flag': 'bool',
+                'use_obs_thresh': 'thresh',
+                'interp_fcst_thresh': 'thresh'
+            }
+        }
+
+    @staticmethod
+    def handle_lapse_rate_correction_var_options(var_options):
+        var_options['obs']['lapse_rate_correction'] = {
+            'data_type': 'dict',
+            'items': {
+                'apply_to': ('string', 'remove_quotes, uppercase'),
+                'value': ('string', 'remove_quotes'),
+            }
+        }
+
+    @staticmethod
+    def handle_msl_agl_conversion_var_options(var_options):
+        var_options['obs']['msl_agl_conversion'] = {
+            'data_type': 'dict',
+            'items': {
+                'apply_to': ('string', 'remove_quotes, uppercase'),
+                'apply_from': ('string', 'remove_quotes, uppercase'),
+                'thresh': ('string', 'remove_quotes'),
+                'msl_to_agl': 'bool',
+            }
+        }

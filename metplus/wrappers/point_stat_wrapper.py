@@ -296,6 +296,16 @@ class PointStatWrapper(CompareGriddedWrapper):
             self.log_error('Must set POINT_STAT_OUTPUT_DIR in config file')
         return c_dict
 
+    def populate_var_options(self):
+        var_options = super().populate_var_options()
+
+        self.handle_land_mask_var_options(var_options)
+        self.handle_topo_mask_var_options(var_options)
+        self.handle_lapse_rate_correction_var_options(var_options)
+        self.handle_msl_agl_conversion_var_options(var_options)
+
+        return var_options
+
     def set_command_line_arguments(self, time_info):
         """!Set command line arguments in self.args to add to command to run.
         This function is overwritten from CompareGridded wrapper.
