@@ -13,6 +13,7 @@ Condition codes: 0 for success, 1 for failure
 import os
 
 from . import ReformatPointWrapper
+from .. import remove_quotes
 from ..util import do_string_sub
 
 '''!@namespace ASCII2NCWrapper
@@ -87,4 +88,5 @@ class ASCII2NCWrapper(ReformatPointWrapper):
             if self.c_dict[arg]:
                 val = do_string_sub(self.c_dict[arg], **time_info)
                 arg_name = 'config' if arg == 'CONFIG_FILE' else arg.lower()
+                val = f'"{remove_quotes(val)}"' if arg == 'INPUTRX' else val
                 self.args.append(f"-{arg_name} {val}")
