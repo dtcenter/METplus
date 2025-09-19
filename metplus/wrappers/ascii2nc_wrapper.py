@@ -58,7 +58,7 @@ class ASCII2NCWrapper(ReformatPointWrapper):
                                                  'LOG_ASCII2NC_VERBOSITY',
                                                  c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-        c_dict['SUPPORTS_FILE_LIST'] = True
+        c_dict['ALLOW_DIR'] = True
 
         # ASCII2NC config file is optional, so
         # don't provide wrapped config file name as default value
