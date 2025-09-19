@@ -1399,27 +1399,9 @@ def _handle_extra_options_for_field(config, extra_options, field_configs: dict, 
     if not extra_options:
         return
 
-    from .met_config import METConfig, add_met_config_item, add_met_config_dict
     output_dict = {}
     for name, info in extra_options.items():
-        # handle dictionary options
-        if info.get('data_type') == 'dict':
-            for prefix in search_prefixes:
-                full_prefix = f"{prefix}VAR{index}"
-                add_met_config_dict(config, full_prefix, output_dict, name, info.get('items'))
-                if output_dict.get(f"METPLUS_{name.upper()}_DICT"):
-                    break
-
-            continue
-
-        # handle non-dictionary options
-        metplus_configs = []
-        for prefix in search_prefixes:
-            # handle non-dictionary extra options
-            metplus_configs.append(f"{prefix}VAR{index}_{name.upper()}")
-
-        item = METConfig(name=name, metplus_configs=metplus_configs, **info)
-        add_met_config_item(config, item, output_dict)
+        _handle_single_option_for_field(config, name, info, output_dict, index, search_prefixes)
 
     # change options to empty string if it is None
     if not output_dict:
@@ -1428,6 +1410,7 @@ def _handle_extra_options_for_field(config, extra_options, field_configs: dict, 
     # change options to empty string if it is None
     if field_configs['options'] is None:
         field_configs['options'] = ''
+
     # if options does not end with a semicolon or closing curly brace,
     # add semicolon before adding extra options
     elif not field_configs['options'].endswith((';', '}')):
@@ -1435,3 +1418,26 @@ def _handle_extra_options_for_field(config, extra_options, field_configs: dict, 
 
     # add all extra options to existing options
     field_configs['options'] += ' '.join(value for value in output_dict.values() if value)
+
+
+def _handle_single_option_for_field(config, name, info, output_dict, index, search_prefixes):
+    from .met_config import METConfig, add_met_config_item, add_met_config_dict
+
+    # handle dictionary options
+    if info.get('data_type') == 'dict':
+        for prefix in search_prefixes:
+            full_prefix = f"{prefix}VAR{index}"
+            add_met_config_dict(config, full_prefix, output_dict, name, info.get('items'))
+            if output_dict.get(f"METPLUS_{name.upper()}_DICT"):
+                break
+
+        return
+
+    # handle non-dictionary options
+    metplus_configs = []
+    for prefix in search_prefixes:
+        # handle non-dictionary extra options
+        metplus_configs.append(f"{prefix}VAR{index}_{name.upper()}")
+
+    item = METConfig(name=name, metplus_configs=metplus_configs, **info)
+    add_met_config_item(config, item, output_dict)
