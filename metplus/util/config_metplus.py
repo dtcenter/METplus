@@ -1248,7 +1248,10 @@ def _format_var_items(field_configs, time_info=None, logger=None):
         # split up each item by semicolon, then add a semicolon to the end
         # use list(filter(None to remove empty strings from list
         extra_list = list(filter(None, extra_list))
-        var_items['extra'] = f"{'; '.join(extra_list)};"
+        var_items['extra'] = f"{'; '.join(extra_list)}"
+        # only add semi-colon at end if the last item is not a dictionary
+        if not var_items['extra'].endswith('}'):
+            var_items['extra'] += ';'
 
     _get_output_names(field_configs, var_items, time_info)
 
@@ -1422,8 +1425,13 @@ def _handle_extra_options_for_field(config, extra_options, field_configs: dict, 
     if not output_dict:
         return
 
+    # change options to empty string if it is None
     if field_configs['options'] is None:
         field_configs['options'] = ''
+    # if options does not end with a semicolon or closing curly brace,
+    # add semicolon before adding extra options
+    elif not field_configs['options'].endswith((';', '}')):
+        field_configs['options'] += ';'
 
     # add all extra options to existing options
-    field_configs['options'] += ''.join(value for value in output_dict.values() if value)
+    field_configs['options'] += ' '.join(value for value in output_dict.values() if value)
