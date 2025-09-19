@@ -131,32 +131,22 @@ class RuntimeFreqWrapper(CommandBuilder):
             prefix = info.get('prefix')
             required = info.get('required', True)
 
-            template = self.config.getraw('config', f'{prefix}_INPUT_FILE_LIST')
-            # if explicit file list is specified, use it
-            if template:
-                c_dict['EXPLICIT_FILE_LIST'] = True
-                template_dict[label.rstrip('_')] = (template, True, False)
+            prefix_list = [prefix] if isinstance(prefix, str) else prefix
+            templates = []
+            c_dict[f'{label}INPUT_DIR'] = ''
+            c_dict[f'{label}INPUT_TEMPLATE'] = ''
+
+            if self._handle_input_file_list(prefix_list, c_dict, template_dict, label):
                 continue
 
-            # otherwise read INPUT_DIR/TEMPLATE
-            input_dir = self.config.getdir(f'{prefix}_INPUT_DIR', '')
-            c_dict[f'{label}INPUT_DIR'] = input_dir
-            templates = getlist(
-                self.config.getraw('config', f'{prefix}_INPUT_TEMPLATE')
-            )
-            # if *_INPUT_TEMPLATE is not set, check if *_TEMPLATE is set
-            if not templates:
-                templates = getlist(
-                    self.config.getraw('config', f'{prefix}_TEMPLATE')
-                )
+            templates = self._get_templates_from_prefixes(prefix_list, c_dict, label)
 
             template = ','.join(templates)
             c_dict[f'{label}INPUT_TEMPLATE'] = template
             if not c_dict[f'{label}INPUT_TEMPLATE']:
                 # don't add template to output dictionary if it is not set
                 # report an error if it was marked as required
-                if required:
-                    self.log_error(f'{prefix}_INPUT_TEMPLATE required to run')
+                self._log_error_if_required(f'{prefix_list[0]}_INPUT_TEMPLATE required to run', required)
                 continue
 
             template_dict[label.rstrip('_')] = (template, True, False)
@@ -166,6 +156,65 @@ class RuntimeFreqWrapper(CommandBuilder):
         if d_type:
             key = f'{key}_{d_type}'
         c_dict[key] = template_dict
+
+    def _get_templates_from_prefixes(self, prefix_list, c_dict, label):
+        found_prefix = False
+        return_templates = []
+        for prefix in prefix_list:
+
+            # otherwise read INPUT_DIR/TEMPLATE
+            input_dir = self.config.getdir(f'{prefix}_INPUT_DIR', '')
+            templates = self._get_templates_for_prefix(prefix)
+
+            # If templates were found with this prefix, use it
+            if templates:
+                if found_prefix:
+                    self.logger.warning(f'{prefix_list[0]}_INPUT_TEMPLATE and '
+                                        f'{prefix}_INPUT_TEMPLATE are set. Using the former. ')
+                    continue
+
+                return_templates = templates.copy()
+                # Use the first successful prefix for setting c_dict entries
+                c_dict[f'{label}INPUT_DIR'] = input_dir
+                found_prefix = True
+
+        return return_templates
+
+    def _log_error_if_required(self, error_msg, required):
+        if required:
+            self.log_error(error_msg)
+
+    def _handle_input_file_list(self, prefix_list, c_dict, template_dict, label):
+        template_found = False
+        for prefix in prefix_list:
+            template = self.config.getraw('config', f'{prefix}_INPUT_FILE_LIST')
+            # if explicit file list is specified, use it
+            if template:
+                # log a warning if multiple formats of config are set
+                if template_found:
+                    self.logger.warning(f'{prefix_list[0]}_INPUT_FILE_LIST and '
+                                        f'{prefix}_INPUT_TEMPLATE are set. Using the former. ')
+                c_dict['EXPLICIT_FILE_LIST'] = True
+                template_dict[label.rstrip('_')] = (template, True, False)
+                template_found = True
+
+        return template_found
+
+    def _get_templates_for_prefix(self, prefix):
+        """!Get templates for a given prefix, trying INPUT_TEMPLATE first, then TEMPLATE.
+
+        @param prefix the prefix to use for config lookup
+        @returns list of templates, or empty list if none found
+        """
+        templates = getlist(
+            self.config.getraw('config', f'{prefix}_INPUT_TEMPLATE')
+        )
+        # if *_INPUT_TEMPLATE is not set, check if *_TEMPLATE is set
+        if not templates:
+            templates = getlist(
+                self.config.getraw('config', f'{prefix}_TEMPLATE')
+            )
+        return templates
 
     def get_input_templates_multiple(self, c_dict):
         """!Read input templates from config. Use this function when a given

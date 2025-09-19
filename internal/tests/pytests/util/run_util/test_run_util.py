@@ -224,7 +224,7 @@ def test_run_metplus_usage(metplus_config, capfd):
             4,
             [
                 'Must set either FCST_PCP_COMBINE_RUN or OBS_PCP_COMBINE_RUN',
-                'OBS_GRID_STAT_INPUT_TEMPLATE required to run',
+                'GRID_STAT_OBS_INPUT_TEMPLATE required to run',
             ],
         ),
         (

@@ -1300,8 +1300,10 @@ def _get_all_field_search_prefixes(data_types, met_tool):
 
 
 def _get_field_search_prefixes(data_type, met_tool=None):
-    """! Get list of prefixes to search for field variables.
-
+    """!Get list of prefixes to search for field variables.
+        If met_tool is provided, example order is:
+         GRID_STAT_FCST_, FCST_GRID_STAT_, GRID_STAT_BOTH_, BOTH_GRID_STAT_, FCST_, BOTH_
+        If met_tool is not provided, example order is: FCST_, BOTH_
         @param data_type type of field to search for, i.e. FCST, OBS, ENS, etc.
          Check for BOTH_ variables first only if data type is FCST or OBS
         @param met_tool name of tool to search for variable or None if looking
@@ -1320,10 +1322,14 @@ def _get_field_search_prefixes(data_type, met_tool=None):
     var_strings.append('')
 
     for var_string in var_strings:
+        if var_string:
+            search_prefixes.append(f"{var_string}{data_type}_")
         search_prefixes.append(f"{data_type}_{var_string}")
 
         # if looking for FCST or OBS, also check for BOTH prefix
         if data_type in ['FCST', 'OBS']:
+            if var_string:
+                search_prefixes.append(f"{var_string}BOTH_")
             search_prefixes.append(f"BOTH_{var_string}")
 
     return search_prefixes

@@ -170,9 +170,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                              app_name=self.app_name)
 
         input_info = {
-            'FCST': {'prefix': 'FCST_SERIES_ANALYSIS', 'required': False},
-            'OBS': {'prefix': 'OBS_SERIES_ANALYSIS', 'required': False},
-            'BOTH': {'prefix': 'BOTH_SERIES_ANALYSIS', 'required': False},
+            'FCST': {'prefix': ('SERIES_ANALYSIS_FCST', 'FCST_SERIES_ANALYSIS'), 'required': False},
+            'OBS': {'prefix': ('SERIES_ANALYSIS_OBS', 'OBS_SERIES_ANALYSIS'), 'required': False},
+            'BOTH': {'prefix': ('SERIES_ANALYSIS_BOTH', 'BOTH_SERIES_ANALYSIS'), 'required': False},
             'TC_STAT': {'prefix': 'SERIES_ANALYSIS_TC_STAT', 'required': False},
             'AGGR': {'prefix': 'SERIES_ANALYSIS_AGGR', 'required': False},
         }

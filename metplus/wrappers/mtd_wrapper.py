@@ -93,8 +93,8 @@ class MTDWrapper(CompareGriddedWrapper):
         self.add_met_config(name='min_volume', data_type='int')
 
         input_info = {
-            'FCST': {'prefix': 'FCST_MTD', 'required': False},
-            'OBS': {'prefix': 'OBS_MTD', 'required': False},
+            'FCST': {'prefix': ('MTD_FCST', 'FCST_MTD'), 'required': False},
+            'OBS': {'prefix': ('MTD_OBS', 'OBS_MTD'), 'required': False},
         }
 
         c_dict['SINGLE_RUN'] = (

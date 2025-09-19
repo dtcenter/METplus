@@ -175,22 +175,17 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         self.get_input_templates(c_dict, {
             'CTRL': {'prefix': 'ENSEMBLE_STAT_CTRL', 'required': False},
-            'FCST': {'prefix': 'FCST_ENSEMBLE_STAT', 'required': True},
-            'OBS_POINT': {'prefix': 'OBS_ENSEMBLE_STAT_POINT', 'required': False},
-            'OBS_GRID': {'prefix': 'OBS_ENSEMBLE_STAT_GRID', 'required': False},
+            'FCST': {'prefix': ('ENSEMBLE_STAT_FCST', 'FCST_ENSEMBLE_STAT'), 'required': True},
+            'OBS_POINT': {'prefix': ('ENSEMBLE_STAT_OBS_POINT', 'OBS_ENSEMBLE_STAT_POINT'), 'required': False},
+            'OBS_GRID': {'prefix': ('ENSEMBLE_STAT_OBS_GRID', 'OBS_ENSEMBLE_STAT_GRID'), 'required': False},
             'ENS_MEAN': {'prefix': 'ENSEMBLE_STAT_ENS_MEAN', 'required': False},
         })
 
-        c_dict['OUTPUT_DIR'] = (
-            self.config.getdir('ENSEMBLE_STAT_OUTPUT_DIR', '')
-        )
+        c_dict['OUTPUT_DIR'] = self.config.getdir('ENSEMBLE_STAT_OUTPUT_DIR', '')
         if not c_dict['OUTPUT_DIR']:
-            self.log_error("Must set ENSEMBLE_STAT_OUTPUT_DIR "
-                           "in configuration file")
+            self.log_error("Must set ENSEMBLE_STAT_OUTPUT_DIR in configuration file")
 
-        c_dict['OUTPUT_TEMPLATE'] = (
-            self.config.getraw('config', 'ENSEMBLE_STAT_OUTPUT_TEMPLATE')
-        )
+        c_dict['OUTPUT_TEMPLATE'] =  self.config.getraw('config', 'ENSEMBLE_STAT_OUTPUT_TEMPLATE')
 
         # get climatology config variables
         self.handle_climo_dict()

@@ -136,8 +136,8 @@ class PointStatWrapper(CompareGriddedWrapper):
             self.config.getstr('config', 'POINT_STAT_OFFSETS', '0')
         )
         self.get_input_templates(c_dict, {
-            'FCST': {'prefix': 'FCST_POINT_STAT', 'required': True},
-            'OBS': {'prefix': 'OBS_POINT_STAT', 'required': True},
+            'FCST': {'prefix': ('POINT_STAT_FCST', 'FCST_POINT_STAT'), 'required': True},
+            'OBS': {'prefix': ('POINT_STAT_OBS', 'OBS_POINT_STAT'), 'required': True},
         })
 
         c_dict['FCST_INPUT_DATATYPE'] = (
