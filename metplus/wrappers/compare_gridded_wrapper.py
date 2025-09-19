@@ -258,7 +258,7 @@ that reformat gridded data
         """!Handles the configuration of the 'topo_mask' dictionary in the
          MET configuration. This function defines the structure and
          expected types of various parameters in the 'topo_mask' configuration.
-         Used by PointStat and PairStat wrappers.
+         Used by PointStat and EnsembleStat wrappers.
         """
         self.add_met_config_dict('topo_mask', {
             'flag': 'bool',
