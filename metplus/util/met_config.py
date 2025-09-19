@@ -4,7 +4,6 @@ Contact(s): George McCabe
 """
 
 import os
-import re
 
 from .constants import PYTHON_EMBEDDING_TYPES, CLIMO_TYPES, MISSING_DATA_VALUE
 from .string_manip import getlist, get_threshold_via_regex
