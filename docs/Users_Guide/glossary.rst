@@ -14725,3 +14725,153 @@ METplus Configuration Glossary
      Specify the value for 'msl_agl_conversion.msl_to_agl' in the MET configuration file for EnsembleStat.
 
      | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_VAR<n>_LAND_MASK_FLAG
+     Sets land_mask.flag for the nth obs.field in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_VAR<n>_TOPO_MASK_FLAG
+     Sets topo_mask.flag for the nth obs.field in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_VAR<n>_TOPO_MASK_USE_OBS_THRESH
+     Sets topo_mask.use_obs_thresh for the nth obs.field in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_VAR<n>_TOPO_MASK_INTERP_FCST_THRESH
+     Sets topo_mask.interp_fcst_thresh for the nth obs.field in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_VAR<n>_LAPSE_RATE_CORRECTION_APPLY_TO
+     Sets lapse_rate_correction.apply_to for the nth obs.field in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_VAR<n>_LAPSE_RATE_CORRECTION_VALUE
+     Sets lapse_rate_correction.value for the nth obs.field in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_TO
+     Sets msl_agl_conversion.apply_to for the nth obs.field in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_FROM
+     Sets msl_agl_conversion.apply_from for the nth obs.field in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_THRESH
+     Sets msl_agl_conversion.thresh for the nth obs.field in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_MSL_TO_AGL
+     Sets msl_agl_conversion.msl_to_agl for the nth obs.field in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   POINT_STAT_OBS_VAR<n>_LAND_MASK_FLAG
+     Sets land_mask.flag for the nth obs.field in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_OBS_VAR<n>_TOPO_MASK_FLAG
+     Sets topo_mask.flag for the nth obs.field in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_OBS_VAR<n>_TOPO_MASK_USE_OBS_THRESH
+     Sets topo_mask.use_obs_thresh for the nth obs.field in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_OBS_VAR<n>_TOPO_MASK_INTERP_FCST_THRESH
+     Sets topo_mask.interp_fcst_thresh for the nth obs.field in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_OBS_VAR<n>_LAPSE_RATE_CORRECTION_APPLY_TO
+     Sets lapse_rate_correction.apply_to for the nth obs.field in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_OBS_VAR<n>_LAPSE_RATE_CORRECTION_VALUE
+     Sets lapse_rate_correction.value for the nth obs.field in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_TO
+     Sets msl_agl_conversion.apply_to for the nth obs.field in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_FROM
+     Sets msl_agl_conversion.apply_from for the nth obs.field in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_THRESH
+     Sets msl_agl_conversion.thresh for the nth obs.field in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_MSL_TO_AGL
+     Sets msl_agl_conversion.msl_to_agl for the nth obs.field in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
+   OBS_VAR<n>_LAND_MASK_FLAG
+     Sets land_mask.flag for the nth obs.field in the MET configuration file for PointStat and EnsembleStat.
+
+     | *Used by:*  PointStat, EnsembleStat
+
+   OBS_VAR<n>_TOPO_MASK_FLAG
+     Sets topo_mask.flag for the nth obs.field in the MET configuration file for PointStat and EnsembleStat.
+
+     | *Used by:*  PointStat, EnsembleStat
+
+   OBS_VAR<n>_TOPO_MASK_USE_OBS_THRESH
+     Sets topo_mask.use_obs_thresh for the nth obs.field in the MET configuration file for PointStat and EnsembleStat.
+
+     | *Used by:*  PointStat, EnsembleStat
+
+   OBS_VAR<n>_TOPO_MASK_INTERP_FCST_THRESH
+     Sets topo_mask.interp_fcst_thresh for the nth obs.field in the MET configuration file for PointStat and EnsembleStat.
+
+     | *Used by:*  PointStat, EnsembleStat
+
+   OBS_VAR<n>_LAPSE_RATE_CORRECTION_APPLY_TO
+     Sets lapse_rate_correction.apply_to for the nth obs.field in the MET configuration file for PointStat and EnsembleStat.
+
+     | *Used by:*  PointStat, EnsembleStat
+
+   OBS_VAR<n>_LAPSE_RATE_CORRECTION_VALUE
+     Sets lapse_rate_correction.value for the nth obs.field in the MET configuration file for PointStat and EnsembleStat.
+
+     | *Used by:*  PointStat, EnsembleStat
+
+   OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_TO
+     Sets msl_agl_conversion.apply_to for the nth obs.field in the MET configuration file for PointStat and EnsembleStat.
+
+     | *Used by:*  PointStat, EnsembleStat
+
+   OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_FROM
+     Sets msl_agl_conversion.apply_from for the nth obs.field in the MET configuration file for PointStat and EnsembleStat.
+
+     | *Used by:*  PointStat, EnsembleStat
+
+   OBS_VAR<n>_MSL_AGL_CONVERSION_THRESH
+     Sets msl_agl_conversion.thresh for the nth obs.field in the MET configuration file for PointStat and EnsembleStat.
+
+     | *Used by:*  PointStat, EnsembleStat
+
+   OBS_VAR<n>_MSL_AGL_CONVERSION_MSL_TO_AGL
+     Sets msl_agl_conversion.msl_to_agl for the nth obs.field in the MET configuration file for PointStat and EnsembleStat.
+
+     | *Used by:*  PointStat, EnsembleStat
