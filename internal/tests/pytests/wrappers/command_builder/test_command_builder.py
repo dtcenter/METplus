@@ -510,7 +510,7 @@ def test_add_met_config_bool(metplus_config, mp_config_name, met_config_name,
                        extra_args=extra_args)
 
     assert cbw.env_var_dict.get(f'METPLUS_{key}', '') == expected_output
-    assert cbw.isOK == is_ok
+    assert cbw.is_ok == is_ok
 
 
 @pytest.mark.parametrize(
@@ -1226,7 +1226,7 @@ def test_errors_and_defaults(metplus_config):
     cb.isOK = True
     cb.check_gempaktocf(False)
     assert cb.isOK == False
-    assert _in_last_err('[config] GEMPAKTOCF_JAR was not set in configuration file.', cb.logger)
+    assert _in_last_err('[exe] GEMPAKTOCF_JAR was not set in configuration file.', cb.logger)
 
     # test expected ensemble mismatch
     cb.c_dict['N_MEMBERS'] = 1

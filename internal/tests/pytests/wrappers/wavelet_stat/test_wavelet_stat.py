@@ -131,7 +131,7 @@ def test_wavelet_stat_is_prob(metplus_config, config_overrides, expected_values)
         config.set('config', key, value)
 
     wrapper = WaveletStatWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
     for key, expected_value in expected_values.items():
         assert expected_value == wrapper.c_dict[key]
 
@@ -317,7 +317,7 @@ def test_wavelet_stat_single_field(metplus_config, config_overrides,
         config.set('config', key, value)
 
     wrapper = WaveletStatWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"

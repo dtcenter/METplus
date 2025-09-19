@@ -13,7 +13,7 @@ Condition codes: 0 for success, 1 for failure
 import os
 
 from ..util import ti_calculate, ti_get_hours_from_relativedelta
-from ..util import do_string_sub, skip_time, get_lead_sequence
+from ..util import do_string_sub, get_lead_sequence
 from ..util import parse_var_list, sub_var_list
 from . import RuntimeFreqWrapper
 

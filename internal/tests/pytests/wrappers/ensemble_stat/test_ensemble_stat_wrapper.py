@@ -149,7 +149,7 @@ def test_ensemble_stat_level_in_template(metplus_config, config_overrides,
         config.set('config', key, value)
 
     wrapper = EnsembleStatWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     file_list_dir = wrapper.config.getdir('FILE_LISTS_DIR')
     file_list_file = f"{file_list_dir}/ensemble_stat_files_FCST_init_20050807000000_valid_20050807120000_lead_43200.txt"
@@ -196,7 +196,7 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
         config.set('config', key, value)
 
     wrapper = EnsembleStatWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     all_cmds = wrapper.run_all_times()
 
@@ -905,7 +905,7 @@ def test_ensemble_stat_single_field(metplus_config, config_overrides,
         config.set('config', key, value)
 
     wrapper = EnsembleStatWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"

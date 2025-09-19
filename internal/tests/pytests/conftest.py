@@ -326,7 +326,7 @@ def set_init_configs():
 @pytest.fixture(scope="module")
 def run_all_and_check_missing():
     def run_all_and_check_missing_run_error(wrapper, missing, run, errors):
-        assert wrapper.isOK
+        assert wrapper.is_ok
 
         all_cmds = wrapper.run_all_times()
         for cmd, _ in all_cmds:

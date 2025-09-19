@@ -1,11 +1,11 @@
 
 import sys
-import re
+
 import numpy as np
 import datetime as dt
-from dateutil.relativedelta import *    # New import
-from netCDF4 import Dataset, chartostring
-from preprocessFun_Modified import preprocess, dominant_tercile_fcst, dominant_tercile_obs, get_init_year # New import
+from dateutil.relativedelta import relativedelta
+from netCDF4 import Dataset
+from preprocessFun_Modified import dominant_tercile_fcst, dominant_tercile_obs, get_init_year # New import
 
 #grab input from user
 #should be (1)input file using full path (2) variable name (3) valid time for the forecast in %Y%m%d%H%M format and (4) ensemble member number, all separated by ':' characters
@@ -29,12 +29,9 @@ init_time = dt.datetime.strptime(init_time,"%Y%m%d%H%M")
 input_file_split = input_file.split('/')
 #EDIT BY JOHN O
 init_temp = "010100"
-#init_temp = input_file_split[5]
 
-#fil_name = input_file_split[6]
 fil_name = input_file
 year_temp = fil_name.split('.')
-#year = year_temp[2]
 year = year_temp[-3]
 print('YYYYMM: ' + str(year))
 

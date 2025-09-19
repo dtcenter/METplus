@@ -59,29 +59,8 @@ for i in range(len(time)):
     new_time.append(dt.datetime(1970,1,1) + dt.timedelta(seconds=int(time[i])))
     new_time[i] = new_time[i].strftime("%Y%m%d_%H%M%S")
 
-#ALTERNATE METHOD instead of assigning individual IDs to each latlon pair (which is the commented out section below), this method assigns a value of "1" to each point effectively making every point read in the same station. This is a time saver, as well as a potential path to code by file/satellite type rather than by point on earth.
+#ALTERNATE METHOD instead of assigning individual IDs to each latlon pair, this method assigns a value of "1" to each point effectively making every point read in the same station. This is a time saver, as well as a potential path to code by file/satellite type rather than by point on earth.
 sid = np.full(len(latitude),"1")
-
-"""    
-#INDIVIDUAL ID METHOD this checks the lat lon pairs as station IDs are assigned. We'll create a new numpy array made of strings that are the lat-lon combinations. If there are duplicate strings then there are duplicate lat-lon pairs, and they'll get the same station ID. Otherwise, the station ID will be Unique for each lat-lon pair
-lat_str = np.array(latitude, dtype=str)
-lon_str = np.array(longitude, dtype=str)
-lat_lon_str = np.char.add(lat_str, lon_str)
-uniq_lat_lon_str, counts = np.unique(lat_lon_str, return_counts=True)
-#   sid = np.full(len(lat_lon_str),"1").tolist()
-sid = np.full(len(lat_lon_str),"0")
-external_count = 1
-#this loop will give each station ID an assigned lat-lon pair
-for i in range(len(uniq_lat_lon_str)):
-    if(counts[i]) == 1:
-        sid[i] = str(external_count)
-        external_count += 1
-    else:
-        holder = np.where(uniq_lat_lon_str[i] == lat_lon_str)
-        for j in range(len(holder[0])):
-            sid[holder[0][j]] = str(external_count)
-        external_count += 1
-"""
 
 #get arrays into lists, then create a list of lists
 #this also requires creating the last arrays of typ, elv, var, lvl, hgt, and qc
