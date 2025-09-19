@@ -69,9 +69,25 @@ that reformat gridded data
         self.add_met_config(name='output_prefix', data_type='string')
 
         c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
-                                                 met_tool=self.app_name)
+                                                 met_tool=self.app_name,
+                                                 var_options=self.var_options)
 
         return c_dict
+
+
+    def populate_var_options(self):
+        var_options = super().populate_var_options()
+        both_options = {
+            'set_attr_units': {'data_type': 'string'},
+        }
+        var_options['fcst'] = {}
+        var_options['obs'] = {}
+        for key, value in both_options.items():
+            var_options['fcst'][key] = value
+            var_options['obs'][key] = value
+
+        return var_options
+
 
     def set_environment_variables(self, time_info=None):
         """! Set environment variables that will be set when running this tool.

@@ -354,6 +354,21 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         return c_dict
 
+
+    def populate_var_options(self):
+        var_options = super().populate_var_options()
+        both_options = {
+            'ens_ssvar_bin_size': {'data_type': 'float'},
+            'ens_phist_bin_size': {'data_type': 'float'},
+            'land_mask': {'data_type': 'dict', 'items': {'flag': 'bool',}, },
+        }
+        for key, value in both_options.items():
+            var_options['fcst'][key] = value
+            var_options['obs'][key] = value
+
+        return var_options
+
+
     def get_command(self):
         """! Builds the command to run the MET application
            @rtype string

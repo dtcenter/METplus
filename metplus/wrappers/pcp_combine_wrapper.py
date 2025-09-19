@@ -161,7 +161,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         c_dict[f'VAR_LIST_{d_type}'] = parse_var_list(
             self.config,
             data_type=d_type,
-            met_tool=self.app_name
+            met_tool=self.app_name,
+            var_options=self.var_options,
         )
 
         self._set_thresholds(c_dict, d_type)

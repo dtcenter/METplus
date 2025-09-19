@@ -76,7 +76,8 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             c_dict[f'VAR_LIST_{fcst_or_obs}'] = parse_var_list(
                 self.config,
                 data_type=fcst_or_obs,
-                met_tool=self.app_name
+                met_tool=self.app_name,
+                var_options=self.var_options,
             )
 
         self.handle_file_window_variables(c_dict, data_types=window_types)

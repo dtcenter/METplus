@@ -199,7 +199,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         )
 
         c_dict['VAR_LIST'] = parse_var_list(self.config,
-                                            met_tool=self.app_name)
+                                            met_tool=self.app_name,
+                                            var_options=self.var_options)
         if not c_dict['VAR_LIST']:
             self.log_error("No fields specified. Please set "
                            "[FCST/OBS]_VAR<n>_[NAME/LEVELS]")

@@ -928,7 +928,7 @@ class METplusLogFormatter(logging.Formatter):
 
 
 def parse_var_list(config, time_info=None, data_type=None, met_tool=None,
-                   levels_as_list=False):
+                   levels_as_list=False, var_options=None):
     """!Read conf items and populate list of dictionaries containing
     information about each variable to be compared
 
@@ -970,7 +970,7 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None,
     # loop over all possible variables and add them to list
     for index in indices:
         field_list = _get_field_list(index, data_types, dt_search_prefixes,
-                                     config, time_info)
+                                     config, time_info, var_options)
 
         # check that all fields types were found
         if not field_list or len(data_types) != len(field_list):
@@ -1086,7 +1086,7 @@ def _find_var_name_indices(config, data_types, met_tool=None):
     return [int(index) for index in indices]
 
 
-def _get_field_list(index, data_types, dt_search_prefixes, config, time_info):
+def _get_field_list(index, data_types, dt_search_prefixes, config, time_info, var_options):
     """!Get list of field information.
 
     @param index integer index for fields to search
@@ -1101,10 +1101,11 @@ def _get_field_list(index, data_types, dt_search_prefixes, config, time_info):
     for current_type in data_types:
         # get dictionary of existing config variables to use
         search_prefixes = dt_search_prefixes[current_type]
-        field_configs = get_field_config_variables(config, index,
-                                                   search_prefixes)
-        field_info = _format_var_items(field_configs, time_info,
-                                       config.logger)
+        extra_options = None
+        if var_options and var_options.get(current_type.lower()):
+            extra_options = var_options[current_type.lower()]
+        field_configs = get_field_config_variables(config, index, search_prefixes, extra_options)
+        field_info = _format_var_items(field_configs, time_info, config.logger)
         if not isinstance(field_info, dict):
             config.logger.error(f'Could not process {current_type}_'
                                 f'VAR{index} variables: {field_info}')
@@ -1325,7 +1326,7 @@ def _get_field_search_prefixes(data_type, met_tool=None):
     return search_prefixes
 
 
-def get_field_config_variables(config, index, search_prefixes):
+def get_field_config_variables(config, index, search_prefixes, extra_options=None):
     """! Search for variables that are set in the config that correspond to
      the fields requested. Some field info items have
      synonyms that can be used if the typical name is not set. This is used
@@ -1385,4 +1386,44 @@ def get_field_config_variables(config, index, search_prefixes):
             if found:
                 break
 
+    # if extra options are specified, use them to add to options info
+    _handle_extra_options_for_field(config, extra_options, field_configs, index, search_prefixes)
+
     return field_configs
+
+
+def _handle_extra_options_for_field(config, extra_options, field_configs: dict, index, search_prefixes):
+    if not extra_options:
+        return
+
+    from .met_config import METConfig, add_met_config_item, add_met_config_dict
+    output_dict = {}
+    for name, info in extra_options.items():
+        # handle dictionary options
+        if info.get('data_type') == 'dict':
+            for prefix in search_prefixes:
+                full_prefix = f"{prefix}VAR{index}"
+                add_met_config_dict(config, full_prefix, output_dict, name, info.get('items'))
+                if output_dict.get(f"METPLUS_{name.upper()}_DICT"):
+                    break
+
+            continue
+
+        # handle non-dictionary options
+        metplus_configs = []
+        for prefix in search_prefixes:
+            # handle non-dictionary extra options
+            metplus_configs.append(f"{prefix}VAR{index}_{name.upper()}")
+
+        item = METConfig(name=name, metplus_configs=metplus_configs, **info)
+        add_met_config_item(config, item, output_dict)
+
+    # change options to empty string if it is None
+    if not output_dict:
+        return
+
+    if field_configs['options'] is None:
+        field_configs['options'] = ''
+
+    # add all extra options to existing options
+    field_configs['options'] += ''.join(value for value in output_dict.values() if value)
