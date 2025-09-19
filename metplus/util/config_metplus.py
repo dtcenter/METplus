@@ -942,18 +942,18 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None,
      a list instead of creating a field info dict for each name/level
     @returns list of dictionaries with variable information
     """
+    # ensure a developer does not explicitly request BOTH as the data type
+    assert data_type != 'BOTH', "Cannot request BOTH explicitly in parse_var_list"
 
     # validate configs again in case wrapper is not running from run_metplus
+    # this checks if there is a mismatch of BOTH with FCST or OBS
     # this does not need to be done if parsing a specific data type,
-    # i.e. ENS or FCST
-    if data_type == 'BOTH':
-        config.logger.error("Cannot request BOTH explicitly in parse_var_list")
-        return []
+    # e.g. ENS or FCST
     if data_type is None and not validate_field_info_configs(config)[0]:
         return []
 
     # if specific data type is requested, only get that type
-    # otherwise get both FCST and OBS
+    # otherwise get both FCST and OBS (aka BOTH)
     data_types = [data_type] if data_type else ['FCST', 'OBS']
 
     # get indices of VAR<n> items for data type and/or met tool
