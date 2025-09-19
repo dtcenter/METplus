@@ -71,6 +71,7 @@ class ASCII2NCWrapper(ReformatPointWrapper):
         c_dict['MASK_SID'] = self.config.getraw('config', 'ASCII2NC_MASK_SID')
         c_dict['VALID_BEG'] = self.config.getraw('config', 'ASCII2NC_VALID_BEG')
         c_dict['VALID_END'] = self.config.getraw('config', 'ASCII2NC_VALID_END')
+        c_dict['INPUTRX'] = self.config.getraw('config', 'ASCII2NC_INPUTRX')
 
         # MET config variables
         self.handle_time_summary_dict()
@@ -82,7 +83,7 @@ class ASCII2NCWrapper(ReformatPointWrapper):
     def set_command_line_arguments(self, time_info):
         # add all arguments if set
         for arg in ('FORMAT', 'CONFIG_FILE', 'VALID_BEG', 'VALID_END',
-                    'MASK_GRID', 'MASK_POLY', 'MASK_SID'):
+                    'MASK_GRID', 'MASK_POLY', 'MASK_SID', 'INPUTRX'):
             if self.c_dict[arg]:
                 val = do_string_sub(self.c_dict[arg], **time_info)
                 arg_name = 'config' if arg == 'CONFIG_FILE' else arg.lower()
