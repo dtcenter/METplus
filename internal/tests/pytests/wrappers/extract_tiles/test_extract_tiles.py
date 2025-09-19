@@ -250,6 +250,6 @@ def test_run_extract_tiles(tmp_path_factory, metplus_config, get_test_data_dir, 
             open(os.path.join(tmp_dir, f'{fcst_obs}{lead}.grb2'), 'w').close()
 
     wrapper = extract_tiles_wrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
     wrapper.run_all_times()
     assert not wrapper.errors

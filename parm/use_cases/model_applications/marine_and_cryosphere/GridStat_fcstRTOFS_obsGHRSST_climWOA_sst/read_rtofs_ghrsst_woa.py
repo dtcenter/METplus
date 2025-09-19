@@ -9,18 +9,18 @@ and pass back in memory the forecast, observation, or climatology
 data field
 """
 
+import os, sys
+
 import numpy as np
 import xarray as xr
 import pandas as pd
 import pyresample as pyr
 from pandas.tseries.offsets import DateOffset
-from datetime import datetime, timedelta
+from datetime import datetime
 from sklearn.metrics import mean_squared_error
-import io
-from glob import glob
-import warnings
-import os, sys
 
+
+CLIMO_TEMPLATE = "woa13_decav_t{:02n}_04v2.nc"
 
 if len(sys.argv) < 6:
     print("Must specify the following elements: fcst_file obs_file ice_file, climo_file, valid_date, file_flag")
@@ -54,7 +54,6 @@ print('Retrieved GHRSST data from NESDIS for',sst_data2.time.values)
 
 sst_data2['lon']=sst_data2.lon.astype('single')
 sst_data2['lat']=sst_data2.lat.astype('single')
-#sst_data2.attrs['platform']='ghrsst'
 sst_data2.attrs['platform']=platform
 sst_data2.attrs['units']='degC'
 
@@ -73,10 +72,6 @@ indata=xr.open_dataset(rtofsfile,decode_times=True)
 indata=indata.mean(dim='MT')
 indata = indata[param][:-1,]
 indata.coords['time']=vDate
-#indata.coords['fcst']=fcst
-
-#outdata=indata.copy()
-#indata.close()
 
 outdata=indata
 
@@ -95,12 +90,8 @@ if not os.path.exists(climoDir):
 
 vDate=pd.Timestamp(vDate)
 
-#climofile="woa13_decav_t{:02n}_04v2.nc".format(vDate.month)
-#climo_data=xr.open_dataset(climoDir+'/'+climofile,decode_times=False)
-#climo_data=climo_data['t_an'].squeeze()[0,]
-
 if vDate.day==15:  # even for Feb, just because
-    climofile="woa13_decav_t{:02n}_04v2.nc".format(vDate.month)
+    climofile=CLIMO_TEMPLATE.format(vDate.month)
     climo_data=xr.open_dataset(climoDir+'/'+climofile,decode_times=False)
     climo_data=climo_data['t_an'].squeeze()[0,]  # surface only
 else:
@@ -112,8 +103,8 @@ else:
         stop=vDate + DateOffset(months=1,day=15)
     left=(vDate-start)/(stop-start)
         
-    climofile1="woa13_decav_t{:02n}_04v2.nc".format(start.month)
-    climofile2="woa13_decav_t{:02n}_04v2.nc".format(stop.month)
+    climofile1=CLIMO_TEMPLATE.format(start.month)
+    climofile2=CLIMO_TEMPLATE.format(stop.month)
     climo_xr1=xr.open_dataset(climoDir+'/'+climofile1,decode_times=False)
     climo_xr2=xr.open_dataset(climoDir+'/'+climofile2,decode_times=False)
     climo_data1=climo_xr1['t_an'].squeeze()[0,]  # surface only
@@ -153,7 +144,6 @@ def regrid(model,obs):
     """
     regrid data to obs -- this assumes DataArrays
     """
-    #model2=model.copy()
     model2=model
     model2_lon=model2.lon.values
     model2_lat=model2.lat.values
@@ -161,19 +151,15 @@ def regrid(model,obs):
     if model2_lon.ndim==1:
         model2_lon,model2_lat=np.meshgrid(model2_lon,model2_lat)
 
-    #obs2=obs.copy()
     obs2=obs
     obs2_lon=obs2.lon.astype('single').values
     obs2_lat=obs2.lat.astype('single').values
-    obs2_data=obs2.astype('single').to_masked_array()
     if obs2.lon.ndim==1:
         obs2_lon,obs2_lat=np.meshgrid(obs2.lon.values,obs2.lat.values)
 
     model2_lon1=pyr.utils.wrap_longitudes(model2_lon)
-    #model2_lat1=model2_lat.copy()
     model2_lat1=model2_lat
     obs2_lon1=pyr.utils.wrap_longitudes(obs2_lon)
-    #obs2_lat1=obs2_lat.copy()
     obs2_lat1=obs2_lat
 
     # pyresample gausssian-weighted kd-tree interp
@@ -234,14 +220,12 @@ sst_data2.close()
 
 #Create the MET grids based on the file_flag
 if file_flag == 'fcst':
-    #model2=xr.DataArray(model2,coords=[sst_data2.lat.values,sst_data2.lon.values], dims=['lat','lon'])
     model2=xr.DataArray(model2,coords=[coord_lat,coord_lon], dims=['lat','lon'])
     model2=expand_grid(model2)
     met_data = model2[:,:]
     #trim the lat/lon grids so they match the data fields
     lat_met = model2.lat
     lon_met = model2.lon
-    #print(" RTOFS Data shape: "+repr(met_data.shape))
     v_str = vDate.strftime("%Y%m%d")
     v_str = v_str + '_000000'
     lat_ll = float(lat_met.min())
@@ -277,7 +261,6 @@ if file_flag == 'fcst':
     attrs = met_data.attrs
 
 if file_flag == 'obs':
-    #obs2=xr.DataArray(obs2,coords=[sst_data2.lat.values,sst_data2.lon.values], dims=['lat','lon'])
     obs2=xr.DataArray(obs2,coords=[coord_lat, coord_lon], dims=['lat','lon'])
     obs2=expand_grid(obs2)
     met_data = obs2[:,:]
@@ -319,7 +302,6 @@ if file_flag == 'obs':
     attrs = met_data.attrs
 
 if file_flag == 'climo':
-    #climo2=xr.DataArray(climo2,coords=[sst_data2.lat.values,sst_data2.lon.values], dims=['lat','lon'])
     climo2=xr.DataArray(climo2,coords=[coord_lat, coord_lon], dims=['lat','lon'])
     climo2=expand_grid(climo2)
     met_data = climo2[:,:]

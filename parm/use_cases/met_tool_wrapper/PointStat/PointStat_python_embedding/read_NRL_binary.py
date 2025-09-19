@@ -4,6 +4,8 @@ import re
 import numpy as np
 import datetime as dt
 
+WATT_PER_SQUARE_METER = 'W/m**2'
+
 # var_info values are tuples (units, long_name)
 # Taken from synoptic_files.f, with some units SI standardized
 # e.g. mb->hPa
@@ -27,22 +29,21 @@ var_info = {
       'midcld': ('percent','Mid Cloud'),
       'hghcld': ('percent','High Cloud'),
       'cupflx': ('kg/m**2/s','Unknown'),
-      'conpcp': ('cm','Unknown'),
       'sblpcp': ('cm','Unknown'),
       'trpres': ('hPa','Terrain Pressure'),
       'snowdp': ('cm','Snow Depth'),
       'icecon': ('percent','Ice Concentration'),
       'conpcp': ('kg/m**2','Unknown'),
       'trdval': ('dval_m','Unkown'),
-      'solflx': ('W/m**2','Solar Flux'),
+      'solflx': (WATT_PER_SQUARE_METER,'Solar Flux'),
       'cupcap': ('J/m**2','Unknown'),
-      'irrflx': ('W/m**2','Unknown'),
-      'slhflx': ('W/m**2','Unknown'),
-      'sehflx': ('W/m**2','Unknown'),
+      'irrflx': (WATT_PER_SQUARE_METER,'Unknown'),
+      'slhflx': (WATT_PER_SQUARE_METER,'Unknown'),
+      'sehflx': (WATT_PER_SQUARE_METER,'Unknown'),
       'totpcp': ('cm','Unknown'),
-      'bouflx': ('W/m**2','Unknown'),
-      'totflx': ('W/m**2','Total Flux'),
-      'irflux': ('W/m**2','Infrared Flux'),
+      'bouflx': (WATT_PER_SQUARE_METER,'Unknown'),
+      'totflx': (WATT_PER_SQUARE_METER,'Total Flux'),
+      'irflux': (WATT_PER_SQUARE_METER,'Infrared Flux'),
       'liftcl': ('m','Lifting Condensation Level'),
       'ht_sfc': ('m/s','Surface Height'),
       'uustrs': ('N/m**2','Zonal Wind Stress'),
@@ -70,7 +71,7 @@ if len(sys.argv) == 2:
 
     # Store the input file and record number
     input_file = os.path.expandvars(sys.argv[1])
-    tokens = os.path.basename(input_file).replace('-', '_').split('_');
+    tokens = os.path.basename(input_file).replace('-', '_').split('_')
     varname = tokens[0]
     nlons = int(tokens[4][4:7])  # Usually 360
     nlats = int(tokens[4][8:])   # Usually 181
@@ -101,9 +102,9 @@ else:
    ##
 
 for token in tokens:
-   if(re.search("[0-9]{10,10}", token)):
+   if(re.search("\d{10}", token)):
        ymdh = dt.datetime.strptime(token[0:10],"%Y%m%d%H")
-   elif(re.search("[0-9]{8,8}", token)):
+   elif(re.search("\d{8}", token)):
        fhr = int(token) / 10000
 
 init  = ymdh

@@ -81,7 +81,7 @@ def test_tc_stat_handle_jobs(metplus_config, config_overrides, expected_dirs,
 
     # initialize wrapper and ensure it was initialized properly
     wrapper = TCStatWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     # ensure job string is formatted as expected
     actual_job_string = wrapper.handle_jobs(time_info={})
@@ -264,7 +264,7 @@ def test_tc_stat_run(metplus_config, config_overrides, env_var_values,
         env_var_values['METPLUS_INIT_HOUR'] = 'init_hour = ["00"];'
 
     wrapper = TCStatWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     if 'METPLUS_JOBS' not in env_var_values:
         jobs = f"jobs = {wrapper.c_dict.get('JOBS')};"

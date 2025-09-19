@@ -225,7 +225,7 @@ def test_ioda2nc_wrapper(metplus_config, config_overrides,
         config.set('config', key, value)
 
     wrapper = IODA2NCWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     input_dir = wrapper.c_dict.get('OBS_INPUT_DIR')
     output_dir = wrapper.c_dict.get('OUTPUT_DIR')

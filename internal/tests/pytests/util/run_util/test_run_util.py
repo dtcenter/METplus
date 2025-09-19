@@ -356,8 +356,8 @@ def test__check_wrapper_init_errors(
     process_list = [('EnsembleStat', 1), ('GridStat', None)]
     processes = ru._load_all_wrappers(metplus_config, process_list)
 
-    processes[0].isOK = is_ok_1
-    processes[1].isOK = is_ok_2
+    processes[0].is_ok = is_ok_1
+    processes[1].is_ok = is_ok_2
 
     if reset_error:
         processes[0].errors = 0

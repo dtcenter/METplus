@@ -137,7 +137,7 @@ def test_madis2nc_missing_inputs(metplus_config, get_test_data_dir, run_all_and_
 def test_madis2nc_wrapper(metplus_config, config_overrides,
                           env_var_values, compare_command_and_env_vars):
     wrapper = madis2nc_wrapper(metplus_config, config_overrides)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     input_dir = os.path.dirname(wrapper.config.getraw('config', 'MADIS2NC_INPUT_TEMPLATE'))
     input_file1 = 'metar_2019040912_F000.nc'

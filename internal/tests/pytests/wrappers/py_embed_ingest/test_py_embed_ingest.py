@@ -156,7 +156,7 @@ def test_required_job_template(
                 config.set('config', key, value)
 
             wrapper = PyEmbedIngestWrapper(config)
-            assert wrapper.isOK
+            assert wrapper.is_ok
             assert wrapper.c_dict["INGESTERS"] == expected_values
             assert wrapper.run_at_time_once(time_info) == True
             assert wrapper.errors == expected_error_numbers

@@ -169,7 +169,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         # set date type, which is controlled by LOOP_BY
         c_dict['DATE_TYPE'] = get_time_prefix(self.config)
         if not c_dict['DATE_TYPE']:
-            self.isOK = False
+            self.is_ok = False
 
         start_dt, end_dt = get_start_and_end_times(self.config)
         if not start_dt:

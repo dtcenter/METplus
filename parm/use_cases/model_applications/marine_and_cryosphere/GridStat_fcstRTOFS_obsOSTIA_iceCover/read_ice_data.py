@@ -10,17 +10,17 @@ for ice cover, and pass back in memory the forecast or observation
 data field
 """
 
+import os, sys
+
 import numpy as np
 from sklearn.metrics import mean_squared_error
 import xarray as xr
-import pandas as pd
 from pyproj import Geod
 import pyresample as pyr
-from datetime import datetime, date
-import os, sys
+
 
 #-------------------------------------
-def iceArea(lon1,lat1,ice1):
+def ice_area(lon1, lat1, ice1):
     """
     Compute the cell side dimensions (Vincenty) and the cell surface areas.
     This assumes the ice has already been masked and subsampled as needed    
@@ -106,8 +106,8 @@ nice.mask=np.ma.mask_or(nice.mask,nice<0.15)
 
 # compute ice area on original grids
 print('computing ice area')
-ncep_extent,ncep_area,ncep_surface_area=iceArea(nlon,nlat,nice)
-rtofs_extent,rtofs_area,rtofs_surface_area=iceArea(rlon,rlat,rice)
+ncep_extent,ncep_area,ncep_surface_area=ice_area(nlon, nlat, nice)
+rtofs_extent,rtofs_area,rtofs_surface_area=ice_area(rlon, rlat, rice)
     
 # interpolate rtofs to ncep grid
 print('interpolating rtofs to OSTIA grid')            
