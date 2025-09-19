@@ -1239,8 +1239,7 @@ def _format_var_items(field_configs, time_info=None, logger=None):
     search_extra = field_configs.get('options')
     if search_extra:
         if time_info:
-            search_extra = do_string_sub(search_extra,
-                                         **time_info)
+            search_extra = do_string_sub(search_extra, **time_info)
 
         # strip off empty space around each value
         extra_list = [item.strip() for item in search_extra.split(';')]
@@ -1378,8 +1377,7 @@ def get_field_config_variables(config, index, search_prefixes):
                 # if variable is found in config,
                 # get the value and break out of suffix loop
                 if config.has_option('config', var_name):
-                    field_configs[search_var] = config.getraw('config',
-                                                              var_name)
+                    field_configs[search_var] = config.getraw('config', var_name)
                     found = True
                     break
 

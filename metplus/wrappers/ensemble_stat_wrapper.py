@@ -22,8 +22,7 @@ from . import CompareGriddedWrapper
 
 
 class EnsembleStatWrapper(CompareGriddedWrapper):
-    """!Wraps the MET tool ensemble_stat to compare ensemble datasets
-    """
+    """!Wraps the MET tool ensemble_stat to compare ensemble datasets"""
 
     RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
     RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_FOR_EACH']
@@ -190,8 +189,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                            "in configuration file")
 
         c_dict['OUTPUT_TEMPLATE'] = (
-            self.config.getraw('config',
-                               'ENSEMBLE_STAT_OUTPUT_TEMPLATE')
+            self.config.getraw('config', 'ENSEMBLE_STAT_OUTPUT_TEMPLATE')
         )
 
         # get climatology config variables
@@ -354,11 +352,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                             data_type='list',
                             extra_args={'remove_quotes': True})
 
-        # parse optional var list for FCST and/or OBS fields
-        c_dict['VAR_LIST_TEMP'] = parse_var_list(
-            self.config,
-            met_tool=self.app_name
-        )
         return c_dict
 
     def get_command(self):
