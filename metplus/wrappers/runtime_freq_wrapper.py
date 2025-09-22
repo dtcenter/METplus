@@ -737,10 +737,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         assert len(list_to_update) == len(new_files)
         for new_file, existing_item in zip(new_files, list_to_update):
             # if any key differs, set value to wildcard for use in output prefix
-            if new_file.get('var_list') != existing_item.get('var_list'):
-                for key, value in existing_item.get('var_list').items():
-                    if new_file['var_list'].get(key) != value:
-                        existing_item['var_list'][key] = '*'
+            RuntimeFreqWrapper._check_var_lists(new_file, existing_item)
 
             for key, value in new_file.items():
                 if key == 'var_list' or key == 'time_info' or value is None:
@@ -749,6 +746,23 @@ class RuntimeFreqWrapper(CommandBuilder):
                 if existing_item[key] is None:
                     existing_item[key] = []
                 existing_item[key].extend(value)
+
+    @staticmethod
+    def _check_var_lists(new_file, existing_item):
+        """!Compare the new var list to the existing one.
+        If they are the same, do nothing. If any values differ, set the existing
+        items value to a wildcard (*) for use in output prefix.
+
+        @param new_file dictionary containing new file and var info
+        @param existing_item dictionary containing existing file and var info
+        """
+        if new_file.get('var_list') == existing_item.get('var_list'):
+            return
+
+        for index, existing_dict in enumerate(existing_item.get('var_list')):
+            for key, value in existing_dict.items():
+                if new_file['var_list'][index].get(key) != value:
+                    existing_dict[key] = '*'
 
     @staticmethod
     def compare_time_info(runtime, filetime):
