@@ -7,9 +7,7 @@ import numpy as np
 import xarray as xr
 import pandas as pd
 import datetime
-import glob
 import os
-import sys
 import warnings
 
 import metcalcpy.contributed.rmm_omi.compute_mjo_indices as cmi
@@ -31,7 +29,6 @@ def read_rmm_eofs(olrfile, u850file, u200file):
     coords={'var':['olr','u850','u200'], 'lon':np.arange(0,360,2.5)})
     EOF2 = xr.DataArray(np.empty([3,144]),dims=['var','lon'],
     coords={'var':['olr','u850','u200'], 'lon':np.arange(0,360,2.5)})
-    nlon = len(EOF1['lon'])
 
     tmp = pd.read_csv(olrfile, header=None, sep=r'\s+', names=['eof1','eof2'])
     EOF1[0,:] = tmp.eof1.values
@@ -46,7 +43,7 @@ def read_rmm_eofs(olrfile, u850file, u200file):
     return EOF1, EOF2
 
 
-def run_rmm_steps(inlabel, spd, EOF1, EOF2, oplot_dir):
+def run_rmm_steps(inlabel, spd, eof1, eof2, oplot_dir):
 
     # Get OLR, U850, U200 file listings and variable names
     olr_filetxt = os.environ['METPLUS_FILELIST_'+inlabel+'_OLR_INPUT']
@@ -133,37 +130,37 @@ def run_rmm_steps(inlabel, spd, EOF1, EOF2, oplot_dir):
     pc_norm = [float(os.environ['PC1_NORM']),float(os.environ['PC2_NORM'])]
 
     # project data onto EOFs
-    PC1, PC2 = cmi.rmm(olr, u850, u200, time, spd, EOF1, EOF2, rmm_norm, pc_norm)
+    PC1, PC2 = cmi.rmm(olr, u850, u200, time, spd, eof1, eof2, rmm_norm, pc_norm)
     print(PC1.min(), PC1.max())
 
     # Get times for the PC phase diagram
     plase_plot_time_format = os.environ['PHASE_PLOT_TIME_FMT']
     phase_plot_start_time = datetime.datetime.strptime(os.environ['PHASE_PLOT_TIME_BEG'],plase_plot_time_format)
     phase_plot_end_time = datetime.datetime.strptime(os.environ['PHASE_PLOT_TIME_END'],plase_plot_time_format)
-    PC1_pcplot = PC1.sel(time=slice(phase_plot_start_time,phase_plot_end_time))
-    PC2_pcplot = PC2.sel(time=slice(phase_plot_start_time,phase_plot_end_time))
-    pc_ntim_plot = len(PC1_pcplot)
-    PC1_pcplot = PC1_pcplot[0:pc_ntim_plot]
-    PC2_pcplot = PC2_pcplot[0:pc_ntim_plot]
+    pc1_pcplot = PC1.sel(time=slice(phase_plot_start_time,phase_plot_end_time))
+    pc2_pcplot = PC2.sel(time=slice(phase_plot_start_time,phase_plot_end_time))
+    pc_ntim_plot = len(pc1_pcplot)
+    pc1_pcplot = pc1_pcplot[0:pc_ntim_plot]
+    pc2_pcplot = pc2_pcplot[0:pc_ntim_plot]
     
     # Get the output name and format for the PC plase diagram
     phase_plot_name = os.path.join(oplot_dir,os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_NAME',inlabel+'_RMM_comp_phase'))
     phase_plot_format = os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_FORMAT','png')
 
     # plot the PC phase diagram
-    pmi.phase_diagram('RMM',PC1_pcplot,PC2_pcplot,np.array(PC1_pcplot['time'].dt.strftime("%Y-%m-%d").values),
-        np.ndarray.tolist(PC1_pcplot['time.month'].values),np.ndarray.tolist(PC1_pcplot['time.day'].values),
+    pmi.phase_diagram('RMM',pc1_pcplot,pc2_pcplot,np.array(pc1_pcplot['time'].dt.strftime("%Y-%m-%d").values),
+        np.ndarray.tolist(pc1_pcplot['time.month'].values),np.ndarray.tolist(pc1_pcplot['time.day'].values),
         phase_plot_name, phase_plot_format)
 
     # Get times for the PC time series plot
     timeseries_plot_time_format = os.environ['TIMESERIES_PLOT_TIME_FMT']
-    timeseries_plot_start_time = datetime.datetime.strptime(os.environ['TIMESERIES_PLOT_TIME_BEG'],plase_plot_time_format)
-    timeseries_plot_end_time = datetime.datetime.strptime(os.environ['TIMESERIES_PLOT_TIME_END'],plase_plot_time_format)
-    PC1_tsplot = PC1.sel(time=slice(timeseries_plot_start_time,timeseries_plot_end_time))
-    PC2_tsplot = PC2.sel(time=slice(timeseries_plot_start_time,timeseries_plot_end_time))
-    ts_ntim_plot = len(PC1_tsplot)
-    PC1_tsplot = PC1_tsplot[0:ts_ntim_plot]
-    PC2_tsplot = PC2_tsplot[0:ts_ntim_plot]
+    timeseries_plot_start_time = datetime.datetime.strptime(os.environ['TIMESERIES_PLOT_TIME_BEG'], timeseries_plot_time_format)
+    timeseries_plot_end_time = datetime.datetime.strptime(os.environ['TIMESERIES_PLOT_TIME_END'], timeseries_plot_time_format)
+    pc1_tsplot = PC1.sel(time=slice(timeseries_plot_start_time,timeseries_plot_end_time))
+    pc2_tsplot = PC2.sel(time=slice(timeseries_plot_start_time,timeseries_plot_end_time))
+    ts_ntim_plot = len(pc1_tsplot)
+    pc1_tsplot = pc1_tsplot[0:ts_ntim_plot]
+    pc2_tsplot = pc2_tsplot[0:ts_ntim_plot]
 
     # Get the ouitput name and format for the PC Timeseries plot
     timeseries_plot_name = os.path.join(oplot_dir,os.environ.get(inlabel+'_TIMESERIES_PLOT_OUTPUT_NAME',
@@ -171,8 +168,8 @@ def run_rmm_steps(inlabel, spd, EOF1, EOF2, oplot_dir):
     timeseries_plot_format = os.environ.get(inlabel+'_TIMESERIES_PLOT_OUTPUT_FORMAT','png')
 
     # plot PC time series
-    pmi.pc_time_series('RMM',PC1_tsplot,PC2_tsplot,np.array(PC1_tsplot['time'].values),
-        np.ndarray.tolist(PC1_tsplot['time.month'].values),np.ndarray.tolist(PC1_tsplot['time.day'].values),
+    pmi.pc_time_series('RMM',pc1_tsplot,pc2_tsplot,np.array(pc1_tsplot['time'].values),
+        np.ndarray.tolist(pc1_tsplot['time.month'].values),np.ndarray.tolist(pc1_tsplot['time.day'].values),
         timeseries_plot_name,timeseries_plot_format)
 
 

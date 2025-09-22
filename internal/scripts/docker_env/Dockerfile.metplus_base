@@ -14,4 +14,5 @@ RUN conda update -y -n base -c conda-forge conda \
  && ./metplus_base_env.sh ${METPLUS_ENV_VERSION}
 
 ARG METPLUS_ENV_VERSION
-RUN conda list --name metplus_base.${METPLUS_ENV_VERSION} > /usr/local/conda/envs/metplus_base.${METPLUS_ENV_VERSION}/environments.yml
+RUN conda list --name metplus_base.${METPLUS_ENV_VERSION} \
+  > /usr/local/conda/envs/metplus_base.${METPLUS_ENV_VERSION}/environments.yml

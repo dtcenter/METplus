@@ -7,7 +7,6 @@
 /* Make the logo and search area sticky */
 .wy-side-nav-search {
     position: fixed;
-    /* width: 300px; */ /* Adjust width as needed */
     z-index: 1000;
     padding-bottom: 5px; /* Add space below logo */    
 }

@@ -9,7 +9,7 @@ from metplus.wrappers.usage_wrapper import UsageWrapper
 def test_usage_wrapper_run(metplus_config):
     config = metplus_config
     wrapper = UsageWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     all_commands = wrapper.run_all_times()
     assert not all_commands

@@ -194,5 +194,5 @@ model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
 #   * VxDataISMN
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
-
+#
 # sphinx_gallery_thumbnail_path = '_static/land_surface-PointStat_fcstUFS_obsISMN_SoilMoistureTemp.png'

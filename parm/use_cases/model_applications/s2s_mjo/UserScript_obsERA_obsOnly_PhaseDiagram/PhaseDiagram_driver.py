@@ -51,7 +51,7 @@ def run_phasediagram_steps(inlabel, alldata_timefile, oplot_dir):
 
     keepdata = []
     for dd in alldata_time:
-        timeloc = np.where(data.dtime == datetime.datetime.strptime(dd,alldata_timefmt))
+        timeloc = np.nonzero(data.dtime == datetime.datetime.strptime(dd,alldata_timefmt))
         if len(timeloc[0]) > 0:
             for l in timeloc[0]:
                 keepdata.append(l)
@@ -68,7 +68,7 @@ def run_phasediagram_steps(inlabel, alldata_timefile, oplot_dir):
     phase_plot_format = os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_FORMAT','png')
 
     # plot the phase diagram
-    pmi.phase_diagram(indexname,PC1,PC2,dates,months,days,phase_plot_name,'png')
+    pmi.phase_diagram(indexname,PC1,PC2,dates,months,days,phase_plot_name, phase_plot_format)
 
 
 def main():

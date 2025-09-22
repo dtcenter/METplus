@@ -9,7 +9,6 @@ import sys
 import os
 import re
 import datetime as dt
-import metpy.calc as mc
 
 ###################################################################################################
 
@@ -34,7 +33,7 @@ def ivt(input_file):
     # Fill in variable arrays from input file.
     grbs.rewind()
     for grb in grbs:
-        if not grb.level in levs:
+        if grb.level not in levs:
             continue
         elif np.logical_and('v-' in grb.parameterName,grb.typeOfLevel=='isobaricInhPa'):
             v.append(grb.values)        
@@ -57,7 +56,7 @@ def ivt(input_file):
     # If we didn't find specific humidity, look for relative humidity.
     if len(q) == 0:
         for grb in grbs:
-            if not grb.level in levs:
+            if grb.level not in levs:
                 continue
             if np.logical_and('Relative' in grb.parameterName,grb.typeOfLevel=='isobaricInhPa'):
                 q.append(grb.values)
@@ -65,7 +64,6 @@ def ivt(input_file):
         levs = np.array(levs)
         # Clausius-Clapeyron time
         es = 610.78*np.exp((17.67*(temp-273.15)/(temp-29.65))) # Calculate saturation vapor pressure
-        e = es*(np.array(q)/100) # Calculate vapor pressure 
         w = 0.622*es/(levs[:,None,None]*100) # Calculate water vapor
         q = w/(w+1) # Calculate specific humidity
     q = np.array(q)
@@ -89,7 +87,7 @@ met_data = data
 met_data = met_data.astype('float64')
 
 # Automatically fill out time information from input file.
-file_regex = r"^.*([0-9]{8}_[0-9]{4})_([0-9]{3}).*$"
+file_regex = r"^.*(\d{8}_\d{4})_(\d{3}).*$"
 match = re.match(file_regex,
                  os.path.basename(input_file).replace('-', '_'))
 if not match:
