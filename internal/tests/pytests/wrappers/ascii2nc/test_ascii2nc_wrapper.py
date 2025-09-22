@@ -227,7 +227,7 @@ def test_ascii2nc_wrapper(metplus_config, config_overrides, env_var_values,
             extra_args.append(f" -{command_line_arg} {config_overrides[f'ASCII2NC_{command_line_arg.upper()}']}")
 
     if 'ASCII2NC_INPUTRX' in config_overrides:
-        extra_args.append(f' -inputrx "{config_overrides['ASCII2NC_INPUTRX']}"')
+        extra_args.append(f" -inputrx \"{config_overrides['ASCII2NC_INPUTRX']}\"")
 
     expected_cmds = [
         (f"{app_path} {input_dir}/{input_file1} {output_dir}/{output_file1}"
