@@ -1121,8 +1121,11 @@ class CommandBuilder:
         elif not os.path.exists(gempaktocf_jar):
             self.log_error(f"GempakToCF Jar file does not exist at {gempaktocf_jar}. " +
                            "This is required to process Gempak data.")
-            self.logger.info("Refer to the GempakToCF use case documentation for information "
-                             "on how to obtain the tool: parm/use_cases/met_tool_wrapper/GempakToCF/GempakToCF.py")
+            self.logger.info(
+                "Refer to the GempakToCF use case documentation for "
+                "information on how to obtain the tool: "
+                "https://metplus.readthedocs.io/en/latest/generated/met_tool_wrapper/GempakToCF/GempakToCF.html#external-dependencies"
+            )
             self.isOK = False
 
     def set_current_field_config(self, field_info=None):
