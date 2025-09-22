@@ -736,7 +736,12 @@ class RuntimeFreqWrapper(CommandBuilder):
         # make sure new files correspond to the correct field (var)
         assert len(list_to_update) == len(new_files)
         for new_file, existing_item in zip(new_files, list_to_update):
-            assert new_file.get('var_list') == existing_item.get('var_list')
+            # if any key differs, set value to wildcard for use in output prefix
+            if new_file.get('var_list') != existing_item.get('var_list'):
+                for key, value in existing_item.get('var_list').items():
+                    if new_file['var_list'].get(key) != value:
+                        existing_item['var_list'][key] = '*'
+
             for key, value in new_file.items():
                 if key == 'var_list' or key == 'time_info' or value is None:
                     continue
