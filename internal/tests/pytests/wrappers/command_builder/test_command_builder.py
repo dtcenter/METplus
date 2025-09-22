@@ -1190,6 +1190,7 @@ def test_errors_and_defaults(metplus_config):
 
     # test add_met_config_dict not OK
     assert cb.is_ok
+
     # set is_ok to True to test that add_met_config_dict is not OK
     cb.is_ok = True
     with mock.patch.object(cb_wrapper, 'add_met_config_dict', return_value=False):
