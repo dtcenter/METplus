@@ -217,7 +217,7 @@ def _step_test_met_tool(wrapper_camel):
 def _get_met_vars(tool_name, input_dict):
     met_vars = []
     for var_name, dict_list in input_dict.items():
-        metplus_var = f'{tool_name.upper()}_{var_name.upper()}'
+        metplus_var = f"{tool_name.upper()}_{var_name.upper().replace('.', '_')}"
         env_var_name = f'METPLUS_{var_name.upper()}'
         met_var = {'name': var_name, 'dict_items': dict_list,
                    'metplus_config_names': [], 'met_config_names': []}
@@ -228,7 +228,7 @@ def _get_met_vars(tool_name, input_dict):
         else:
             met_var['env_var_name'] = f'{env_var_name}_DICT'
             for item_name in dict_list:
-                metplus_config = f'{metplus_var}_{item_name.upper()}'
+                metplus_config = f"{metplus_var}_{item_name.upper().replace('.', '_')}"
                 met_config = f"{var_name}.{item_name}"
                 met_var['metplus_config_names'].append(metplus_config)
                 met_var['met_config_names'].append(met_config)
