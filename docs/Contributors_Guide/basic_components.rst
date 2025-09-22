@@ -197,22 +197,22 @@ create_c_dict (CommandBuilder)::
         c_dict['CURRENT_VAR_INFO'] = None
         return c_dict
 
-isOK class variable
-===================
+is_ok class variable
+====================
 
-isOK is defined in CommandBuilder (metplus/wrappers/command_builder.py).
+``is_ok`` is defined in CommandBuilder (metplus/wrappers/command_builder.py).
 
 Its function is to note a failed process while not stopping a parent process.
 Instead of instantly exiting a larger wrapper script once one subprocess has
 failed this allows all of the processes to attempt to be executed and
 then note which ones failed.
 
-At the end of the wrapper initialization step, all isOK=false will be
+At the end of the wrapper initialization step, all is_ok=false will be
 collected and reported. Execution of the wrappers will not occur unless all
 wrappers in the process list are initialized correctly.
 
-The **self.log_error** function logs an error and sets self.isOK to False, so
-it is not necessary to set *self.isOK = False* if this function is called.
+The **self.log_error** function logs an error and sets self.is_ok to False, so
+it is not necessary to set *self.is_ok = False* if this function is called.
 
 .. code-block:: python
 
@@ -220,7 +220,7 @@ it is not necessary to set *self.isOK = False* if this function is called.
     if not c_dict['CONFIG_FILE']:
         self.log_error('MODE_CONFIG_FILE must be set')
     if something_else_goes_wrong:
-        self.isOK = False
+        self.is_ok = False
 
 .. _bc_find_input_files:
 

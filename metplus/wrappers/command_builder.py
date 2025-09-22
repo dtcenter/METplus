@@ -52,7 +52,7 @@ class CommandBuilder:
     MET_OVERRIDES_KEY = 'METPLUS_MET_CONFIG_OVERRIDES'
 
     def __init__(self, config, instance=None):
-        self.isOK = True
+        self.is_ok = True
         self.errors = 0
         self.config = config
         self.logger = config.logger
@@ -266,7 +266,7 @@ class CommandBuilder:
         caller = getframeinfo(stack()[1][0])
         self.logger.error(f"({os.path.basename(caller.filename)}:{caller.lineno}) {error_string}")
         self.errors += 1
-        self.isOK = False
+        self.is_ok = False
 
     def set_user_environment(self, time_info):
         """!Set environment variables defined in [user_env_vars] section of config
@@ -1117,13 +1117,13 @@ class CommandBuilder:
                            "This is required to process Gempak data.")
             self.logger.info("Refer to the GempakToCF use case documentation for information "
                              "on how to obtain the tool: parm/use_cases/met_tool_wrapper/GempakToCF/GempakToCF.py")
-            self.isOK = False
+            self.is_ok = False
         elif not os.path.exists(gempaktocf_jar):
             self.log_error(f"GempakToCF Jar file does not exist at {gempaktocf_jar}. " +
                            "This is required to process Gempak data.")
             self.logger.info("Refer to the GempakToCF use case documentation for information "
                              "on how to obtain the tool: parm/use_cases/met_tool_wrapper/GempakToCF/GempakToCF.py")
-            self.isOK = False
+            self.is_ok = False
 
     def set_current_field_config(self, field_info=None):
         """! Sets config variables for current fcst/obs name/level that can be
@@ -1655,7 +1655,7 @@ class CommandBuilder:
                                           dict_name=dict_name,
                                           items=items)
         if not return_code:
-            self.isOK = False
+            self.is_ok = False
 
         return return_code
 
@@ -1691,7 +1691,7 @@ class CommandBuilder:
         item = METConfig(**kwargs)
         output_dict = kwargs.get('output_dict', self.env_var_dict)
         if not add_met_config_item(self.config, item, output_dict):
-            self.isOK = False
+            self.is_ok = False
 
     def get_config_file(self, default_config_file=None):
         """! Get the MET config file path for the wrapper from the

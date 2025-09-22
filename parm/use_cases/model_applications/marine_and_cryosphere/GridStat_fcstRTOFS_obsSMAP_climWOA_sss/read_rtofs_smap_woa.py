@@ -9,18 +9,17 @@ and pass back in memory the forecast, observation, or climatology
 data field
 """
 
+import os, sys
+
 import numpy as np
 import xarray as xr
 import pandas as pd
 import pyresample as pyr
 from pandas.tseries.offsets import DateOffset
-from datetime import datetime, timedelta
+from datetime import datetime
 from sklearn.metrics import mean_squared_error
-import io
-from glob import glob
-import warnings
-import os, sys
 
+CLIMO_TEMPLATE = "woa13_decav_s{:02n}_04v2.nc"
 
 if len(sys.argv) < 6:
     print("Must specify the following elements: fcst_file obs_file ice_file, climo_file, valid_date, file_flag")
@@ -51,7 +50,6 @@ sss_data=xr.open_dataset(sssfile,decode_times=True)
 sss_data['time']=sss_data.time-pd.Timedelta('12H')  # shift 12Z offset time to 00Z
 sss_data2=sss_data['sss'].astype('single')
 print('Retrieved SMAP data from NESDIS for',sss_data2.time.values)
-#sss_data2=sss_data2.rename({'longitude':'lon','latitude':'lat'})
 
 
 # all coords need to be single precision
@@ -75,7 +73,6 @@ indata=xr.open_dataset(rtofsfile,decode_times=True)
 indata=indata.mean(dim='MT')
 indata = indata[param][:-1,]
 indata.coords['time']=vDate
-#indata.coords['fcst']=fcst
 
 outdata=indata.copy()
 
@@ -94,12 +91,12 @@ if not os.path.exists(climoDir):
 
 vDate=pd.Timestamp(vDate)
 
-climofile="woa13_decav_s{:02n}_04v2.nc".format(vDate.month)
+climofile=CLIMO_TEMPLATE.format(vDate.month)
 climo_data=xr.open_dataset(climoDir+'/'+climofile,decode_times=False)
 climo_data=climo_data['s_an'].squeeze()[0,]
 
 if vDate.day==15:  # even for Feb, just because
-    climofile="woa13_decav_s{:02n}_04v2.nc".format(vDate.month)
+    climofile=CLIMO_TEMPLATE.format(vDate.month)
     climo_data=xr.open_dataset(climoDir+'/'+climofile,decode_times=False)
     climo_data=climo_data['s_an'].squeeze()[0,]  # surface only
 else:
@@ -111,8 +108,8 @@ else:
         stop=vDate + DateOffset(months=1,day=15)
     left=(vDate-start)/(stop-start)
         
-    climofile1="woa13_decav_s{:02n}_04v2.nc".format(start.month)
-    climofile2="woa13_decav_s{:02n}_04v2.nc".format(stop.month)
+    climofile1=CLIMO_TEMPLATE.format(start.month)
+    climofile2=CLIMO_TEMPLATE.format(stop.month)
     climo_data1=xr.open_dataset(climoDir+'/'+climofile1,decode_times=False)
     climo_data2=xr.open_dataset(climoDir+'/'+climofile2,decode_times=False)
     climo_data1=climo_data1['s_an'].squeeze()[0,]  # surface only
@@ -159,7 +156,6 @@ def regrid(model,obs):
     obs2=obs.copy()
     obs2_lon=obs2.lon.astype('single').values
     obs2_lat=obs2.lat.astype('single').values
-    obs2_data=obs2.astype('single').to_masked_array()
     if obs2.lon.ndim==1:
         obs2_lon,obs2_lat=np.meshgrid(obs2.lon.values,obs2.lat.values)
 

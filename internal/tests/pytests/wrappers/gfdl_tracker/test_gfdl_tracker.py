@@ -74,7 +74,7 @@ def test_gfdl_tracker_basic(metplus_config, monkeypatch):
                     wrapper.create_fort_15_file = mock.MagicMock
                     wrapper.sub_template = mock.MagicMock
                     all_cmds = wrapper.run_all_times()
-    assert wrapper.isOK
+    assert wrapper.is_ok
     assert len(all_cmds) == 6
 
     # Check some config items are set correctly

@@ -313,7 +313,7 @@ def test_pcp_combine_add_subhourly(metplus_config, get_test_data_dir):
                '{init?fmt=%Y%m%d}_i{init?fmt=%H%M}_m0_f{valid?fmt=%H%M}.nc')
 
     wrapper = PCPCombineWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -373,7 +373,7 @@ def test_pcp_combine_bucket(metplus_config, get_test_data_dir):
     config.set('config', 'FCST_PCP_COMBINE_OUTPUT_ACCUM', '15H')
 
     wrapper = PCPCombineWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -452,7 +452,7 @@ def test_pcp_combine_derive(metplus_config, get_test_data_dir, config_overrides,
         config.set('config', key, value)
 
     wrapper = PCPCombineWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -515,7 +515,7 @@ def test_pcp_combine_loop_custom(metplus_config, get_test_data_dir):
     config.set('config', 'FCST_PCP_COMBINE_OUTPUT_NAME', fcst_name)
 
     wrapper = PCPCombineWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -567,7 +567,7 @@ def test_pcp_combine_subtract(metplus_config, get_test_data_dir):
     config.set('config', 'FCST_PCP_COMBINE_OUTPUT_NAME', 'APCP')
 
     wrapper = PCPCombineWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -611,7 +611,7 @@ def test_pcp_combine_sum_subhourly(metplus_config, get_test_data_dir):
                '{init?fmt=%Y%m%d}_i{init?fmt=%H%M}_m0_f*')
 
     wrapper = PCPCombineWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -734,7 +734,7 @@ def test_add_method_single_file(metplus_config):
     config.set('config', 'FCST_PCP_COMBINE_OUTPUT_ACCUM', '3H')
 
     wrapper = PCPCombineWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     all_cmds = wrapper.run_all_times()
 
@@ -828,7 +828,7 @@ def test_subtract_method_zero_accum(metplus_config):
             config.set('config', 'FCST_PCP_COMBINE_USE_ZERO_ACCUM', 'False')
 
         wrapper = PCPCombineWrapper(config)
-        assert wrapper.isOK
+        assert wrapper.is_ok
 
         all_cmds = wrapper.run_all_times()
 
@@ -874,7 +874,7 @@ def test_add_method_missing_input(metplus_config, get_test_data_dir, input_thres
         config.set('config', f'{data_src}_PCP_COMBINE_VLD_THRESH', vld_thresh)
     wrapper = PCPCombineWrapper(config)
 
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     all_cmds = wrapper.run_all_times()
     if not success:
@@ -951,7 +951,7 @@ def test_pcp_combine_derive_year_lookback(metplus_config, compare_command_and_en
     config.set('config', 'OBS_PCP_COMBINE_STAT_LIST', stat_list)
 
     wrapper = PCPCombineWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -1011,7 +1011,7 @@ def test_pcp_combine_user_defined(metplus_config, get_test_data_dir):
     config.set('config', 'FCST_PCP_COMBINE_OUTPUT_ACCUM', 'A24')
 
     wrapper = PCPCombineWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"

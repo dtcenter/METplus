@@ -1,13 +1,12 @@
-from __future__ import print_function
-
-import pandas as pd
 import os
-from glob import glob
 import sys
 import xarray as xr
 import datetime as dt
 
 ########################################################################
+
+HOFX_STRING = '@hofx'
+OBS_VALUE_STRING = '@ObsValue'
 
 print('Python Script:\t', sys.argv[0])
 
@@ -30,7 +29,7 @@ if len(sys.argv) == 2:
         ioda_data.close()        
 
         for var_name in hofx_vars:
-            ioda_df[var_name + '@hofx'] = ioda_hofx_data[var_name]
+            ioda_df[var_name + HOFX_STRING] = ioda_hofx_data[var_name]
 
         # Add columns for needed attributes, for each variable present for hofx
         for attribute in ['ObsValue', 'ObsType', 'EffectiveQC']:
@@ -61,11 +60,11 @@ if len(sys.argv) == 2:
             # Set up the needed columns
             ioda_df_var = ioda_df[['datetime','station_id',var_name+'@ObsType',
                                 'latitude','longitude','air_pressure',
-                                var_name+'@hofx',var_name+'@ObsValue',
+                                var_name+HOFX_STRING,var_name+OBS_VALUE_STRING,
                                 var_name+'@EffectiveQC']]
             
             # Cute down to locations with valid ObsValues
-            ioda_df_var = ioda_df_var[abs(ioda_df_var[var_name+'@ObsValue']) < 1e6] 
+            ioda_df_var = ioda_df_var[abs(ioda_df_var[var_name+OBS_VALUE_STRING]) < 1e6]
             nlocs = len(ioda_df_var.index)
             print(var_name+' has '+str(nlocs)+' valid obs.')
             
@@ -82,7 +81,7 @@ if len(sys.argv) == 2:
                     'datetime','varname','na','lead','varname','na','na',
                     var_name+'@ObsType','na','na','lead','na','na','na','na','MPR',
                     'nobs','index','station_id','latitude','longitude',
-                    'air_pressure','na',var_name+'@hofx',var_name+'@ObsValue',
+                    'air_pressure','na',var_name+HOFX_STRING,var_name+OBS_VALUE_STRING,
                     var_name+'@EffectiveQC','na','na','na','na','na']
             
             ioda_df_var = ioda_df_var[cols]

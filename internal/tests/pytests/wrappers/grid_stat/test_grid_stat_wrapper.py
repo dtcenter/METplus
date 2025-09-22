@@ -132,7 +132,7 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
         config.set('config', key, value)
 
     wrapper = GridStatWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
     for key, expected_value in expected_values.items():
         assert expected_value == wrapper.c_dict[key]
 
@@ -904,7 +904,7 @@ def test_grid_stat_single_field(metplus_config, config_overrides,
         config.set('config', key, value)
 
     wrapper = GridStatWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     # add extra command line arguments
     extra_args = [' '] * len(run_times)
