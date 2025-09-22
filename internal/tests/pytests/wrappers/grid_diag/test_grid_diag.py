@@ -353,3 +353,24 @@ def test_grid_diag(metplus_config, config_overrides, env_var_values,
     }
     compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values,
                                  wrapper, special_values)
+
+
+@pytest.mark.wrapper
+def test_check_var_lists(metplus_config, tmp_path_factory, make_dummy_empty):
+    """!Recreate failure outlined in #3100 to prove that it has been fixed."""
+    fake_data_dir = tmp_path_factory.mktemp("data_dir")
+    make_dummy_empty(fake_data_dir, 'step12_2020010100Z_create_date_20250715.nc')
+
+    config = metplus_config
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
+    config.set('config', 'INIT_BEG', '2020010100')
+    config.set('config', 'LEAD_SEQ', 'begin_end_incr(1,48,1)')
+    config.set('config', 'GRID_DIAG_RUNTIME_FREQ', 'RUN_ONCE_PER_INIT_OR_VALID')
+    config.set('config', 'GRID_DIAG_INPUT_DIR', str(fake_data_dir))
+    config.set('config', 'GRID_DIAG_INPUT_TEMPLATE', 'step12_{init?fmt=%Y%m%d%H}Z_create_date_20250715.nc')
+    config.set('config', 'BOTH_VAR1_NAME', 'WRF_precip')
+    config.set('config', 'BOTH_VAR1_LEVELS', '(@{valid?fmt=%Y%m%d%H},*,*)')
+
+    wrapper = GridDiagWrapper(config)
+    wrapper.run_all_times()
