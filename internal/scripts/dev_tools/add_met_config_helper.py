@@ -358,16 +358,20 @@ def _print_unit_test(var):
 
 def doc_util_usage():
     """! Print usage statement for script """
-    print('Usage:\n'
-          f'{__file__} <met-tool> "<met-variable> [<met-dict-items>]" '
-          '"<met-variable> [<met-dict-items>]"\n'
-          f"\nExample: {__file__} grid_stat output_prefix "
-          "\n  (simple variable named output_prefix)\n"
-          f'\nExample: {__file__} grid_stat "output_flag fho ctc mctc" '
-          '\n  (dictionary named output_flag containing fho, ctc, and mctc)\n'
-          f'\nExample: {__file__} grid_stat "output_flag fho ctc mctc" '
-          'output_prefix \n  (both of the variables from the previous '
-          'examples)\n')
+    print(
+        'Usage:\n'
+        f'{__file__} <met-tool> "<met-variable> [<met-dict-items>]" '
+        '"<met-variable> [<met-dict-items>]"\n'
+        f"\nExample: {__file__} grid_stat output_prefix "
+        "\n  (simple variable named output_prefix)\n"
+        f'\nExample: {__file__} grid_stat "output_flag fho ctc mctc" '
+        '\n  (dictionary named output_flag containing fho, ctc, and mctc)\n'
+        f'\nExample: {__file__} grid_stat "output_flag fho ctc mctc" '
+        'output_prefix \n  (both of the variables from the previous '
+        'examples)\n'
+        f'\nExample: {__file__} point_stat "topo_mask interp.method interp.width" '
+        '\n  (dictionary named topo_mask containing dictionary interp containing method and width)\n'
+    )
 
 
 if __name__ == "__main__":
