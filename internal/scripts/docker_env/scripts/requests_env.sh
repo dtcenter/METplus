@@ -5,7 +5,7 @@
 # Last Updated: 2025-09-23 (mccabe@ucar.edu)
 # Notes: Adds requests Python package
 # Python Packages:
-#   requests==
+#   requests==2.32.5
 #
 # Other Content: None
 ################################################################################
@@ -20,4 +20,4 @@ ENV_NAME=requests.${METPLUS_VERSION}
 BASE_ENV=metplus_base.${METPLUS_VERSION}
 
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-mamba install -y --name ${ENV_NAME} -c conda-forge requests
+mamba install -y --name ${ENV_NAME} -c conda-forge requests==2.32.5
