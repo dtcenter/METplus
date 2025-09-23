@@ -306,22 +306,33 @@ def _print_glossary_entry(var, wrapper_camel):
 def _print_unit_test(var):
     input_dict_items = []
     output_items = []
+    output_dict_items = {}
     metplus_names = var['metplus_config_names']
     met_names = var['met_config_names']
     dict_items = var['dict_items']
     for metplus_config_name, met_config_name in zip(metplus_names, met_names):
+        child_name = None
+        item_name = None
+        output_item = 'VALUE;'
         if dict_items:
-            item_name = met_config_name.split('.')[1]
-            output_item = f"{item_name} = VALUE;"
-        else:
-            output_item = 'VALUE;'
+            item_name, child_name, *_ = met_config_name.split('.')[1:]
+            value = 'VALUE;'
+            if child_name:
+                value = f"{{{child_name} = VALUE;}}"
+            output_item = f"{item_name} = {value}"
+
         mp_config_dict_item = f"'{metplus_config_name}': 'VALUE',"
         input_dict_items.append(mp_config_dict_item)
-        output_items.append(output_item)
+        if child_name and item_name:
+            if item_name not in output_dict_items:
+                output_dict_items[item_name] = []
+            output_dict_items[item_name].append(f"{child_name} = VALUE;")
+        else:
+            output_items.append(output_item)
+
+        output_fmt = output_item
         if dict_items:
             output_fmt = f"{{{output_item}}}"
-        else:
-            output_fmt = output_item
 
         test_text = (f"        ({{{mp_config_dict_item} }},\n"
                      f"         {{'{var['env_var_name']}': '{var['name']} = "
@@ -330,6 +341,10 @@ def _print_unit_test(var):
 
     if not dict_items:
         return
+
+    for key, value in output_dict_items.items():
+        output_items.append(f"{key} = {{" + ''.join(value) + "}")
+
     all_items_text = "        ({\n"
     for input_dict_item in input_dict_items:
         all_items_text += f"           {input_dict_item}\n"
