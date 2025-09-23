@@ -285,6 +285,10 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_TOPO_MASK_REGRID`
 | :term:`ENSEMBLE_STAT_TOPO_MASK_USE_OBS_THRESH`
 | :term:`ENSEMBLE_STAT_TOPO_MASK_INTERP_FCST_THRESH`
+| :term:`ENSEMBLE_STAT_TOPO_MASK_INTERP_VLD_THRESH`
+| :term:`ENSEMBLE_STAT_TOPO_MASK_INTERP_SHAPE`
+| :term:`ENSEMBLE_STAT_TOPO_MASK_INTERP_METHOD`
+| :term:`ENSEMBLE_STAT_TOPO_MASK_INTERP_WIDTH`
 | :term:`ENSEMBLE_STAT_LAPSE_RATE_CORRECTION_APPLY_TO`
 | :term:`ENSEMBLE_STAT_LAPSE_RATE_CORRECTION_VALUE`
 | :term:`ENSEMBLE_STAT_MSL_AGL_CONVERSION_APPLY_TO`
@@ -1137,6 +1141,14 @@ ${METPLUS_TOPO_MASK_DICT}
      - topo_mask.use_obs_thresh
    * - :term:`ENSEMBLE_STAT_TOPO_MASK_INTERP_FCST_THRESH`
      - topo_mask.interp_fcst_thresh
+   * - :term:`ENSEMBLE_STAT_TOPO_MASK_INTERP_VLD_THRESH`
+     - topo_mask.interp.vld_thresh
+   * - :term:`ENSEMBLE_STAT_TOPO_MASK_INTERP_SHAPE`
+     - topo_mask.interp.shape
+   * - :term:`ENSEMBLE_STAT_TOPO_MASK_INTERP_METHOD`
+     - topo_mask.interp.method
+   * - :term:`ENSEMBLE_STAT_TOPO_MASK_INTERP_WIDTH`
+     - topo_mask.interp.width
 
 ${METPLUS_LAPSE_RATE_CORRECTION_DICT}
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -8301,6 +8313,10 @@ Configuration
 | :term:`POINT_STAT_TOPO_MASK_REGRID_WIDTH`
 | :term:`POINT_STAT_TOPO_MASK_USE_OBS_THRESH`
 | :term:`POINT_STAT_TOPO_MASK_INTERP_FCST_THRESH`
+| :term:`POINT_STAT_TOPO_MASK_INTERP_VLD_THRESH`
+| :term:`POINT_STAT_TOPO_MASK_INTERP_SHAPE`
+| :term:`POINT_STAT_TOPO_MASK_INTERP_METHOD`
+| :term:`POINT_STAT_TOPO_MASK_INTERP_WIDTH`
 | :term:`POINT_STAT_LAPSE_RATE_CORRECTION_APPLY_TO`
 | :term:`POINT_STAT_LAPSE_RATE_CORRECTION_VALUE`
 | :term:`POINT_STAT_MSL_AGL_CONVERSION_APPLY_TO`
@@ -9022,6 +9038,14 @@ ${METPLUS_TOPO_MASK_DICT}
      - topo_mask.use_obs_thresh
    * - :term:`POINT_STAT_TOPO_MASK_INTERP_FCST_THRESH`
      - topo_mask.interp_fcst_thresh
+   * - :term:`POINT_STAT_TOPO_MASK_INTERP_VLD_THRESH`
+     - topo_mask.interp.vld_thresh
+   * - :term:`POINT_STAT_TOPO_MASK_INTERP_SHAPE`
+     - topo_mask.interp.shape
+   * - :term:`POINT_STAT_TOPO_MASK_INTERP_METHOD`
+     - topo_mask.interp.method
+   * - :term:`POINT_STAT_TOPO_MASK_INTERP_WIDTH`
+     - topo_mask.interp.width
 
 ${METPLUS_LAPSE_RATE_CORRECTION_DICT}
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

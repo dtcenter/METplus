@@ -14875,3 +14875,43 @@ METplus Configuration Glossary
      Sets msl_agl_conversion.msl_to_agl for the nth obs.field in the MET configuration file for PointStat and EnsembleStat.
 
      | *Used by:*  PointStat, EnsembleStat
+
+   POINT_STAT_TOPO_MASK_INTERP_VLD_THRESH
+     Specify the value for 'topo_mask.interp.vld_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_TOPO_MASK_INTERP_SHAPE
+     Specify the value for 'topo_mask.interp.shape' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_TOPO_MASK_INTERP_METHOD
+     Specify the value for 'topo_mask.interp.method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_TOPO_MASK_INTERP_WIDTH
+     Specify the value for 'topo_mask.interp.width' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   ENSEMBLE_STAT_TOPO_MASK_INTERP_VLD_THRESH
+     Specify the value for 'topo_mask.interp.vld_thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_TOPO_MASK_INTERP_SHAPE
+     Specify the value for 'topo_mask.interp.shape' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_TOPO_MASK_INTERP_METHOD
+     Specify the value for 'topo_mask.interp.method' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_TOPO_MASK_INTERP_WIDTH
+     Specify the value for 'topo_mask.interp.width' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat

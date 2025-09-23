@@ -849,6 +849,17 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
          {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {use_obs_thresh = ge-100&&le100;}'}),
         ({'ENSEMBLE_STAT_TOPO_MASK_INTERP_FCST_THRESH': 'ge-50&&le50', },
          {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {interp_fcst_thresh = ge-50&&le50;}'}),
+        ({'ENSEMBLE_STAT_TOPO_MASK_INTERP_VLD_THRESH': '0.3', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {interp = {vld_thresh = 0.3;}}'}),
+        ({'ENSEMBLE_STAT_TOPO_MASK_INTERP_SHAPE': 'CIRCLE', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {interp = {shape = CIRCLE;}}'}),
+
+        ({'ENSEMBLE_STAT_TOPO_MASK_INTERP_METHOD': 'GAUSSIAN', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {interp = {method = GAUSSIAN;}}'}),
+
+        ({'ENSEMBLE_STAT_TOPO_MASK_INTERP_WIDTH': '2', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {interp = {width = 2;}}'}),
+
         ({'ENSEMBLE_STAT_TOPO_MASK_FLAG': 'false',
           'ENSEMBLE_STAT_TOPO_MASK_FILE_NAME': '/some/file/path.nc',
           'ENSEMBLE_STAT_TOPO_MASK_FIELD_NAME': 'TOPO',
@@ -856,11 +867,19 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
           'ENSEMBLE_STAT_TOPO_MASK_REGRID_METHOD': 'NEAREST',
           'ENSEMBLE_STAT_TOPO_MASK_REGRID_WIDTH': '1',
           'ENSEMBLE_STAT_TOPO_MASK_USE_OBS_THRESH': 'ge-100&&le100',
-          'ENSEMBLE_STAT_TOPO_MASK_INTERP_FCST_THRESH': 'ge-50&&le50'
+          'ENSEMBLE_STAT_TOPO_MASK_INTERP_FCST_THRESH': 'ge-50&&le50',
+          'ENSEMBLE_STAT_TOPO_MASK_INTERP_VLD_THRESH': '0.3',
+          'ENSEMBLE_STAT_TOPO_MASK_INTERP_SHAPE': 'CIRCLE',
+          'ENSEMBLE_STAT_TOPO_MASK_INTERP_METHOD': 'GAUSSIAN',
+          'ENSEMBLE_STAT_TOPO_MASK_INTERP_WIDTH': '2',
           },
-         {'METPLUS_TOPO_MASK_DICT': ('topo_mask = {flag = FALSE;file_name = ["/some/file/path.nc"];'
-                                     'field = {name = "TOPO";level = "L0";}regrid = {method = NEAREST;width = 1;}'
-                                     'use_obs_thresh = ge-100&&le100;interp_fcst_thresh = ge-50&&le50;}')}),
+         {'METPLUS_TOPO_MASK_DICT': (
+                 'topo_mask = {flag = FALSE;file_name = ["/some/file/path.nc"];'
+                 'field = {name = "TOPO";level = "L0";}regrid = {method = NEAREST;width = 1;}'
+                 'interp = {vld_thresh = 0.3;shape = CIRCLE;method = GAUSSIAN;width = 2;}'
+                 'use_obs_thresh = ge-100&&le100;interp_fcst_thresh = ge-50&&le50;'
+                 '}'
+         )}),
         ({'ENSEMBLE_STAT_LAPSE_RATE_CORRECTION_APPLY_TO': 'FCST', },
          {'METPLUS_LAPSE_RATE_CORRECTION_DICT': 'lapse_rate_correction = {apply_to = FCST;}'}),
 
