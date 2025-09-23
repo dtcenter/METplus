@@ -271,6 +271,12 @@ that reformat gridded data
                 'method': ('string', 'remove_quotes'),
                 'width': 'int',
             }),
+            'interp': ('dict', None, {
+                'vld_thresh': 'float',
+                'shape': ('string', 'remove_quotes'),
+                'method': ('string', 'remove_quotes'),
+                'width': ('string', 'remove_quotes'),
+            }),
             'use_obs_thresh': 'thresh',
             'interp_fcst_thresh': 'thresh',
         })
