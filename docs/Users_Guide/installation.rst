@@ -99,6 +99,10 @@ section in the MET User's Guide for more information.
 The following wrappers require that additional Python packages be installed
 to run.
 
+-  DataIngest wrapper
+
+    - requests (2.32.5)
+
 -  SeriesAnalysis wrapper
 
     - netCDF4 (1.5.4)

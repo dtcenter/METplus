@@ -448,6 +448,20 @@ METplus Components Python Packages
   Description:
     A full-featured YAML framework for the Python programming language
 
+.. dropdown::  requests
+
+  METplus Component:
+      | Select METplus Use Cases
+
+  Source:
+    https://requests.readthedocs.io/en/latest/
+
+  Description:
+    Requests is an elegant and simple HTTP library for Python, built for human beings.
+
+  Use Cases:
+    | `DataIngest: Basic Use Case <../generated/met_tool_wrapper/DataIngest/DataIngest.html>`_
+
 .. dropdown:: scikit-image >=0.25.1
 
   METplus Component:
