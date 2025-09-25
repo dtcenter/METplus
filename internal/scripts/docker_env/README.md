@@ -465,6 +465,26 @@ export METPLUS_ENV_VERSION=v6.1
 ./scripts/wrf_plot_env.sh ${METPLUS_ENV_VERSION}
 ```
 
+## requests.v6.1 (from metplus_base.v6.1)
+
+### Docker
+
+```
+export METPLUS_ENV_VERSION=v6.1
+docker build -t dtcenter/metplus-envs:requests.${METPLUS_ENV_VERSION} \
+    --build-arg METPLUS_ENV_VERSION \
+    --build-arg ENV_NAME=requests .
+docker push dtcenter/metplus-envs:requests.${METPLUS_ENV_VERSION}
+```
+
+### Local
+
+```
+export METPLUS_ENV_VERSION=v6.1
+./scripts/requests_env.sh ${METPLUS_ENV_VERSION}
+```
+
+
 ## diff.v6.1 (from netcdf4.v6.1)
 
 This environment is used to run the difference tests to compare output data to output
