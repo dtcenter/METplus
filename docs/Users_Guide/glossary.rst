@@ -14608,3 +14608,8 @@ METplus Configuration Glossary
 
    RMW_ANALYSIS_INIT_THRESH_VAL
      Specify the value for 'init_thresh_val' in the MET configuration file for RMWAnalysis.
+
+   ASCII2NC_INPUTRX
+     Specify the value for the -inputrx command line argument for ASCII2NC.
+
+     | *Used by:* ASCII2NC

@@ -422,7 +422,7 @@ class CommandBuilder:
                               mandatory=mandatory,
                               return_list=return_list)
 
-    def find_obs(self, time_info, mandatory=True, return_list=False):
+    def find_obs(self, time_info, mandatory=True, return_list=False, allow_dir=False):
         """! Finds the observation file to compare
 
                 @param time_info dictionary containing timing information
@@ -434,9 +434,10 @@ class CommandBuilder:
         return self.find_data(time_info,
                               data_type="OBS",
                               mandatory=mandatory,
-                              return_list=return_list)
+                              return_list=return_list,
+                              allow_dir=allow_dir)
 
-    def find_obs_offset(self, time_info, mandatory=True, return_list=False):
+    def find_obs_offset(self, time_info, mandatory=True, return_list=False, allow_dir=False):
         """! Finds the observation file to compare, looping through offset
             list until a file is found
 
@@ -461,7 +462,8 @@ class CommandBuilder:
             time_info = ti_calculate(time_info)
             obs_path = self.find_obs(time_info,
                                      mandatory=is_mandatory,
-                                     return_list=return_list)
+                                     return_list=return_list,
+                                     allow_dir=allow_dir)
 
             if obs_path is not None:
                 self.c_dict['SUPPRESS_WARNINGS'] = suppress_warnings
