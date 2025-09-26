@@ -1484,8 +1484,8 @@ They are stored in their own GitHub repository.
 Navigate to the GitHub repository for a custom action to learn more about
 how to use them.
 
-metplus-action-free-disk-space
-------------------------------
+Free Disk Space
+---------------
 
 Removes files that are not used by METplus workflows from the
 GitHub Actions runner environment to free up disk space.
@@ -1494,30 +1494,30 @@ GitHub Actions runner environment to free up disk space.
 
 .. warning:: **DO NOT USE THIS ACTION WITH SELF-HOSTED RUNNERS!**
 
-metplus-action-scan-docker-images
----------------------------------
+Scan Docker Images
+------------------
 
 Scans Docker images for CVEs.
 
 `dtcenter/metplus-action-scan-docker-images <https://github.com/dtcenter/metplus-action-scan-docker-images>`_
 
-metplus-action-data-update
---------------------------
+Data Update
+-----------
 
 Query web server and update data volumes used for testing.
 
 `dtcenter/metplus-action-data-update <https://github.com/dtcenter/metplus-action-data-update>`_
 
-metplus-action-trigger-use-cases
---------------------------------
+Trigger METplus Use Cases
+-------------------------
 
 Used to trigger a METplus testing workflow to ensure that changes to other METplus component repositories do not
 break METplus use case functionality.
 
 `dtcenter/metplus-action-trigger-use-cases <https://github.com/dtcenter/metplus-action-trigger-use-cases>`_
 
-metplus-action-release-checksum
--------------------------------
+Create Checksum for Release
+---------------------------
 
 Add a checksum to a release
 
