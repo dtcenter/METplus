@@ -138,7 +138,8 @@ class TCRMWWrapper(RuntimeFreqWrapper):
 
         c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
                                                  data_type='FCST',
-                                                 met_tool=self.app_name)
+                                                 met_tool=self.app_name,
+                                                 var_options=self.var_options)
         if not c_dict['VAR_LIST_TEMP']:
             self.log_error("Could not get field information from config.")
         # skip RuntimeFreq input file logic - remove once integrated

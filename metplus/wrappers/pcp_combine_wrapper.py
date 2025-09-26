@@ -87,7 +87,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # only require the input template to be set if not using SUM or USER_DEFINED method
         required = c_dict[f'{d_type}_RUN_METHOD'] not in ("USER_DEFINED", "SUM")
         self.get_input_templates(c_dict,
-                                {d_type: {'prefix': f'{d_type}_PCP_COMBINE', 'required': required}},
+                                {d_type: {'prefix': (f'PCP_COMBINE_{d_type}', f'{d_type}_PCP_COMBINE'), 'required': required}},
                                  d_type=d_type)
 
         c_dict[f'{d_type}_OUTPUT_DIR'] = self.config.getdir(
@@ -161,7 +161,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         c_dict[f'VAR_LIST_{d_type}'] = parse_var_list(
             self.config,
             data_type=d_type,
-            met_tool=self.app_name
+            met_tool=self.app_name,
+            var_options=self.var_options,
         )
 
         self._set_thresholds(c_dict, d_type)
