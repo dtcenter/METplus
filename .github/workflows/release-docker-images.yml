@@ -103,8 +103,7 @@ jobs:
               "${{ env.DOCKERHUB_ANALYSIS_REPO }}:${{ env.VERSION_NO_V }}"
             ]
           fail-on-critical: "true"
-          fail-on-high: "false"
-          log-artifact-name: 'security-scan-logs.${{ env.VERSION_NO_V }}'
+          log-artifact-name: 'security-scan-logs_${{ env.VERSION_NO_V }}'
 
       - name: Push Docker Images
         run: .github/jobs/docker_push_metplus_images.sh
