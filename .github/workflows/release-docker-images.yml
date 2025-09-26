@@ -58,6 +58,7 @@ jobs:
     needs: define-matrix
     strategy:
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+      fail-fast: false
 
     steps:
       - uses: actions/checkout@v4
