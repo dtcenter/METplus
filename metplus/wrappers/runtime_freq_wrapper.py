@@ -10,7 +10,9 @@ Output Files:
 Condition codes: 0 for success, 1 for failure
 """
 
-from ..util import time_util
+import os
+
+from ..util import time_util, is_python_script
 from ..util import log_runtime_banner, get_lead_sequence, get_lead_sequence_groups
 from ..util import skip_time, getlist, get_start_and_end_times, get_time_prefix
 from ..util import time_generator, add_to_time_input, format_lead_seq
@@ -854,12 +856,13 @@ class RuntimeFreqWrapper(CommandBuilder):
             if label == 'OBS':
                 input_files, offset_time_info = (
                     self.find_obs_offset(time_info, mandatory=mandatory,
-                                         return_list=True)
+                                         return_list=True, allow_dir=self.c_dict.get('ALLOW_DIR', False))
                 )
             else:
                 input_files = self.find_data(time_info, data_type=data_type,
                                              return_list=True,
-                                             mandatory=mandatory)
+                                             mandatory=mandatory,
+                                             allow_dir=self.c_dict.get('ALLOW_DIR', False))
 
             if not input_files:
                 # if no files are found and fill missing is set, add 'missing'
@@ -1046,7 +1049,9 @@ class RuntimeFreqWrapper(CommandBuilder):
             return
 
         # if there is more than 1 file, create file list file
-        if not self.c_dict.get('SUPPORTS_FILE_LIST', True):
+        # unless any of the files are actually directories
+        if (not self.c_dict.get('SUPPORTS_FILE_LIST', True)
+                or any([os.path.isdir(filename) or is_python_script(filename) for filename in file_list])):
             self.infiles.extend(file_list)
             return
 

@@ -13,6 +13,7 @@ Condition codes: 0 for success, 1 for failure
 import os
 
 from . import ReformatPointWrapper
+from .. import remove_quotes
 from ..util import do_string_sub
 
 '''!@namespace ASCII2NCWrapper
@@ -57,6 +58,7 @@ class ASCII2NCWrapper(ReformatPointWrapper):
                                                  'LOG_ASCII2NC_VERBOSITY',
                                                  c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = True
+        c_dict['ALLOW_DIR'] = True
 
         # ASCII2NC config file is optional, so
         # don't provide wrapped config file name as default value
@@ -70,6 +72,7 @@ class ASCII2NCWrapper(ReformatPointWrapper):
         c_dict['MASK_SID'] = self.config.getraw('config', 'ASCII2NC_MASK_SID')
         c_dict['VALID_BEG'] = self.config.getraw('config', 'ASCII2NC_VALID_BEG')
         c_dict['VALID_END'] = self.config.getraw('config', 'ASCII2NC_VALID_END')
+        c_dict['INPUTRX'] = self.config.getraw('config', 'ASCII2NC_INPUTRX')
 
         # MET config variables
         self.handle_time_summary_dict()
@@ -81,8 +84,9 @@ class ASCII2NCWrapper(ReformatPointWrapper):
     def set_command_line_arguments(self, time_info):
         # add all arguments if set
         for arg in ('FORMAT', 'CONFIG_FILE', 'VALID_BEG', 'VALID_END',
-                    'MASK_GRID', 'MASK_POLY', 'MASK_SID'):
+                    'MASK_GRID', 'MASK_POLY', 'MASK_SID', 'INPUTRX'):
             if self.c_dict[arg]:
                 val = do_string_sub(self.c_dict[arg], **time_info)
                 arg_name = 'config' if arg == 'CONFIG_FILE' else arg.lower()
+                val = f'"{remove_quotes(val)}"' if arg == 'INPUTRX' else val
                 self.args.append(f"-{arg_name} {val}")

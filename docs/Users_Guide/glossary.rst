@@ -14915,3 +14915,8 @@ METplus Configuration Glossary
      Specify the value for 'topo_mask.interp.width' in the MET configuration file for EnsembleStat.
 
      | *Used by:* EnsembleStat
+
+   ASCII2NC_INPUTRX
+     Specify the value for the -inputrx command line argument for ASCII2NC.
+
+     | *Used by:* ASCII2NC
