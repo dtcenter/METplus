@@ -67,7 +67,7 @@ Category: met_tool_wrapper
 65::SeriesAnalysis_aggr:: met_tool_wrapper/SeriesAnalysis/SeriesAnalysis_aggr.conf::netcdf4_env
 66::PairStat:: met_tool_wrapper/PairStat/PairStat.conf
 67::RMWAnalysis:: met_tool_wrapper/RMWAnalysis/RMWAnalysis.conf
-68::DataIngest:: met_tool_wrapper/DataIngest/DataIngest.conf
+68::DataIngest:: met_tool_wrapper/DataIngest/DataIngest.conf:: requests_env
 69::GridStat_times_from_template:: met_tool_wrapper/GridStat/GridStat_times_from_template.conf
 
 

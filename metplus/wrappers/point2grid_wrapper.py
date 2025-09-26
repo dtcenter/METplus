@@ -50,6 +50,7 @@ class Point2GridWrapper(ReformatPointWrapper):
                                                  c_dict['VERBOSITY'])
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
+        c_dict['SUPPORTS_FILE_LIST'] = False
 
         # handle window variables [POINT2GRID_]FILE_WINDOW_[BEGIN/END]
         c_dict['OBS_FILE_WINDOW_BEGIN'] = \

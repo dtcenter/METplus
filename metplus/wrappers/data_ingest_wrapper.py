@@ -9,6 +9,16 @@ import os
 from ..util import do_string_sub, find_indices_in_config_section, download_file_http
 from . import RuntimeFreqWrapper
 
+# handle if requests module can't be loaded to run wrapper
+WRAPPER_CANNOT_RUN = False
+EXCEPTION_ERR = ''
+try:
+    import requests
+
+except Exception as err_msg:
+    WRAPPER_CANNOT_RUN = True
+    EXCEPTION_ERR = err_msg
+
 
 class DataIngestWrapper(RuntimeFreqWrapper):
     RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
@@ -18,6 +28,11 @@ class DataIngestWrapper(RuntimeFreqWrapper):
     def __init__(self, config, instance=None):
         self.app_name = 'data_ingest'
         super().__init__(config, instance=instance)
+
+        if WRAPPER_CANNOT_RUN:
+            self.log_error("There was a problem importing modules: "
+                           f"{EXCEPTION_ERR}\n")
+
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()

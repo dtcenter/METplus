@@ -8,10 +8,10 @@ Overview
 ========
 
 .. note:: The information below is a union of the Python package requirements
-	  across the following METplus components: METplus (including use
-	  cases), MET Python Embedding, METcalcpy, METplotpy, and METdataio. 
-	  Many of the Python packages listed below are **OPTIONAL** and not
-	  required. 
+      across the following METplus components: METplus (including use
+      cases), MET Python Embedding, METcalcpy, METplotpy, and METdataio.
+      Many of the Python packages listed below are **OPTIONAL** and not
+      required.
 
 For information regarding the Python package requirements for each of the
 METplus components, see the documentation links below for the desired
@@ -20,7 +20,7 @@ Use Cases lists the required Python packages in the individual Use Cases
 documentation.
 	  
   * :ref:`METplus Python Package Requirements <python_package_requirements>`
-  * `MET Python Embedding Requirements <https://met.readthedocs.io/en/feature_2588_install_rewrite/Users_Guide/appendixF.html#compiling-met-for-python-embedding>`_
+  * `MET Python Embedding Requirements <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#compiling-met-for-python-embedding>`_
   * `METcalcpy Python Package Requirements <https://metcalcpy.readthedocs.io/en/latest/Users_Guide/installation.html#python-requirements>`_
   * `METdataio Python Package Requirements <https://metdataio.readthedocs.io/en/latest/Users_Guide/installation.html#requirements>`_
   * `METplotpy Python Package Requirements <https://metplotpy.readthedocs.io/en/latest/Users_Guide/installation.html#python-requirements>`_
@@ -40,7 +40,7 @@ METplus Components Python Packages
       | METplotpy, 
       | METdataio
 
-.. dropdown::  cartopy >=0.21.1
+.. dropdown::  cartopy >=0.24.0
 
   METplus Component: 
       | Select METplus Use Cases,
@@ -72,7 +72,7 @@ METplus Components Python Packages
     `Multi_Tool: Feature Relative by Lead using Multiple User-Defined Fields
     <../generated/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.html>`_
 
-.. dropdown:: cmocean
+.. dropdown:: cmocean >=4.0.3
   
   METplus Component:
     | METcalcpy, 
@@ -98,7 +98,7 @@ METplus Components Python Packages
   Use Cases:
     Most  
 
-.. dropdown:: eofs
+.. dropdown:: eofs >=2.0.0
     
   METplus Component: 
     | Select METplus Use Cases, 
@@ -153,7 +153,7 @@ METplus Components Python Packages
     Provides an easy interface to read and write a wide range of image data, including animated
     images, volumetric data, and scientific formats
 
-.. dropdown:: lxml >=4.9.1
+.. dropdown:: lxml >=5.3.0
 
   METplus Component: 
     | METcalcpy,
@@ -166,7 +166,7 @@ METplus Components Python Packages
   Description:
     A Pythonic binding for the C libraries libxml2 and libxslt
 
-.. dropdown:: matplotlib >=3.6.3
+.. dropdown:: matplotlib >=3.10.0
 
   METplus Component: 
     | Select METplus Use Cases,
@@ -226,7 +226,7 @@ METplus Components Python Packages
     | `UserScript: Calculate the Difficulty Index <../generated/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.html>`_ 
     | `TCGen: Genesis Density Function (GDF) and Track Density Function (TDF) <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_
 
-.. dropdown:: metpy >=1.4.0
+.. dropdown:: metpy >=1.6.3
 
   METplus Component:
     Select METplus Use Cases
@@ -253,7 +253,7 @@ METplus Components Python Packages
   Description:
     Extension to cftime - \**REQUIRES Python 3.7**
 
-.. dropdown:: netCDF4 >=1.6.2
+.. dropdown:: netCDF4 >=1.7.2
 
   METplus Component:
     | Select METplus Use Cases,
@@ -270,7 +270,7 @@ METplus Components Python Packages
   Use Case:
     For using MET Python embedding functionality in use cases
 
-.. dropdown:: numpy >=1.24.2
+.. dropdown:: numpy >=2.2.2
 
   METplus Component:
     | Select METplus Use Cases,
@@ -288,7 +288,7 @@ METplus Components Python Packages
   Use Case:
     For using MET Python embedding functionality in use cases
 
-.. dropdown:: pandas >=1.5.2
+.. dropdown:: pandas >=2.2.3
 
   METplus Component:
     | Select METplus Use Cases, 
@@ -306,7 +306,7 @@ METplus Components Python Packages
   Use Case:
     For using MET Python embedding functionality in use cases
 
-.. dropdown:: pint >=0.20.1
+.. dropdown:: pint >=0.24.4
 
   METplus Component:
     METcalcpy
@@ -366,7 +366,7 @@ METplus Components Python Packages
     | `WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.html>`__  
     | `WeatherRegime Calculation: GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.html>`__
 
-.. dropdown:: pymysql >=1.0.2
+.. dropdown:: pymysql >=1.1.1
 
   METplus Component:
     | METcalcpy, 
@@ -410,7 +410,7 @@ METplus Components Python Packages
     | `GridStat: Python Embedding for sea surface salinity using level 3, 1 day composite obs <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMOS_climWOA_sss.html>`_ 
     | `GridStat: Python Embedding for sea surface salinity using level 3, 8 day mean obs <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.html>`_
 
-.. dropdown:: pytest >=7.2.1
+.. dropdown:: pytest >=8.3.4
 
   METplus Component:
     | METcalcpy, 
@@ -435,7 +435,7 @@ METplus Components Python Packages
   Description:
     Provides a low-level Python API that is designed to be used by high-level plotting libraries like Plotly
 
-.. dropdown:: pyyaml >=6.0
+.. dropdown:: pyyaml >=6.0.2
 
   METplus Component:
     | METcalcpy, 
@@ -448,7 +448,21 @@ METplus Components Python Packages
   Description:
     A full-featured YAML framework for the Python programming language
 
-.. dropdown:: scikit-image >=0.19.3
+.. dropdown::  requests
+
+  METplus Component:
+      | Select METplus Use Cases
+
+  Source:
+    https://requests.readthedocs.io/en/latest/
+
+  Description:
+    Requests is an elegant and simple HTTP library for Python, built for human beings.
+
+  Use Cases:
+    | `DataIngest: Basic Use Case <../generated/met_tool_wrapper/DataIngest/DataIngest.html>`_
+
+.. dropdown:: scikit-image >=0.25.1
 
   METplus Component:
     | METcalcpy, 
@@ -460,7 +474,7 @@ METplus Components Python Packages
   Description:
     A collection of algorithms for image processing
 
-.. dropdown:: scikit-learn >=1.2.2
+.. dropdown:: scikit-learn >=1.6.1
 
   METplus Component:
     | Select METplus Use Cases,  
@@ -479,7 +493,7 @@ METplus Components Python Packages
     | `GridStat: Python Embedding for sea surface salinity using level 3, 1 day composite obs <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMOS_climWOA_sss.html>`_ 
     | `GridStat: Python Embedding for sea surface salinity using level 3, 8 day mean obs <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.html>`_
 
-.. dropdown:: scipy >=1.9.3
+.. dropdown:: scipy >=1.15.1
 
   METplus Component:
     | Select METplus Use Cases, 
@@ -518,7 +532,7 @@ METplus Components Python Packages
     | `WeatherRegime Calculation: GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.html>`__
 
 
-.. dropdown:: xarray >=2023.1.0
+.. dropdown:: xarray >=2025.1.2
 
   METplus Component:
     | Select METplus Use Cases, 
