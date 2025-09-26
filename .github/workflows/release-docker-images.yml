@@ -77,10 +77,6 @@ jobs:
           sparse-checkout: metplus/component_versions.py
           sparse-checkout-cone-mode: false
 
-      - name: Create directories to store build log output
-        run: |
-          mkdir -p ${RUNNER_WORKSPACE}/logs
-
       - name: Set version without v prefix
         id: set-version
         run: |
@@ -110,8 +106,7 @@ jobs:
           fail-on-high: "false"
 
       - name: Push Docker Images
-        run: |
-          .github/jobs/docker_push_metplus_images.sh
+        run: .github/jobs/docker_push_metplus_images.sh
         env:
           METPLUS_VERSION: ${{ env.VERSION_NO_V }}
           UPDATE_LATEST: ${{ fromJSON(needs.define-matrix.outputs.update_latest) }}
@@ -119,16 +114,3 @@ jobs:
           DOCKERHUB_ANALYSIS_REPO: ${{ env.DOCKERHUB_ANALYSIS_REPO }}
           DOCKER_USERNAME: 'dtcenter'
           DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
-
-      - name: Copy build log files into logs directory
-        if: always()
-        run: |
-          cp ${GITHUB_WORKSPACE}/*.log ${RUNNER_WORKSPACE}/logs/
-
-      - name: Upload build logs as artifact
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: logs_${{ matrix.version }}
-          path: ${{ runner.workspace }}/logs
-          if-no-files-found: ignore
