@@ -104,6 +104,7 @@ jobs:
             ]
           fail-on-critical: "true"
           fail-on-high: "false"
+          log-artifact-name: 'security-scan-logs.${{ env.VERSION_NO_V }}'
 
       - name: Push Docker Images
         run: .github/jobs/docker_push_metplus_images.sh
