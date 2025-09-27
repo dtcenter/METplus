@@ -202,6 +202,16 @@
     "run": false
   },
   {
+    "category": "ral",
+    "index_list": "0",
+    "run": false
+  },
+  {
+    "category": "ral",
+    "index_list": "1",
+    "run": false
+  },
+  {
     "category": "s2s",
     "index_list": "0",
     "run": false

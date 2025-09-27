@@ -150,6 +150,11 @@ Category: precipitation
 9::PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip:: model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
 
 
+Category: ral
+0::GridStat_fcstCredit_GFS_obsGFS_6hrRealtime:: model_applications/ral/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf:: netcdf4_env
+1::PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime:: model_applications/ral/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.conf:: metdataio, metcalcpy, metplotpy,mp_analysis_env
+
+
 Category: s2s
 0::GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast:: model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast.conf:: netcdf4_env
 1::TCGen_fcstGFSO_obsBDECKS_GDF_TDF:: model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf:: metplotpy_env,cartopy,metplus
