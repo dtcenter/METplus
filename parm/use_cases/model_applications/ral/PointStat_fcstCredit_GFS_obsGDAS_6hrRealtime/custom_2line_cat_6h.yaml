@@ -1,0 +1,248 @@
+alpha: 0.05
+box_avg: 'False'
+box_boxwex: 0.2
+box_notch: 'False'
+box_outline: 'True'
+box_pts: 'False'
+caption_align: 0.0
+#caption_col: '#333333'
+caption_col: '#FFFFFF'
+caption_offset: 3.0
+caption_size: 0.8
+caption_weight: 1
+cex: 1
+colors:
+- '#ff0000'
+- '#0000ff'
+#- '#00aaff'
+#- '#0040ff'
+#- '#c3ff00'
+con_series:
+- 1
+- 1
+#- 1
+#- 1
+#- 1
+create_html: 'False'
+derived_series_1: []
+#- - CONTROL RH MAE
+#  - GTS RH MAE
+#  - DIFF
+derived_series_2: []
+dump_points_1: 'False'
+dump_points_2: 'False'
+event_equal: 'False'
+fcst_var_val_1:
+  !ENV ${FCST_VAR_VAL1}:
+  - !ENV ${PLOTTING_STAT}
+fcst_var_val_2:
+  !ENV ${FCST_VAR_VAL1}:
+  - !ENV ${PLOTTING_STAT}
+fixed_vars_vals_input:
+  fcst_thresh:
+    - ">273"
+grid_col: '#cccccc'
+grid_lty: 3
+grid_lwd: 1
+grid_on: 'True'
+grid_x: listX
+indy_label:
+- '06'
+- '12'
+- '18'
+- '24'
+- '30'
+- '36'
+- '40'
+- '48'
+- '54'
+- '60'
+- '66'
+- '72'
+- '78'
+- '84'
+- '90'
+- '96'
+- '102'
+- '108'
+- '114'
+- '120'
+indy_stagger_1: 'True'
+indy_stagger_2: 'False'
+indy_vals:
+- '60000'
+- '120000'
+- '180000'
+- '240000'
+- '300000'
+- '360000'
+- '420000'
+- '480000'
+- '540000'
+- '600000'
+- '660000'
+- '720000'
+- '780000'
+- '840000'
+- '900000'
+- '960000'
+- '1020000'
+- '1080000'
+- '1140000'
+- '1200000'
+indy_var: fcst_lead
+legend_box: o
+legend_inset:
+  x: 0.0
+  y: -0.25
+legend_ncol: 3
+legend_size: 0.8
+line_type: None
+list_stat_1:
+- !ENV ${PLOTTING_STAT}
+list_stat_2:
+- !ENV ${PLOTTING_STAT}
+list_static_val:
+  fcst_var: !ENV ${PLOTTING_STAT}
+mar:
+- 8
+- 4
+- 5
+- 4
+method: bca
+mgp:
+- 1
+- 1
+- 0
+num_iterations: 1
+num_threads: -1
+plot_caption: Caption
+plot_ci:
+- std
+- std
+#- std
+#- std
+#- std
+plot_disp:
+- 'True'
+- 'True'
+#- 'True'
+#- 'True'
+#- 'True'
+plot_filename: !ENV '${PLOTTING_CTS_OUTPUT_FILENAME}_${PLOTTING_STAT}.png'
+plot_height: 8.5
+plot_res: 72
+plot_stat: median
+plot_type: png16m
+plot_units: in
+plot_width: 11.0
+points_path: !ENV '${PLOTTING_CTS_OUTPUT_DIR}'
+random_seed: null
+series_line_style:
+- '-'
+- '-'
+#- '-'
+#- '-'
+#- '-'
+series_line_width:
+- 2
+- 2
+#- 1
+#- 1
+#- 1
+series_order:
+- 1
+- 2
+#- 3
+#- 4
+#- 5
+series_symbols:
+- .
+- .
+#- .
+#- .
+#- .
+series_type:
+- b
+- b
+#- b
+#- b
+#- b
+series_val_1:
+  model:
+  - GFS
+series_val_2:
+  model:
+  - Credit
+show_nstats: 'False'
+show_signif:
+- 'False'
+- 'False'
+#- 'False'
+#- 'False'
+#- 'False'
+stat_input: !ENV '${PLOTTING_CTS_STAT_INPUT}'
+sync_yaxes: 'True'
+title: !ENV 'Credit and GFS ${PLOTTING_STAT_LONG} for ${PLOTTING_CTS_LONG_VAR}'
+title_align: 0.5
+title_offset: -2
+title_size: 1.5
+title_weight: 2.0
+user_legend: []
+variance_inflation_factor: 'False'
+vert_plot: 'False'
+x2lab_align: 0.5
+x2lab_offset: -0.5
+x2lab_size: 0.8
+x2lab_weight: 1
+x2tlab_horiz: 0.5
+x2tlab_orient: 1
+x2tlab_perp: 1
+x2tlab_size: 0.8
+xaxis: Lead Time (HH)
+xaxis_reverse: 'False'
+xlab_align: 0.5
+xlab_offset: 2
+xlab_size: 1
+xlab_weight: 1
+xlim: []
+xtlab_decim: 0
+xtlab_horiz: 0.5
+xtlab_orient: 1
+xtlab_perp: -0.75
+xtlab_size: 1
+y2lab_align: 0.5
+y2lab_offset: 1
+y2lab_size: 1
+y2lab_weight: 1
+y2lim: []
+y2tlab_horiz: 0.5
+y2tlab_orient: 1
+y2tlab_perp: 1
+y2tlab_size: 1.0
+yaxis_1: !ENV '${PLOTTING_STAT_LONG} (${PLOTTING_CTS_VAR_UNITS})'
+yaxis_2: ''
+ylab_align: 0.5
+ylab_offset: -6
+ylab_size: 1
+ylab_weight: 1
+ylim: []
+ytlab_horiz: 0.5
+ytlab_orient: 1
+ytlab_perp: 0.5
+ytlab_size: 1
+
+# To save your log output to a file, specify a path and filename and uncomment the line below.  Make sure you have
+# permissions to the directory you specify.  The default, as specified in the default config file is stdout.
+log_filename: !ENV '${PLOTTING_CTS_LOG_FILENAME}'
+
+# To change the log level, specify a log level: debug, info, warning, error and uncomment the line below.
+#  Debug and info log level will produce more log output.
+log_level: debug
+
+show_legend:
+- 'True'
+- 'True'
+#- 'True'
+#- 'True'
+#- 'True'
