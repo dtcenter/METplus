@@ -70,7 +70,7 @@ model_applications/ral/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
 #
 # **Increment between beginning and end times (VALID_INCREMENT):** 6 hours
 #
-# **Sequence of forecast leads to process (LEAD_SEQ):** 6 - 24 hours at 6 hour intervals
+# **Sequence of forecast leads to process (LEAD_SEQ):** 6, 12
 #
 # The DataIngest and GridStat tools are run for each time, whereas StatAnalysis is
 # run once.  This example loops by valid times. It processes 2 lead times for 2 valid times with 
