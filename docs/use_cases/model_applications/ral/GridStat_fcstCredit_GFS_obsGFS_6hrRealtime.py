@@ -160,11 +160,12 @@ model_applications/ral/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 # Output for this use case will be found in 
 # {OUTPUT_BASE}/model_applications/ral/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf.  There will 
-# be 2 directories, one called data_ingest that contains the downloaded data and the other called 
-# Models_v_GFS that contains the statistics.  The data_ingest directory will contain 2 subdirectories, 
-# GFS and GFS_analysis, each with the downloaded data. The data inside the GFS directory is sorted by 
-# model initialization time and contains both surface and upper air data.  These files have the format,
-# where II is the model initialzation hours and HHH is the lead time in hours::
+# be 3 directories, data_ingest that contains the downloaded data, grid_stat which contains the output
+# statistics, and StatAnalysis which contains the aggregated statistics.  The data_ingest directory 
+# will contain 2 subdirectories, GFS and GFS_analysis, each with the downloaded data. The data inside 
+# the GFS directory is sorted by model initialization time and contains both surface and upper air data.  
+# These files have the format, where II is the model initialzation hours and HHH is the lead time in 
+# hours::
 #
 # * gfs.tIIz.pgrb2.0p25.fHHH 
 # * gfs.tIIz.sfluxgrbfHHH.grib2
@@ -176,11 +177,10 @@ model_applications/ral/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
 # * gfs_anal_2025092400.sfcanl.nc
 # * gfs_anal_2025092406.sfcanl.nc
 #
-# Inside the Models_v_GFS directory there are 2 subdirectories, grid_stat and StatAnalysis.  The grid_stat 
-# directory also has 2 subdirectories, Credit/6h and GFS.  The files output to Credit/6h are aslo stored in 
-# subdirectories dated with model initialization time in the format of YYYYMMHH.  These files have the 
-# following format, where the dates labeled are lead time, valid year, month, and day, and valid hour, 
-# minute, and second::
+# Inside the grid_stat directory, there are also 2 subdirectories, Credit/6h and GFS.  The files output 
+# to Credit/6h are also stored in subdirectories dated with model initialization time in the format of 
+# YYYYMMHH.  These files have the following format, where the dates labeled are lead time, valid year, month, 
+# and day, and valid hour, minute, and second::
 #
 # * grid_stat_Credit_surface_HHMMSSL_YYYYMMDD_HHMMSSV.stat
 # * grid_stat_Credit_upper_air_HHMMSSL_YYYYMMDD_HHMMSSV.stat

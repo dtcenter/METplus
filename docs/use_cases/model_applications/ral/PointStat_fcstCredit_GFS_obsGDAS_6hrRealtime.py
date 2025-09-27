@@ -204,10 +204,10 @@ model_applications/ral/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.conf
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 # Output for this use case will be found in 
 # {OUTPUT_BASE}/model_applications/ral/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.  There will
-# be 2 directories, one called data_ingest that contains the downloaded data and the other called 
-# Models_v_GDAS that contains the statistics and plots.  The data_ingest directory will contain 2 
-# subdirectories, GDAS and GFS, each with the downloaded data.  The GDAS directory contains 1 
-# subdirectory, 20250924, with 2 files::
+# be 6 directories, data_ingest, GDAS which contains the GDAS, plots, point_stat, reformatted, and 
+# StatAnalaysis.  The data_ingest directory contains the observation dat that has been downloaded
+# and contains 2 subdirectories, GDAS and GFS.  The GDAS directory contains 1 subdirectory, 20250924, 
+# with 2 files::
 #
 # * 20250924_0000.prepbufr.nr
 # * 20250924_0600.prepbufr.nr
@@ -219,8 +219,7 @@ model_applications/ral/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.conf
 # * gfs.tIIz.pgrb2.0p25.fHHH 
 # * gfs.tIIz.sfluxgrbfHHH.grib2
 #
-# Inside the Models_v_GDAS directory there are 5 subdirectories, GDAS, plots, point_stat reformatted, and 
-# StatAnalysis. The GDAS directory contains the GDAS observations that have been converted from prepbufr to
+# Inside the GDAS directory contains the GDAS observations that have been converted from prepbufr to
 # netCDF.  The directory contains 2 files::
 #
 # * prepbufr.gdas.2025092400.nc
