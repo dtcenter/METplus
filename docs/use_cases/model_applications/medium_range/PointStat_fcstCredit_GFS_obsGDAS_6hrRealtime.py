@@ -1,5 +1,5 @@
 """
-Grid-Stat, Stat-Analysis, UserScript, DataIngest: Credit and GFS point statistics, Data Download, Plots
+Point-Stat, Stat-Analysis, UserScript, DataIngest: Credit and GFS point statistics, Data Download, Plots
 =======================================================================================================
 
 model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.conf
@@ -15,7 +15,7 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 # Scientific Objective
 # --------------------
 #
-# # This use case is an example for verification inside RAL to illustrate how to 
+# This use case is an example for verification inside RAL to illustrate how to 
 # compare 2 models and also how to download data automatically.  The use case was 
 # originally set up to be run in real-time using the now keyword in VALID_BEG and 
 # VALID_END.  However, a specified date is provided here as for our automated 
