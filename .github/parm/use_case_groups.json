@@ -166,6 +166,16 @@
     "index_list": "9",
     "run": false
   },
+  { 
+    "category": "medium_range",
+    "index_list": "11",
+    "run": false
+  },
+  { 
+    "category": "medium_range",
+    "index_list": "12",
+    "run": false
+  },
   {
     "category": "pbl",
     "index_list": "0",
@@ -199,16 +209,6 @@
   {
     "category": "precipitation",
     "index_list": "9",
-    "run": false
-  },
-  {
-    "category": "ral",
-    "index_list": "0",
-    "run": false
-  },
-  {
-    "category": "ral",
-    "index_list": "1",
     "run": false
   },
   {
