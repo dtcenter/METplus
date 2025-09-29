@@ -1,6 +1,6 @@
 """
 Point-Stat, Stat-Analysis, UserScript, DataIngest: Credit and GFS point statistics, Data Download, Plots
-=======================================================================================================
+========================================================================================================
 
 model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.conf
 
@@ -81,17 +81,17 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 # METplus Workflow
 # ----------------
 #
-# **Beginning time (VALID_BEG):** 2025092400
+# **Beginning time (VALID_BEG):** 2025-09-24 00Z
 #
-# **End time (VALID_END):** 2024092406
+# **End time (VALID_END):** 2025-09-24 00Z
 #
 # **Increment between beginning and end times (VALID_INCREMENT):** 6 hours
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** 0 - 120 in 6 hour intervals
 #
 # DataIngest, PointStat, and StatAnalysis tools are run for each time, whereas StatAnalysis is
-# run once.  This example loops by valid times. It processes 20 lead times for each of the 2 valid 
-# times for a total of 40 runs.  All 4 UserScripts are each run once.  The first UserScript reformats 
+# run once.  This example loops by valid times. It processes 20 lead times for 1 valid
+# time for a total of 20 runs.  All 4 UserScripts are each run once.  The first UserScript reformats
 # the PointStat CNT output while the second reformats the PointStat CTS output so that they can be 
 # used for plotting.  The third and fourth UserScript calls creates plots.
 
@@ -108,7 +108,7 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on user settings in the METplus
 # configuration file. See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details.
@@ -271,7 +271,7 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 
 ##############################################################################
 # Keywords
-# ---------
+# --------
 #
 # .. note::
 #

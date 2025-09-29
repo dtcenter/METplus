@@ -64,9 +64,9 @@ model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
 # METplus Workflow
 # ----------------
 #
-# **Beginning time (VALID_BEG):** 2025092400
+# **Beginning time (VALID_BEG):** 2025-09-24 00Z
 #
-# **End time (VALID_END):** 2024092406
+# **End time (VALID_END):** 2025-09-24 06Z
 #
 # **Increment between beginning and end times (VALID_INCREMENT):** 6 hours
 #
@@ -107,7 +107,7 @@ model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on user settings in the METplus
 # configuration file. See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details.
@@ -202,7 +202,7 @@ model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
 
 ##############################################################################
 # Keywords
-# ---------
+# --------
 #
 # .. note::
 #
