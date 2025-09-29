@@ -22,7 +22,8 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 # testing.  The case demonstrates how to run statistics for 2 models, Credit and 
 # GFS and how to make plots of ME, MAE and RMSE on some of the variables.  In contrast 
 # to the GridStat_fcstCredit_GFS_obsGFS_6hrRealtime use case, this case uses point 
-# observations whereast that one used gridded observations. 
+# observations whereas that one used gridded observations.  Also, that use case shows
+# how to process multiple valid times while this one uses only a single valid time.
 
 ##############################################################################
 # Version Added
