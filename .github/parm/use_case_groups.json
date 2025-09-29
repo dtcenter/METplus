@@ -169,7 +169,7 @@
   { 
     "category": "medium_range",
     "index_list": "11",
-    "run": true
+    "run": false
   },
   { 
     "category": "medium_range",
