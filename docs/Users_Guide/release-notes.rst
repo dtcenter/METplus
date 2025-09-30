@@ -83,9 +83,9 @@ METplus Version 6.2.0 RC 1 Release Notes (2025-09-30)
        (`#2390 <https://github.com/dtcenter/METplus/issues/2390>`_)
      * International Soil Moisture Network (ISMN)
        (`#2533 <https://github.com/dtcenter/METplus/issues/2533>`_)
-     * GridStat: Credit and GFS
+     * GridStat: CREDIT and GFS
        (`#3112 <https://github.com/dtcenter/METplus/issues/3112>`_)
-     * PointStat: Credit and GFS
+     * PointStat: CREDIT and GFS
        (`#3112 <https://github.com/dtcenter/METplus/issues/3112>`_)
 
   .. dropdown:: Documentation
