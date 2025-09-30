@@ -104,7 +104,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Free disk space
-        run: .github/jobs/free_disk_space.sh
+        uses: dtcenter/metplus-action-free-disk-space@v1
       - name: Get METplus Image
         run: .github/jobs/docker_setup.sh
         env:
@@ -183,7 +183,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Free disk space
-        run: .github/jobs/free_disk_space.sh
+        uses: dtcenter/metplus-action-free-disk-space@v1
 
       - name: Create directories for database
         run: .github/jobs/create_dirs_for_database.sh

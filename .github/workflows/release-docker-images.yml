@@ -22,6 +22,10 @@ on:
   schedule:
     - cron: "30 06 * * 0"
 
+env:
+  DOCKERHUB_BASE_REPO: dtcenter/metplus
+  DOCKERHUB_ANALYSIS_REPO: dtcenter/metplus-analysis
+
 jobs:
 
   define-matrix:
@@ -72,6 +76,7 @@ jobs:
     needs: define-matrix
     strategy:
       matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+      fail-fast: false
 
     steps:
       - uses: actions/checkout@v4
@@ -90,48 +95,40 @@ jobs:
           sparse-checkout: metplus/component_versions.py
           sparse-checkout-cone-mode: false
 
-      - name: Create directories to store output
+      - name: Set version without v prefix
+        id: set-version
         run: |
-          mkdir -p ${RUNNER_WORKSPACE}/logs
+          version="${{ matrix.version }}"
+          echo "VERSION_NO_V=${version#v}" >> $GITHUB_ENV
 
       - name: Build Docker Images
         id: build_images
         run: .github/jobs/docker_build_metplus_images.sh
         env:
           SOURCE_BRANCH: ${{ matrix.version }}
-
-      - name: Install Syft
-        run: |
-          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
-
-      - name: Install Grype
-        run: |
-          curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
+          METPLUS_VERSION: ${{ env.VERSION_NO_V }}
+          DOCKERHUB_BASE_REPO: ${{ env.DOCKERHUB_BASE_REPO }}
+          DOCKERHUB_ANALYSIS_REPO: ${{ env.DOCKERHUB_ANALYSIS_REPO }}
 
       - name: Scan Docker Images
-        run: |
-          .github/jobs/docker_scan_metplus_images.sh
-        env:
-          SOURCE_BRANCH: ${{ matrix.version }}
+        id: security-scan
+        continue-on-error: false
+        uses: dtcenter/metplus-action-scan-docker-images@v1
+        with:
+          images: |
+            [
+              "${{ env.DOCKERHUB_BASE_REPO }}:${{ env.VERSION_NO_V }}",
+              "${{ env.DOCKERHUB_ANALYSIS_REPO }}:${{ env.VERSION_NO_V }}"
+            ]
+          fail-on-critical: "true"
+          log-artifact-name: 'security-scan-logs_${{ env.VERSION_NO_V }}'
 
       - name: Push Docker Images
-        run: |
-          .github/jobs/docker_push_metplus_images.sh
+        run: .github/jobs/docker_push_metplus_images.sh
         env:
-          SOURCE_BRANCH: ${{ matrix.version }}
+          METPLUS_VERSION: ${{ env.VERSION_NO_V }}
           UPDATE_LATEST: ${{ fromJSON(needs.define-matrix.outputs.update_latest) }}
+          DOCKERHUB_BASE_REPO: ${{ env.DOCKERHUB_BASE_REPO }}
+          DOCKERHUB_ANALYSIS_REPO: ${{ env.DOCKERHUB_ANALYSIS_REPO }}
           DOCKER_USERNAME: 'dtcenter'
           DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
-
-      - name: Copy log files into logs directory
-        if: always()
-        run: |
-          cp ${GITHUB_WORKSPACE}/*.log ${RUNNER_WORKSPACE}/logs/
-
-      - name: Upload logs as artifact
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: logs_${{ matrix.version }}
-          path: ${{ runner.workspace }}/logs
-          if-no-files-found: ignore
