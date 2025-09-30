@@ -209,7 +209,8 @@ model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
 #   * DataIngestToolUseCase
 #   * GridStatToolUseCase
 #   * StatAnalysisToolUseCase
-#   * RALAppUseCase
+#   * MediumRangeAppUseCase
+#   * NCAROrgUseCase
 #   * GRIB2FileUseCase
 #   * NetCDFFileUseCase
 #

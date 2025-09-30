@@ -279,12 +279,15 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 # .. note::
 #
 #   * DataIngestToolUseCase
+#   * PB2NCToolUseCase
 #   * PointStatToolUseCase
 #   * StatAnalysisToolUseCase
-#   * RALAppUseCase
+#   * UserScriptUseCase
+#   * MediumRangeAppUseCase
+#   * NCAROrgUseCase
 #   * GRIB2FileUseCase
 #   * NetCDFFileUseCase
-#   * METdataioUseCase
+#   * METdbLoadUseCase
 #   * METcalcpyUseCase
 #   * METplotpyUseCase
 #
