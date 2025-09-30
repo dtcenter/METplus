@@ -210,25 +210,25 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 # be 6 directories, data_ingest, GDAS, plots, point_stat, reformatted, and StatAnalaysis.  The 
 # data_ingest directory contains the observation dat that has been downloaded
 # and contains 2 subdirectories, GDAS and GFS.  The GDAS directory contains 1 subdirectory, 20250924, 
-# with 2 files::
+# with 2 files:
 #
 # * 20250924_0000.prepbufr.nr
 # * 20250924_0600.prepbufr.nr
 #
 # The data inside the GFS directory is sorted by model initialization time and contains both surface 
 # and upper air data.  These files have the format, where II is the model initialzation hours and HHH 
-# is the lead time in hours::
+# is the lead time in hours:
 #
 # * gfs.tIIz.pgrb2.0p25.fHHH 
 # * gfs.tIIz.sfluxgrbfHHH.grib2
 #
 # Inside the GDAS directory contains the GDAS observations that have been converted from prepbufr to
-# netCDF.  The directory contains 2 files::
+# netCDF.  The directory contains 2 files:
 #
 # * prepbufr.gdas.2025092400.nc
 # * prepbufr.gdas.2025092406.nc 
 # 
-# The plots directory contains one subdirectory, 6h, that has 11 plots::
+# The plots directory contains one subdirectory, 6h, that has 11 plots:
 #
 # * T500_FULL_MAE.png
 # * T500_FULL_ME.png
@@ -245,25 +245,25 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 # The point_stat directory also has 2 subdirectories, Credit/6h and GFS.  The files output to Credit/6h are 
 # also stored in subdirectories dated with model initialization time in the format of YYYYMMDDHH.  These files 
 # have the following format, where the dates labeled are lead time, valid year, month, and day, and valid hour, 
-# minute, and second::
+# minute, and second:
 #
 # * point_stat_Credit_surface_HHMMSSL_YYYYMMDD_HHMMSSV.stat
 #
 # The files output to the GFS directory are also stored in subdirectories dated with model 
 # initialization time in the format of YYYYMMDDHH.  These files have the same format as above where
-# the dates labeled are lead time, valid year, month, and day, and valid hour, minute, and second::
+# the dates labeled are lead time, valid year, month, and day, and valid hour, minute, and second:
 #
 # * point_stat_GFS_surface_HHMMSSL_YYYYMMDD_HHMMSSV.stat
 # * point_stat_GFS_upper_air_HHMMSSL_YYYYMMDD_HHMMSSV.stat
 #
 # The reformatted directory contains the reformatted output from StatAnalysis that is used in plotting.
-# There is one subdirectory (6h) that contains 2 files::
+# There is one subdirectory (6h) that contains 2 files:
 #
 # * reformat_CNT_6h.data
 # * reformat_CTS_6h.data
 #
 # The StatAnalysis directory contains 1 subdirectory (6h).  Inside that directory are
-# 6 output files::
+# 6 output files:
 #
 # * Credit_GDAS_2025092400_2025092406_allleads_all_stations_allValidHours_CNT.stat
 # * Credit_GDAS_2025092400_2025092406_allleads_all_stations_allValidHours_CTS.stat

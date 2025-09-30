@@ -165,12 +165,12 @@ model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
 # will contain 2 subdirectories, GFS and GFS_analysis, each with the downloaded data. The data inside 
 # the GFS directory is sorted by model initialization time and contains both surface and upper air data.  
 # These files have the format, where II is the model initialzation hours and HHH is the lead time in 
-# hours::
+# hours:
 #
 # * gfs.tIIz.pgrb2.0p25.fHHH 
 # * gfs.tIIz.sfluxgrbfHHH.grib2
 #
-# The GFS_analysis directory contains one subdirectory 20250924 with 4 files::
+# The GFS_analysis directory contains one subdirectory 20250924 with 4 files:
 #
 # * gfs.2025092400.pgrb2.0p25.anl
 # * gfs.2025092406.pgrb2.0p25.anl
@@ -180,20 +180,20 @@ model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
 # Inside the grid_stat directory, there are also 2 subdirectories, Credit/6h and GFS.  The files output 
 # to Credit/6h are also stored in subdirectories dated with model initialization time in the format of 
 # YYYYMMDDHH.  These files have the following format, where the dates labeled are lead time, valid year, 
-# month, and day, and valid hour, minute, and second::
+# month, and day, and valid hour, minute, and second:
 #
 # * grid_stat_Credit_surface_HHMMSSL_YYYYMMDD_HHMMSSV.stat
 # * grid_stat_Credit_upper_air_HHMMSSL_YYYYMMDD_HHMMSSV.stat
 #
 # The files output to the GFS directory are also stored in subdirectories dated with model 
 # initialization time in the format of YYYYMMDDHH.  These files have the same format as above where
-# the dates labeled are lead time, valid year, month, and day, and valid hour, minute, and second::
+# the dates labeled are lead time, valid year, month, and day, and valid hour, minute, and second:
 #
 # * grid_stat_GFS_surface_HHMMSSL_YYYYMMDD_HHMMSSV.stat
 # * grid_stat_GFS_upper_air_HHMMSSL_YYYYMMDD_HHMMSSV.stat
 #
 # The StatAnalysis directory contains 1 subdirectory (6h).  Inside that directory are
-# 4 output files::
+# 4 output files:
 #
 # * Credit_GFS_2025092400_2025092406_allleads_allValidHours_CNT.stat
 # * Credit_GFS_2025092400_2025092406_allleads_allValidHours_CTS.stat
