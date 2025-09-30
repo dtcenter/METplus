@@ -576,12 +576,3 @@ in the
           docker pull dtcenter/metplus-analysis:X.Y.0-beta1
 
      `dtcenter/metplus-analysis DockerHub <https://hub.docker.com/r/dtcenter/metplus-analysis>`_
-
-.. dropdown:: AWS - Coming Soon!
-
-   | **METviewer vX.Y.0-beta1**
-   | *Last Updated:*
-
-     * LOCATION: 
-     * URL: 
-

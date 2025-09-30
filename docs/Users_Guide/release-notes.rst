@@ -19,7 +19,7 @@ may change in the future.
 The **development timeline** for the METplus 6.2.0 Coordinated Release
 is broken down into the following development cycles for each component:
 
-1. **Release Candidate 1** releases are tentatively scheduled for 2025-09-29.
+1. **Release Candidate 1** releases occurred around 2025-09-30.
 2. **Official Release** releases are tenatively scheduled for 2025-10-15.
 
 .. include:: existing_builds.rst
@@ -69,6 +69,8 @@ METplus Version 6.2.0 RC 1 Release Notes (2025-09-30)
 
      * PCP Combine not working for 3 year averaging
        (`#2980 <https://github.com/dtcenter/METplus/issues/2980>`_)
+     * Conda Forge: error while loading shared libraries: libatlas
+       (`conda-forge/metplus-feedstock#4 <https://github.com/conda-forge/metplus-feedstock/issues/4>`_)
 
   .. dropdown:: New Wrappers
 
@@ -81,9 +83,9 @@ METplus Version 6.2.0 RC 1 Release Notes (2025-09-30)
        (`#2390 <https://github.com/dtcenter/METplus/issues/2390>`_)
      * International Soil Moisture Network (ISMN)
        (`#2533 <https://github.com/dtcenter/METplus/issues/2533>`_)
-     * GridStat: Credit and GFS
+     * GridStat: CREDIT and GFS
        (`#3112 <https://github.com/dtcenter/METplus/issues/3112>`_)
-     * PointStat: Credit and GFS
+     * PointStat: CREDIT and GFS
        (`#3112 <https://github.com/dtcenter/METplus/issues/3112>`_)
 
   .. dropdown:: Documentation
@@ -97,6 +99,8 @@ METplus Version 6.2.0 RC 1 Release Notes (2025-09-30)
        (`#2999 <https://github.com/dtcenter/METplus/issues/2999>`_)
      * Add CVE scanning to the `release-docker-images.yml` workflow
        (`#3054 <https://github.com/dtcenter/METplus/issues/3054>`_)
+     * Address Critical CVEs
+     * Enhance the logic and functionality of the METplus CVE scanning workflows
 
 
 .. _upgrade-instructions:
