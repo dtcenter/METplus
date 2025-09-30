@@ -69,6 +69,8 @@ METplus Version 6.2.0 RC 1 Release Notes (2025-09-30)
 
      * PCP Combine not working for 3 year averaging
        (`#2980 <https://github.com/dtcenter/METplus/issues/2980>`_)
+     * Conda Forge: error while loading shared libraries: libatlas
+       (`conda-forge/metplus-feedstock#4 <https://github.com/conda-forge/metplus-feedstock/issues/4>`_)
 
   .. dropdown:: New Wrappers
 
@@ -97,6 +99,8 @@ METplus Version 6.2.0 RC 1 Release Notes (2025-09-30)
        (`#2999 <https://github.com/dtcenter/METplus/issues/2999>`_)
      * Add CVE scanning to the `release-docker-images.yml` workflow
        (`#3054 <https://github.com/dtcenter/METplus/issues/3054>`_)
+     * Address Critical CVEs
+     * Enhance the logic and functionality of the METplus CVE scanning workflows
 
 
 .. _upgrade-instructions:
