@@ -31,4 +31,8 @@ Update the version number in the code and documentation.
 
   * If necessary, add a new 'data/table_files/met_header_columns_VX.Y.txt' defining the columns names for this version.
 
+    * Add that new file name to the list in 'Makefile.am'.
+
+    * Rerun "./bootstrap" from the top-level MET directory on the project machine to regenerate the corresponding 'Makefile.in' file.
+
   * If necessary, add a new 'internal/test_unit/hdr/met_X_Y.hdr' file defining the column names for this version for the test scripts.
