@@ -44,6 +44,7 @@ class MADIS2NCWrapper(ReformatPointWrapper):
 
         # file I/O
         c_dict['ALLOW_MULTIPLE_FILES'] = True
+        c_dict['SUPPORTS_FILE_LIST'] = False
 
         # config file settings
         c_dict['CONFIG_FILE'] = self.get_config_file('Madis2NcConfig_wrapped')

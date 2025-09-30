@@ -80,7 +80,8 @@ class RMWAnalysisWrapper(RuntimeFreqWrapper):
         c_dict['CONFIG_FILE'] = self.get_config_file('RMWAnalysisConfig_wrapped')
 
         c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config, data_type='FCST',
-                                                 met_tool=self.app_name)
+                                                 met_tool=self.app_name,
+                                                 var_options=self.var_options)
         if not c_dict['VAR_LIST_TEMP']:
             self.log_error("No fields specified. Please set BOTH_VAR<n>_[NAME/LEVELS]")
 

@@ -110,24 +110,25 @@ def test_find_var_indices_fcst(metplus_config,
 
 @pytest.mark.parametrize(
     'data_type, met_tool, expected_out', [
-        ('FCST', None, ['FCST_',
-                        'BOTH_',]),
-        ('OBS', None, ['OBS_',
-                       'BOTH_',]),
-        ('FCST', 'grid_stat', ['FCST_GRID_STAT_',
+        ('FCST', None, ['FCST_', 'BOTH_',]),
+        ('OBS', None, ['OBS_', 'BOTH_',]),
+        ('FCST', 'grid_stat', ['GRID_STAT_FCST_',
+                               'FCST_GRID_STAT_',
+                               'GRID_STAT_BOTH_',
                                'BOTH_GRID_STAT_',
                                'FCST_',
                                'BOTH_',
                                ]),
-        ('OBS', 'extract_tiles', ['OBS_EXTRACT_TILES_',
+        ('OBS', 'extract_tiles', ['EXTRACT_TILES_OBS_',
+                                  'OBS_EXTRACT_TILES_',
+                                  'EXTRACT_TILES_BOTH_',
                                   'BOTH_EXTRACT_TILES_',
                                   'OBS_',
                                   'BOTH_',
                                   ]),
         ('ENS', None, ['ENS_']),
         ('DATA', None, ['DATA_']),
-        ('DATA', 'tc_gen', ['DATA_TC_GEN_',
-                            'DATA_']),
+        ('DATA', 'tc_gen', ['TC_GEN_DATA_', 'DATA_TC_GEN_', 'DATA_']),
 
     ]
 )

@@ -1227,7 +1227,7 @@ def test_errors_and_defaults(metplus_config):
     cb.is_ok = True
     cb.check_gempaktocf(False)
     assert cb.is_ok == False
-    assert _in_last_err('[exe] GEMPAKTOCF_JAR was not set in configuration file.', cb.logger)
+    assert _in_last_err('[config] GEMPAKTOCF_JAR was not set in configuration file.', cb.logger)
 
     # test expected ensemble mismatch
     cb.c_dict['N_MEMBERS'] = 1

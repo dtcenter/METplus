@@ -169,8 +169,8 @@ class MODEWrapper(CompareGriddedWrapper):
                              'multi-variate MODE')
 
         self.get_input_templates(c_dict, {
-            'FCST': {'prefix': 'FCST_MODE', 'required': True},
-            'OBS': {'prefix': 'OBS_MODE', 'required': True},
+            'FCST': {'prefix': ('MODE_FCST', 'FCST_MODE'), 'required': True},
+            'OBS': {'prefix': ('MODE_OBS', 'OBS_MODE'), 'required': True},
         })
 
         c_dict['OBS_INPUT_DATATYPE'] = (

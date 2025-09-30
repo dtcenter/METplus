@@ -217,7 +217,7 @@ def _step_test_met_tool(wrapper_camel):
 def _get_met_vars(tool_name, input_dict):
     met_vars = []
     for var_name, dict_list in input_dict.items():
-        metplus_var = f'{tool_name.upper()}_{var_name.upper()}'
+        metplus_var = f"{tool_name.upper()}_{var_name.upper().replace('.', '_')}"
         env_var_name = f'METPLUS_{var_name.upper()}'
         met_var = {'name': var_name, 'dict_items': dict_list,
                    'metplus_config_names': [], 'met_config_names': []}
@@ -228,7 +228,7 @@ def _get_met_vars(tool_name, input_dict):
         else:
             met_var['env_var_name'] = f'{env_var_name}_DICT'
             for item_name in dict_list:
-                metplus_config = f'{metplus_var}_{item_name.upper()}'
+                metplus_config = f"{metplus_var}_{item_name.upper().replace('.', '_')}"
                 met_config = f"{var_name}.{item_name}"
                 met_var['metplus_config_names'].append(metplus_config)
                 met_var['met_config_names'].append(met_config)
@@ -306,22 +306,33 @@ def _print_glossary_entry(var, wrapper_camel):
 def _print_unit_test(var):
     input_dict_items = []
     output_items = []
+    output_dict_items = {}
     metplus_names = var['metplus_config_names']
     met_names = var['met_config_names']
     dict_items = var['dict_items']
     for metplus_config_name, met_config_name in zip(metplus_names, met_names):
+        child_name = None
+        item_name = None
+        output_item = 'VALUE;'
         if dict_items:
-            item_name = met_config_name.split('.')[1]
-            output_item = f"{item_name} = VALUE;"
-        else:
-            output_item = 'VALUE;'
+            item_name, child_name, *_ = met_config_name.split('.')[1:]
+            value = 'VALUE;'
+            if child_name:
+                value = f"{{{child_name} = VALUE;}}"
+            output_item = f"{item_name} = {value}"
+
         mp_config_dict_item = f"'{metplus_config_name}': 'VALUE',"
         input_dict_items.append(mp_config_dict_item)
-        output_items.append(output_item)
+        if child_name and item_name:
+            if item_name not in output_dict_items:
+                output_dict_items[item_name] = []
+            output_dict_items[item_name].append(f"{child_name} = VALUE;")
+        else:
+            output_items.append(output_item)
+
+        output_fmt = output_item
         if dict_items:
             output_fmt = f"{{{output_item}}}"
-        else:
-            output_fmt = output_item
 
         test_text = (f"        ({{{mp_config_dict_item} }},\n"
                      f"         {{'{var['env_var_name']}': '{var['name']} = "
@@ -330,6 +341,10 @@ def _print_unit_test(var):
 
     if not dict_items:
         return
+
+    for key, value in output_dict_items.items():
+        output_items.append(f"{key} = {{" + ''.join(value) + "}")
+
     all_items_text = "        ({\n"
     for input_dict_item in input_dict_items:
         all_items_text += f"           {input_dict_item}\n"
@@ -343,16 +358,20 @@ def _print_unit_test(var):
 
 def doc_util_usage():
     """! Print usage statement for script """
-    print('Usage:\n'
-          f'{__file__} <met-tool> "<met-variable> [<met-dict-items>]" '
-          '"<met-variable> [<met-dict-items>]"\n'
-          f"\nExample: {__file__} grid_stat output_prefix "
-          "\n  (simple variable named output_prefix)\n"
-          f'\nExample: {__file__} grid_stat "output_flag fho ctc mctc" '
-          '\n  (dictionary named output_flag containing fho, ctc, and mctc)\n'
-          f'\nExample: {__file__} grid_stat "output_flag fho ctc mctc" '
-          'output_prefix \n  (both of the variables from the previous '
-          'examples)\n')
+    print(
+        'Usage:\n'
+        f'{__file__} <met-tool> "<met-variable> [<met-dict-items>]" '
+        '"<met-variable> [<met-dict-items>]"\n'
+        f"\nExample: {__file__} grid_stat output_prefix "
+        "\n  (simple variable named output_prefix)\n"
+        f'\nExample: {__file__} grid_stat "output_flag fho ctc mctc" '
+        '\n  (dictionary named output_flag containing fho, ctc, and mctc)\n'
+        f'\nExample: {__file__} grid_stat "output_flag fho ctc mctc" '
+        'output_prefix \n  (both of the variables from the previous '
+        'examples)\n'
+        f'\nExample: {__file__} point_stat "topo_mask interp.method interp.width" '
+        '\n  (dictionary named topo_mask containing dictionary interp containing method and width)\n'
+    )
 
 
 if __name__ == "__main__":

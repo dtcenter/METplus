@@ -107,7 +107,8 @@ class ExtractTilesWrapper(LoopTimesWrapper):
         c_dict['LAT_ADJ'] = self.config.getfloat('config', 'EXTRACT_TILES_LAT_ADJ')
         c_dict['LON_ADJ'] = self.config.getfloat('config', 'EXTRACT_TILES_LON_ADJ')
 
-        c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config, met_tool=self.app_name)
+        c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config, met_tool=self.app_name,
+                                                 var_options=self.var_options)
 
         # force error if track inputs are missing
         c_dict['ALLOW_MISSING_INPUTS'] = False
