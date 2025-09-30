@@ -36,6 +36,10 @@ For rc1 development releases, create a new reference branch for the upcoming off
     * Navigate to https://github.com/dtcenter/MET/actions and verify that a
       'Testing' workflow was triggered on the 'main_vX.Y-ref' branch.
 
+    * If not, use the 'Run workflow' option on the
+      `Testing worklow <https://github.com/dtcenter/MET/actions/workflows/testing.yml>`_
+      page to manually trigger it for the 'main_vX.Y-ref' branch.
+
     * Wait until the entire workflow has run successfully. The final job entitled
       'Create Output Docker Data Volumes' should create Docker data volumes for
       each use case category on DockerHub (dtcenter/met-data-output).
