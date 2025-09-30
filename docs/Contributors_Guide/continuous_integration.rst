@@ -1480,9 +1480,9 @@ Custom GitHub Actions
 
 Custom actions are designed to handle common functionality that is needed by
 multiple GitHub Actions workflows across multiple METplus GitHub repositories.
-They are stored in their own GitHub repository.
+Each custom action is stored in its own GitHub repository.
 Navigate to the GitHub repository for a custom action to learn more about
-how to use them.
+using it.
 
 Free Disk Space
 ---------------
@@ -1497,7 +1497,7 @@ GitHub Actions runner environment to free up disk space.
 Scan Docker Images
 ------------------
 
-Scans Docker images for CVEs.
+Scans Docker images for Common Vulnerabilities and Exposures (CVEs).
 
 `dtcenter/metplus-action-scan-docker-images <https://github.com/dtcenter/metplus-action-scan-docker-images>`_
 
@@ -1511,7 +1511,7 @@ Query web server and update data volumes used for testing.
 Trigger METplus Use Cases
 -------------------------
 
-Used to trigger a METplus testing workflow to ensure that changes to other METplus component repositories do not
+Trigger a METplus testing workflow to ensure that changes to other METplus component repositories do not
 break METplus use case functionality.
 
 `dtcenter/metplus-action-trigger-use-cases <https://github.com/dtcenter/metplus-action-trigger-use-cases>`_
