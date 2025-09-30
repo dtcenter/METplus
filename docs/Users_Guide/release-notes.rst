@@ -19,7 +19,7 @@ may change in the future.
 The **development timeline** for the METplus 6.2.0 Coordinated Release
 is broken down into the following development cycles for each component:
 
-1. **Release Candidate 1** releases are tentatively scheduled for 2025-09-29.
+1. **Release Candidate 1** releases occurred around 2025-09-30.
 2. **Official Release** releases are tenatively scheduled for 2025-10-15.
 
 .. include:: existing_builds.rst
