@@ -46,7 +46,58 @@ When applicable, release notes are followed by the
 describes the bugfix, enhancement, or new feature.
 Important issues are listed **in bold** for emphasis.
 
-No development releases for METplus Version 6.2.0.
+
+METplus Version 6.2.0 RC 1 Release Notes (2025-09-30)
+-----------------------------------------------------
+
+  .. dropdown:: Enhancements
+
+     * Support months and years in lead filename template tags
+       (`#3008 <https://github.com/dtcenter/METplus/issues/3008>`_)
+     * RMWAnalysis - add new configs from dtcenter/MET#3185
+       (`#3028 <https://github.com/dtcenter/METplus/issues/3028>`_)
+     * Enhance the ASCII2NC Wrapper to support the new `-inputrx` command line option
+       (`#3033 <https://github.com/dtcenter/METplus/issues/3033>`_)
+     * Data discovery utility defining time information based on existing files
+       (`#3069 <https://github.com/dtcenter/METplus/issues/3069>`_)
+     * Refine support for MESSAGE_TYPE_GROUP_MAP configuration options
+       (`#3087 <https://github.com/dtcenter/METplus/issues/3087>`_)
+     * Enhance the PointStat and EnsembleStat wrappers to support new orography configuration options
+       (`#3110 <https://github.com/dtcenter/METplus/issues/3110>`_)
+
+  .. dropdown:: Bugfix
+
+     * PCP Combine not working for 3 year averaging
+       (`#2980 <https://github.com/dtcenter/METplus/issues/2980>`_)
+
+  .. dropdown:: New Wrappers
+
+     * DataIngest
+       (`#3068 <https://github.com/dtcenter/METplus/issues/3068>`_)
+
+  .. dropdown:: New Use Cases
+
+     * Convective Triggering Potential - Humidity Index
+       (`#2390 <https://github.com/dtcenter/METplus/issues/2390>`_)
+     * International Soil Moisture Network (ISMN)
+       (`#2533 <https://github.com/dtcenter/METplus/issues/2533>`_)
+     * GridStat: Credit and GFS
+       (`#3112 <https://github.com/dtcenter/METplus/issues/3112>`_)
+     * PointStat: Credit and GFS
+       (`#3112 <https://github.com/dtcenter/METplus/issues/3112>`_)
+
+  .. dropdown:: Documentation
+
+     * Update the Release Notes to include updating Appendix A
+       (`#3041 <https://github.com/dtcenter/METplus/issues/3041>`_)
+
+  .. dropdown:: Build, repository, and test
+
+     * Improve differencing logic so that it does not falsely flag differences when used for MET unit test output
+       (`#2999 <https://github.com/dtcenter/METplus/issues/2999>`_)
+     * Add CVE scanning to the `release-docker-images.yml` workflow
+       (`#3054 <https://github.com/dtcenter/METplus/issues/3054>`_)
+
 
 .. _upgrade-instructions:
     
