@@ -15,12 +15,12 @@ model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
 # Scientific Objective
 # --------------------
 #
-# This use case is an example for verification inside RAL to illustrate how to 
+# This use case is an example for verification within RAL to illustrate how to 
 # compare 2 models and also how to download data automatically.  The use case was 
-# originally set up to be run in real-time using the now keyword in VALID_BEG and 
-# VALID_END.  However, a specified date is provided here as for our automated 
+# originally designed to be run in real-time using the now keyword in VALID_BEG and 
+# VALID_END.  However, a specified date is used in this example as for our automated 
 # testing.  The case demonstrates how to run statistics for 2 models, Credit and GFS 
-# for both a surface and upper air evaluation.  Surface and upper air statistics are 
+# for both the surface and upper air evaluation.  Surface and upper air statistics are 
 # run separately since they are stored in separate observation files.
 
 ##############################################################################
@@ -179,14 +179,14 @@ model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
 #
 # Inside the grid_stat directory, there are also 2 subdirectories, Credit/6h and GFS.  The files output 
 # to Credit/6h are also stored in subdirectories dated with model initialization time in the format of 
-# YYYYMMHH.  These files have the following format, where the dates labeled are lead time, valid year, month, 
-# and day, and valid hour, minute, and second::
+# YYYYMMDDHH.  These files have the following format, where the dates labeled are lead time, valid year, 
+# month, and day, and valid hour, minute, and second::
 #
 # * grid_stat_Credit_surface_HHMMSSL_YYYYMMDD_HHMMSSV.stat
 # * grid_stat_Credit_upper_air_HHMMSSL_YYYYMMDD_HHMMSSV.stat
 #
 # The files output to the GFS directory are also stored in subdirectories dated with model 
-# initialization time in the format of YYYYMMHH.  These files have the same format as above where
+# initialization time in the format of YYYYMMDDHH.  These files have the same format as above where
 # the dates labeled are lead time, valid year, month, and day, and valid hour, minute, and second::
 #
 # * grid_stat_GFS_surface_HHMMSSL_YYYYMMDD_HHMMSSV.stat

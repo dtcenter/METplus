@@ -15,10 +15,10 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 # Scientific Objective
 # --------------------
 #
-# This use case is an example for verification inside RAL to illustrate how to 
+# This use case is an example for verification within RAL to illustrate how to 
 # compare 2 models and also how to download data automatically.  The use case was 
 # originally set up to be run in real-time using the now keyword in VALID_BEG and 
-# VALID_END.  However, a specified date is provided here as for our automated 
+# VALID_END.  However, a specified date is provided used here for our automated 
 # testing.  The case demonstrates how to run statistics for 2 models, Credit and 
 # GFS and how to make plots of ME, MAE and RMSE on some of the variables.  In contrast 
 # to the GridStat_fcstCredit_GFS_obsGFS_6hrRealtime use case, this case uses point 
@@ -241,14 +241,14 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 # * Z500_FULL_RMSE.png
 #
 # The point_stat directory also has 2 subdirectories, Credit/6h and GFS.  The files output to Credit/6h are 
-# also stored in subdirectories dated with model initialization time in the format of YYYYMMHH.  These files 
+# also stored in subdirectories dated with model initialization time in the format of YYYYMMDDHH.  These files 
 # have the following format, where the dates labeled are lead time, valid year, month, and day, and valid hour, 
 # minute, and second::
 #
 # * point_stat_Credit_surface_HHMMSSL_YYYYMMDD_HHMMSSV.stat
 #
 # The files output to the GFS directory are also stored in subdirectories dated with model 
-# initialization time in the format of YYYYMMHH.  These files have the same format as above where
+# initialization time in the format of YYYYMMDDHH.  These files have the same format as above where
 # the dates labeled are lead time, valid year, month, and day, and valid hour, minute, and second::
 #
 # * point_stat_GFS_surface_HHMMSSL_YYYYMMDD_HHMMSSV.stat
