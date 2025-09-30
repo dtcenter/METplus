@@ -180,18 +180,12 @@ jobs:
         with:
           categories: ${{ matrix.categories }}
 
-      # copy output data to save as artifact
-      - name: Save output data
-        id: save-output
-        if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
-        run: .github/jobs/copy_output_to_artifact.sh ${{ steps.get-artifact-name.outputs.artifact_name }}
-
       - name: Upload output data artifact
         uses: actions/upload-artifact@v4
         if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
         with:
           name: ${{ steps.get-artifact-name.outputs.artifact_name }}
-          path: artifact/${{ steps.get-artifact-name.outputs.artifact_name }}
+          path: ${{ runner.workspace }}/output
 
   create_output_data_volumes:
     name: Create Output Docker Data Volumes
