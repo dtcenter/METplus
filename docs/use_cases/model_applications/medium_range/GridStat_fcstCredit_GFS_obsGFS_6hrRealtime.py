@@ -16,12 +16,12 @@ model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
 # --------------------
 #
 # This use case is an example for verification within RAL to illustrate how to 
-# compare 2 models and also how to download data automatically.  The use case was 
+# compare two models and also how to download data automatically.  The use case was 
 # originally designed to be run in real-time using the now keyword in VALID_BEG and 
-# VALID_END.  However, a specified date is used in this example as for our automated 
-# testing.  The case demonstrates how to run statistics for 2 models, Credit and GFS 
-# for both the surface and upper air evaluation.  Surface and upper air statistics are 
-# run separately since they are stored in separate observation files.
+# VALID_END.  However, a specified date is used in this example for our automated 
+# testing.  The case demonstrates how to run statistics comparing two models, Credit 
+# and GFS for both the surface and upper air evaluation.  Surface and upper air 
+# statistics are run separately since they are stored in separate observation files.
 
 ##############################################################################
 # Version Added
@@ -56,8 +56,8 @@ model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
 # ------------------
 #
 # This use case calls DataIngest once, GridStat 4 times and StatAnalysis once.  GridStat
-# has 4 calls, 2 for the Credit model and 2 for the GFS for the surface and upper air
-# evaluation respectively.
+# has 4 calls, 2 for the Credit model and 2 for the GFS using surface and upper air
+# observations respectively.
 
 
 ##############################################################################
@@ -73,7 +73,7 @@ model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
 # **Sequence of forecast leads to process (LEAD_SEQ):** 6, 12
 #
 # The DataIngest and GridStat tools are run for each time, whereas StatAnalysis is
-# run once.  This example loops by valid times. It processes 2 lead times for 2 valid times with 
+# run once.  This example loops by valid time. It processes 2 lead times for 2 valid times with 
 # a total of 4 runs.  The times are listed below. 
 #
 # | **Init:** 2025-09-23_18Z
@@ -160,7 +160,7 @@ model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 # Output for this use case will be found in 
 # {OUTPUT_BASE}/model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf.  There will 
-# be 3 directories, data_ingest that contains the downloaded data, grid_stat which contains the output
+# be 3 directories, data_ingest which contains the downloaded data, grid_stat which contains the output
 # statistics, and StatAnalysis which contains the aggregated statistics.  The data_ingest directory 
 # will contain 2 subdirectories, GFS and GFS_analysis, each with the downloaded data. The data inside 
 # the GFS directory is sorted by model initialization time and contains both surface and upper air data.  

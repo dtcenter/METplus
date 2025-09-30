@@ -16,14 +16,15 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 # --------------------
 #
 # This use case is an example for verification within RAL to illustrate how to 
-# compare 2 models and also how to download data automatically.  The use case was 
+# compare two models and also how to download data automatically.  The use case was 
 # originally set up to be run in real-time using the now keyword in VALID_BEG and 
 # VALID_END.  However, a specified date is provided used here for our automated 
-# testing.  The case demonstrates how to run statistics for 2 models, Credit and 
-# GFS and how to make plots of ME, MAE and RMSE on some of the variables.  In contrast 
-# to the GridStat_fcstCredit_GFS_obsGFS_6hrRealtime use case, this case uses point 
-# observations whereas that one used gridded observations.  Also, that use case shows
-# how to process multiple valid times while this one uses only a single valid time.
+# testing.  The case demonstrates how to run statistics for two models, Credit and 
+# GFS and how to make plots of continuous statistics ME, MAE and RMSE and categorical
+# statistics CSI and FBIAS  on some of the variables.  In contrast to the 
+# GridStat_fcstCredit_GFS_obsGFS_6hrRealtime use case, this case uses point observations 
+# whereas that one used gridded observations.  Also, that use case shows how to process 
+# multiple valid times while this one uses only a single valid time.
 
 ##############################################################################
 # Version Added
@@ -57,11 +58,11 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 # METplus Components
 # ------------------
 #
-# This use case calls DataIngest once, PointStat 4 times, StatAnalysis once, and UserScript
-# 4 times.  PointStat has 3 calls, one for the Credit model and 2 for the GFS model (one for
-# the surface data and one for the upper air data).  The 4 UserScripts require METcalcpy, 
-# METplotpy, and METdataio are required to run this use case.  
-# The METcalcpy scripts accessed include the following:
+# This use case calls DataIngest once, PointStat 3 times, StatAnalysis once, and UserScript
+# 4 times.  One of the PointStat calls is for the Credit model and 2 are for the GFS model 
+# (one for the surface data and one for the upper air data).  The 4 UserScripts require 
+# METcalcpy, METplotpy, and METdataio are required to run this use case.  The METcalcpy 
+# scripts accessed include the following:
 #
 # * metcalcpy/util/read_env_vars_in_config.py
 #
@@ -94,7 +95,8 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 # run once.  This example loops by valid times. It processes 20 lead times for 1 valid
 # time for a total of 20 runs.  All 4 UserScripts are each run once.  The first UserScript reformats
 # the PointStat CNT output while the second reformats the PointStat CTS output so that they can be 
-# used for plotting.  The third and fourth UserScript calls creates plots.
+# used for plotting.  The third and fourth UserScript calls creates plots, one for the CNT output
+# and the other for the CTS output.
 
 ##############################################################################
 # METplus Configuration
@@ -102,7 +104,7 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
+# i.e. parm/use_cases/model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.conf
@@ -205,8 +207,8 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 # Output for this use case will be found in 
 # {OUTPUT_BASE}/model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.  There will
-# be 6 directories, data_ingest, GDAS which contains the GDAS, plots, point_stat, reformatted, and 
-# StatAnalaysis.  The data_ingest directory contains the observation dat that has been downloaded
+# be 6 directories, data_ingest, GDAS, plots, point_stat, reformatted, and StatAnalaysis.  The 
+# data_ingest directory contains the observation dat that has been downloaded
 # and contains 2 subdirectories, GDAS and GFS.  The GDAS directory contains 1 subdirectory, 20250924, 
 # with 2 files::
 #
