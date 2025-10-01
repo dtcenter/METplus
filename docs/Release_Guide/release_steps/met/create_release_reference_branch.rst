@@ -9,7 +9,7 @@ For rc1 development releases, create a new reference branch for the upcoming off
     new official release and push it to GitHub. The branch name should match
     the format 'main_vX.Y-ref' where X.Y is the major/minor release number.
 
-  .. parsed-literal::
+    ::
 
       cd |projectRepo|
       git checkout develop
@@ -27,11 +27,7 @@ For rc1 development releases, create a new reference branch for the upcoming off
       data. These data will be used to verify that any bugfixes applied to the
       'main_vX.Y' branch does not break any of existing logic.
 
-    * If the workflow was not automatically triggered, use the GitHub workflow
-      dispatch option to manually run the **Testing** workflow for the 'main_vX.Y-ref'
-      branch.
-
-  * Monitor GitHub Actions Workflow
+  * Run GitHub Actions Testing Workflow
 
     * Navigate to https://github.com/dtcenter/MET/actions and verify that a
       'Testing' workflow was triggered on the 'main_vX.Y-ref' branch.
