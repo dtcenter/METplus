@@ -167,7 +167,7 @@ in the body of each pull request. Reviewers should not approve pull requests
 that introduce new **Vulnerabilities** or **Bugs** or increase the number of
 **Code Smells** in the **Overall Code**.
 
-.. _cg-ci-update-truth-data:
+.. _cg-ci-update-reference-branch:
 
 Update Reference Branch (update_reference_branch.yml)
 -----------------------------------------------------
@@ -297,7 +297,7 @@ create these Conda environments and push the resulting images to DockerHub.
 .. _cg-ci-release-checksum:
 
 Add Checksum to Release (release-checksum.yml)
----------------------------------------------
+----------------------------------------------
 
 Software releases for the METplus components are created on GitHub. By default,
 GitHub creates both tar and zip files containing the code for each release.
