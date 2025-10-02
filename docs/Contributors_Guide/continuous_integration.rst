@@ -290,7 +290,7 @@ Create Conda Environments in Docker (create_conda_envs.yml)
 -----------------------------------------------------------
 
 Each use case group runs within a Conda environment. Since dependencies and
-use case groups change over time, the environment need to be created for each
+use case groups change over time, the environment needs to be created for each
 METplus Coordinated vX.Y release. This workflow can be manually triggered to
 create these Conda environments and push the resulting images to DockerHub.
 
