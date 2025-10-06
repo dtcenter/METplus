@@ -493,7 +493,12 @@ def _compare_csv_columns(lines_a, lines_b):
 
 
 def _is_version_string(value):
-    return re.search(r"^V[0-9]+.[0-9]+.[0-9]+$", value)
+    """!Check if value is a MET version string, e.g., V12.1.0 or v10.2.1
+
+    @param value string to check
+    @returns True if value is a MET version string, False if not
+    """
+    return re.search(r"^[vV]\d+\.\d+\.\d+$", value)
 
 
 def _is_equal_rounded(value_a, value_b):
