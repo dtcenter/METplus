@@ -12,6 +12,9 @@ from metplus.util import mkdir_p
 stat_header = 'VERSION MODEL DESC     FCST_LEAD FCST_VALID_BEG  FCST_VALID_END  OBS_LEAD OBS_VALID_BEG   OBS_VALID_END   FCST_VAR FCST_UNITS FCST_LEV OBS_VAR OBS_UNITS OBS_LEV OBTYPE VX_MASK INTERP_MTHD INTERP_PNTS FCST_THRESH OBS_THRESH COV_THRESH ALPHA LINE_TYPE'
 mpr_line_1 = 'V11.1.0 HRRR  ALL_1.25 120000    20220701_200000 20220701_200000 000000   20220701_200000 20220701_200000 HPBL     m          L0       HPBL    m         L0      ADPSFC DENVER  BILIN       4           NA          NA         NA         NA    MPR       5    4       DENVER            39.78616    -104.41425       0         0       2160.80324 1498.06763 AMDAR NA NA NA'
 mpr_line_2 = 'V11.1.0 HRRR  ALL_1.25 120000    20220701_200000 20220701_200000 000000   20220701_200000 20220701_200000 HPBL     m          L0       HPBL    m         L0      ADPSFC DENVER  BILIN       4           NA          NA         NA         NA    MPR       5    4       DENVER            39.78616    -104.41425       0         0       2160.80324 1498.05994 AMDAR NA NA NA'
+REFORMATTER_HEADER = 'Idx	version	model	desc	fcst_lead	fcst_valid_beg	fcst_valid_end	fcst_init_beg	obs_lead	obs_valid_beg	obs_valid_end	fcst_var	fcst_units	fcst_lev	obs_var	obs_units	obs_lev	obtype	vx_mask	interp_mthd	interp_pnts	fcst_thresh	obs_thresh	cov_thresh	alpha	line_type	total	stat_name	stat_value	stat_ncl	stat_ncu	stat_bcl	stat_bcu'
+REFORMATTER_LINE_1 = '17	V12.1.0	SFS-GSL	NA	60000	1991-06-01	1991-06-01	1991-05-31 18:00:00	0	1991-06-01	1991-06-01	Soil_moisture	mm	0-1m	soilm1m	mm	19910601_000000,*,*	ERA5	FULL	NEAREST	1	NA	NA	-9999	0.05	CNT	21510	FBAR	504.27735	499.27867	509.27604	NA	NA'
+TC_STAT_LINE_1 = 'V12.2.0 GPMI BEST EVENT_EQUAL AL012015 AL 01 ANA 20150508_120000 240000 20150509_120000 NA NA PROBRIRW 31.6 -77.7 32.5 -77.8 NA 54.23894 5.08551 -54 135.63956 80.31028 0 24 24 44 40 50 10 10 TS TS 5 -30 0 -10 0 0 100 10 0 30 0'
 file_path_1 = '/some/path/of/fake/file/one'
 file_path_2 = '/some/path/of/fake/file/two'
 file_path_3 = '/some/path/of/fake/file/three'
@@ -172,6 +175,22 @@ def write_test_files(dirname, files):
         ({'file_list.csv': [csv_header, csv_val_1, csv_val_2]},
          {'file_list.csv': [csv_header, csv_val_1.replace('0.9999', '1.0001'), csv_val_2,]},
          3, True),
+        # METdataio reformatter output - equal
+        ({'reformatted.txt': [REFORMATTER_HEADER, REFORMATTER_LINE_1]},
+         {'reformatted.txt': [REFORMATTER_HEADER, REFORMATTER_LINE_1]},
+         None, True),
+        # METdataio reformatter output - version differs
+        ({'reformatted.txt': [REFORMATTER_HEADER, REFORMATTER_LINE_1]},
+         {'reformatted.txt': [REFORMATTER_HEADER, REFORMATTER_LINE_1.replace('V12.1.0', 'V12.1.1')]},
+         None, True),
+        # TC-Stat output - equal
+        ({'PROBRIRW_filter_ee.tcst': [TC_STAT_LINE_1]},
+         {'PROBRIRW_filter_ee.tcst': [TC_STAT_LINE_1]},
+         None, True),
+        # TC-Stat output - version differs
+        ({'PROBRIRW_filter_ee.tcst': [TC_STAT_LINE_1]},
+         {'PROBRIRW_filter_ee.tcst': [TC_STAT_LINE_1.replace('V12.1.0', 'V12.2.0')]},
+         None, True),
     ],
 )
 @pytest.mark.diff
