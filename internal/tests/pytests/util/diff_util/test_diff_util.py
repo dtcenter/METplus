@@ -35,6 +35,18 @@ DEFAULT_NC = [
     "Temp",  # variable
 ]
 
+DEFAULT_NC_WITH_NAN = [
+    DEFAULT_NC[0],
+    DEFAULT_NC[1],
+    DEFAULT_NC[2],
+    [
+        [[1, 2], [3, 4], [5, 6]],
+        [[2, 3], [4, 5], [6, 7]],
+        [[30, 31], [33, 32], [34, np.nan]],
+    ],
+    DEFAULT_NC[4],
+]
+
 
 @pytest.fixture()
 def dummy_nc1(tmp_path_factory, make_dummy_nc):
@@ -330,17 +342,7 @@ def test_get_file_type_extensions():
         ),
         # Contains nan difference
         (
-            [
-                DEFAULT_NC[0],
-                DEFAULT_NC[1],
-                DEFAULT_NC[2],
-                [
-                    [[1, 2], [3, 4], [5, 6]],
-                    [[2, 3], [4, 5], [6, 7]],
-                    [[30, 31], [33, 32], [34, np.nan]],
-                ],
-                DEFAULT_NC[4],
-            ],
+            DEFAULT_NC_WITH_NAN,
             None,
             False,
             ["Variable Temp contains NaN. Comparing each value"],
@@ -375,17 +377,7 @@ def test_nc_is_equal(
     "nc_data,fields,expected,check_print",
     [
         (
-            [
-                DEFAULT_NC[0],
-                DEFAULT_NC[1],
-                DEFAULT_NC[2],
-                [
-                    [[1, 2], [3, 4], [5, 6]],
-                    [[2, 3], [4, 5], [6, 7]],
-                    [[30, 31], [33, 32], [34, np.nan]],
-                ],
-                DEFAULT_NC[4],
-            ],
+            DEFAULT_NC_WITH_NAN,
             None,
             True,
             ["Variable Temp contains NaN. Comparing each value"],
