@@ -573,27 +573,15 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
 
     # check if the files are "file list" files
     # remove file_list first line for comparison
-    is_file_list = False
-    if lines_a[0] == 'file_list':
-        is_file_list = True
-        lines_a.pop(0)
-    if lines_b[0] == 'file_list':
-        is_file_list = True
-        lines_b.pop(0)
-
-    if is_file_list:
-        print("Comparing file list file")
+    _handle_file_list_files(lines_a, lines_b)
 
     # check if file is a METplus data file
     # - MET stat header lines starting with 'VERSION'
     # - METdataio header lines starting with 'Idx'
     # - MET stat data lines with 'VX.Y.Z' in the first column
     # - METdataio data lines with 'VX.Y.Z' in the second column
-    has_header   = lines_a[0].startswith('VERSION') or \
-                   lines_a[0].startswith('Idx')
-    is_stat_file = has_header or \
-                   _is_version_string(lines_a[0].split()[0]) or \
-                   _is_version_string(lines_a[0].split()[1])
+    has_header   = lines_a[0].startswith('VERSION') or lines_a[0].startswith('Idx')
+    is_stat_file = has_header or any(_is_version_string(value) for value in lines_a[0].split()[0:2])
 
     # process data files
     header_a = None
