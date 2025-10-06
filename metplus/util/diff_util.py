@@ -854,7 +854,7 @@ def _print_nc_field_diff_summary(values_diff):
     @param values_diff numpy array (possibly 2D) of differences
     """
     count = 0
-    values_list = [j for sub in values_diff.tolist() for j in sub]
+    values_list = values_diff.flatten().tolist()
     idx = -1
     for idx, val in enumerate(values_list):
         if not isclose(val, 0.0, rel_tol=1e-09, abs_tol=1e-09):
