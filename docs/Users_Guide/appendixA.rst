@@ -461,8 +461,8 @@ METplus Components Python Packages
 
   Use Cases:
     | `DataIngest: Basic Use Case <../generated/met_tool_wrapper/DataIngest/DataIngest.html>`_
-    | `Grid-Stat, Stat-Analysis, Data-Ingest: Credit and GFS statistics and Data Download <../generated/model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.html>`_
-    | `Point-Stat, Stat-Analysis, UserScript, DataIngest: Credit and GFS point statistics, Data Download, Plots <../generated/model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.html>`_
+    | `Grid-Stat, Stat-Analysis, Data-Ingest: CREDIT and GFS statistics and Data Download <../generated/model_applications/medium_range/GridStat_fcstCREDIT_GFS_obsGFS_6hrRealtime.html>`_
+    | `Point-Stat, Stat-Analysis, UserScript, DataIngest: CREDIT and GFS point statistics, Data Download, Plots <../generated/model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.html>`_
 
 .. dropdown:: scikit-image >=0.25.1
 

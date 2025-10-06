@@ -1,8 +1,8 @@
 """
-Grid-Stat, Stat-Analysis, Data-Ingest: Credit and GFS statistics and Data Download
+Grid-Stat, Stat-Analysis, Data-Ingest: CREDIT and GFS statistics and Data Download
 ==================================================================================
 
-model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
+model_applications/medium_range/GridStat_fcstCREDIT_GFS_obsGFS_6hrRealtime.conf
 
 """
 ##############################################################################
@@ -19,8 +19,9 @@ model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
 # compare two models and also how to download data automatically.  The use case was 
 # originally designed to be run in real-time using the now keyword in VALID_BEG and 
 # VALID_END.  However, a specified date is used in this example for our automated 
-# testing.  The case demonstrates how to run statistics comparing two models, Credit 
-# and GFS for both the surface and upper air evaluation.  Surface and upper air 
+# testing.  The case demonstrates how to run statistics comparing two models, 
+# NSF NCAR Community Research Earth Digital Intelligence Twin (CREDIT) and GFS 
+# for both the surface and upper air evaluation.  Surface and upper air 
 # statistics are run separately since they are stored in separate observation files.
 
 ##############################################################################
@@ -33,13 +34,13 @@ model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
 # Datasets
 # --------
 #
-# **Forecast**: Credit ~0.28 degree model and GFS 0.25 degree model
+# **Forecast**: CREDIT ~0.28 degree model and GFS 0.25 degree model
 #
 # **Observation**: GFS Analysis
 #
 # **Climatology:** None
 #
-# **Location:** The Credit model data required for this use case can be 
+# **Location:** The CREDIT model data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
 # one or more sample data tarballs. It is only necessary to download 
 # the tarball with the use case’s dataset and not the entire collection 
@@ -56,7 +57,7 @@ model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
 # ------------------
 #
 # This use case calls DataIngest once, GridStat 4 times and StatAnalysis once.  GridStat
-# has 4 calls, 2 for the Credit model and 2 for the GFS using surface and upper air
+# has 4 calls, 2 for the CREDIT model and 2 for the GFS using surface and upper air
 # observations respectively.
 
 
@@ -99,10 +100,10 @@ model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# e.g. parm/use_cases/model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
+# e.g. parm/use_cases/model_applications/medium_range/GridStat_fcstCREDIT_GFS_obsGFS_6hrRealtime.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/GridStat_fcstCREDIT_GFS_obsGFS_6hrRealtime.conf
 
 
 ##############################################################################
@@ -145,7 +146,7 @@ model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
 # Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired::
 #
-#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/medium_range/GridStat_fcstCREDIT_GFS_obsGFS_6hrRealtime.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 
@@ -159,7 +160,7 @@ model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 # Output for this use case will be found in 
-# {OUTPUT_BASE}/model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf.  There will 
+# {OUTPUT_BASE}/model_applications/medium_range/GridStat_fcstCREDIT_GFS_obsGFS_6hrRealtime.conf.  There will 
 # be 3 directories, data_ingest which contains the downloaded data, grid_stat which contains the output
 # statistics, and StatAnalysis which contains the aggregated statistics.  The data_ingest directory 
 # will contain 2 subdirectories, GFS and GFS_analysis, each with the downloaded data. The data inside 
@@ -177,13 +178,13 @@ model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
 # * gfs_anal_2025092400.sfcanl.nc
 # * gfs_anal_2025092406.sfcanl.nc
 #
-# Inside the grid_stat directory, there are also 2 subdirectories, Credit/6h and GFS.  The files output 
-# to Credit/6h are also stored in subdirectories dated with model initialization time in the format of 
+# Inside the grid_stat directory, there are also 2 subdirectories, CREDIT/6h and GFS.  The files output 
+# to CREDIT/6h are also stored in subdirectories dated with model initialization time in the format of 
 # YYYYMMDDHH.  These files have the following format, where the dates labeled are lead time, valid year, 
 # month, and day, and valid hour, minute, and second:
 #
-# * grid_stat_Credit_surface_HHMMSSL_YYYYMMDD_HHMMSSV.stat
-# * grid_stat_Credit_upper_air_HHMMSSL_YYYYMMDD_HHMMSSV.stat
+# * grid_stat_CREDIT_surface_HHMMSSL_YYYYMMDD_HHMMSSV.stat
+# * grid_stat_CREDIT_upper_air_HHMMSSL_YYYYMMDD_HHMMSSV.stat
 #
 # The files output to the GFS directory are also stored in subdirectories dated with model 
 # initialization time in the format of YYYYMMDDHH.  These files have the same format as above where
@@ -195,8 +196,8 @@ model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
 # The StatAnalysis directory contains 1 subdirectory (6h).  Inside that directory are
 # 4 output files:
 #
-# * Credit_GFS_2025092400_2025092406_allleads_allValidHours_CNT.stat
-# * Credit_GFS_2025092400_2025092406_allleads_allValidHours_CTS.stat
+# * CREDIT_GFS_2025092400_2025092406_allleads_allValidHours_CNT.stat
+# * CREDIT_GFS_2025092400_2025092406_allleads_allValidHours_CTS.stat
 # * GFS_GFS_2025092400_2025092406_allleads_allValidHours_CNT.stat
 # * GFS_GFS_2025092400_2025092406_allleads_allValidHours_CTS.stat
 
@@ -217,4 +218,4 @@ model_applications/medium_range/GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.conf
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/medium_range-GridStat_fcstCredit_GFS_obsGFS_6hrRealtime.png'
+# sphinx_gallery_thumbnail_path = '_static/medium_range-GridStat_fcstCREDIT_GFS_obsGFS_6hrRealtime.png'

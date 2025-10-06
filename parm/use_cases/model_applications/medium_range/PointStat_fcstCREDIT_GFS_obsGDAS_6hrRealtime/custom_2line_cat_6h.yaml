@@ -173,7 +173,7 @@ series_val_1:
   - GFS
 series_val_2:
   model:
-  - Credit
+  - CREDIT
 show_nstats: 'False'
 show_signif:
 - 'False'
@@ -183,7 +183,7 @@ show_signif:
 #- 'False'
 stat_input: !ENV '${PLOTTING_CTS_STAT_INPUT}'
 sync_yaxes: 'True'
-title: !ENV 'Credit and GFS ${PLOTTING_STAT_LONG} for ${PLOTTING_CTS_LONG_VAR}'
+title: !ENV 'CREDIT and GFS ${PLOTTING_STAT_LONG} for ${PLOTTING_CTS_LONG_VAR}'
 title_align: 0.5
 title_offset: -2
 title_size: 1.5

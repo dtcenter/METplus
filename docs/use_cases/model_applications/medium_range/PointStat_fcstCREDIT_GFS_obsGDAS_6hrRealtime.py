@@ -1,8 +1,8 @@
 """
-Point-Stat, Stat-Analysis, UserScript, DataIngest: Credit and GFS point statistics, Data Download, Plots
+Point-Stat, Stat-Analysis, UserScript, DataIngest: CREDIT and GFS point statistics, Data Download, Plots
 ========================================================================================================
 
-model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.conf
+model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.conf
 
 """
 ##############################################################################
@@ -19,10 +19,11 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 # compare two models and also how to download data automatically.  The use case was 
 # originally set up to be run in real-time using the now keyword in VALID_BEG and 
 # VALID_END.  However, a specified date is provided used here for our automated 
-# testing.  The case demonstrates how to run statistics for two models, Credit and 
-# GFS and how to make plots of continuous statistics ME, MAE and RMSE and categorical
-# statistics CSI and FBIAS  on some of the variables.  In contrast to the 
-# GridStat_fcstCredit_GFS_obsGFS_6hrRealtime use case, this case uses point observations 
+# testing.  The case demonstrates how to run statistics for two models, 
+# NSF NCAR Community Research Earth Digital Intelligence Twin (CREDIT) and GFS, 
+# and how to make plots of continuous statistics (ME, MAE and RMSE) and categorical
+# statistics (CSI and FBIAS) on some of the variables.  In contrast to the 
+# GridStat_fcstCREDIT_GFS_obsGFS_6hrRealtime use case, this case uses point observations 
 # whereas that one used gridded observations.  Also, that use case shows how to process 
 # multiple valid times while this one uses only a single valid time.
 
@@ -36,13 +37,13 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 # Datasets
 # --------
 #
-# **Forecast**: Credit ~0.28 degree model and GFS 0.25 degree model
+# **Forecast**: CREDIT ~0.28 degree model and GFS 0.25 degree model
 #
 # **Observation**: GDAS
 #
 # **Climatology:** None
 #
-# **Location:** The Credit model data required for this use case can be 
+# **Location:** The CREDIT model data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
 # one or more sample data tarballs. It is only necessary to download 
 # the tarball with the use case’s dataset and not the entire collection 
@@ -59,7 +60,7 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 # ------------------
 #
 # This use case calls DataIngest once, PointStat 3 times, StatAnalysis once, and UserScript
-# 4 times.  One of the PointStat calls is for the Credit model and 2 are for the GFS model 
+# 4 times.  One of the PointStat calls is for the CREDIT model and 2 are for the GFS model 
 # (one for the surface data and one for the upper air data).  The 4 UserScripts require 
 # METcalcpy, METplotpy, and METdataio are required to run this use case.  The METcalcpy 
 # scripts accessed include the following:
@@ -104,10 +105,10 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# e.g. parm/use_cases/model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.conf
+# e.g. parm/use_cases/model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.conf
 
 ##############################################################################
 # MET Configuration
@@ -151,39 +152,39 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 # output linetype from Stat Analysis and reformats it so that the data can be plotted.  
 # The script takes an input .yaml file of which there are 2, reformat_CNT.yaml and reformat_CTS.yaml.  
 # Environment variables in the yaml file are specified in the [user_env_vars] section of the 
-# PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.conf METplus configuration file.
+# PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.conf METplus configuration file.
 #
-# The second Python script is plot_line_stats.py.  This script creates line plots for Credit and GFS
+# The second Python script is plot_line_stats.py.  This script creates line plots for CREDIT and GFS
 # of MAE, ME and RMSE with lead time, using the YAML file custom_2line_6h.yaml.  Input variables to this 
 # script are also specified in the [user_env_vars] section of the
-# PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.conf METplus configuration file.
+# PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.conf METplus configuration file.
 #
-# The third Python script is plot_line_stats_CTS.py.  This script creates line plots for Credit and GFS
+# The third Python script is plot_line_stats_CTS.py.  This script creates line plots for CREDIT and GFS
 # of CSI and Frequency Bias with lead time, using the YAML file custom_2line_cat_6h.yaml.  Input variables 
 # to this script are also specified in the [user_env_vars] section of the 
-# PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.conf METplus configuration file.
+# PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.conf METplus configuration file.
 #
 # For more information about YAML configuration options for the line plots shown here, see the METplotpy
 # `line plot documentation <https://metplus.readthedocs.io/projects/metplotpy/en/latest/Users_Guide/line.html>`_.
 #
 # Both Python scripts are located at::
 #
-#   parm/use_cases/model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime
+#   parm/use_cases/model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime
 #
 # .. dropdown:: reformat_linetype.py
 #
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime/reformat_linetype.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime/reformat_linetype.py
 #
 # .. dropdown:: plot_line_stats.py
 #
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime/plot_line_stats.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime/plot_line_stats.py
 #
 # .. dropdown:: plot_line_stats_CTS.py
 #
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime/plot_line_stats_CTS.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime/plot_line_stats_CTS.py
 
 ##############################################################################
 # Running METplus
@@ -192,7 +193,7 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 # Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired::
 #
-#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.conf /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 
@@ -206,7 +207,7 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 # Output for this use case will be found in 
-# {OUTPUT_BASE}/model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.  There will
+# {OUTPUT_BASE}/model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.  There will
 # be 6 directories, data_ingest, GDAS, plots, point_stat, reformatted, and StatAnalaysis.  The 
 # data_ingest directory contains the observation dat that has been downloaded
 # and contains 2 subdirectories, GDAS and GFS.  The GDAS directory contains 1 subdirectory, 20250924, 
@@ -242,12 +243,12 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 # * Z500_FULL_ME.png
 # * Z500_FULL_RMSE.png
 #
-# The point_stat directory also has 2 subdirectories, Credit/6h and GFS.  The files output to Credit/6h are 
+# The point_stat directory also has 2 subdirectories, CREDIT/6h and GFS.  The files output to CREDIT/6h are 
 # also stored in subdirectories dated with model initialization time in the format of YYYYMMDDHH.  These files 
 # have the following format, where the dates labeled are lead time, valid year, month, and day, and valid hour, 
 # minute, and second:
 #
-# * point_stat_Credit_surface_HHMMSSL_YYYYMMDD_HHMMSSV.stat
+# * point_stat_CREDIT_surface_HHMMSSL_YYYYMMDD_HHMMSSV.stat
 #
 # The files output to the GFS directory are also stored in subdirectories dated with model 
 # initialization time in the format of YYYYMMDDHH.  These files have the same format as above where
@@ -265,9 +266,9 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 # The StatAnalysis directory contains 1 subdirectory (6h).  Inside that directory are
 # 6 output files:
 #
-# * Credit_GDAS_2025092400_2025092406_allleads_all_stations_allValidHours_CNT.stat
-# * Credit_GDAS_2025092400_2025092406_allleads_all_stations_allValidHours_CTS.stat
-# * Credit_GDAS_2025092400_2025092406_allleads_all_stations_hourly_VCNT.stat
+# * CREDIT_GDAS_2025092400_2025092406_allleads_all_stations_allValidHours_CNT.stat
+# * CREDIT_GDAS_2025092400_2025092406_allleads_all_stations_allValidHours_CTS.stat
+# * CREDIT_GDAS_2025092400_2025092406_allleads_all_stations_hourly_VCNT.stat
 # * GFS_GDAS_2025092400_2025092406_allleads_all_stations_allValidHours_CNT.stat
 # * GFS_GDAS_2025092400_2025092406_allleads_all_stations_allValidHours_CTS.stat
 # * GFS_GDAS_2025092400_2025092406_allleads_all_stations_hourly_VCNT.stat
@@ -294,4 +295,4 @@ model_applications/medium_range/PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.con
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/medium_range-PointStat_fcstCredit_GFS_obsGDAS_6hrRealtime.png'
+# sphinx_gallery_thumbnail_path = '_static/medium_range-PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.png'
