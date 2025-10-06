@@ -608,7 +608,8 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
         return False
 
     if diff_text_lines(lines_a, lines_b, dir_a=dir_a, dir_b=dir_b,
-                       print_error=False, is_stat_file=is_stat_file):
+                       print_error=False, is_stat_file=is_stat_file,
+                       header=header_a):
         return True
 
     # if differences found in text file, sort and try again
@@ -617,12 +618,14 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
     lines_a.sort()
     lines_b.sort()
     if diff_text_lines(lines_a, lines_b, dir_a=dir_a, dir_b=dir_b,
-                       print_error=False, is_stat_file=is_stat_file):
+                       print_error=False, is_stat_file=is_stat_file,
+                       header=header_a):
         return True
 
     # if differences persist, print the original, unsorted differences
     return diff_text_lines(orig_lines_a, orig_lines_b, dir_a=dir_a, dir_b=dir_b,
-                           print_error=True, is_stat_file=is_stat_file)
+                           print_error=True, is_stat_file=is_stat_file,
+                           header=header_a)
 
 
 def _handle_file_list_files(lines_a, lines_b):
@@ -644,7 +647,7 @@ def _handle_file_list_files(lines_a, lines_b):
 
 
 def diff_text_lines(lines_a, lines_b, dir_a=None, dir_b=None,
-                    print_error=False, is_stat_file=False):
+                    print_error=False, is_stat_file=False, header=None):
     all_good = True
     for line_a, line_b in zip(lines_a, lines_b):
         compare_a = line_a
@@ -671,7 +674,7 @@ def diff_text_lines(lines_a, lines_b, dir_a=None, dir_b=None,
 
         # if the diff is in a stat file, ignore the version number
         if is_stat_file:
-            if not _diff_stat_line(compare_a, compare_b, print_error=print_error):
+            if not _diff_stat_line(compare_a, compare_b, print_error=print_error, header=header):
                 all_good = False
             continue
         _print_error_message(f"ERROR: Line differs\n A: {compare_a}\n B: {compare_b}", print_error)
@@ -680,12 +683,13 @@ def diff_text_lines(lines_a, lines_b, dir_a=None, dir_b=None,
     return all_good
 
 
-def _diff_stat_line(compare_a, compare_b, print_error=False):
+def _diff_stat_line(compare_a, compare_b, print_error=False, header=None):
     """Compare values in .stat file. Ignore first column which contains MET
     version number
 
     @param compare_a list of values in line A
     @param compare_b list of values in line B
+    @param header list of header values in file A excluding MET version
     @param print_error If True, print an error message if any value differs
     """
     cols_a = compare_a.split()
@@ -709,7 +713,8 @@ def _diff_stat_line(compare_a, compare_b, print_error=False):
         if not print_error:
             continue
 
-        message += f"  Diff in column {index+1}:\n    A: {col_a}\n    B: {col_b}\n"
+        label = f'column {index+1}' if not header or index >= len(header) else header[index]
+        message += f"  Diff in {label}:\n    A: {col_a}\n    B: {col_b}\n"
 
     if not all_good:
         _print_error_message(message, print_error)
