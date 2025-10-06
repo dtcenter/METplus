@@ -437,7 +437,8 @@ def download_file_http(url, output_path, username=None, password=None, chunk_siz
     # Create request
     try:
         # Use requests.get() with basic authentication and streaming
-        with requests.get(url, auth=(username, password), stream=True) as response:
+        auth = (username, password) if username and password else None
+        with requests.get(url, auth=auth, stream=True) as response:
             # Check if the request was successful
             response.raise_for_status()
 
