@@ -6,7 +6,7 @@ import netCDF4
 import filecmp
 import csv
 import re
-from math import log10
+from math import log10, isclose
 from PIL import Image, ImageChops
 from pandas import isnull
 from numpy.ma import is_masked
@@ -842,8 +842,9 @@ def _print_nc_field_diff_summary(values_diff):
     """
     count = 0
     values_list = [j for sub in values_diff.tolist() for j in sub]
+    idx = -1
     for idx, val in enumerate(values_list):
-        if val != 0.0:
+        if not isclose(val, 0.0, rel_tol=1e-09, abs_tol=1e-09):
             print(f"{idx}: {val}")
             count += 1
     print(f"{count} / {idx + 1} points differ")
