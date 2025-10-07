@@ -11,7 +11,7 @@ from metplus.util import do_string_sub
 
 time_fmt = '%Y%m%d%H'
 run_times = ['2022072000', '2022072012']
-MADIS_URL_TOP = 'https://madis-data.ncep.noaa.gov/madisPublic/data/archive'
+MADIS_URL_TOP = 'https://dtcenter.ucar.edu/dfiles/code/METplus/DataIngest_input'
 MADIS_URL_REL = '{valid?fmt=%Y/%m/%d}/point/metar/netcdf/{valid?fmt=%Y%m%d_%H%M}.gz'
 
 
