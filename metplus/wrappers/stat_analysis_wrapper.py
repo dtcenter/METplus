@@ -169,7 +169,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         # set date type, which is controlled by LOOP_BY
         c_dict['DATE_TYPE'] = get_time_prefix(self.config)
         if not c_dict['DATE_TYPE']:
-            self.isOK = False
+            self.is_ok = False
 
         start_dt, end_dt = get_start_and_end_times(self.config)
         if not start_dt:
@@ -186,7 +186,9 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         all_field_lists_empty = self._read_lists_from_config(c_dict)
 
         # read any [FCST/OBS]_VAR<n>_* variables if they are set
-        c_dict['VAR_LIST'] = parse_var_list(self.config)
+        c_dict['VAR_LIST'] = parse_var_list(self.config,
+                                            met_tool=self.app_name,
+                                            var_options=self.var_options)
         c_dict['MODEL_INFO_LIST'] = self._parse_model_info()
 
         # if MODEL_LIST was not set, populate it from the model info list

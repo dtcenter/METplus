@@ -104,12 +104,12 @@ jobs:
         with:
           python-version: '3.12'
       - name: Free disk space
-        run: .github/jobs/free_disk_space.sh
+        uses: dtcenter/metplus-action-free-disk-space@v1
       - name: Get METplus Image
         run: .github/jobs/docker_setup.sh
         env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_USERNAME: 'dtcenter'
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
           EXTERNAL_TRIGGER: ${{ needs.job_control.outputs.external_trigger }}
           SET_MET_IMAGE: ${{ github.event.inputs.force_met_image }}
 
@@ -122,8 +122,8 @@ jobs:
     steps:
       - uses: dtcenter/metplus-action-data-update@v3
         with:
-          docker_name: ${{ secrets.DOCKER_USERNAME }}
-          docker_pass: ${{ secrets.DOCKER_PASSWORD }}
+          docker_name: 'dtcenter'
+          docker_pass: ${{ secrets.DOCKER_TOKEN }}
           repo_name: ${{ github.repository }}
           data_prefix: sample_data
           branch_name: ${{ needs.job_control.outputs.branch_name }}
@@ -152,6 +152,7 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip
           python3 -m pip install -r internal/tests/pytests/requirements_${{ matrix.python_version }}.txt
+          python3 -m pip install requests
       - name: Install ImageMagick convert
         run: sudo apt update && sudo apt install imagemagick
       - name: Run Pytests
@@ -183,7 +184,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Free disk space
-        run: .github/jobs/free_disk_space.sh
+        uses: dtcenter/metplus-action-free-disk-space@v1
 
       - name: Create directories for database
         run: .github/jobs/create_dirs_for_database.sh
@@ -219,18 +220,12 @@ jobs:
         if: ${{ needs.job_control.outputs.run_diff == 'true' && steps.run_tests.conclusion == 'success' }}
         run: .github/jobs/run_difference_tests.sh ${{ matrix.categories }} ${{ steps.get-artifact-name.outputs.artifact_name }}
 
-      # copy output data to save as artifact
-      - name: Save output data
-        id: save-output
-        if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
-        run: .github/jobs/copy_output_to_artifact.sh ${{ steps.get-artifact-name.outputs.artifact_name }}
-
       - name: Upload output data artifact
         uses: actions/upload-artifact@v4
         if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
         with:
           name: ${{ steps.get-artifact-name.outputs.artifact_name }}
-          path: artifact/${{ steps.get-artifact-name.outputs.artifact_name }}
+          path: ${{ runner.workspace }}/output
 
       - name: Upload error logs artifact
         uses: actions/upload-artifact@v4

@@ -26,13 +26,13 @@ try:
 
     #checks if the the valid time for the forecast from user is present in file.
     #Exits if the time is not present with a message
-    if not val_time.timestamp() in f['time'][:]:
+    if val_time.timestamp() not in f['time'][:]:
             print("valid time of "+str(val_time)+" is not present. Check file initialization time, passed valid time.")
             f.close()
             sys.exit(1)
 
     #grab index in the time array for the valid time provided by user (val_time)
-    val_time_ind = np.where(f['time'][:] == val_time.timestamp())[0][0]
+    val_time_ind = np.nonzero(f['time'][:] == val_time.timestamp())[0][0]
     
     #grab data from file
     lat = np.float64(f.variables['lat'][:])

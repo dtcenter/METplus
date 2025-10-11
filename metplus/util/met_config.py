@@ -4,7 +4,6 @@ Contact(s): George McCabe
 """
 
 import os
-import re
 
 from .constants import PYTHON_EMBEDDING_TYPES, CLIMO_TYPES, MISSING_DATA_VALUE
 from .string_manip import getlist, get_threshold_via_regex
@@ -346,7 +345,7 @@ def get_met_config_dict_list(config, app_name, dict_name, dict_items, parent=Non
         # read all variables for each index
         met_config_items = []
         for name, item_info in dict_items.items():
-            data_type, extra, kids, nicknames = _parse_item_info(item_info)
+            data_type, extra, _, _ = _parse_item_info(item_info)
             metplus_configs = [f'{search_string}{index}_{name.upper()}']
             extra_args = _parse_extra_args(extra)
             item = METConfig(name=name,

@@ -46,7 +46,7 @@ def test_example_wrapper(metplus_config, set_inputs, runtime_freq, skip_time, ru
         config.set('config', 'EXAMPLE_SKIP_VALID_TIMES', skip_time)
 
     wrapper = ExampleWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
     wrapper.run_all_times()
     assert wrapper.run_count == run_count
     assert wrapper.errors == 0

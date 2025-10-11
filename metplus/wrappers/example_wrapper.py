@@ -13,7 +13,6 @@ Condition codes: 0 for success, 1 for failure
 import os
 
 from . import RuntimeFreqWrapper
-from ..util import do_string_sub
 
 
 class ExampleWrapper(RuntimeFreqWrapper):
@@ -46,6 +45,8 @@ class ExampleWrapper(RuntimeFreqWrapper):
         self.logger.info(f"Input directory is {c_dict['INPUT_DIR']}")
         self.logger.info(f"Input template is {c_dict['INPUT_TEMPLATE']}")
         self.logger.info(f"Full input template path is {full_path}")
+
+        c_dict['ALLOW_MULTIPLE_FILES'] = True
 
         return c_dict
 

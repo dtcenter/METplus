@@ -1,6 +1,6 @@
 ARG DEBIAN_VERSION=10
 FROM debian:${DEBIAN_VERSION}-slim
-MAINTAINER George McCabe <mccabe@ucar.edu>
+LABEL maintainer="George McCabe <mccabe@ucar.edu>"
 
 #
 # Define the compilers.
@@ -19,11 +19,12 @@ ENV LIB_PNG_PATH /usr/local/lib
 ENV NCDIR /usr/local
 
 # Install required system tools
-RUN apt update && apt -y upgrade \
-  && apt install -y --no-install-recommends build-essential gfortran wget unzip curl csh file m4
-
 # install jasper, png, and zlib from MET tar_files
-RUN cd / && wget --max-redirect=0 https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.met-base-v3.0.tgz \
+RUN apt update && apt -y upgrade \
+  && apt install -y --no-install-recommends build-essential csh curl file gfortran m4 unzip wget \
+  && apt clean &&\
+  echo "Installing jasper, png, and zlib from MET tar files" \
+  && cd / && wget --max-redirect=0 https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.met-base-v3.0.tgz \
   && tar -zxf tar_files.met-base-v3.0.tgz \
   && unzip tar_files/jasper-1.900.1.zip \
   && export CPPFLAGS="-I$/usr/local/include" \
@@ -44,13 +45,13 @@ RUN cd / && wget --max-redirect=0 https://dtcenter.ucar.edu/dfiles/code/METplus/
   && make > make.log 2>&1 \
   && make install > make_install.log 2>&1
 
+WORKDIR /usr/local/hdf5
+
 # Install HDF5
 ENV HDF5_VER       1_10_6
 ENV HDF5_URL       https://codeload.github.com/HDFGroup/hdf5/zip/refs/tags/hdf5-${HDF5_VER}
 
-RUN mkdir -p /usr/local/hdf5 \
- && cd /usr/local/hdf5 \
- && echo "Downloading HDF5 from ${HDF5_URL}" \
+RUN echo "Downloading HDF5 from ${HDF5_URL}" \
  && wget --max-redirect=0 ${HDF5_URL} -O hdf5-${HDF5_VER}.zip \
  && unzip hdf5-${HDF5_VER}.zip \
  && cd hdf5-hdf5-${HDF5_VER} \
@@ -61,31 +62,28 @@ RUN mkdir -p /usr/local/hdf5 \
  && echo "Compiling hdf5-hdf5-${HDF5_VER} and writing log file ${LOG_FILE}" \
  && make install > ${LOG_FILE}
 
+WORKDIR /
+
 # Install NetCDF-C 4.8.0
-RUN cd / \
- && curl https://codeload.github.com/Unidata/netcdf-c/tar.gz/refs/tags/v4.8.0 --output v4.8.0.tar.gz \
- && tar zxf v4.8.0.tar.gz \
- && cd netcdf-c-4.8.0 \
+ADD https://codeload.github.com/Unidata/netcdf-c/tar.gz/refs/tags/v4.8.0 v4.8.0.tar.gz
+RUN tar zxf v4.8.0.tar.gz \
+ && (cd netcdf-c-4.8.0 \
  && ./configure LDFLAGS="-L/usr/local/lib -Wl,-rpath,/usr/local/lib" CPPFLAGS=-I/usr/local/include --disable-dap \
- && make check install
+ && make check install)
 
 # Install NetCDF-Fortran 4.5.3
-RUN cd / \
- && wget --max-redirect=0 https://codeload.github.com/Unidata/netcdf-fortran/tar.gz/refs/tags/v4.5.3 -O v4.5.3.tar.gz \
- && tar zxf v4.5.3.tar.gz \
- && cd netcdf-fortran-4.5.3 \
+ADD https://codeload.github.com/Unidata/netcdf-fortran/tar.gz/refs/tags/v4.5.3 v4.5.3.tar.gz
+RUN tar zxf v4.5.3.tar.gz \
+ && (cd netcdf-fortran-4.5.3 \
  && ./configure LDFLAGS="-L/usr/local/lib -Wl,-rpath,/usr/local/lib" CPPFLAGS=-I/usr/local/include \
- && make check install
+ && make check install)
 
-RUN cd / \
- && wget --max-redirect=0 https://dtcenter.ucar.edu/dfiles/code/METplus/gfdl_patch/standalone_gfdl-vortextracker_v3.9a_gcc.tar.gz \
- && tar zxf standalone_gfdl-vortextracker_v3.9a_gcc.tar.gz \
- && cd standalone_gfdl-vortextracker_v3.9a_gcc \
- && unset FC && unset CC \
- && ./configure \
+ADD https://dtcenter.ucar.edu/dfiles/code/METplus/gfdl_patch/standalone_gfdl-vortextracker_v3.9a_gcc.tar.gz standalone_gfdl-vortextracker_v3.9a_gcc.tar.gz
+RUN tar zxf standalone_gfdl-vortextracker_v3.9a_gcc.tar.gz \
+ && (cd standalone_gfdl-vortextracker_v3.9a_gcc \
+ && env -u FC -u CC ./configure \
  && cp configure.trk-docker-gnu configure.trk \
  && echo "\nLDFLAGS=-L/usr/local/lib -Wl,-rpath,/usr/local/lib -L/usr/lib/x86_64-linux-gnu -Wl,-rpath,/usr/lib/x86_64-linux-gnu" >> configure.trk \
- && ./compile > tracker.log 2>&1
-
-# check that all exes were created properly
-RUN [ $(ls /standalone_gfdl-vortextracker_v3.9a_gcc/trk_exec -1 | wc -l) -ge 5 ]
+ && ./compile > tracker.log 2>&1) \
+ && echo "Check that all exes were created properly" \
+ && [ $(ls /standalone_gfdl-vortextracker_v3.9a_gcc/trk_exec -1 | wc -l) -ge 5 ]

@@ -5,7 +5,7 @@
 import os
 import sys
 import numpy as np
-import datetime as dt
+from datetime import datetime, timezone
 from netCDF4 import Dataset  # http://code.google.com/p/netcdf4-python/
 from scipy.interpolate import NearestNDInterpolator, LinearNDInterpolator
 #### for Plotting
@@ -432,10 +432,10 @@ def obs_error(fcst_data, obs_error_file, valid_date, data_source):
 
    # Find which bin the data is in
    for i in range(0,len(bin_edges)-1):
-      idx = np.where( (fcst >= bin_edges[i]) & (fcst < bin_edges[i+1]) )[0]
+      idx = np.nonzero( (fcst >= bin_edges[i]) & (fcst < bin_edges[i+1]) )[0]
       n = len(idx) # number of points in the ith bin
       if n > 0: # check for empty bins
-         rand_vals = np.random.normal(0,bin_stddev[i],n)
+         rand_vals = np.random.Generator.normal(0,bin_stddev[i],n)
          fcst[idx] = fcst[idx] + rand_vals
 
    # bound forecast values to between 0 and 100%
@@ -474,9 +474,9 @@ def get_fcst_cloud_frac(cfr, pmid, psfc, layer_definitions): # cfr is cloud frac
          PTOP_LOW = PTOP_LOW_UPP
          PTOP_MID = PTOP_MID_UPP
 
-      idx_low  = np.where(   pmid[i,:] >= PTOP_LOW)[0] # using np.where with just 1 argument returns tuple
-      idx_mid  = np.where(  (pmid[i,:] <  PTOP_LOW) & (pmid[i,:] >= PTOP_MID))[0]
-      idx_high = np.where(  (pmid[i,:] <  PTOP_MID) & (pmid[i,:] >= PTOP_HIGH))[0]
+      idx_low  = np.nonzero(   pmid[i,:] >= PTOP_LOW)[0] # using np.where with just 1 argument returns tuple
+      idx_mid  = np.nonzero(  (pmid[i,:] <  PTOP_LOW) & (pmid[i,:] >= PTOP_MID))[0]
+      idx_high = np.nonzero(  (pmid[i,:] <  PTOP_MID) & (pmid[i,:] >= PTOP_HIGH))[0]
 
       # use conditions in case all indices are missing
       if (len(idx_low) >0 ):  cfracl[i] = np.max( cfr[i,idx_low] )
@@ -501,7 +501,7 @@ def get_fcst_cloud_frac(cfr, pmid, psfc, layer_definitions): # cfr is cloud frac
 def get_goes16_lat_lon(g16_data_file):
 
    # Start timer
-   start_time = dt.datetime.utcnow()
+   start_time = datetime.now(timezone.utc)
 
    # designate dataset
    g16nc = Dataset(g16_data_file, 'r')
@@ -542,7 +542,7 @@ def get_goes16_lat_lon(g16_data_file):
    lon = (lambda_0 - np.arctan(s_y/(H-s_x)))*(180.0/np.pi)
 
    # End timer
-   end_time = dt.datetime.utcnow()
+   end_time = datetime.now(timezone.utc)
    time = (end_time - start_time).microseconds / (1000.0*1000.0)
    print('took %f4.1 seconds to get GOES16 lat/lon'%(time))
 
@@ -762,7 +762,7 @@ def point2point(source, input_dir, satellite, channel, goes_file, condition, lay
 
    # Get the indices with acceptable QC
    all_qc = np.concatenate(all_data_qc) # Put list of numpy arrays into a single long 1-D numpy array.  All QC data.
-   idx = np.where(all_qc==0) # returns indices
+   idx = np.nonzero(all_qc==0) # returns indices
 
    # Now get all the forecast/observed brightness temperature data with acceptable QC
    this_var = np.concatenate(all_data)[idx] # Put list of numpy arrays into a single long 1-D numpy array. This is all the forecast/obs data with good QC
@@ -824,8 +824,8 @@ def get_grid_info(source, grid_type):
 
 def get_attr_array(source, variable, init_time, valid_time):
 
-   init = dt.datetime.strptime(init_time, "%Y%m%d%H")
-   valid = dt.datetime.strptime(valid_time, "%Y%m%d%H")
+   init = datetime.strptime(init_time, "%Y%m%d%H")
+   valid = datetime.strptime(valid_time, "%Y%m%d%H")
    lead, _ = divmod((valid-init).total_seconds(), 3600)
 
    attrs = {

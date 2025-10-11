@@ -28,7 +28,6 @@ def set_minimum_config_settings(config, set_ctrl=True):
     config.set('config', 'INIT_END', run_times[-1])
     config.set('config', 'INIT_INCREMENT', '6H')
     config.set('config', 'LEAD_SEQ', '24H, 48H')
-    config.set('config', 'LOOP_ORDER', 'times')
     config.set('config', 'GEN_ENS_PROD_CONFIG_FILE',
                '{PARM_BASE}/met_config/GenEnsProdConfig_wrapped')
 
@@ -537,7 +536,7 @@ def test_gen_ens_prod_single_field(metplus_config, config_overrides,
     input_dir = handle_input_dir(config)
 
     wrapper = GenEnsProdWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"

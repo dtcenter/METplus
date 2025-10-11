@@ -9,6 +9,8 @@ import numpy as np
 import netCDF4 as netcdf
 import datetime
 
+OMI_COLUMN_AMOUNT_STRING = '/HDFEOS/GRIDS/OMI Column Amount O3'
+
 print("Python Script:\t" + repr(sys.argv[0]))
 
 # Process script arguements
@@ -35,25 +37,25 @@ omi_EndUTC = omi_data['/HDFEOS/ADDITIONAL/FILE_ATTRIBUTES'].EndUTC
 omi_EndUTC_dt = datetime.datetime.strptime(omi_EndUTC.split(':')[0],
                                              '%Y-%m-%dT%H')
 omi_delta_lat = float(eval(
-    omi_data['/HDFEOS/GRIDS/OMI Column Amount O3'].GridSpacing
+    omi_data[OMI_COLUMN_AMOUNT_STRING].GridSpacing
 )[0])
 omi_delta_lon = float(eval(
-    omi_data['/HDFEOS/GRIDS/OMI Column Amount O3'].GridSpacing
+    omi_data[OMI_COLUMN_AMOUNT_STRING].GridSpacing
 )[1])
 omi_ColumnAmountO3 = omi_data[
     '/HDFEOS/GRIDS/OMI Column Amount O3/Data Fields/ColumnAmountO3'
 ]
 omi_lat_ll = float(eval(
-    omi_data['/HDFEOS/GRIDS/OMI Column Amount O3'].GridSpan
+    omi_data[OMI_COLUMN_AMOUNT_STRING].GridSpan
 )[2])
 omi_lon_ll = float(eval(
-    omi_data['/HDFEOS/GRIDS/OMI Column Amount O3'].GridSpan
+    omi_data[OMI_COLUMN_AMOUNT_STRING].GridSpan
 )[0])
 omi_nlat = int(
-    omi_data['/HDFEOS/GRIDS/OMI Column Amount O3'].NumberOfLatitudesInGrid
+    omi_data[OMI_COLUMN_AMOUNT_STRING].NumberOfLatitudesInGrid
 )
 omi_nlon = int(
-    omi_data['/HDFEOS/GRIDS/OMI Column Amount O3'].NumberOfLongitudesInGrid
+    omi_data[OMI_COLUMN_AMOUNT_STRING].NumberOfLongitudesInGrid
 )
 omi_ColumnAmountO3_vals = omi_ColumnAmountO3[:]
 omi_ColumnAmountO3_Units = omi_ColumnAmountO3.Units

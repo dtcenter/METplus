@@ -103,45 +103,68 @@ def run_commands(commands):
     @returns True if all commands ran successfully, False if any commands fail
     """
     # handle a single command string or list of command strings
+    command_list = commands
     if isinstance(commands, str):
         command_list = [commands]
-    else:
-        command_list = commands
 
     is_ok = True
     for command in command_list:
-        error_message = None
-        print(f"::group::RUNNING {command}")
-        start_time = time.time()
-        try:
-            process = subprocess.Popen(shlex.split(command),
-                                       shell=False,
-                                       encoding='utf-8',
-                                       stdout=subprocess.PIPE,
-                                       stderr=subprocess.STDOUT)
-            # Poll process.stdout to show stdout live
-            while True:
-                output = process.stdout.readline()
-                if process.poll() is not None:
-                    break
-                if output:
-                    print(output.strip())
-            rc = process.poll()
-            if rc:
-                raise subprocess.CalledProcessError(rc, command)
-
-        except subprocess.CalledProcessError as err:
-            error_message = f"ERROR: Command failed -- {err}"
+        if not run_command(command, include_github_groups=True, include_timing=True):
             is_ok = False
 
+    return is_ok
+
+
+def run_command(command, include_github_groups=True, include_timing=True):
+    """!Run a single command via subprocess. Print the command and optionally
+    the length of time it took to run. Optionally includes ::group:: and
+    ::endgroup:: syntax which creates log groups in GitHub Actions log output.
+
+    @param command command string to run
+    @param include_github_groups if True, wrap output in GitHub Actions groups
+    @param include_timing if True, print timing information
+    @returns True if command ran successfully, False if command failed
+    """
+    error_message = None
+
+    if include_github_groups:
+        print(f"::group::RUNNING {command}")
+    else:
+        print(f'RUNNING: {command}')
+
+    start_time = time.time() if include_timing else None
+
+    try:
+        process = subprocess.Popen(shlex.split(command),
+                                   shell=False,
+                                   encoding='utf-8',
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.STDOUT)
+        # Poll process.stdout to show stdout live
+        while True:
+            output = process.stdout.readline()
+            if process.poll() is not None:
+                break
+            if output:
+                print(output.strip())
+        rc = process.poll()
+        if rc:
+            raise subprocess.CalledProcessError(rc, command)
+
+    except subprocess.CalledProcessError as err:
+        error_message = f"ERROR: Command failed -- {err}"
+
+    if include_github_groups:
         print("::endgroup::")
 
+    if include_timing and start_time is not None:
         end_time = time.time()
         print("TIMING: Command took "
               f"{time.strftime('%M:%S', time.gmtime(end_time - start_time))}"
               f" (MM:SS): '{command}')")
 
-        if error_message:
-            print(error_message)
+    if error_message:
+        print(error_message)
+        return False
 
-    return is_ok
+    return True

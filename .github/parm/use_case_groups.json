@@ -6,7 +6,7 @@
   },
   {
     "category": "met_tool_wrapper",
-    "index_list": "30-58",
+    "index_list": "30-58,68-69",
     "run": false
   },
   {
@@ -92,6 +92,11 @@
   {
     "category": "land_surface",
     "index_list": "1",
+    "run": false
+  },
+  {
+    "category": "land_surface",
+    "index_list": "2",
     "run": false
   },
   {

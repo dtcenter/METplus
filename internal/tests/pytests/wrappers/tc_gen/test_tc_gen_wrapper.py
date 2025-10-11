@@ -51,7 +51,7 @@ def test_tc_gen_missing_inputs(metplus_config, get_test_data_dir, allow_missing,
             config.set('config', f'{prefix}_INPUT_TEMPLATE', optional_input + '_fake_{init?fmt=%Y}*')
 
         wrapper = TCGenWrapper(config)
-        assert wrapper.isOK
+        assert wrapper.is_ok
 
         all_cmds = wrapper.run_all_times()
         for cmd, _ in all_cmds:
@@ -396,7 +396,7 @@ def test_tc_gen(metplus_config, get_test_data_dir, config_overrides,
         config.set('config', key, value)
 
     wrapper = TCGenWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"

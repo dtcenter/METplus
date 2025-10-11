@@ -38,7 +38,6 @@ def set_minimum_config_settings(config):
     config.set('config', 'INIT_END', run_times[-1])
     config.set('config', 'INIT_INCREMENT', '12H')
     config.set('config', 'LEAD_SEQ', '12H')
-    config.set('config', 'LOOP_ORDER', 'times')
     config.set('config', 'GRID_STAT_CONFIG_FILE',
                '{PARM_BASE}/met_config/GridStatConfig_wrapped')
     config.set('config', 'FCST_GRID_STAT_INPUT_DIR', fcst_dir)
@@ -133,7 +132,7 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
         config.set('config', key, value)
 
     wrapper = GridStatWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
     for key, expected_value in expected_values.items():
         assert expected_value == wrapper.c_dict[key]
 
@@ -905,7 +904,7 @@ def test_grid_stat_single_field(metplus_config, config_overrides,
         config.set('config', key, value)
 
     wrapper = GridStatWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     # add extra command line arguments
     extra_args = [' '] * len(run_times)

@@ -93,8 +93,8 @@ class MTDWrapper(CompareGriddedWrapper):
         self.add_met_config(name='min_volume', data_type='int')
 
         input_info = {
-            'FCST': {'prefix': 'FCST_MTD', 'required': False},
-            'OBS': {'prefix': 'OBS_MTD', 'required': False},
+            'FCST': {'prefix': ('MTD_FCST', 'FCST_MTD'), 'required': False},
+            'OBS': {'prefix': ('MTD_OBS', 'OBS_MTD'), 'required': False},
         }
 
         c_dict['SINGLE_RUN'] = (
@@ -132,7 +132,8 @@ class MTDWrapper(CompareGriddedWrapper):
         c_dict['VAR_LIST_TEMP'] = (
             parse_var_list(self.config,
                            data_type=c_dict.get('SINGLE_DATA_SRC'),
-                           met_tool=self.app_name)
+                           met_tool=self.app_name,
+                           var_options=self.var_options)
         )
         if not c_dict['VAR_LIST_TEMP']:
             self.log_error('No input fields were specified.'

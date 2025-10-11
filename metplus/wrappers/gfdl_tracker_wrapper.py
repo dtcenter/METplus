@@ -340,7 +340,7 @@ class GFDLTrackerWrapper(RuntimeFreqWrapper):
                                  'tcvit_genesis_storms.txt')
         try:
             shutil.copyfile(src_path, dest_path)
-        except (OSError, shutil.SameFileError):
+        except OSError:
             self.log_error(f"Copy failed: from {src_path} to {dest_path}")
             return False
 
@@ -357,7 +357,7 @@ class GFDLTrackerWrapper(RuntimeFreqWrapper):
 
         try:
             shutil.copyfile(src_path, dest_path)
-        except (OSError, shutil.SameFileError):
+        except OSError:
             self.log_error(f"Copy failed: from {src_path} to {dest_path}")
             return False
 
@@ -379,7 +379,7 @@ class GFDLTrackerWrapper(RuntimeFreqWrapper):
 
         # remove all fort files
         all_forts = glob.glob(os.path.join(self.c_dict.get('OUTPUT_DIR'),
-                                           f'fort.*'))
+                                           'fort.*'))
         for fort_file in all_forts:
             # remove symlink if link, otherwise remove file
             if not self._remove_symlink(fort_file):
@@ -434,9 +434,9 @@ class GFDLTrackerWrapper(RuntimeFreqWrapper):
         return file_time_info
 
     def _get_input_file_rename(self, file_time_info):
-        gmodname = remove_quotes(self.c_dict[f'REPLACE_CONF_FNAMEINFO_GMODNAME'])
-        rundescr = remove_quotes(self.c_dict[f'REPLACE_CONF_FNAMEINFO_RUNDESCR'])
-        atcfdescr = remove_quotes(self.c_dict[f'REPLACE_CONF_FNAMEINFO_ATCFDESCR'])
+        gmodname = remove_quotes(self.c_dict['REPLACE_CONF_FNAMEINFO_GMODNAME'])
+        rundescr = remove_quotes(self.c_dict['REPLACE_CONF_FNAMEINFO_RUNDESCR'])
+        atcfdescr = remove_quotes(self.c_dict['REPLACE_CONF_FNAMEINFO_ATCFDESCR'])
         template = (f"{gmodname}.{rundescr}.{atcfdescr}."
                     "{init?fmt=%Y%m%d%H}.f{lead?fmt=%5M}")
         return do_string_sub(template, **file_time_info)

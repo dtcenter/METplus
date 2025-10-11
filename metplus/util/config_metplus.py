@@ -548,7 +548,7 @@ class METplusConfig(ProdConfig):
                 self._conf.remove_option('config', current_var)
 
     # override get methods to perform additional error checking
-    def getraw(self, sec, opt, default='', count=0, sub_vars=True):
+    def getraw(self, sec, opt, default='', count=0, sub_vars=True, keep_double_slash=False):
         """ parse parameter and replace any existing parameters
             referenced with the value (looking in same section, then
             config, dir, and os environment)
@@ -605,7 +605,10 @@ class METplusConfig(ProdConfig):
         # when they encounter double slash. This is a GitHub issue MET #1277
         # This fix will prevent using URLs with https:// so the MET issue must
         # be resolved before we can remove the replace call
-        return in_template.replace('//', '/')
+        if not keep_double_slash:
+            in_template = in_template.replace('//', '/')
+
+        return in_template
 
     def check_default(self, sec, name, default):
         """! helper function for get methods, report error and raise
@@ -666,11 +669,11 @@ class METplusConfig(ProdConfig):
         self.set('config', exe_name, full_exe_path)
         return full_exe_path
 
-    def getdir(self, name, default=None, must_exist=False):
+    def getdir(self, name, default=None, must_exist=False, keep_double_slash=False):
         """! Wraps produtil getdir and reports an error if
          it is set to /path/to
          """
-        dir_path = self.getraw('config', name, default=default)
+        dir_path = self.getraw('config', name, default=default, keep_double_slash=keep_double_slash)
         if '/path/to' in dir_path:
             raise ValueError(f"{name} cannot be set to or contain '/path/to'")
 
@@ -683,7 +686,10 @@ class METplusConfig(ProdConfig):
             self.logger.error(f"Path must exist: {dir_path}")
             return None
 
-        return dir_path.replace('//', '/')
+        if not keep_double_slash:
+            dir_path = dir_path.replace('//', '/')
+
+        return dir_path
 
     def getdir_nocheck(self, dir_name, default=None):
         return super().getstr('config', dir_name,
@@ -922,32 +928,32 @@ class METplusLogFormatter(logging.Formatter):
 
 
 def parse_var_list(config, time_info=None, data_type=None, met_tool=None,
-                   levels_as_list=False):
-    """ read conf items and populate list of dictionaries containing
+                   levels_as_list=False, var_options=None):
+    """!Read conf items and populate list of dictionaries containing
     information about each variable to be compared
 
-            @param config: METplusConfig object
-            @param time_info: time object for string sub, optional
-            @param data_type: data type to find. Can be FCST, OBS, or ENS.
-             If not set, get FCST/OBS/BOTH
-            @param met_tool: optional name of MET tool to look for wrapper
-             specific var items
-            @param levels_as_list If true, store levels and output names as
-             a list instead of creating a field info dict for each name/level
-        @returns list of dictionaries with variable information
+    @param config: METplusConfig object
+    @param time_info: time object for string sub, optional
+    @param data_type: data type to find. Can be FCST, OBS, or ENS.
+     If not set, get FCST/OBS/BOTH
+    @param met_tool: optional name of MET tool to look for wrapper
+     specific var items
+    @param levels_as_list If true, store levels and output names as
+     a list instead of creating a field info dict for each name/level
+    @returns list of dictionaries with variable information
     """
+    # ensure a developer does not explicitly request BOTH as the data type
+    assert data_type != 'BOTH', "Cannot request BOTH explicitly in parse_var_list"
 
     # validate configs again in case wrapper is not running from run_metplus
+    # this checks if there is a mismatch of BOTH with FCST or OBS
     # this does not need to be done if parsing a specific data type,
-    # i.e. ENS or FCST
-    if data_type == 'BOTH':
-        config.logger.error("Cannot request BOTH explicitly in parse_var_list")
-        return []
+    # e.g. ENS or FCST
     if data_type is None and not validate_field_info_configs(config)[0]:
         return []
 
     # if specific data type is requested, only get that type
-    # otherwise get both FCST and OBS
+    # otherwise get both FCST and OBS (aka BOTH)
     data_types = [data_type] if data_type else ['FCST', 'OBS']
 
     # get indices of VAR<n> items for data type and/or met tool
@@ -964,7 +970,7 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None,
     # loop over all possible variables and add them to list
     for index in indices:
         field_list = _get_field_list(index, data_types, dt_search_prefixes,
-                                     config, time_info)
+                                     config, time_info, var_options)
 
         # check that all fields types were found
         if not field_list or len(data_types) != len(field_list):
@@ -1080,7 +1086,7 @@ def _find_var_name_indices(config, data_types, met_tool=None):
     return [int(index) for index in indices]
 
 
-def _get_field_list(index, data_types, dt_search_prefixes, config, time_info):
+def _get_field_list(index, data_types, dt_search_prefixes, config, time_info, var_options):
     """!Get list of field information.
 
     @param index integer index for fields to search
@@ -1095,10 +1101,11 @@ def _get_field_list(index, data_types, dt_search_prefixes, config, time_info):
     for current_type in data_types:
         # get dictionary of existing config variables to use
         search_prefixes = dt_search_prefixes[current_type]
-        field_configs = get_field_config_variables(config, index,
-                                                   search_prefixes)
-        field_info = _format_var_items(field_configs, time_info,
-                                       config.logger)
+        extra_options = None
+        if var_options and var_options.get(current_type.lower()):
+            extra_options = var_options[current_type.lower()]
+        field_configs = get_field_config_variables(config, index, search_prefixes, extra_options)
+        field_info = _format_var_items(field_configs, time_info, config.logger)
         if not isinstance(field_info, dict):
             config.logger.error(f'Could not process {current_type}_'
                                 f'VAR{index} variables: {field_info}')
@@ -1233,8 +1240,7 @@ def _format_var_items(field_configs, time_info=None, logger=None):
     search_extra = field_configs.get('options')
     if search_extra:
         if time_info:
-            search_extra = do_string_sub(search_extra,
-                                         **time_info)
+            search_extra = do_string_sub(search_extra, **time_info)
 
         # strip off empty space around each value
         extra_list = [item.strip() for item in search_extra.split(';')]
@@ -1242,7 +1248,10 @@ def _format_var_items(field_configs, time_info=None, logger=None):
         # split up each item by semicolon, then add a semicolon to the end
         # use list(filter(None to remove empty strings from list
         extra_list = list(filter(None, extra_list))
-        var_items['extra'] = f"{'; '.join(extra_list)};"
+        var_items['extra'] = f"{'; '.join(extra_list)}"
+        # only add semi-colon at end if the last item is not a dictionary
+        if not var_items['extra'].endswith('}'):
+            var_items['extra'] += ';'
 
     _get_output_names(field_configs, var_items, time_info)
 
@@ -1291,8 +1300,10 @@ def _get_all_field_search_prefixes(data_types, met_tool):
 
 
 def _get_field_search_prefixes(data_type, met_tool=None):
-    """! Get list of prefixes to search for field variables.
-
+    """!Get list of prefixes to search for field variables.
+        If met_tool is provided, example order is:
+         GRID_STAT_FCST_, FCST_GRID_STAT_, GRID_STAT_BOTH_, BOTH_GRID_STAT_, FCST_, BOTH_
+        If met_tool is not provided, example order is: FCST_, BOTH_
         @param data_type type of field to search for, i.e. FCST, OBS, ENS, etc.
          Check for BOTH_ variables first only if data type is FCST or OBS
         @param met_tool name of tool to search for variable or None if looking
@@ -1311,16 +1322,20 @@ def _get_field_search_prefixes(data_type, met_tool=None):
     var_strings.append('')
 
     for var_string in var_strings:
+        if var_string:
+            search_prefixes.append(f"{var_string}{data_type}_")
         search_prefixes.append(f"{data_type}_{var_string}")
 
         # if looking for FCST or OBS, also check for BOTH prefix
         if data_type in ['FCST', 'OBS']:
+            if var_string:
+                search_prefixes.append(f"{var_string}BOTH_")
             search_prefixes.append(f"BOTH_{var_string}")
 
     return search_prefixes
 
 
-def get_field_config_variables(config, index, search_prefixes):
+def get_field_config_variables(config, index, search_prefixes, extra_options=None):
     """! Search for variables that are set in the config that correspond to
      the fields requested. Some field info items have
      synonyms that can be used if the typical name is not set. This is used
@@ -1372,8 +1387,7 @@ def get_field_config_variables(config, index, search_prefixes):
                 # if variable is found in config,
                 # get the value and break out of suffix loop
                 if config.has_option('config', var_name):
-                    field_configs[search_var] = config.getraw('config',
-                                                              var_name)
+                    field_configs[search_var] = config.getraw('config', var_name)
                     found = True
                     break
 
@@ -1381,4 +1395,55 @@ def get_field_config_variables(config, index, search_prefixes):
             if found:
                 break
 
+    # if extra options are specified, use them to add to options info
+    _handle_extra_options_for_field(config, extra_options, field_configs, index, search_prefixes)
+
     return field_configs
+
+
+def _handle_extra_options_for_field(config, extra_options, field_configs: dict, index, search_prefixes):
+    if not extra_options:
+        return
+
+    output_dict = {}
+    for name, info in extra_options.items():
+        _handle_single_option_for_field(config, name, info, output_dict, index, search_prefixes)
+
+    # change options to empty string if it is None
+    if not output_dict:
+        return
+
+    # change options to empty string if it is None
+    if field_configs['options'] is None:
+        field_configs['options'] = ''
+
+    # if options does not end with a semicolon or closing curly brace,
+    # add semicolon before adding extra options
+    elif not field_configs['options'].endswith((';', '}')):
+        field_configs['options'] += ';'
+
+    # add all extra options to existing options
+    field_configs['options'] += ' '.join(value for value in output_dict.values() if value)
+
+
+def _handle_single_option_for_field(config, name, info, output_dict, index, search_prefixes):
+    from .met_config import METConfig, add_met_config_item, add_met_config_dict
+
+    # handle dictionary options
+    if info.get('data_type') == 'dict':
+        for prefix in search_prefixes:
+            full_prefix = f"{prefix}VAR{index}"
+            add_met_config_dict(config, full_prefix, output_dict, name, info.get('items'))
+            if output_dict.get(f"METPLUS_{name.upper()}_DICT"):
+                break
+
+        return
+
+    # handle non-dictionary options
+    metplus_configs = []
+    for prefix in search_prefixes:
+        # handle non-dictionary extra options
+        metplus_configs.append(f"{prefix}VAR{index}_{name.upper()}")
+
+    item = METConfig(name=name, metplus_configs=metplus_configs, **info)
+    add_met_config_item(config, item, output_dict)

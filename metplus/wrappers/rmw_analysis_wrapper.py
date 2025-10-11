@@ -22,16 +22,28 @@ class RMWAnalysisWrapper(RuntimeFreqWrapper):
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_DATA_FIELD',
         'METPLUS_MODEL',
-        'METPLUS_BASIN',
-        'METPLUS_STORM_NAME',
         'METPLUS_STORM_ID',
+        'METPLUS_BASIN',
         'METPLUS_CYCLONE',
+        'METPLUS_STORM_NAME',
         'METPLUS_INIT_BEG',
         'METPLUS_INIT_END',
+        'METPLUS_INIT_INC',
+        'METPLUS_INIT_EXC',
         'METPLUS_VALID_BEG',
         'METPLUS_VALID_END',
+        'METPLUS_VALID_INC',
+        'METPLUS_VALID_EXC',
+        'METPLUS_INIT_HOUR',
+        'METPLUS_VALID_HOUR',
+        'METPLUS_LEAD',
         'METPLUS_INIT_MASK',
         'METPLUS_VALID_MASK',
+        'METPLUS_CATEGORY',
+        'METPLUS_COLUMN_THRESH_NAME',
+        'METPLUS_COLUMN_THRESH_VAL',
+        'METPLUS_INIT_THRESH_NAME',
+        'METPLUS_INIT_THRESH_VAL',
     ]
 
     def __init__(self, config, instance=None):
@@ -68,26 +80,59 @@ class RMWAnalysisWrapper(RuntimeFreqWrapper):
         c_dict['CONFIG_FILE'] = self.get_config_file('RMWAnalysisConfig_wrapped')
 
         c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config, data_type='FCST',
-                                                 met_tool=self.app_name)
+                                                 met_tool=self.app_name,
+                                                 var_options=self.var_options)
         if not c_dict['VAR_LIST_TEMP']:
             self.log_error("No fields specified. Please set BOTH_VAR<n>_[NAME/LEVELS]")
 
-        self.add_met_config(name='model', data_type='list',
-                            metplus_configs=['RMW_ANALYSIS_MODEL', 'MODEL'])
-        self.add_met_config(name='basin', data_type='list')
-        self.add_met_config(name='storm_name', data_type='list')
-        self.add_met_config(name='storm_id', data_type='list')
-        self.add_met_config(name='cyclone', data_type='list')
-        self.add_met_config(name='init_beg', data_type='string',
-                            metplus_configs=['RMW_ANALYSIS_INIT_BEG',
-                                             'RMW_ANALYSIS_INIT_BEGIN'])
-        self.add_met_config(name='init_end', data_type='string')
-        self.add_met_config(name='valid_beg', data_type='string',
-                            metplus_configs=['RMW_ANALYSIS_VALID_BEG',
-                                             'RMW_ANALYSIS_VALID_BEGIN'])
-        self.add_met_config(name='valid_end', data_type='string')
-        self.add_met_config(name='init_mask', data_type='string')
-        self.add_met_config(name='valid_mask', data_type='string')
+        # handle all of the MET configs that are strings or lists
+        for config_name, config_type in [
+            ('model', 'list'),
+            ('storm_id', 'list'),
+            ('basin', 'list'),
+            ('cyclone', 'list'),
+            ('storm_name', 'list'),
+            ('init_beg', 'string'),
+            ('init_end', 'string'),
+            ('init_inc', 'list'),
+            ('init_exc', 'list'),
+            ('valid_beg', 'string'),
+            ('valid_end', 'string'),
+            ('valid_inc', 'list'),
+            ('valid_exc', 'list'),
+            ('init_hour', 'list'),
+            ('valid_hour', 'list'),
+            ('lead', 'list'),
+            ('init_mask', 'string'),
+            ('valid_mask', 'string'),
+            ('category', 'list'),
+            ('column_thresh_name', 'list'),
+            ('column_thresh_val', 'list'),
+            ('init_thresh_name', 'list'),
+            ('init_thresh_val', 'list'),
+        ]:
+            metplus_configs = [f'RMW_ANALYSIS_{config_name.upper()}']
+
+            # add MODEL METplus config as an option for setting model
+            if config_name == 'model':
+                metplus_configs.append('MODEL')
+
+            # add synonyms for include/exclude lists, e.g. INCLUDE for INC
+            if config_name.endswith('_inc') or config_name.endswith('_exc'):
+                metplus_configs.append(f'RMW_ANALYSIS_{config_name.upper()}LUDE')
+
+            # add synonyms for begin, e.g. BEGIN for BEG
+            if config_name.endswith('_beg'):
+                metplus_configs.append(f'RMW_ANALYSIS_{config_name.upper()}IN')
+
+            extra_args = {}
+            # remove quotation marks from *_thresh_val lists
+            if 'thresh_val' in config_name:
+                extra_args['remove_quotes'] = True
+
+            self.add_met_config(name=config_name, data_type=config_type,
+                                metplus_configs=metplus_configs,
+                                extra_args=extra_args)
 
         return c_dict
 

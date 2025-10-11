@@ -114,20 +114,17 @@ def test_preprocess_file_stage(metplus_config, filename, ext):
     conf = metplus_config
     metplus_base = conf.getdir('METPLUS_BASE')
     stage_dir = conf.getdir('STAGING_DIR',
-                            os.path.join(conf.getdir('OUTPUT_BASE'),
-                                         'stage'))
-    filepath = os.path.join(metplus_base,
-                            filename+ext)
+                            os.path.join(conf.getdir('OUTPUT_BASE'), 'stage'))
+    filepath = os.path.join(metplus_base, filename+ext)
     if ext:
-        stagepath = stage_dir + os.path.join(metplus_base,
-                                             filename)
-        if os.path.exists(stagepath):
-            os.remove(stagepath)
+        expected_path = stage_dir + os.path.join(metplus_base, filename)
+        if os.path.exists(expected_path):
+            os.remove(expected_path)
     else:
-        stagepath = filepath
+        expected_path = filepath
 
-    outpath = su.preprocess_file(filepath, None, conf)
-    assert stagepath == outpath and os.path.exists(outpath)
+    actual_path = su.preprocess_file(filepath, None, conf)
+    assert expected_path == actual_path and os.path.exists(actual_path)
 
 
 @pytest.mark.parametrize(
@@ -180,7 +177,7 @@ def test_preprocess_file_not_exist(metplus_config, input_exists, expected):
 
 
 @pytest.mark.util
-def test_preprocess_file_gempack(tmp_path_factory, metplus_config):
+def test_preprocess_file_gempak(tmp_path_factory, metplus_config):
     config = metplus_config
     
     # setup files and paths
@@ -253,4 +250,32 @@ def test_get_files(tmp_path_factory, regex, expected):
     
     actual = su.get_files(search_dir, regex)
     assert actual == [os.path.join(search_dir, e) for e in expected]
-    
+
+
+@pytest.mark.parametrize(
+    'url, rel_path, username, password, success', [
+        # successful download
+        ('https://dtcenter.ucar.edu/dfiles/code/METplus/DataIngest_input/2022/07/20/point/metar/netcdf/20220720_1200.gz',
+         'metar/netcdf/20220720_1200.gz', None, None, True),
+        # unsuccessful download, bad url
+        ('https://dtcenter.ucar.edu/dfiles/code/METplus/DataIngest_input_FAKE/2022/07/20/point/metar/netcdf/20220720_1200.gz',
+         'metar/netcdf/20220720_1200.gz', None, None, False),
+        # successful download, anonymous credentials
+        ('https://dtcenter.ucar.edu/dfiles/code/METplus/DataIngest_input/2022/07/20/point/metar/netcdf/20220720_1200.gz',
+         'metar/netcdf/20220720_1200.gz', 'anonymous', 'anonymous', True),
+    ]
+)
+@pytest.mark.util
+def test_download_file_http(metplus_config, url, rel_path, username, password, success):
+    config = metplus_config
+    output_path = os.path.join(config.getdir('OUTPUT_BASE'), rel_path)
+
+    # remove local file if it already exists
+    if os.path.exists(output_path):
+        os.remove(output_path)
+
+    result = su.download_file_http(url, output_path, username, password, config=config)
+    assert result['success'] == success
+    if success:
+        assert os.path.exists(output_path)
+

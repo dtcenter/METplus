@@ -49,7 +49,7 @@ class IODA2NCWrapper(LoopTimesWrapper):
          input/output files, optional command line arguments, and values to
          set in the wrapped MET config file. Calls self.log_error if any
          required METplusConfig variables were not set properly which logs the
-         error and sets self.isOK to False which causes wrapper initialization
+         error and sets self.is_ok to False which causes wrapper initialization
          to fail.
 
         @returns dictionary containing configurations for this wrapper

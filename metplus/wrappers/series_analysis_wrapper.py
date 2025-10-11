@@ -170,9 +170,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                              app_name=self.app_name)
 
         input_info = {
-            'FCST': {'prefix': 'FCST_SERIES_ANALYSIS', 'required': False},
-            'OBS': {'prefix': 'OBS_SERIES_ANALYSIS', 'required': False},
-            'BOTH': {'prefix': 'BOTH_SERIES_ANALYSIS', 'required': False},
+            'FCST': {'prefix': ('SERIES_ANALYSIS_FCST', 'FCST_SERIES_ANALYSIS'), 'required': False},
+            'OBS': {'prefix': ('SERIES_ANALYSIS_OBS', 'OBS_SERIES_ANALYSIS'), 'required': False},
+            'BOTH': {'prefix': ('SERIES_ANALYSIS_BOTH', 'BOTH_SERIES_ANALYSIS'), 'required': False},
             'TC_STAT': {'prefix': 'SERIES_ANALYSIS_TC_STAT', 'required': False},
             'AGGR': {'prefix': 'SERIES_ANALYSIS_AGGR', 'required': False},
         }
@@ -199,7 +199,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         )
 
         c_dict['VAR_LIST'] = parse_var_list(self.config,
-                                            met_tool=self.app_name)
+                                            met_tool=self.app_name,
+                                            var_options=self.var_options)
         if not c_dict['VAR_LIST']:
             self.log_error("No fields specified. Please set "
                            "[FCST/OBS]_VAR<n>_[NAME/LEVELS]")

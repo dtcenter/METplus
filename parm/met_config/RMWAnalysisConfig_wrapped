@@ -22,22 +22,16 @@ data = {
 ${METPLUS_MODEL}
 
 //
-// Basin
-//
-//basin =
-${METPLUS_BASIN}
-
-//
-// Storm name
-//
-//storm_name =
-${METPLUS_STORM_NAME}
-
-//
 // Storm identifier
 //
 //storm_id =
 ${METPLUS_STORM_ID}
+
+//
+// Basin
+//
+//basin =
+${METPLUS_BASIN}
 
 //
 // Cyclone number
@@ -46,20 +40,45 @@ ${METPLUS_STORM_ID}
 ${METPLUS_CYCLONE}
 
 //
-// Initialization model time window
+// Storm name
+//
+//storm_name =
+${METPLUS_STORM_NAME}
+
+
+//
+// Initialization time
 //
 //init_beg =
 ${METPLUS_INIT_BEG}
 //init_end =
 ${METPLUS_INIT_END}
+//init_inc =
+${METPLUS_INIT_INC}
+//init_exc =
+${METPLUS_INIT_EXC}
 
 //
-// Valid model time window
+// Valid time
 //
 //valid_beg =
 ${METPLUS_VALID_BEG}
 //valid_end =
 ${METPLUS_VALID_END}
+//valid_inc =
+${METPLUS_VALID_INC}
+//valid_exc =
+${METPLUS_VALID_EXC}
+
+//
+// Initialization, valid, and lead hours
+//
+//init_hour =
+${METPLUS_INIT_HOUR}
+//valid_hour =
+${METPLUS_VALID_HOUR}
+//lead =
+${METPLUS_LEAD}
 
 //
 // lat/lon polylines defining masking regions
@@ -68,6 +87,28 @@ ${METPLUS_VALID_END}
 ${METPLUS_INIT_MASK}
 //valid_mask =
 ${METPLUS_VALID_MASK}
+
+//
+// Cyclone level category
+//
+//category =
+${METPLUS_CATEGORY}
+
+//
+// Stratify track points by thresholding ATCF columns
+//
+//column_thresh_name =
+${METPLUS_COLUMN_THRESH_NAME}
+//column_thresh_val =
+${METPLUS_COLUMN_THRESH_VAL}
+
+//
+// Stratify track by thresholding ATCF columns for the initial time
+//
+//init_thresh_name =
+${METPLUS_INIT_THRESH_NAME}
+//init_thresh_val =
+${METPLUS_INIT_THRESH_VAL}
 
 ////////////////////////////////////////////////////////////////////////////////
 

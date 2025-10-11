@@ -117,7 +117,7 @@ def compute_pblh_ti(alt: np.ndarray, pt: np.ndarray, lat: np.ndarray, lon: np.nd
     if pt_min <= 0 or pt_min >= 3040:
         return np.nan, np.nan, np.nan
     try:
-        pt_min_index = np.where(pt == pt_min)[0][0]
+        pt_min_index = np.nonzero(pt == pt_min)[0][0]
     except IndexError:
         return np.nan, np.nan, np.nan
     # now mask out the profile below pt_min, and search above it for pt_delta
@@ -126,7 +126,7 @@ def compute_pblh_ti(alt: np.ndarray, pt: np.ndarray, lat: np.ndarray, lon: np.nd
     pt_ti = pt.copy()
     pt_ti[:pt_min_index] = np.nan
     pt_target = pt_min + CONFIG['pt_delta']
-    inds = np.where(pt_ti >= pt_target)[0]
+    inds = np.nonzero(pt_ti >= pt_target)[0]
     if inds.size == 0 or inds[0] == 0:
         return np.nan, np.nan, np.nan
     pblh_index = inds[0]
@@ -272,7 +272,7 @@ for airport in airports:
 
     # Loop through all flights (tail numbers) within the lat/lon box of this airport
     for tail in valid_tails:
-        indices = np.where(filtered_tn == tail)[0]
+        indices = np.nonzero(filtered_tn == tail)[0]
         print(f"Processing flight {tail} with {len(indices)} points.")
         if len(indices) < CONFIG["alt_dp"]:
              print(f"Flight {tail}: insufficient data points ({len(indices)}). Skipping.")

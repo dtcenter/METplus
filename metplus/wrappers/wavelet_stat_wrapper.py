@@ -77,8 +77,8 @@ class WaveletStatWrapper(CompareGriddedWrapper):
         c_dict['CONFIG_FILE'] = self.get_config_file('WaveletStatConfig_wrapped')
 
         self.get_input_templates(c_dict, {
-            'FCST': {'prefix': 'FCST_WAVELET_STAT', 'required': True},
-            'OBS': {'prefix': 'OBS_WAVELET_STAT', 'required': True},
+            'FCST': {'prefix': ('WAVELET_STAT_FCST', 'FCST_WAVELET_STAT'), 'required': True},
+            'OBS': {'prefix': ('WAVELET_STAT_OBS', 'OBS_WAVELET_STAT'), 'required': True},
         })
 
         c_dict['OBS_INPUT_DATATYPE'] = (
