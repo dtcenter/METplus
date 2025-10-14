@@ -15,6 +15,7 @@ artifact_name=$2
 ret=$?
 
 if [ "$( ls -A ${RUNNER_WORKSPACE}/diff 2>/dev/null)" ]; then
+  echo "::warning:: Differences found in ${artifact_name}"
   echo "upload_diff=true" >> $GITHUB_OUTPUT
   mkdir -p artifact/diff-${artifact_name}
   cp -r ${RUNNER_WORKSPACE}/diff/* artifact/diff-${artifact_name}
