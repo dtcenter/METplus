@@ -166,6 +166,20 @@ ${METPLUS_CLIMO_CDF_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
+//land_mask = {
+${METPLUS_LAND_MASK_DICT}
+
+//topo_mask = {
+${METPLUS_TOPO_MASK_DICT}
+
+//lapse_rate_correction = {
+${METPLUS_LAPSE_RATE_CORRECTION_DICT}
+
+//msl_agl_conversion = {
+${METPLUS_MSL_AGL_CONVERSION_DICT}
+
+////////////////////////////////////////////////////////////////////////////////
+
 //
 // Point observation time window
 //

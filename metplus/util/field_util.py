@@ -160,8 +160,8 @@ def _get_extra(v_extra):
         return ''
 
     extra = v_extra.strip()
-    # if trailing semi-colon is not found, add it
-    if not extra.endswith(';'):
+    # if trailing semicolon is not found and last character is not a dictionary, add semicolon
+    if not extra.endswith((';', '}')):
         extra = f"{extra};"
     return f' {extra}'
 

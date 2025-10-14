@@ -145,8 +145,8 @@ class GridStatWrapper(CompareGriddedWrapper):
         )
 
         self.get_input_templates(c_dict, {
-            'FCST': {'prefix': 'FCST_GRID_STAT', 'required': True},
-            'OBS': {'prefix': 'OBS_GRID_STAT', 'required': True},
+            'FCST': {'prefix': ('GRID_STAT_FCST', 'FCST_GRID_STAT'), 'required': True},
+            'OBS': {'prefix': ('GRID_STAT_OBS', 'OBS_GRID_STAT'), 'required': True},
         })
 
         c_dict['OBS_INPUT_DATATYPE'] = \

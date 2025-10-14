@@ -90,7 +90,8 @@ class GridDiagWrapper(RuntimeFreqWrapper):
 
         c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
                                                  data_type='FCST',
-                                                 met_tool=self.app_name)
+                                                 met_tool=self.app_name,
+                                                 var_options=self.var_options)
 
         # handle setting VERIF_MASK for old wrapped MET config files
         self.add_met_config(name='poly',

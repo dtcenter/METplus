@@ -90,6 +90,9 @@ class CommandBuilder:
         self.instance = instance
         self.env = config.env if hasattr(config, 'env') else os.environ.copy()
 
+        # store information about MET config settings that can be set per field
+        self.var_options = self.populate_var_options()
+
         # populate c_dict dictionary
         self.c_dict = self.create_c_dict()
         if not self.c_dict:
@@ -140,6 +143,10 @@ class CommandBuilder:
         self.log_name = self.app_name if hasattr(self, 'app_name') else ''
 
         self.clear()
+
+    def populate_var_options(self):
+        return {}
+
 
     def check_for_unused_env_vars(self):
         config_file = self.c_dict.get('CONFIG_FILE')
@@ -1115,7 +1122,7 @@ class CommandBuilder:
 
     def check_gempaktocf(self, gempaktocf_jar):
         if not gempaktocf_jar:
-            self.log_error("[exe] GEMPAKTOCF_JAR was not set in configuration file. "
+            self.log_error("[config] GEMPAKTOCF_JAR was not set in configuration file. "
                            "This is required to process Gempak data.")
             self.logger.info("Refer to the GempakToCF use case documentation for information "
                              "on how to obtain the tool: parm/use_cases/met_tool_wrapper/GempakToCF/GempakToCF.py")

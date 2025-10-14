@@ -613,6 +613,16 @@ def test_met_dictionary_in_var_options(metplus_config, fcst_and_obs_data):
          {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {use_obs_thresh = ge-100&&le100;}'}),
         ({'POINT_STAT_TOPO_MASK_INTERP_FCST_THRESH': 'ge-50&&le50', },
          {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {interp_fcst_thresh = ge-50&&le50;}'}),
+        ({'POINT_STAT_TOPO_MASK_INTERP_VLD_THRESH': '0.3', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {interp = {vld_thresh = 0.3;}}'}),
+        ({'POINT_STAT_TOPO_MASK_INTERP_SHAPE': 'CIRCLE', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {interp = {shape = CIRCLE;}}'}),
+
+        ({'POINT_STAT_TOPO_MASK_INTERP_METHOD': 'GAUSSIAN', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {interp = {method = GAUSSIAN;}}'}),
+
+        ({'POINT_STAT_TOPO_MASK_INTERP_WIDTH': '2', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {interp = {width = 2;}}'}),
         ({'POINT_STAT_TOPO_MASK_FLAG': 'false',
           'POINT_STAT_TOPO_MASK_FILE_NAME': '/some/file/path.nc',
           'POINT_STAT_TOPO_MASK_FIELD_NAME': 'TOPO',
@@ -620,11 +630,19 @@ def test_met_dictionary_in_var_options(metplus_config, fcst_and_obs_data):
           'POINT_STAT_TOPO_MASK_REGRID_METHOD': 'NEAREST',
           'POINT_STAT_TOPO_MASK_REGRID_WIDTH': '1',
           'POINT_STAT_TOPO_MASK_USE_OBS_THRESH': 'ge-100&&le100',
-          'POINT_STAT_TOPO_MASK_INTERP_FCST_THRESH': 'ge-50&&le50'
+          'POINT_STAT_TOPO_MASK_INTERP_FCST_THRESH': 'ge-50&&le50',
+          'POINT_STAT_TOPO_MASK_INTERP_VLD_THRESH': '0.3',
+          'POINT_STAT_TOPO_MASK_INTERP_SHAPE': 'CIRCLE',
+          'POINT_STAT_TOPO_MASK_INTERP_METHOD': 'GAUSSIAN',
+          'POINT_STAT_TOPO_MASK_INTERP_WIDTH': '2',
          },
-         {'METPLUS_TOPO_MASK_DICT': ('topo_mask = {flag = FALSE;file_name = ["/some/file/path.nc"];'
-                                     'field = {name = "TOPO";level = "L0";}regrid = {method = NEAREST;width = 1;}'
-                                     'use_obs_thresh = ge-100&&le100;interp_fcst_thresh = ge-50&&le50;}')}),
+         {'METPLUS_TOPO_MASK_DICT': (
+                 'topo_mask = {flag = FALSE;file_name = ["/some/file/path.nc"];'
+                 'field = {name = "TOPO";level = "L0";}regrid = {method = NEAREST;width = 1;}'
+                 'interp = {vld_thresh = 0.3;shape = CIRCLE;method = GAUSSIAN;width = 2;}'
+                 'use_obs_thresh = ge-100&&le100;interp_fcst_thresh = ge-50&&le50;'
+                 '}'
+         )}),
         ({'POINT_STAT_DUPLICATE_FLAG': 'NONE', },
          {'METPLUS_DUPLICATE_FLAG': 'duplicate_flag = NONE;'}),
         ({'POINT_STAT_OBS_SUMMARY': 'NONE', },
@@ -821,6 +839,34 @@ def test_met_dictionary_in_var_options(metplus_config, fcst_and_obs_data):
          {'METPLUS_OBTYPE_AS_GROUP_VAL_FLAG': 'obtype_as_group_val_flag = FALSE;'}),
         ({'OBS_POINT_STAT_INPUT_TEMPLATE': 'PYTHON_NUMPY= examples/read_met_point_obs.py /met_test/out/pb2nc/sample_pb.nc',
           'OBS_POINT_STAT_INPUT_DIR': ''}, {}),
+        ({'POINT_STAT_LAPSE_RATE_CORRECTION_APPLY_TO': 'FCST', },
+         {'METPLUS_LAPSE_RATE_CORRECTION_DICT': 'lapse_rate_correction = {apply_to = FCST;}'}),
+
+        ({'POINT_STAT_LAPSE_RATE_CORRECTION_VALUE': 'DRY_LAPSE_RATE_K_per_M', },
+         {'METPLUS_LAPSE_RATE_CORRECTION_DICT': 'lapse_rate_correction = {value = DRY_LAPSE_RATE_K_per_M;}'}),
+
+        ({'POINT_STAT_LAPSE_RATE_CORRECTION_APPLY_TO': 'FCST',
+          'POINT_STAT_LAPSE_RATE_CORRECTION_VALUE': 'DRY_LAPSE_RATE_K_per_M',
+          },
+         {'METPLUS_LAPSE_RATE_CORRECTION_DICT': 'lapse_rate_correction = {apply_to = FCST;value = DRY_LAPSE_RATE_K_per_M;}'}),
+        ({'POINT_STAT_MSL_AGL_CONVERSION_APPLY_TO': 'FCST', },
+         {'METPLUS_MSL_AGL_CONVERSION_DICT': 'msl_agl_conversion = {apply_to = FCST;}'}),
+
+        ({'POINT_STAT_MSL_AGL_CONVERSION_APPLY_FROM': 'OBS', },
+         {'METPLUS_MSL_AGL_CONVERSION_DICT': 'msl_agl_conversion = {apply_from = OBS;}'}),
+
+        ({'POINT_STAT_MSL_AGL_CONVERSION_THRESH': 'ne99999', },
+         {'METPLUS_MSL_AGL_CONVERSION_DICT': 'msl_agl_conversion = {thresh = ne99999;}'}),
+
+        ({'POINT_STAT_MSL_AGL_CONVERSION_MSL_TO_AGL': 'false', },
+         {'METPLUS_MSL_AGL_CONVERSION_DICT': 'msl_agl_conversion = {msl_to_agl = FALSE;}'}),
+
+        ({'POINT_STAT_MSL_AGL_CONVERSION_APPLY_TO': 'FCST',
+          'POINT_STAT_MSL_AGL_CONVERSION_APPLY_FROM': 'OBS',
+          'POINT_STAT_MSL_AGL_CONVERSION_THRESH': 'ne99999',
+          'POINT_STAT_MSL_AGL_CONVERSION_MSL_TO_AGL': 'false',
+          },
+         {'METPLUS_MSL_AGL_CONVERSION_DICT': 'msl_agl_conversion = {apply_to = FCST;apply_from = OBS;thresh = ne99999;msl_to_agl = FALSE;}'}),
 
     ]
 )

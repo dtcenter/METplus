@@ -275,6 +275,27 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_CLIMO_CDF_CENTER_BINS`
 | :term:`ENSEMBLE_STAT_CLIMO_CDF_WRITE_BINS`
 | :term:`ENSEMBLE_STAT_CLIMO_CDF_DIRECT_PROB`
+| :term:`ENSEMBLE_STAT_LAND_MASK_FLAG`
+| :term:`ENSEMBLE_STAT_LAND_MASK_FILE_NAME`
+| :term:`ENSEMBLE_STAT_LAND_MASK_FIELD`
+| :term:`ENSEMBLE_STAT_LAND_MASK_REGRID`
+| :term:`ENSEMBLE_STAT_LAND_MASK_THRESH`
+| :term:`ENSEMBLE_STAT_TOPO_MASK_FLAG`
+| :term:`ENSEMBLE_STAT_TOPO_MASK_FILE_NAME`
+| :term:`ENSEMBLE_STAT_TOPO_MASK_FIELD`
+| :term:`ENSEMBLE_STAT_TOPO_MASK_REGRID`
+| :term:`ENSEMBLE_STAT_TOPO_MASK_USE_OBS_THRESH`
+| :term:`ENSEMBLE_STAT_TOPO_MASK_INTERP_FCST_THRESH`
+| :term:`ENSEMBLE_STAT_TOPO_MASK_INTERP_VLD_THRESH`
+| :term:`ENSEMBLE_STAT_TOPO_MASK_INTERP_SHAPE`
+| :term:`ENSEMBLE_STAT_TOPO_MASK_INTERP_METHOD`
+| :term:`ENSEMBLE_STAT_TOPO_MASK_INTERP_WIDTH`
+| :term:`ENSEMBLE_STAT_LAPSE_RATE_CORRECTION_APPLY_TO`
+| :term:`ENSEMBLE_STAT_LAPSE_RATE_CORRECTION_VALUE`
+| :term:`ENSEMBLE_STAT_MSL_AGL_CONVERSION_APPLY_TO`
+| :term:`ENSEMBLE_STAT_MSL_AGL_CONVERSION_APPLY_FROM`
+| :term:`ENSEMBLE_STAT_MSL_AGL_CONVERSION_THRESH`
+| :term:`ENSEMBLE_STAT_MSL_AGL_CONVERSION_MSL_TO_AGL`
 | :term:`ENSEMBLE_STAT_DUPLICATE_FLAG`
 | :term:`ENSEMBLE_STAT_SKIP_CONST`
 | :term:`ENSEMBLE_STAT_CENSOR_THRESH`
@@ -415,6 +436,26 @@ METplus Configuration
 | :term:`OBS_ENSEMBLE_STAT_VAR<n>_LEVELS`
 | :term:`OBS_ENSEMBLE_STAT_VAR<n>_THRESH`
 | :term:`OBS_ENSEMBLE_STAT_VAR<n>_OPTIONS`
+| :term:`ENSEMBLE_STAT_OBS_VAR<n>_LAND_MASK_FLAG`
+| :term:`ENSEMBLE_STAT_OBS_VAR<n>_TOPO_MASK_FLAG`
+| :term:`ENSEMBLE_STAT_OBS_VAR<n>_TOPO_MASK_USE_OBS_THRESH`
+| :term:`ENSEMBLE_STAT_OBS_VAR<n>_TOPO_MASK_INTERP_FCST_THRESH`
+| :term:`ENSEMBLE_STAT_OBS_VAR<n>_LAPSE_RATE_CORRECTION_APPLY_TO`
+| :term:`ENSEMBLE_STAT_OBS_VAR<n>_LAPSE_RATE_CORRECTION_VALUE`
+| :term:`ENSEMBLE_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_TO`
+| :term:`ENSEMBLE_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_FROM`
+| :term:`ENSEMBLE_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_THRESH`
+| :term:`ENSEMBLE_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_MSL_TO_AGL`
+| :term:`OBS_VAR<n>_LAND_MASK_FLAG`
+| :term:`OBS_VAR<n>_TOPO_MASK_FLAG`
+| :term:`OBS_VAR<n>_TOPO_MASK_USE_OBS_THRESH`
+| :term:`OBS_VAR<n>_TOPO_MASK_INTERP_FCST_THRESH`
+| :term:`OBS_VAR<n>_LAPSE_RATE_CORRECTION_APPLY_TO`
+| :term:`OBS_VAR<n>_LAPSE_RATE_CORRECTION_VALUE`
+| :term:`OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_TO`
+| :term:`OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_FROM`
+| :term:`OBS_VAR<n>_MSL_AGL_CONVERSION_THRESH`
+| :term:`OBS_VAR<n>_MSL_AGL_CONVERSION_MSL_TO_AGL`
 | :term:`ENSEMBLE_STAT_SKIP_VALID_TIMES`
 | :term:`ENSEMBLE_STAT_INC_VALID_TIMES`
 | :term:`ENSEMBLE_STAT_SKIP_INIT_TIMES`
@@ -744,13 +785,33 @@ ${METPLUS_OBS_FIELD}
    * - METplus Config(s)
      - MET Config File
    * - :term:`OBS_VAR<n>_NAME`
-     - fcst.field.name
+     - obs.field.name
    * - :term:`OBS_VAR<n>_LEVELS`
-     - fcst.field.level
+     - obs.field.level
    * - :term:`OBS_VAR<n>_THRESH`
-     - fcst.field.cat_thresh
+     - obs.field.cat_thresh
    * - :term:`OBS_VAR<n>_OPTIONS`
      - n/a
+   * - :term:`OBS_VAR<n>_LAND_MASK_FLAG`
+     - obs.field.land_mask.flag
+   * - :term:`OBS_VAR<n>_TOPO_MASK_FLAG`
+     - obs.field.topo_mask.flag
+   * - :term:`OBS_VAR<n>_TOPO_MASK_USE_OBS_THRESH`
+     - obs.field.topo_mask.use_obs_thresh
+   * - :term:`OBS_VAR<n>_TOPO_MASK_INTERP_FCST_THRESH`
+     - obs.field.topo_mask.interp_fcst_thresh
+   * - :term:`OBS_VAR<n>_LAPSE_RATE_CORRECTION_APPLY_TO`
+     - obs.field.topo_mask.lapse_rate_correction.apply_to
+   * - :term:`OBS_VAR<n>_LAPSE_RATE_CORRECTION_VALUE`
+     - obs.field.topo_mask.lapse_rate_correction.value
+   * - :term:`OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_TO`
+     - obs.field.topo_mask.msl_agl_conversion.apply_to
+   * - :term:`OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_FROM`
+     - obs.field.topo_mask.msl_agl_conversion.apply_from
+   * - :term:`OBS_VAR<n>_MSL_AGL_CONVERSION_THRESH`
+     - obs.field.topo_mask.msl_agl_conversion.thresh
+   * - :term:`OBS_VAR<n>_MSL_AGL_CONVERSION_MSL_TO_AGL`
+     - obs.field.topo_mask.msl_agl_conversion.msl_to_agl
 
 .. note:: For more information on controlling the observation field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
@@ -1039,6 +1100,88 @@ ${METPLUS_OBS_WINDOW_DICT}
      - climo_cdv.write_bins
    * - :term:`ENSEMBLE_STAT_CLIMO_CDF_DIRECT_PROB`
      - climo_cdf.direct_prob
+
+${METPLUS_LAND_MASK_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_LAND_MASK_FLAG`
+     - land_mask.flag
+   * - :term:`ENSEMBLE_STAT_LAND_MASK_FILE_NAME`
+     - land_mask.file_name
+   * - :term:`ENSEMBLE_STAT_LAND_MASK_FIELD`
+     - land_mask.field
+   * - :term:`ENSEMBLE_STAT_LAND_MASK_REGRID`
+     - land_mask.regrid
+   * - :term:`ENSEMBLE_STAT_LAND_MASK_THRESH`
+     - land_mask.thresh
+
+${METPLUS_TOPO_MASK_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_TOPO_MASK_FLAG`
+     - topo_mask.flag
+   * - :term:`ENSEMBLE_STAT_TOPO_MASK_FILE_NAME`
+     - topo_mask.file_name
+   * - :term:`ENSEMBLE_STAT_TOPO_MASK_FIELD`
+     - topo_mask.field
+   * - :term:`ENSEMBLE_STAT_TOPO_MASK_REGRID`
+     - topo_mask.regrid
+   * - :term:`ENSEMBLE_STAT_TOPO_MASK_USE_OBS_THRESH`
+     - topo_mask.use_obs_thresh
+   * - :term:`ENSEMBLE_STAT_TOPO_MASK_INTERP_FCST_THRESH`
+     - topo_mask.interp_fcst_thresh
+   * - :term:`ENSEMBLE_STAT_TOPO_MASK_INTERP_VLD_THRESH`
+     - topo_mask.interp.vld_thresh
+   * - :term:`ENSEMBLE_STAT_TOPO_MASK_INTERP_SHAPE`
+     - topo_mask.interp.shape
+   * - :term:`ENSEMBLE_STAT_TOPO_MASK_INTERP_METHOD`
+     - topo_mask.interp.method
+   * - :term:`ENSEMBLE_STAT_TOPO_MASK_INTERP_WIDTH`
+     - topo_mask.interp.width
+
+${METPLUS_LAPSE_RATE_CORRECTION_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_LAPSE_RATE_CORRECTION_APPLY_TO`
+     - lapse_rate_correction.apply_to
+   * - :term:`ENSEMBLE_STAT_LAPSE_RATE_CORRECTION_VALUE`
+     - lapse_rate_correction.value
+
+${METPLUS_MSL_AGL_CONVERSION_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_MSL_AGL_CONVERSION_APPLY_TO`
+     - msl_agl_conversion.apply_to
+   * - :term:`ENSEMBLE_STAT_MSL_AGL_CONVERSION_APPLY_FROM`
+     - msl_agl_conversion.apply_from
+   * - :term:`ENSEMBLE_STAT_MSL_AGL_CONVERSION_THRESH`
+     - msl_agl_conversion.thresh
+   * - :term:`ENSEMBLE_STAT_MSL_AGL_CONVERSION_MSL_TO_AGL`
+     - msl_agl_conversion.msl_to_agl
 
 ${METPLUS_MASK_GRID}
 """"""""""""""""""""
@@ -8171,6 +8314,16 @@ Configuration
 | :term:`POINT_STAT_TOPO_MASK_REGRID_WIDTH`
 | :term:`POINT_STAT_TOPO_MASK_USE_OBS_THRESH`
 | :term:`POINT_STAT_TOPO_MASK_INTERP_FCST_THRESH`
+| :term:`POINT_STAT_TOPO_MASK_INTERP_VLD_THRESH`
+| :term:`POINT_STAT_TOPO_MASK_INTERP_SHAPE`
+| :term:`POINT_STAT_TOPO_MASK_INTERP_METHOD`
+| :term:`POINT_STAT_TOPO_MASK_INTERP_WIDTH`
+| :term:`POINT_STAT_LAPSE_RATE_CORRECTION_APPLY_TO`
+| :term:`POINT_STAT_LAPSE_RATE_CORRECTION_VALUE`
+| :term:`POINT_STAT_MSL_AGL_CONVERSION_APPLY_TO`
+| :term:`POINT_STAT_MSL_AGL_CONVERSION_APPLY_FROM`
+| :term:`POINT_STAT_MSL_AGL_CONVERSION_THRESH`
+| :term:`POINT_STAT_MSL_AGL_CONVERSION_MSL_TO_AGL`
 | :term:`POINT_STAT_OBS_QUALITY_INC`
 | :term:`POINT_STAT_OBS_QUALITY_EXC`
 | :term:`POINT_STAT_DUPLICATE_FLAG`
@@ -8309,6 +8462,26 @@ Configuration
 | :term:`OBS_POINT_STAT_VAR<n>_LEVELS`
 | :term:`OBS_POINT_STAT_VAR<n>_THRESH`
 | :term:`OBS_POINT_STAT_VAR<n>_OPTIONS`
+| :term:`POINT_STAT_OBS_VAR<n>_LAND_MASK_FLAG`
+| :term:`POINT_STAT_OBS_VAR<n>_TOPO_MASK_FLAG`
+| :term:`POINT_STAT_OBS_VAR<n>_TOPO_MASK_USE_OBS_THRESH`
+| :term:`POINT_STAT_OBS_VAR<n>_TOPO_MASK_INTERP_FCST_THRESH`
+| :term:`POINT_STAT_OBS_VAR<n>_LAPSE_RATE_CORRECTION_APPLY_TO`
+| :term:`POINT_STAT_OBS_VAR<n>_LAPSE_RATE_CORRECTION_VALUE`
+| :term:`POINT_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_TO`
+| :term:`POINT_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_FROM`
+| :term:`POINT_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_THRESH`
+| :term:`POINT_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_MSL_TO_AGL`
+| :term:`OBS_VAR<n>_LAND_MASK_FLAG`
+| :term:`OBS_VAR<n>_TOPO_MASK_FLAG`
+| :term:`OBS_VAR<n>_TOPO_MASK_USE_OBS_THRESH`
+| :term:`OBS_VAR<n>_TOPO_MASK_INTERP_FCST_THRESH`
+| :term:`OBS_VAR<n>_LAPSE_RATE_CORRECTION_APPLY_TO`
+| :term:`OBS_VAR<n>_LAPSE_RATE_CORRECTION_VALUE`
+| :term:`OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_TO`
+| :term:`OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_FROM`
+| :term:`OBS_VAR<n>_MSL_AGL_CONVERSION_THRESH`
+| :term:`OBS_VAR<n>_MSL_AGL_CONVERSION_MSL_TO_AGL`
 | :term:`POINT_STAT_OBS_VALID_BEG`
 | :term:`POINT_STAT_OBS_VALID_END`
 | :term:`POINT_STAT_SEEPS_P1_THRESH`
@@ -8559,6 +8732,26 @@ ${METPLUS_OBS_FIELD}
      - obs.field.cat_thresh
    * - :term:`OBS_VAR<n>_OPTIONS`
      - n/a
+   * - :term:`OBS_VAR<n>_LAND_MASK_FLAG`
+     - obs.field.land_mask.flag
+   * - :term:`OBS_VAR<n>_TOPO_MASK_FLAG`
+     - obs.field.topo_mask.flag
+   * - :term:`OBS_VAR<n>_TOPO_MASK_USE_OBS_THRESH`
+     - obs.field.topo_mask.use_obs_thresh
+   * - :term:`OBS_VAR<n>_TOPO_MASK_INTERP_FCST_THRESH`
+     - obs.field.topo_mask.interp_fcst_thresh
+   * - :term:`OBS_VAR<n>_LAPSE_RATE_CORRECTION_APPLY_TO`
+     - obs.field.topo_mask.lapse_rate_correction.apply_to
+   * - :term:`OBS_VAR<n>_LAPSE_RATE_CORRECTION_VALUE`
+     - obs.field.topo_mask.lapse_rate_correction.value
+   * - :term:`OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_TO`
+     - obs.field.topo_mask.msl_agl_conversion.apply_to
+   * - :term:`OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_FROM`
+     - obs.field.topo_mask.msl_agl_conversion.apply_from
+   * - :term:`OBS_VAR<n>_MSL_AGL_CONVERSION_THRESH`
+     - obs.field.topo_mask.msl_agl_conversion.thresh
+   * - :term:`OBS_VAR<n>_MSL_AGL_CONVERSION_MSL_TO_AGL`
+     - obs.field.topo_mask.msl_agl_conversion.msl_to_agl
 
 .. note:: For more information on controlling the observation field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
@@ -8846,6 +9039,46 @@ ${METPLUS_TOPO_MASK_DICT}
      - topo_mask.use_obs_thresh
    * - :term:`POINT_STAT_TOPO_MASK_INTERP_FCST_THRESH`
      - topo_mask.interp_fcst_thresh
+   * - :term:`POINT_STAT_TOPO_MASK_INTERP_VLD_THRESH`
+     - topo_mask.interp.vld_thresh
+   * - :term:`POINT_STAT_TOPO_MASK_INTERP_SHAPE`
+     - topo_mask.interp.shape
+   * - :term:`POINT_STAT_TOPO_MASK_INTERP_METHOD`
+     - topo_mask.interp.method
+   * - :term:`POINT_STAT_TOPO_MASK_INTERP_WIDTH`
+     - topo_mask.interp.width
+
+${METPLUS_LAPSE_RATE_CORRECTION_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_LAPSE_RATE_CORRECTION_APPLY_TO`
+     - lapse_rate_correction.apply_to
+   * - :term:`POINT_STAT_LAPSE_RATE_CORRECTION_VALUE`
+     - lapse_rate_correction.value
+
+${METPLUS_MSL_AGL_CONVERSION_DICT}
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_MSL_AGL_CONVERSION_APPLY_TO`
+     - msl_agl_conversion.apply_to
+   * - :term:`POINT_STAT_MSL_AGL_CONVERSION_APPLY_FROM`
+     - msl_agl_conversion.apply_from
+   * - :term:`POINT_STAT_MSL_AGL_CONVERSION_THRESH`
+     - msl_agl_conversion.thresh
+   * - :term:`POINT_STAT_MSL_AGL_CONVERSION_MSL_TO_AGL`
+     - msl_agl_conversion.msl_to_agl
 
 ${METPLUS_OBS_WINDOW_DICT}
 """"""""""""""""""""""""""

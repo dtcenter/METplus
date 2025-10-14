@@ -69,9 +69,25 @@ that reformat gridded data
         self.add_met_config(name='output_prefix', data_type='string')
 
         c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
-                                                 met_tool=self.app_name)
+                                                 met_tool=self.app_name,
+                                                 var_options=self.var_options)
 
         return c_dict
+
+
+    def populate_var_options(self):
+        var_options = super().populate_var_options()
+        both_options = {
+            'set_attr_units': {'data_type': 'string'},
+        }
+        var_options['fcst'] = {}
+        var_options['obs'] = {}
+        for key, value in both_options.items():
+            var_options['fcst'][key] = value
+            var_options['obs'][key] = value
+
+        return var_options
+
 
     def set_environment_variables(self, time_info=None):
         """! Set environment variables that will be set when running this tool.
@@ -242,7 +258,7 @@ that reformat gridded data
         """!Handles the configuration of the 'topo_mask' dictionary in the
          MET configuration. This function defines the structure and
          expected types of various parameters in the 'topo_mask' configuration.
-         Used by PointStat and PairStat wrappers.
+         Used by PointStat and EnsembleStat wrappers.
         """
         self.add_met_config_dict('topo_mask', {
             'flag': 'bool',
@@ -255,6 +271,54 @@ that reformat gridded data
                 'method': ('string', 'remove_quotes'),
                 'width': 'int',
             }),
+            'interp': ('dict', None, {
+                'vld_thresh': 'float',
+                'shape': ('string', 'remove_quotes'),
+                'method': ('string', 'remove_quotes'),
+                'width': ('string', 'remove_quotes'),
+            }),
             'use_obs_thresh': 'thresh',
             'interp_fcst_thresh': 'thresh',
         })
+
+    @staticmethod
+    def handle_land_mask_var_options(var_options):
+        var_options['obs']['land_mask'] = {
+            'data_type': 'dict',
+            'items': {
+                'flag': 'bool',
+            }
+        }
+
+    @staticmethod
+    def handle_topo_mask_var_options(var_options):
+        var_options['obs']['topo_mask'] = {
+            'data_type': 'dict',
+            'items': {
+                'flag': 'bool',
+                'use_obs_thresh': 'thresh',
+                'interp_fcst_thresh': 'thresh'
+            }
+        }
+
+    @staticmethod
+    def handle_lapse_rate_correction_var_options(var_options):
+        var_options['obs']['lapse_rate_correction'] = {
+            'data_type': 'dict',
+            'items': {
+                'apply_to': ('string', 'remove_quotes, uppercase'),
+                'value': ('string', 'remove_quotes'),
+            }
+        }
+
+    @staticmethod
+    def handle_msl_agl_conversion_var_options(var_options):
+        var_options['obs']['msl_agl_conversion'] = {
+            'data_type': 'dict',
+            'items': {
+                'apply_to': ('string', 'remove_quotes, uppercase'),
+                'apply_from': ('string', 'remove_quotes, uppercase'),
+                'thresh': ('string', 'remove_quotes'),
+                'msl_to_agl': 'bool',
+            }
+        }

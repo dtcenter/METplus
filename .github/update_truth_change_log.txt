@@ -47,3 +47,4 @@
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3089 - #3089 adds a new use case for running GridStat using the template-based time generation utility. Also moved this use case and the DataIngest use case to another met_tool_wrapper use case group
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3108 - #3108 fixed a bug in the MJO ENSO use case
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3114 - #3114 changed ASCII2NC wrapper to write out a file list text file if the inputs are all file paths (not directories or python script calls). The marine_and_cryosphere:7 use case now produces a file list text file in its output. Also, diffs in METplus Analysis reformatter output due to MET version change are found in clouds:8, s2s_soil_moisture:1, tc_and_extra_tc:6
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3120 - #3120 added 2 new medium_range use cases
