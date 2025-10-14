@@ -1,0 +1,1 @@
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3120 - #3120 added 2 new medium_range use cases
