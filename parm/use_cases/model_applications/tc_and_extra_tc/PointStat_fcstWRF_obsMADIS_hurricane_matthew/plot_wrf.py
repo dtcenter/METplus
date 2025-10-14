@@ -16,7 +16,6 @@ import pandas as pd
 import netCDF4
 import wrf
 import matplotlib as mpl
-from math import isclose
 
 # Import functions from a local file
 import map_funcs
@@ -349,7 +348,7 @@ def plot_precipitation(ds_wrf_nc, wrf_u10, wrf_v10, map_opts, config, limits, co
     wrf_rain = da_rainc.values[0, :, :] + da_rainnc.values[0, :, :]
 
     # Mask RAIN=0.0 for plotting
-    wrf_rain_plot = np.ma.masked_equal(np.where(isclose(wrf_rain, 0.0, rel_tol=1e-09, abs_tol=1e-09), constants['missing_val'], wrf_rain),
+    wrf_rain_plot = np.ma.masked_equal(np.where(np.isclose(wrf_rain, 0.0, rtol=1e-09, atol=1e-09), constants['missing_val'], wrf_rain),
                                        constants['missing_val'])
 
     var_file = 'RAIN'
