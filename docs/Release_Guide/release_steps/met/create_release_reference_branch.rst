@@ -9,7 +9,7 @@ For rc1 development releases, create a new reference branch for the upcoming off
     new official release and push it to GitHub. The branch name should match
     the format 'main_vX.Y-ref' where X.Y is the major/minor release number.
 
-  .. parsed-literal::
+    .. parsed-literal::
 
       cd |projectRepo|
       git checkout develop
@@ -22,27 +22,18 @@ For rc1 development releases, create a new reference branch for the upcoming off
 
       git push -u origin main_vX.Y-ref
 
-    * Pushing this branch to GitHub may trigger the GitHub Actions testing workflow
-      to run all of the use cases and create a Docker data volumes with the output
-      data. These data will be used to verify that any bugfixes applied to the
-      'main_vX.Y' branch does not break any of existing logic.
+  * Run GitHub Actions Testing Workflow
 
-    * If the workflow was not automatically triggered, use the GitHub workflow
-      dispatch option to manually run the **Testing** workflow for the 'main_vX.Y-ref'
-      branch.
+    * Navigate to the `Testing workflow <https://github.com/dtcenter/MET/actions/workflows/testing.yml>`_
+      page and use the 'Run workflow' option to manually trigger it for the 'main_vX.Y-ref' branch.
 
-  * Monitor GitHub Actions Workflow
+    * Monitor the workflow run progress at https://github.com/dtcenter/MET/actions.
 
-    * Navigate to https://github.com/dtcenter/MET/actions and verify that a
-      'Testing' workflow was triggered on the 'main_vX.Y-ref' branch.
-
-    * If not, use the 'Run workflow' option on the
-      `Testing worklow <https://github.com/dtcenter/MET/actions/workflows/testing.yml>`_
-      page to manually trigger it for the 'main_vX.Y-ref' branch.
-
-    * Wait until the entire workflow has run successfully. The final job entitled
+    * Wait until the entire workflow has run successfully. The final job named
       'Create Output Docker Data Volumes' should create Docker data volumes for
       each use case category on DockerHub (dtcenter/met-data-output).
+      These data will be used to verify that any bugfixes applied to the
+      'main_vX.Y' branch does not break any of existing logic.
 
 .. dropdown:: If creating a betaN or rc2+ release
 
