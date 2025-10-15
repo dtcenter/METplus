@@ -134,7 +134,8 @@ Category: medium_range
 8::MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead::model_applications/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf:: netcdf4_env
 9::GridStat_fcstGEFS_obsCADB_BinaryObsPOE:: model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf:: netcdf4_env
 10::GridStat_fcstGFS_obsOMI_TotalColumnOzone:: model_applications/medium_range/GridStat_fcstGFS_obsOMI_TotalColumnOzone.conf:: py_embed
-
+11::GridStat_fcstCREDIT_GFS_obsGFS_6hrRealtime:: model_applications/medium_range/GridStat_fcstCREDIT_GFS_obsGFS_6hrRealtime.conf:: requests_env
+12::PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime:: model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.conf:: metdataio, metcalcpy, metplotpy,mp_analysis_env
 
 Category: pbl
 0::PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed:: model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
