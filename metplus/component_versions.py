@@ -22,7 +22,7 @@ VERSION_LOOKUP = {
         'metdataio': '3.2.0',
         'metviewer': '6.2.0',
         'metexpress': '6.2.0',
-        'metbaseimage': '3.4.4',
+        'metbaseimage': '3.4.5',
     },
     '6.1': {
         'metplus': '6.1.0',
@@ -32,7 +32,7 @@ VERSION_LOOKUP = {
         'metdataio': '3.1.0',
         'metviewer': '6.1.0',
         'metexpress': '6.1.4',
-        'metbaseimage': '3.4.4',
+        'metbaseimage': '3.4.5',
     },
     '6.0': {
         'metplus': '6.0.0',
@@ -40,9 +40,9 @@ VERSION_LOOKUP = {
         'metplotpy': '3.0.1',
         'metcalcpy': '3.0.0',
         'metdataio': '3.0.0',
-        'metviewer': '6.0.1',
+        'metviewer': '6.0.2',
         'metexpress': '6.0.0',
-        'metbaseimage': '3.3.3',
+        'metbaseimage': '3.3.5',
     },
     '5.1': {
         'metplus': '5.1.0',
