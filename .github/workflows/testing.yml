@@ -1,5 +1,5 @@
 name: Testing
-
+run-name: ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.title || github.event.inputs.repository || 'Manual Trigger Testing')) || (github.event_name == 'pull_request' && github.event.pull_request.title) || (github.event_name == 'push' && github.event.head_commit.message) || github.workflow }}
 on:
 
   push:
@@ -32,6 +32,8 @@ on:
       
   workflow_dispatch:
     inputs:
+      title:
+        description: 'Optional title of workflow run'
       force_met_image:
         description: 'MET DockerHub repo to force run to use, e.g. met:11.1.0 or met-dev:feature_XYZ_name-PR. Leave this blank to determine repo automatically.'
       repository:
@@ -44,11 +46,17 @@ on:
         description: 'User that triggered the event (used by external repo triggering)'
       pusher_email:
         description: 'Email address of user who triggered push event (used by external repo triggering)'
+      metplotpy_branch:
+        description: 'METplotpy branch to use (default is develop or main_vX.Y)'
+      metcalcpy_branch:
+        description: 'METcalcpy branch to use (default is develop or main_vX.Y)'
+      metdataio_branch:
+        description: 'METdataio branch to use (default is develop or main_vX.Y)'
 
 jobs:
 
   event_info:
-    name: "Trigger: ${{ github.event_name != 'workflow_dispatch' && github.event_name || github.event.inputs.repository }} ${{ github.event_name != 'workflow_dispatch' && 'event' || github.event.inputs.sha }} ${{ github.event_name != 'workflow_dispatch' && 'local' || github.event.inputs.actor }} "
+    name: "Trigger: ${{ github.event_name != 'workflow_dispatch' && github.event_name || (github.event.inputs.repository || 'Manual Trigger Testing') }} ${{ github.event_name != 'workflow_dispatch' && 'event' || github.event.inputs.sha }} ${{ github.event_name != 'workflow_dispatch' && 'local' || github.event.inputs.actor }} "
     runs-on: ubuntu-latest
     steps:
       - name: Print GitHub values for reference
@@ -56,7 +64,7 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
       - name: Build URL for commit that triggered workflow
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' && startsWith(github.event.inputs.repository, 'dtcenter/') && github.event.inputs.sha
         run: echo https://github.com/${{ github.event.inputs.repository }}/commit/${{ github.event.inputs.sha }}
 
   job_control:
@@ -138,7 +146,7 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install -r internal/tests/pytests/requirements.txt
       - name: Install ImageMagick convert
-        run: sudo apt install imagemagick
+        run: sudo apt update && sudo apt install imagemagick
       - name: Run Pytests
         run: coverage run -m pytest internal/tests/pytests
         env:
@@ -188,6 +196,9 @@ jobs:
         id: run_tests
         with:
           categories: ${{ matrix.categories }}
+          metplotpy_branch: ${{ github.event.inputs.metplotpy_branch }}
+          metcalcpy_branch: ${{ github.event.inputs.metcalcpy_branch }}
+          metdataio_branch: ${{ github.event.inputs.metdataio_branch }}
 
       # copy logs with errors to error_logs directory to save as artifact
       - name: Save error logs
