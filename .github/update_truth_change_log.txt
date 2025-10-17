@@ -1,0 +1,3 @@
+[20241121_00:35:58 main_v6.0] dtcenter/METplotpy#477 - dtcenter/METplotpy#477 appears to have caused differences in an output image that is not noticeable upon visual review
+[20241216_18:23:11 main_v6.0] #2836 - #2836 modified a use case to sort files to produce consistent results for each run
+[20251017_13:46:56 main_v6.0] plotly/kaleido version change - I recreated the metplotpy conda env to get newer versions of plotly/kaleido, which caused minor differences in the plots for s2s:2
