@@ -396,7 +396,7 @@ def compare_images(image_a, image_b):
         for y in range(0, int(ny)):
             diff_pixel = image_diff.getpixel((x, y))
             if not _is_zero_pixel(diff_pixel):
-                print(f"Difference pixel: {diff_pixel}")
+                print(f"Difference pixel: {diff_pixel}: {x},{y}")
                 diff_count += 1
     if diff_count:
         print(f"ERROR: Found {diff_count} differences between images")
