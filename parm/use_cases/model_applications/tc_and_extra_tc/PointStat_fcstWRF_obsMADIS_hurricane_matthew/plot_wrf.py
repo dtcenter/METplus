@@ -348,7 +348,7 @@ def plot_precipitation(ds_wrf_nc, wrf_u10, wrf_v10, map_opts, config, limits, co
     wrf_rain = da_rainc.values[0, :, :] + da_rainnc.values[0, :, :]
 
     # Mask RAIN=0.0 for plotting
-    wrf_rain_plot = np.ma.masked_equal(np.where(wrf_rain == 0.0, constants['missing_val'], wrf_rain),
+    wrf_rain_plot = np.ma.masked_equal(np.where(np.isclose(wrf_rain, 0.0, rtol=1e-09, atol=1e-09), constants['missing_val'], wrf_rain),
                                        constants['missing_val'])
 
     var_file = 'RAIN'
@@ -450,7 +450,7 @@ def plot_upper_level_winds(wrf_fname_zlev, map_opts, config, limits, constants, 
         wrf_z_zlev = wrf.getvar(ds_wrf_zlev_nc, 'Z_ZL', squeeze=False)
 
         # Find 100-m level
-        ind_z = np.where(wrf_z_zlev == -100)[0][0]
+        ind_z = np.nonzero(wrf_z_zlev == -100)[0][0]
         wrf_ws100 = wrf.getvar(ds_wrf_zlev_nc, 'S_ZL', squeeze=False)[0, ind_z, :, :]
 
         var_file = 'WS100'

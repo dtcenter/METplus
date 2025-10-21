@@ -86,7 +86,7 @@ for filename in sorted(os.listdir(input_dir)):
 
        # Skip line if dsec, lat, or lon are missing.
        # Or if pres and geop are missing.
-       if dsec == -999.0 or lat == -999.0 or lon == -999.0 or +\
+       if dsec == '-999.0' or lat == -999.0 or lon == -999.0 or +\
            (pres == -999.0 and geop == -999):
           continue
 

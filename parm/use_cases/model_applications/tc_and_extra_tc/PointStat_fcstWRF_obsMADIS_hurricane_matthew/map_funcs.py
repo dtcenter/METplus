@@ -321,7 +321,7 @@ def draw_colorbar(ax, fig, opts):
     cbar_loc = opts['cbar_loc']
 
     # Draw the colorbar
-    # CREDIT: https://stackoverflow.com/questions/30030328/correct-placement-of-colorbar-relative-to-geo-axes-cartopy
+    # Credit: https://stackoverflow.com/questions/30030328/correct-placement-of-colorbar-relative-to-geo-axes-cartopy
     # Create colorbar axes (temporarily) anywhere
     cax = fig.add_axes([0, 0, 0.1, 0.1])
     # Find the location of the main plot axes
