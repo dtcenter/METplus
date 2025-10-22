@@ -138,24 +138,24 @@ def _get_dir_template_pairs(config):
             clean_dir, clean_template = split_dir_and_template(input_dir, template)
             if clean_template:  # Only add pairs that have a valid template
                 dir_template_pairs.append((clean_dir, clean_template))
-        return dir_template_pairs
-
-    else:
-        # Lists must be the same length for pairing
-        if len(input_dirs) != len(input_templates):
-            config.logger.error(f"TIME_GENERATOR_INPUT_DIR list length ({len(input_dirs)}) "
-                                f"must match TIME_GENERATOR_INPUT_TEMPLATE list length ({len(input_templates)}) "
-                                f"or TIME_GENERATOR_INPUT_DIR must contain exactly one item")
-            return []
-
-        # Pair up directories and templates using zip, applying smart splitting
-        dir_template_pairs = []
-        for input_dir, input_template in zip(input_dirs, input_templates):
-            clean_dir, clean_template = split_dir_and_template(input_dir, input_template)
-            if clean_template:  # Only add pairs that have a valid template
-                dir_template_pairs.append((clean_dir, clean_template))
 
         return dir_template_pairs
+
+    # Lists must be the same length for pairing
+    if len(input_dirs) != len(input_templates):
+        config.logger.error(f"TIME_GENERATOR_INPUT_DIR list length ({len(input_dirs)}) "
+                            f"must match TIME_GENERATOR_INPUT_TEMPLATE list length ({len(input_templates)}) "
+                            f"or TIME_GENERATOR_INPUT_DIR must contain exactly one item")
+        return []
+
+    # Pair up directories and templates using zip, applying smart splitting
+    dir_template_pairs = []
+    for input_dir, input_template in zip(input_dirs, input_templates):
+        clean_dir, clean_template = split_dir_and_template(input_dir, input_template)
+        if clean_template:  # Only add pairs that have a valid template
+            dir_template_pairs.append((clean_dir, clean_template))
+
+    return dir_template_pairs
 
 
 def _template_is_forecast(input_dir, input_template):
