@@ -631,6 +631,7 @@ def test_get_start_and_end_times_empty_times(mock_time_generator):
     assert end is None
 
 
+@pytest.mark.util
 def test_get_start_and_end_times_single_entry(mock_time_generator):
     """Test handling of a single entry in the times list"""
     config = {"mock_times": [{"loop_by": "valid", "valid": "2023-10-15"}]}
@@ -639,6 +640,7 @@ def test_get_start_and_end_times_single_entry(mock_time_generator):
     assert end == "2023-10-15"
 
 
+@pytest.mark.util
 def test_get_start_and_end_times_missing_loop_by_key(mock_time_generator):
     """Test when 'loop_by' key is missing in a dictionary"""
     config = {
@@ -651,6 +653,7 @@ def test_get_start_and_end_times_missing_loop_by_key(mock_time_generator):
         get_start_and_end_times(config)  # Should raise an error for missing key
 
 
+@pytest.mark.util
 def test_get_start_and_end_times_invalid_config(mock_time_generator):
     """Test when time_generator produces invalid or corrupted time data"""
     config = {"mock_times": [None]}  # Simulate corrupted output
@@ -659,6 +662,7 @@ def test_get_start_and_end_times_invalid_config(mock_time_generator):
     assert end is None
 
 
+@pytest.mark.util
 def test_get_start_and_end_times_multiple_entries(mock_time_generator):
     """Test handling multiple entries in the times list"""
     config = {
