@@ -690,12 +690,8 @@ def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
     init_seq = getlistint(config.getstr('config', 'INIT_SEQ', ''))
     lead_groups = get_lead_sequence_groups(config)
 
-    if not _are_lead_configs_ok(lead_seq,
-                                init_seq,
-                                lead_groups,
-                                config,
-                                input_dict,
-                                no_max):
+    if not _are_lead_configs_ok(lead_seq, init_seq, lead_groups,
+                                config, input_dict, no_max):
         return None
 
     if lead_seq:
@@ -703,20 +699,15 @@ def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
         if lead_seq == ['*']:
             return lead_seq
 
-        out_leads = _handle_lead_seq(config,
-                                     lead_seq,
-                                     lead_min,
-                                     lead_max)
+        out_leads = _handle_lead_seq(config, lead_seq, lead_min, lead_max)
 
     # use INIT_SEQ to build lead list based on the valid time
     elif init_seq:
-        out_leads = _handle_init_seq(init_seq,
-                                     input_dict,
-                                     lead_min,
-                                     lead_max)
+        out_leads = _handle_init_seq(init_seq, input_dict, lead_min, lead_max)
     elif lead_groups:
         out_leads = _handle_lead_groups(lead_groups)
 
+    # if no leads were found
     if not out_leads:
         if wildcard_if_empty:
             return ['*']
