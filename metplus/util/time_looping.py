@@ -721,6 +721,10 @@ def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
         if wildcard_if_empty:
             return ['*']
 
+        # init sequence should return an empty list if no matches were found
+        if init_seq:
+            return []
+
         return [0]
 
     return out_leads
