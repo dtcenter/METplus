@@ -601,6 +601,28 @@ def test_get_lead_sequence_init_min_10(metplus_config):
     lead_seq = [12, 24]
     assert test_seq == [relativedelta(hours=lead) for lead in lead_seq]
 
+
+@pytest.mark.parametrize(
+    'valid, expected', [
+        (datetime(2025, 5, 28, 18), [12] ),
+        (datetime(2025, 5, 29, 0), [] ),
+        (datetime(2025, 5, 29, 6), [] ),
+        (datetime(2025, 5, 29, 12), [6] ),
+        (datetime(2025, 5, 29, 18), [12] ),
+    ]
+)
+@pytest.mark.util
+def test_get_lead_sequence_init_no_match(metplus_config, valid, expected):
+    input_dict = {'valid': valid}
+    config = metplus_config
+    config.set('config', 'INIT_SEQ', "6")
+    config.set('config', 'LEAD_SEQ_MIN', 6)
+    config.set('config', 'LEAD_SEQ_MAX', 12)
+    test_seq = tl.get_lead_sequence(config, input_dict)
+    assert test_seq == [relativedelta(hours=lead) for lead in expected]
+
+
+@pytest.mark.util
 def test_get_start_and_end_times_empty_times(mock_time_generator):
     """Test empty times list returns (None, None)"""
     config = {"mock_times": []}
