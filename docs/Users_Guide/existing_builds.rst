@@ -30,18 +30,18 @@ in the
 
        | **NCAR MACHINE CASPER** (see 
           `Casper Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/casper/>`_)
-       | *Last Updated: May 28, 2025*
+       | *Last Updated: October 23, 2025*
        | *Compiler and version: Intel oneAPI 2024.2.1*
 
-       * METplus-6.1.0-rc1
+       * METplus-6.2.0-rc1
 
-          * METplus-6.1.0-rc1 Installation: 
+          * METplus-6.2.0-rc1 Installation:
 
             * /glade/work/dtcrt/METplus/casper/components/METplus/installation
 
-       * METplus-6.1 Sample Data: 
+       * METplus-6.2 Sample Data:
 
-          * /glade/work/dtcrt/METplus/data/components/METplus/METplus-6.1_sample_data
+          * /glade/work/dtcrt/METplus/data/components/METplus/METplus-6.2_sample_data
 
        * Users should create a file like /glade/work/dtcrt/METplus/casper/components/METplus/installations/casper.dtcrt.conf 
          to set a personalized INPUT_BASE and OUTPUT_BASE.
@@ -52,9 +52,9 @@ in the
 
              export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
              module use $TOP_DIR/METplus/installations/modulefiles
-             module load metplus/6.1.0-rc1
+             module load metplus/6.2.0-rc1
 
-       * MET-12.1.0-rc1
+       * MET-12.2.0-rc1
 
          * MODULES:
 
@@ -62,7 +62,7 @@ in the
 
                export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
                module use $TOP_DIR/MET/installations/modulefiles
-               module load met/12.1.0-rc1
+               module load met/12.2.0-rc1
 
        * METdataio-3.1.0-rc1
 
