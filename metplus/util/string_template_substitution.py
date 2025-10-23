@@ -538,10 +538,10 @@ def _add_to_replacement_dict(replacement_dict, match, skip_missing_tags, tmpl, k
 
 def parse_template(template, filepath, logger=NullLogger):
     """!Extract time information from path using the filename template
-         Args:
-             @param template filename template to use to extract time information
-             @param filepath path to examine
-             @returns time_info dictionary with time information if successful, None if not"""
+
+       @param template filename template to use to extract time information
+       @param filepath path to examine
+       @returns time_info dictionary with time information if successful, None if not"""
 
     match_dict, valid_shift = populate_match_dict(template, filepath, logger)
     if match_dict is None:

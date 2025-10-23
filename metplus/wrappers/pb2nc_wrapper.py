@@ -108,6 +108,7 @@ class PB2NCWrapper(ReformatPointWrapper):
         c_dict['VALID_END'] = self.config.getraw('config', 'PB2NC_VALID_END')
 
         c_dict['ALLOW_MULTIPLE_FILES'] = True
+        c_dict['SUPPORTS_FILE_LIST'] = False
 
         self.add_met_config(name='pb_report_type',
                             data_type='list',

@@ -2,11 +2,11 @@
 
 import pytest
 
+import os
 import pprint
 from datetime import datetime
 
-from metplus.util.string_manip import get_log_path, get_logfile_info, template_to_regex, subset_list, expand_int_string_to_list, round_0p5, validate_thresholds, get_threshold_via_regex, camel_to_underscore, remove_quotes, getlist, getlistint, list_to_str, comparison_to_letter_format, format_thresh, format_level, find_indices_in_config_section
-
+from metplus.util.string_manip import get_log_path, get_logfile_info, template_to_regex, subset_list, expand_int_string_to_list, round_0p5, validate_thresholds, get_threshold_via_regex, camel_to_underscore, remove_quotes, getlist, getlistint, list_to_str, comparison_to_letter_format, format_thresh, format_level, find_indices_in_config_section, split_dir_and_template
 
 
 @pytest.mark.parametrize(
@@ -211,19 +211,34 @@ def test_get_threshold_via_regex(key, value):
         ('ExtractTilesWrapper', 'extract_tiles_wrapper'),
         ('GempakToCFWrapper', 'gempak_to_cf_wrapper'),
         ('GenVxMaskWrapper', 'gen_vx_mask_wrapper'),
+        ('GenEnsProdWrapper', 'gen_ens_prod_wrapper'),
+        ('GFDLTrackerWrapper', 'gfdl_tracker_wrapper'),
+        ('GridDiagWrapper', 'grid_diag_wrapper'),
         ('GridStatWrapper', 'grid_stat_wrapper'),
+        ('IODA2NCWrapper', 'ioda2nc_wrapper'),
+        ('MADIS2NCWrapper', 'madis2nc_wrapper'),
+        ('METDbLoadWrapper', 'met_db_load_wrapper'),
         ('MODEWrapper', 'mode_wrapper'),
         ('MTDWrapper', 'mtd_wrapper'),
+        ('PairStatWrapper', 'pair_stat_wrapper'),
         ('PB2NCWrapper', 'pb2nc_wrapper'),
         ('PCPCombineWrapper', 'pcp_combine_wrapper'),
+        ('PlotDataPlaneWrapper', 'plot_data_plane_wrapper'),
+        ('PlotPointObsWrapper', 'plot_point_obs_wrapper'),
         ('Point2GridWrapper', 'point2grid_wrapper'),
         ('PointStatWrapper', 'point_stat_wrapper'),
-        ('PyEmbedWrapper', 'py_embed_wrapper'),
+        ('PyEmbedIngestWrapper', 'py_embed_ingest_wrapper'),
         ('RegridDataPlaneWrapper', 'regrid_data_plane_wrapper'),
+        ('RMWAnalysisWrapper', 'rmw_analysis_wrapper'),
         ('SeriesAnalysisWrapper', 'series_analysis_wrapper'),
         ('StatAnalysisWrapper', 'stat_analysis_wrapper'),
+        ('TCDiagWrapper', 'tc_diag_wrapper'),
+        ('TCGenWrapper', 'tc_gen_wrapper'),
         ('TCPairsWrapper', 'tc_pairs_wrapper'),
         ('TCStatWrapper', 'tc_stat_wrapper'),
+        ('TCRMWWrapper', 'tcrmw_wrapper'),
+        ('UserScriptWrapper', 'user_script_wrapper'),
+        ('WaveletStatWrapper', 'wavelet_stat_wrapper'),
     ]
 )
 @pytest.mark.util
@@ -495,3 +510,208 @@ def test_find_indices_in_config_section(metplus_config, regex, index,
     pp.pprint(indices)
 
     assert indices == expected_result
+
+
+@pytest.mark.parametrize(
+    'input_dir, input_template, expected_dir, expected_template', [
+        # Traditional usage - no template tags in dir, with formatting
+        ('/data/input', '{init?fmt=%Y%m%d%H}/wrfprs_{lead?fmt=%HH}.nc',
+         '/data/input', '{init?fmt=%Y%m%d%H}/wrfprs_{lead?fmt=%HH}.nc'),
+
+        # Traditional usage - no template tags in dir, without formatting
+        ('/data/input', '{valid}/file_{lead}.nc',
+         '/data/input', '{valid}/file_{lead}.nc'),
+
+        # Template tags in directory (with formatting)
+        ('/data/input/{init?fmt=%Y%m%d%H}', 'wrfprs_{lead?fmt=%HH}.nc',
+         '/data/input', '{init?fmt=%Y%m%d%H}/wrfprs_{lead?fmt=%HH}.nc'),
+
+        # Template tags in directory (without formatting)
+        ('/data/input/{valid}', 'file_{lead}.nc',
+         '/data/input', '{valid}/file_{lead}.nc'),
+
+        # All in template, no directory
+        ('', '/data/input/{init}/file_{lead}.nc',
+         '/data/input', '{init}/file_{lead}.nc'),
+
+        # All in directory, no template
+        ('/data/input/{init}/file_{lead}.nc', '',
+         '/data/input', '{init}/file_{lead}.nc'),
+
+        # Mixed formatting in combined path
+        ('/data/{init}', 'subdir/file_{lead?fmt=%HH}.nc',
+         '/data', '{init}/subdir/file_{lead?fmt=%HH}.nc'),
+
+        # Multiple template tags in both dir and template
+        ('/data/{model}/{init}', '{valid}/file_{lead}.nc',
+         '/data', '{model}/{init}/{valid}/file_{lead}.nc'),
+
+        # Complex nested template tags
+        ('/base/{model?fmt=%s}', '{init?fmt=%Y}/{valid?fmt=%m%d}/file_{lead?fmt=%HH}.nc',
+         '/base', '{model?fmt=%s}/{init?fmt=%Y}/{valid?fmt=%m%d}/file_{lead?fmt=%HH}.nc'),
+
+        # Both inputs empty
+        ('', '', '', ''),
+
+        # Only directory provided, no template tags
+        ('/data/input/subdir', '',
+         '/data/input', 'subdir'),
+
+        # Only directory provided, with template tags
+        ('/data/input/{init}/file.nc', '',
+         '/data/input', '{init}/file.nc'),
+
+        # Template is just a filename, no path separators
+        ('/data/input', 'file_{init}.nc',
+         '/data/input', 'file_{init}.nc'),
+
+        # No template tags anywhere - should split at last separator
+        ('/data/input/subdir', 'filename.nc',
+         '/data/input/subdir', 'filename.nc'),
+
+        # Template tags in middle of filename
+        ('/data/input', 'prefix_{init}_suffix.nc',
+         '/data/input', 'prefix_{init}_suffix.nc'),
+
+        # Multiple template tags in filename only
+        ('/data/input', '{model}_{init}_{valid}_{lead}.nc',
+         '/data/input', '{model}_{init}_{valid}_{lead}.nc'),
+
+        # Template tag in directory name, not path component
+        ('/data/input_{init}', 'file.nc',
+         '/data', 'input_{init}/file.nc'),
+
+        # Template tag in both directory name and separate path component
+        ('/data/input_{model}/{init}', 'file_{lead}.nc',
+         '/data', 'input_{model}/{init}/file_{lead}.nc'),
+
+        # Complex case: template tag spans directory boundary
+        ('/data/input', 'subdir_{init}/file.nc',
+         '/data/input', 'subdir_{init}/file.nc'),
+
+        # Template tag immediately after directory separator
+        ('/data/input/', '{init}/file.nc',
+         '/data/input', '{init}/file.nc'),
+
+        # Template tag with special characters in format
+        ('/data', '{init?fmt=%Y-%m-%d_%H%M%S}/file.nc',
+         '/data', '{init?fmt=%Y-%m-%d_%H%M%S}/file.nc'),
+
+        # Multiple identical template tags
+        ('/data/{init}', 'subdir/{init}/file_{init}.nc',
+         '/data', '{init}/subdir/{init}/file_{init}.nc'),
+
+        # Template tags with various time formats
+        ('/data', '{init?fmt=%Y%m%d%H%M%S}/file.nc',
+         '/data', '{init?fmt=%Y%m%d%H%M%S}/file.nc'),
+
+        # Template tags with custom formatting
+        ('/data', '{lead?fmt=%3H}/file.nc',
+         '/data', '{lead?fmt=%3H}/file.nc'),
+
+        # Template tags with string formatting
+        ('/data', '{model?fmt=%s}/file.nc',
+         '/data', '{model?fmt=%s}/file.nc'),
+
+        # Mixed template tag formats
+        ('/data/{init?fmt=%Y%m%d}', '{lead?fmt=%HH}/file_{valid}.nc',
+         '/data', '{init?fmt=%Y%m%d}/{lead?fmt=%HH}/file_{valid}.nc'),
+
+        # Real METplus template examples from GridStat
+        ('/input/base/met_test/data/sample_fcst', '{init?fmt=%Y%m%d%H}/wrfprs_ruc13_{lead?fmt=%HH}.tm00_G212',
+         '/input/base/met_test/data/sample_fcst', '{init?fmt=%Y%m%d%H}/wrfprs_ruc13_{lead?fmt=%HH}.tm00_G212'),
+
+        # Real METplus template examples with observations
+        ('/input/base/met_test', 'new/ST2ml{valid?fmt=%Y%m%d%H}_A03h.nc',
+         '/input/base/met_test/new', 'ST2ml{valid?fmt=%Y%m%d%H}_A03h.nc'),
+
+        # template used in the first directory of a path (could be done in a container)
+        ('/{init}', 'new/ST2ml{valid?fmt=%Y%m%d%H}_A03h.nc',
+         '/', '{init}/new/ST2ml{valid?fmt=%Y%m%d%H}_A03h.nc'),
+    ]
+)
+@pytest.mark.util
+def test_split_dir_and_template(input_dir, input_template, expected_dir, expected_template):
+    dir_path, template_path = split_dir_and_template(input_dir, input_template)
+    assert dir_path == expected_dir
+    assert template_path == expected_template
+
+
+@pytest.mark.parametrize(
+    'input_dir, input_template', [
+        # Test that result can be rejoined to get original path
+        ('/data/input/{init}', 'file_{lead}.nc'),
+        ('/data', '{model}/{init}/file.nc'),
+        ('', '/full/path/{valid}/file.nc'),
+        ('/base/path', 'file.nc'),  # No template tags case
+        ('/{init}', 'file.nc'),  # Template at very beginning
+        ('/full/path/{valid}', ''), # no template, all directory
+    ]
+)
+@pytest.mark.util
+def test_split_dir_and_template_reversible(input_dir, input_template):
+    """Test that split results can be recombined to get original path"""
+    # Create expected combined path
+    if input_dir and input_template:
+        expected_combined = os.path.join(input_dir, input_template)
+    elif input_dir:
+        expected_combined = input_dir
+    elif input_template:
+        expected_combined = input_template
+    else:
+        expected_combined = ""
+
+    # Split the path
+    result_dir, result_template = split_dir_and_template(input_dir, input_template)
+
+    # Recombine and compare (only if we have a template part)
+    if result_template:
+        recombined = os.path.join(result_dir, result_template) if result_dir else result_template
+        assert recombined == expected_combined
+    else:
+        # If no template part, the directory should contain the full path
+        assert result_dir == os.path.dirname(expected_combined)
+        assert result_template == os.path.basename(expected_combined)
+
+
+@pytest.mark.parametrize(
+    'config_dir, config_template, expected_dir, expected_template', [
+        # forecast template with init and lead
+        ('{INPUT_BASE}/met_test/data/sample_fcst', '{init?fmt=%Y%m%d%H}/wrfprs_ruc13_{lead?fmt=%HH}.tm00_G212',
+         '/input/base/met_test/data/sample_fcst', '{init?fmt=%Y%m%d%H}/wrfprs_ruc13_{lead?fmt=%HH}.tm00_G212'),
+
+        # obs template with valid
+        ('{INPUT_BASE}/met_test/new', 'ST2ml{valid?fmt=%Y%m%d%H}_A03h.nc',
+         '/input/base/met_test/new', 'ST2ml{valid?fmt=%Y%m%d%H}_A03h.nc'),
+
+        # Case where template tags might be in directory
+        ('{INPUT_BASE}/met_test/data/{model}/{init?fmt=%Y%m%d}', 'wrfprs_{lead?fmt=%HH}.nc',
+         '/input/base/met_test/data', '{model}/{init?fmt=%Y%m%d}/wrfprs_{lead?fmt=%HH}.nc'),
+
+        # another case where template tags might be in directory
+        ('{INPUT_BASE}/met_test/{valid?fmt=%Y%m%d}/new', 'ST2ml{valid?fmt=%Y%m%d%H}_A03h.nc',
+         '/input/base/met_test', '{valid?fmt=%Y%m%d}/new/ST2ml{valid?fmt=%Y%m%d%H}_A03h.nc'),
+
+        # another METplus config MODEL referenced in dir
+        ('{INPUT_BASE}/met_test/data/{MODEL}/{init?fmt=%Y%m%d}', 'wrfprs_{lead?fmt=%HH}.nc',
+         '/input/base/met_test/data/wrf', '{init?fmt=%Y%m%d}/wrfprs_{lead?fmt=%HH}.nc'),
+    ]
+)
+@pytest.mark.util
+def test_split_dir_and_template_with_actual_metplus_configs(metplus_config, config_dir, config_template, expected_dir, expected_template):
+    """!Test with real METplus configuration examples that include other METplus
+     config variables that should be substituted before splitting.
+     Pass the dir/template through the METplusConfig to substitute only the
+     values that are set in the config.
+     """
+    config = metplus_config
+    config.set('config', 'FCST_GRID_STAT_INPUT_DIR', config_dir)
+    config.set('config', 'FCST_GRID_STAT_INPUT_TEMPLATE', config_template)
+    config.set('config', 'INPUT_BASE', '/input/base')
+    config.set('config', 'MODEL', 'wrf')
+
+    input_dir = config.getdir('FCST_GRID_STAT_INPUT_DIR')
+    input_template = config.getraw('config', 'FCST_GRID_STAT_INPUT_TEMPLATE')
+    actual_dir, actual_template = split_dir_and_template(input_dir, input_template)
+    assert actual_dir == expected_dir, f"Directory mismatch for {input_dir}, {input_template}"
+    assert actual_template == expected_template, f"Template mismatch for {input_dir}, {input_template}"

@@ -238,6 +238,27 @@ def make_nc(tmp_path, lon, lat, z, data, variable='Temp', file_name='fake.nc'):
     return file_name
 
 
+@pytest.fixture(scope="module")
+def make_dummy_empty():
+    return make_empty
+
+
+def make_empty(tmp_path, file_name='fake.txt'):
+    """!Make a dummy empty file for use in tests.
+
+    @param tmp_path directory to write this empty file to.
+    @param file_name (optional) string name of file, defualt 'fake.txt'
+    @returns path to an empty file
+    """
+    file_path = tmp_path / file_name
+
+    # Create parent directories if they don't exist
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+
+    file_path.touch()
+    return file_path
+
+
 @pytest.fixture(scope="function")
 def get_test_data_dir():
     """!Get path to directory containing test data.
@@ -305,7 +326,7 @@ def set_init_configs():
 @pytest.fixture(scope="module")
 def run_all_and_check_missing():
     def run_all_and_check_missing_run_error(wrapper, missing, run, errors):
-        assert wrapper.isOK
+        assert wrapper.is_ok
 
         all_cmds = wrapper.run_all_times()
         for cmd, _ in all_cmds:

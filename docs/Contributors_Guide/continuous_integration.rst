@@ -167,7 +167,7 @@ in the body of each pull request. Reviewers should not approve pull requests
 that introduce new **Vulnerabilities** or **Bugs** or increase the number of
 **Code Smells** in the **Overall Code**.
 
-.. _cg-ci-update-truth-data:
+.. _cg-ci-update-reference-branch:
 
 Update Reference Branch (update_reference_branch.yml)
 -----------------------------------------------------
@@ -271,6 +271,69 @@ branch name text box blank and select the branch name from the pull-down menu.
 
 Verify that the workflow ran successfully and properly obtained the new data
 by reviewing the log output from the workflow run.
+
+.. _cg-ci-update-truth-data:
+
+Update and Upload Truth Data (update_truth_data.yml)
+----------------------------------------------------
+
+This workflow is triggered by pushes to reference branches (e.g. **develop-ref**
+or **main_vX.Y-ref**). It locates the most recent testing workflow run from the
+corresponding base branch (e.g. **develop** or **main_vX.Y**). For each use case
+group in which differences were flagged, rerun those use cases to generate
+update output files, save that output as the new truth dataset, and push
+the new truth Docker data volume to DockerHub.
+
+.. _cg-ci-create-conda-envs:
+
+Create Conda Environments in Docker (create_conda_envs.yml)
+-----------------------------------------------------------
+
+Each use case group runs within a Conda environment. Since dependencies and
+use case groups change over time, the environment needs to be created for each
+METplus Coordinated vX.Y release. This workflow can be manually triggered to
+create these Conda environments and push the resulting images to DockerHub.
+
+.. _cg-ci-release-checksum:
+
+Add Checksum to Release (release-checksum.yml)
+----------------------------------------------
+
+Software releases for the METplus components are created on GitHub. By default,
+GitHub creates both tar and zip files containing the code for each release.
+This workflow is triggered by creation of a software release on GitHub. For both
+the newly created tar and zip files, it generates MD5 checksum files, and uploads
+them as release assets. The MD5 checksum can be checked by users to validate that
+the software release they downloaded matches what was originally created by
+GitHub.
+
+.. _cg-ci-release-docker-images:
+
+Create Release Docker Images (release-docker-images.yml)
+--------------------------------------------------------
+
+The METplus components build and push Docker images to DockerHub for each release.
+However, as time passes, those images can grow stale and vulnerabilities can
+accumulate in the packages and libraries they contain. Rebuilding these images
+periodically ensures the lastest patches are applied. This workflow is automatically
+run on a schedule from the default branch of the METplus repositories to recreate
+Docker images for the currently supported versions of that component.
+By default, the most recent bugfix version of each supported 'vX.Y' release is
+rebuilt, but this workflow can also be triggered manually for any 'vX.Y.Z' version.
+
+.. _cg-ci-build-docker-and-trigger-metplus:
+
+Build Docker Image and Trigger METplus Workflow (build_docker_and_trigger_metplus.yml)
+--------------------------------------------------------------------------------------
+
+Enhancements to and fixes for the METplus components can impact the functionality of
+the use cases housed in the METplus repository. This workflow is defined and run in the
+*METplus component repositories* rather than the top-level METplus repository itself.
+Any pushes to the code on the **develop** or **main_vX.Y** branches trigger this
+workflow to build an updated Docker image, push it to DockerHub, and send a trigger
+for the METplus repository to run the testing workflow. This testing workflow run
+confirms that all of the METplus use cases still run and produce the expected output
+after the change to this component.
 
 Release Published (release_published.yml) - DEPRECATED
 ------------------------------------------------------
@@ -1474,3 +1537,51 @@ When differences are found when comparing the new output from a use case to
 the truth data, an artifact is created for the use case group. It contains
 files that differ so that the user can download and examine them. Files that
 are only found in one or the other are also included.
+
+Custom GitHub Actions
+=====================
+
+Custom actions are designed to handle common functionality that is needed by
+multiple GitHub Actions workflows across multiple METplus GitHub repositories.
+Each custom action is stored in its own GitHub repository.
+Navigate to the GitHub repository for a custom action to learn more about
+using it.
+
+Free Disk Space
+---------------
+
+Removes files that are not used by METplus workflows from the
+GitHub Actions runner environment to free up disk space.
+
+`dtcenter/metplus-action-free-disk-space <https://github.com/dtcenter/metplus-action-free-disk-space>`_
+
+.. warning:: **DO NOT USE THIS ACTION WITH SELF-HOSTED RUNNERS!**
+
+Scan Docker Images
+------------------
+
+Scans Docker images for Common Vulnerabilities and Exposures (CVEs).
+
+`dtcenter/metplus-action-scan-docker-images <https://github.com/dtcenter/metplus-action-scan-docker-images>`_
+
+Data Update
+-----------
+
+Query web server and update data volumes used for testing.
+
+`dtcenter/metplus-action-data-update <https://github.com/dtcenter/metplus-action-data-update>`_
+
+Trigger METplus Use Cases
+-------------------------
+
+Trigger a METplus testing workflow to ensure that changes to other METplus component repositories do not
+break METplus use case functionality.
+
+`dtcenter/metplus-action-trigger-use-cases <https://github.com/dtcenter/metplus-action-trigger-use-cases>`_
+
+Create Checksum for Release
+---------------------------
+
+Add a checksum to a release
+
+`dtcenter/metplus-action-release-checksum <https://github.com/dtcenter/metplus-action-release-checksum>`_

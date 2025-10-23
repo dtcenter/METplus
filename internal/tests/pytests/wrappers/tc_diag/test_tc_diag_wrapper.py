@@ -249,7 +249,7 @@ def test_tc_diag_run(metplus_config, config_overrides,
         config.set('config', key, value)
 
     wrapper = TCDiagWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     file_list_dir = wrapper.config.getdir('FILE_LISTS_DIR')
     file_list_file = f"{file_list_dir}/aal142016_short.dat_data_files.txt"

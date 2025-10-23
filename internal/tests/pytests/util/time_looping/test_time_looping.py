@@ -7,6 +7,9 @@ from metplus.util import time_looping as tl
 from metplus.util.time_util import ti_calculate, ti_get_hours_from_relativedelta
 from metplus.util.time_looping import get_start_and_end_times
 
+DATA_TEMPLATE1 = '{init?fmt=%d%m%Y_%H}Z_f{lead?fmt=%3H}.txt'
+DATA_TEMPLATE2 = '{init?fmt=%Y%m%d_%H}Z_f{lead?fmt=%3H}.nc'
+DATA_TEMPLATE3 = 'obs_{valid?fmt=%Y%m%d%H}.nc'
 
 @pytest.fixture
 def mock_time_generator(monkeypatch):
@@ -19,6 +22,32 @@ def mock_time_generator(monkeypatch):
         return config.get("mock_times", [])
 
     monkeypatch.setattr('metplus.util.time_looping.time_generator', mock_generator)
+
+
+def verify_time_generator_output(generator, prefix, expected_times):
+    """Helper function to verify time_generator output structure and values."""
+    expected_keys = {'loop_by', prefix.lower(), 'now', 'today'}
+
+    # Check each expected dictionary returned by the generator
+    for i, expected_time in enumerate(expected_times, 1):
+        next_time_info = next(generator)
+
+        # Verify structure
+        actual_keys = set(next_time_info.keys())
+        assert actual_keys == expected_keys, f"Item {i} keys {actual_keys} don't match expected {expected_keys}"
+        assert isinstance(next_time_info, dict), f"Item {i} should be a dictionary"
+
+        # Verify time value
+        actual_time = next_time_info[prefix.lower()]
+        print(f'{i}: {next_time_info}')
+        assert actual_time == expected_time
+
+    # Verify generator is exhausted after the expected number of items
+    try:
+        next(generator)
+        assert False, "Generator should have been exhausted"
+    except StopIteration:
+        pass
 
 
 @pytest.mark.parametrize(
@@ -306,13 +335,7 @@ def test_time_generator_list(metplus_config):
         ]
 
         generator = tl.time_generator(config)
-        assert next(generator)[prefix.lower()] == expected_times[0]
-        assert next(generator)[prefix.lower()] == expected_times[1]
-        try:
-            next(generator)
-            assert False
-        except StopIteration:
-            pass
+        verify_time_generator_output(generator, prefix, expected_times)
 
 
 @pytest.mark.util
@@ -332,14 +355,7 @@ def test_time_generator_increment(metplus_config):
         ]
 
         generator = tl.time_generator(config)
-        assert next(generator)[prefix.lower()] == expected_times[0]
-        assert next(generator)[prefix.lower()] == expected_times[1]
-        assert next(generator)[prefix.lower()] == expected_times[2]
-        try:
-            next(generator)
-            assert False
-        except StopIteration:
-            pass
+        verify_time_generator_output(generator, prefix, expected_times)
 
 
 @pytest.mark.parametrize(
@@ -446,6 +462,7 @@ def test_time_generator_error_check_beg_end(metplus_config, prefix):
     assert next(tl.time_generator(config)) is None
 
 
+@pytest.mark.util
 def test_get_lead_sequence_lead(metplus_config):
     input_dict = {'valid': datetime(2019, 2, 1, 13)}
     conf = metplus_config
@@ -584,6 +601,28 @@ def test_get_lead_sequence_init_min_10(metplus_config):
     lead_seq = [12, 24]
     assert test_seq == [relativedelta(hours=lead) for lead in lead_seq]
 
+
+@pytest.mark.parametrize(
+    'valid, expected', [
+        (datetime(2025, 5, 28, 18), [12] ),
+        (datetime(2025, 5, 29, 0), [] ),
+        (datetime(2025, 5, 29, 6), [] ),
+        (datetime(2025, 5, 29, 12), [6] ),
+        (datetime(2025, 5, 29, 18), [12] ),
+    ]
+)
+@pytest.mark.util
+def test_get_lead_sequence_init_no_match(metplus_config, valid, expected):
+    input_dict = {'valid': valid}
+    config = metplus_config
+    config.set('config', 'INIT_SEQ', "6")
+    config.set('config', 'LEAD_SEQ_MIN', 6)
+    config.set('config', 'LEAD_SEQ_MAX', 12)
+    test_seq = tl.get_lead_sequence(config, input_dict)
+    assert test_seq == [relativedelta(hours=lead) for lead in expected]
+
+
+@pytest.mark.util
 def test_get_start_and_end_times_empty_times(mock_time_generator):
     """Test empty times list returns (None, None)"""
     config = {"mock_times": []}
@@ -592,6 +631,7 @@ def test_get_start_and_end_times_empty_times(mock_time_generator):
     assert end is None
 
 
+@pytest.mark.util
 def test_get_start_and_end_times_single_entry(mock_time_generator):
     """Test handling of a single entry in the times list"""
     config = {"mock_times": [{"loop_by": "valid", "valid": "2023-10-15"}]}
@@ -600,6 +640,7 @@ def test_get_start_and_end_times_single_entry(mock_time_generator):
     assert end == "2023-10-15"
 
 
+@pytest.mark.util
 def test_get_start_and_end_times_missing_loop_by_key(mock_time_generator):
     """Test when 'loop_by' key is missing in a dictionary"""
     config = {
@@ -612,6 +653,7 @@ def test_get_start_and_end_times_missing_loop_by_key(mock_time_generator):
         get_start_and_end_times(config)  # Should raise an error for missing key
 
 
+@pytest.mark.util
 def test_get_start_and_end_times_invalid_config(mock_time_generator):
     """Test when time_generator produces invalid or corrupted time data"""
     config = {"mock_times": [None]}  # Simulate corrupted output
@@ -620,6 +662,7 @@ def test_get_start_and_end_times_invalid_config(mock_time_generator):
     assert end is None
 
 
+@pytest.mark.util
 def test_get_start_and_end_times_multiple_entries(mock_time_generator):
     """Test handling multiple entries in the times list"""
     config = {
@@ -632,3 +675,238 @@ def test_get_start_and_end_times_multiple_entries(mock_time_generator):
     start, end = get_start_and_end_times(config)
     assert start == "2023-10-15"
     assert end == "2023-10-17"
+
+
+@pytest.mark.parametrize(
+    'prefix, expected', [
+        # expected is a dict where keys are the run times and values are the expected lead times for each run time
+        ('INIT', ({'2025113012': [relativedelta(hours=+2), relativedelta(hours=+4)],
+                   '2025122912': [relativedelta(hours=+3), relativedelta(hours=+6)],})),
+        ('VALID', ({'2025113014': [relativedelta(hours=+2)],
+                    '2025113016': [relativedelta(hours=+4)],
+                    '2025122915': [relativedelta(hours=+3)],
+                    '2025122918': [relativedelta(hours=+6)]})),
+    ]
+)
+@pytest.mark.util
+def test_time_generator_one_template(prefix, expected, metplus_config, tmp_path_factory, make_dummy_empty):
+    # create empty files for testing
+    # use DDMMYYYY format for the file names to ensure proper sorting
+    data_dir = tmp_path_factory.mktemp("data_dir")
+    _create_dummy_files(make_dummy_empty, data_dir, 1)
+
+    config = metplus_config
+    config.set('config', 'LOOP_BY', prefix)
+    config.set('config', 'TIME_GENERATOR_INPUT_DIR', data_dir)
+    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', DATA_TEMPLATE1)
+
+    _test_time_generator_and_lead_sequence(config, prefix, expected)
+
+
+# Define shared parameters
+TWO_INIT_TEMPLATE_TEST_PARAMS = [
+    ('INIT', ({'2025113012': [relativedelta(hours=+4)],
+               '2025122912': [relativedelta(hours=+6)],})),
+    ('VALID', ({'2025113016': [relativedelta(hours=+4)],
+                '2025122915': [],
+                '2025122918': [relativedelta(hours=+6)]})),
+]
+
+THREE_TEMPLATE_TEST_PARAMS = [
+    ('INIT', ({'2025113012': [],
+               '2025122912': [relativedelta(hours=+6)],})),
+    ('VALID', ({'2025122918': [relativedelta(hours=+6)]})),
+]
+
+@pytest.mark.parametrize('prefix, expected', TWO_INIT_TEMPLATE_TEST_PARAMS)
+@pytest.mark.util
+def test_time_generator_template_two_dirs(prefix, expected, metplus_config, tmp_path_factory, make_dummy_empty):
+    # create empty files for testing
+    # use DDMMYYYY format for the file names to ensure proper sorting
+    data_dir1 = tmp_path_factory.mktemp("data_dir1")
+    _create_dummy_files(make_dummy_empty, data_dir1, 1)
+
+    data_dir2 = tmp_path_factory.mktemp("data_dir2")
+    _create_dummy_files(make_dummy_empty, data_dir2, 2)
+
+    config = metplus_config
+    config.set('config', 'LOOP_BY', prefix)
+    config.set('config', 'TIME_GENERATOR_INPUT_DIR', f"{data_dir1}, {data_dir2}")
+    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', f'{DATA_TEMPLATE1}, {DATA_TEMPLATE2}')
+
+    _test_time_generator_and_lead_sequence(config, prefix, expected)
+
+
+@pytest.mark.parametrize('prefix, expected', TWO_INIT_TEMPLATE_TEST_PARAMS)
+@pytest.mark.util
+def test_time_generator_template_one_dir_two_init_templates(prefix, expected, metplus_config, tmp_path_factory, make_dummy_empty):
+    # create empty files for testing
+    # use DDMMYYYY format for the file names to ensure proper sorting
+    data_dir = tmp_path_factory.mktemp("data_dir")
+    _create_dummy_files(make_dummy_empty, data_dir, 1)
+    _create_dummy_files(make_dummy_empty, data_dir, 2)
+
+    config = metplus_config
+    config.set('config', 'LOOP_BY', prefix)
+    config.set('config', 'TIME_GENERATOR_INPUT_DIR', data_dir)
+    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', f'{DATA_TEMPLATE1}, {DATA_TEMPLATE2}')
+
+    _test_time_generator_and_lead_sequence(config, prefix, expected)
+
+
+@pytest.mark.parametrize('prefix, expected', TWO_INIT_TEMPLATE_TEST_PARAMS)
+@pytest.mark.util
+def test_time_generator_template_two_init_templates_tag_in_dir(prefix, expected, metplus_config, tmp_path_factory, make_dummy_empty):
+    # test that including a filename template tag in the INPUT_DIR also works
+    # create empty files for testing
+    # use DDMMYYYY format for the file names to ensure proper sorting
+    data_dir = tmp_path_factory.mktemp("data_dir")
+    _create_dummy_files(make_dummy_empty, data_dir, 1, add_subdir=True)
+    _create_dummy_files(make_dummy_empty, data_dir, 2, add_subdir=True)
+    data_dir = data_dir / '{init?fmt=%Y%m%d}'
+
+    config = metplus_config
+    config.set('config', 'LOOP_BY', prefix)
+    config.set('config', 'TIME_GENERATOR_INPUT_DIR', data_dir)
+    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', f'{DATA_TEMPLATE1}, {DATA_TEMPLATE2}')
+
+    _test_time_generator_and_lead_sequence(config, prefix, expected)
+
+
+@pytest.mark.parametrize('prefix, expected', [
+        ('INIT', ({'2025113012': [],
+                   '2025122912': [relativedelta(hours=+6)],})),
+        ('VALID', ({'2025122918': [relativedelta(hours=+6)]})),
+    ])
+@pytest.mark.util
+def test_time_generator_template_one_fcst_one_obs_template(prefix, expected, metplus_config, tmp_path_factory, make_dummy_empty):
+    # create empty files for testing
+    # use DDMMYYYY format for the file names to ensure proper sorting
+    data_dir = tmp_path_factory.mktemp("data_dir")
+    _create_dummy_files(make_dummy_empty, data_dir, 1)
+    _create_dummy_files(make_dummy_empty, data_dir, 3)
+
+    config = metplus_config
+    config.set('config', 'LOOP_BY', prefix)
+    config.set('config', 'TIME_GENERATOR_INPUT_DIR', data_dir)
+    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', f'{DATA_TEMPLATE1}, {DATA_TEMPLATE3}')
+
+    _test_time_generator_and_lead_sequence(config, prefix, expected)
+
+
+@pytest.mark.parametrize('prefix, expected', THREE_TEMPLATE_TEST_PARAMS)
+@pytest.mark.util
+def test_time_generator_template_one_dir_three_templates(prefix, expected, metplus_config, tmp_path_factory, make_dummy_empty):
+    # create empty files for testing
+    # use DDMMYYYY format for the file names to ensure proper sorting
+    data_dir = tmp_path_factory.mktemp("data_dir")
+    _create_dummy_files(make_dummy_empty, data_dir, 1)
+    _create_dummy_files(make_dummy_empty, data_dir, 2)
+    _create_dummy_files(make_dummy_empty, data_dir, 3)
+
+    config = metplus_config
+    config.set('config', 'LOOP_BY', prefix)
+    config.set('config', 'TIME_GENERATOR_INPUT_DIR', data_dir)
+    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', f'{DATA_TEMPLATE1}, {DATA_TEMPLATE2}, {DATA_TEMPLATE3}')
+
+    _test_time_generator_and_lead_sequence(config, prefix, expected)
+
+
+@pytest.mark.parametrize('prefix, expected', THREE_TEMPLATE_TEST_PARAMS)
+@pytest.mark.util
+def test_time_generator_template_one_dir_three_templates_custom_and_instance(prefix, expected, metplus_config, tmp_path_factory, make_dummy_empty):
+    """!Test that custom and instance strings are properly substituted in both the template and dir variables."""
+    # create empty files for testing
+    # use DDMMYYYY format for the file names to ensure proper sorting
+    data_dir = tmp_path_factory.mktemp("data_dir")
+    _create_dummy_files(make_dummy_empty, data_dir, 1)
+    _create_dummy_files(make_dummy_empty, data_dir, 2)
+    _create_dummy_files(make_dummy_empty, data_dir, 3)
+
+    config = metplus_config
+    config.set('config', 'LOOP_BY', prefix)
+    config.set('config', 'CURRENT_INSTANCE', 'data_dir')
+    config.set('config', 'CURRENT_CUSTOM', 'nc')
+    # replace data_dir string with instance template tag
+    config.set('config', 'TIME_GENERATOR_INPUT_DIR', str(data_dir).replace('data_dir', '{instance}'))
+    # replace nc string with custom template tag
+    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', (f"{DATA_TEMPLATE1},"
+                                                           f" {DATA_TEMPLATE2.replace('nc', '{custom}')},"
+                                                           f" {DATA_TEMPLATE3.replace('nc', '{custom}')}"))
+    _test_time_generator_and_lead_sequence(config, prefix, expected)
+
+
+@pytest.mark.parametrize(
+    'prefix, expected', [
+        # expected is a dict where keys are the run times and values are the expected lead times for each run time
+        ('INIT', ({'2024103106': [relativedelta(hours=+0)],
+                   '2025122918': [relativedelta(hours=+0)],
+                   '2025123106': [relativedelta(hours=+0)],})),
+        ('VALID', ({'2024103106': [relativedelta(hours=+0)],
+                   '2025122918': [relativedelta(hours=+0)],
+                   '2025123106': [relativedelta(hours=+0)]})),
+    ]
+)
+@pytest.mark.util
+def test_time_generator_template_one_obs(prefix, expected, metplus_config, tmp_path_factory, make_dummy_empty):
+    # create empty files for testing
+    # use DDMMYYYY format for the file names to ensure proper sorting
+    data_dir = tmp_path_factory.mktemp("data_dir")
+    _create_dummy_files(make_dummy_empty, data_dir, 3)
+
+    config = metplus_config
+    config.set('config', 'LOOP_BY', prefix)
+    config.set('config', 'TIME_GENERATOR_INPUT_DIR', data_dir)
+    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', DATA_TEMPLATE3)
+
+    _test_time_generator_and_lead_sequence(config, prefix, expected)
+
+def _test_time_generator_and_lead_sequence(config, prefix, expected):
+    """!Helper function to test both time_generator and get_lead_sequence with expected results.
+    @param config METplusConfig object
+    @param prefix Time prefix ('INIT' or 'VALID')
+    @param expected Dictionary where keys are time strings and values are expected lead lists
+    """
+    expected_times = [datetime.strptime(time_str, '%Y%m%d%H') for time_str in expected.keys()]
+
+    generator = tl.time_generator(config)
+    verify_time_generator_output(generator, prefix, expected_times)
+
+    # get list of init/valid times and use them to test that correct forecast leads are generated from each
+    generator = tl.time_generator(config)
+    run_times = [next(generator) for _ in range(len(expected_times))]
+    assert len(run_times) == len(expected)
+    for run_dict, expected_lead_list in zip(run_times, expected.values()):
+        actual_lead_list = tl.get_lead_sequence(config, run_dict)
+        assert actual_lead_list == expected_lead_list
+
+
+def _create_dummy_files(make_dummy_empty, data_dir, data_num, add_subdir=False):
+    files = []
+    if data_num == 1:
+        files = [
+            '20251229/29122025_12Z_f003.txt',
+            '20251229/29122025_12Z_f006.txt',
+            '20251130/30112025_12Z_f002.txt',
+            '20251130/30112025_12Z_f004.txt',
+        ]
+    elif data_num == 2:
+        files = [
+            '20251229/20251229_09Z_f006.nc',
+            '20251229/20251229_12Z_f006.nc',
+            '20251229/20251229_12Z_f009.nc',
+            '20251130/20251130_12Z_f004.nc',
+            '20251130/20251130_12Z_f008.nc',
+        ]
+    elif data_num == 3:
+        files = [
+            '20251229/obs_2025122918.nc',
+            '20251231/obs_2025123106.nc',
+            '20241031/obs_2024103106.nc',
+        ]
+
+    if not add_subdir:
+        files = [filename.split('/')[1] for filename in files]
+
+    for filename in files:
+        make_dummy_empty(data_dir, filename)

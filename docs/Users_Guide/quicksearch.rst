@@ -174,6 +174,7 @@ Use Cases by METplus Feature:
    | `Runtime Frequency <../search.html?q=RuntimeFreqUseCase&check_keywords=yes&area=default>`_
    | `Series by Initialization <../search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_
    | `Series by Forecast Lead <../search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`_
+   | `Times from Template <../search.html?q=TimesFromTemplateUseCase&check_keywords=yes&area=default>`_
    | `Tropical Cyclone <../search.html?q=TropicalCycloneUseCase&check_keywords=yes&area=default>`_
    | `Validation of Models or Analyses <../search.html?q=ValidationUseCase&check_keywords=yes&area=default>`_
    | `User Defined Script <../search.html?q=UserScriptUseCase&check_keywords=yes&area=default>`_
@@ -207,6 +208,7 @@ Use Cases by METplus Feature:
    | **Runtime Frequency**: *RuntimeFreqUseCase*
    | **Series by Initialization**: *SeriesByInitUseCase*
    | **Series by Forecast Lead**: *SeriesByLeadUseCase*
+   | **Times from Template**: *TimesFromTemplateUseCase*
    | **Tropical Cyclone**: *TropicalCycloneUseCase*
    | **Validation of Models or Analyses**: *ValidationUseCase*
    | **User Defined Script**: *UserScriptUseCase*

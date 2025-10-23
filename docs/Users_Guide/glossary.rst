@@ -14458,6 +14458,29 @@ METplus Configuration Glossary
 
      | *Used by:* SeriesAnalysis
 
+   TIME_GENERATOR_INPUT_TEMPLATE
+     Build list of runtimes to process using directory and template to extract
+     time information. If set, INIT/VALID_BEG/END/INCREMENT time looping
+     variables and forecast lead variables like :term:`LEAD_SEQ` are ignored.
+     Used with :term:`TIME_GENERATOR_INPUT_DIR`.
+     The :term:`LOOP_BY` variable determines whether to extract initialization
+     or valid times to process. List of forecast leads to process are gathered
+     based on existing forecast lead files for the current init/valid time.
+     Value can be a comma-separated list of templates, in which case the
+     runtimes to process include only the runtimes that are present for every
+     template provided. If more than one value is set for
+     :term:`TIME_GENERATOR_INPUT_DIR`, the number of values must match the
+     number of values set for :term:`TIME_GENERATOR_INPUT_TEMPLATE`.
+     See :ref:`template-based-time-generation` for more information and examples.
+
+     | *Used by:* All
+
+   TIME_GENERATOR_INPUT_DIR
+     See :term:`TIME_GENERATOR_INPUT_TEMPLATE` and
+     :ref:`template-based-time-generation` for more information and examples.
+
+     | *Used by:* All
+
    DATA_INGEST_<n>_OUTPUT_TEMPLATE
      Used to specify location to download files to.
      <n> is an integer greater than or equal to 1.
@@ -14585,3 +14608,315 @@ METplus Configuration Glossary
 
    RMW_ANALYSIS_INIT_THRESH_VAL
      Specify the value for 'init_thresh_val' in the MET configuration file for RMWAnalysis.
+
+     | *Used by:* RMWAnalysis
+
+   ENSEMBLE_STAT_LAND_MASK_FLAG
+     Specify the value for 'land_mask.flag' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_LAND_MASK_FILE_NAME
+     Specify the value for 'land_mask.file_name' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_LAND_MASK_FIELD
+     Specify the value for 'land_mask.field' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_LAND_MASK_REGRID
+     Specify the value for 'land_mask.regrid' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_LAND_MASK_THRESH
+     Specify the value for 'land_mask.thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_TOPO_MASK_FLAG
+     Specify the value for 'topo_mask.flag' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_TOPO_MASK_FILE_NAME
+     Specify the value for 'topo_mask.file_name' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_TOPO_MASK_FIELD
+     Specify the value for 'topo_mask.field' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_TOPO_MASK_REGRID
+     Specify the value for 'topo_mask.regrid' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_TOPO_MASK_USE_OBS_THRESH
+     Specify the value for 'topo_mask.use_obs_thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_TOPO_MASK_INTERP_FCST_THRESH
+     Specify the value for 'topo_mask.interp_fcst_thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   POINT_STAT_LAPSE_RATE_CORRECTION_APPLY_TO
+     Specify the value for 'lapse_rate_correction.apply_to' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_LAPSE_RATE_CORRECTION_VALUE
+     Specify the value for 'lapse_rate_correction.value' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_MSL_AGL_CONVERSION_APPLY_TO
+     Specify the value for 'msl_agl_conversion.apply_to' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_MSL_AGL_CONVERSION_APPLY_FROM
+     Specify the value for 'msl_agl_conversion.apply_from' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_MSL_AGL_CONVERSION_THRESH
+     Specify the value for 'msl_agl_conversion.thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_MSL_AGL_CONVERSION_MSL_TO_AGL
+     Specify the value for 'msl_agl_conversion.msl_to_agl' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   ENSEMBLE_STAT_LAPSE_RATE_CORRECTION_APPLY_TO
+     Specify the value for 'lapse_rate_correction.apply_to' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_LAPSE_RATE_CORRECTION_VALUE
+     Specify the value for 'lapse_rate_correction.value' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_MSL_AGL_CONVERSION_APPLY_TO
+     Specify the value for 'msl_agl_conversion.apply_to' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_MSL_AGL_CONVERSION_APPLY_FROM
+     Specify the value for 'msl_agl_conversion.apply_from' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_MSL_AGL_CONVERSION_THRESH
+     Specify the value for 'msl_agl_conversion.thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_MSL_AGL_CONVERSION_MSL_TO_AGL
+     Specify the value for 'msl_agl_conversion.msl_to_agl' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_VAR<n>_LAND_MASK_FLAG
+     Sets land_mask.flag for the nth obs.field in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_VAR<n>_TOPO_MASK_FLAG
+     Sets topo_mask.flag for the nth obs.field in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_VAR<n>_TOPO_MASK_USE_OBS_THRESH
+     Sets topo_mask.use_obs_thresh for the nth obs.field in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_VAR<n>_TOPO_MASK_INTERP_FCST_THRESH
+     Sets topo_mask.interp_fcst_thresh for the nth obs.field in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_VAR<n>_LAPSE_RATE_CORRECTION_APPLY_TO
+     Sets lapse_rate_correction.apply_to for the nth obs.field in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_VAR<n>_LAPSE_RATE_CORRECTION_VALUE
+     Sets lapse_rate_correction.value for the nth obs.field in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_TO
+     Sets msl_agl_conversion.apply_to for the nth obs.field in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_FROM
+     Sets msl_agl_conversion.apply_from for the nth obs.field in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_THRESH
+     Sets msl_agl_conversion.thresh for the nth obs.field in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_MSL_TO_AGL
+     Sets msl_agl_conversion.msl_to_agl for the nth obs.field in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   POINT_STAT_OBS_VAR<n>_LAND_MASK_FLAG
+     Sets land_mask.flag for the nth obs.field in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_OBS_VAR<n>_TOPO_MASK_FLAG
+     Sets topo_mask.flag for the nth obs.field in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_OBS_VAR<n>_TOPO_MASK_USE_OBS_THRESH
+     Sets topo_mask.use_obs_thresh for the nth obs.field in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_OBS_VAR<n>_TOPO_MASK_INTERP_FCST_THRESH
+     Sets topo_mask.interp_fcst_thresh for the nth obs.field in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_OBS_VAR<n>_LAPSE_RATE_CORRECTION_APPLY_TO
+     Sets lapse_rate_correction.apply_to for the nth obs.field in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_OBS_VAR<n>_LAPSE_RATE_CORRECTION_VALUE
+     Sets lapse_rate_correction.value for the nth obs.field in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_TO
+     Sets msl_agl_conversion.apply_to for the nth obs.field in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_FROM
+     Sets msl_agl_conversion.apply_from for the nth obs.field in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_THRESH
+     Sets msl_agl_conversion.thresh for the nth obs.field in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_MSL_TO_AGL
+     Sets msl_agl_conversion.msl_to_agl for the nth obs.field in the MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+
+   OBS_VAR<n>_LAND_MASK_FLAG
+     Sets land_mask.flag for the nth obs.field in the MET configuration file for PointStat and EnsembleStat.
+
+     | *Used by:*  PointStat, EnsembleStat
+
+   OBS_VAR<n>_TOPO_MASK_FLAG
+     Sets topo_mask.flag for the nth obs.field in the MET configuration file for PointStat and EnsembleStat.
+
+     | *Used by:*  PointStat, EnsembleStat
+
+   OBS_VAR<n>_TOPO_MASK_USE_OBS_THRESH
+     Sets topo_mask.use_obs_thresh for the nth obs.field in the MET configuration file for PointStat and EnsembleStat.
+
+     | *Used by:*  PointStat, EnsembleStat
+
+   OBS_VAR<n>_TOPO_MASK_INTERP_FCST_THRESH
+     Sets topo_mask.interp_fcst_thresh for the nth obs.field in the MET configuration file for PointStat and EnsembleStat.
+
+     | *Used by:*  PointStat, EnsembleStat
+
+   OBS_VAR<n>_LAPSE_RATE_CORRECTION_APPLY_TO
+     Sets lapse_rate_correction.apply_to for the nth obs.field in the MET configuration file for PointStat and EnsembleStat.
+
+     | *Used by:*  PointStat, EnsembleStat
+
+   OBS_VAR<n>_LAPSE_RATE_CORRECTION_VALUE
+     Sets lapse_rate_correction.value for the nth obs.field in the MET configuration file for PointStat and EnsembleStat.
+
+     | *Used by:*  PointStat, EnsembleStat
+
+   OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_TO
+     Sets msl_agl_conversion.apply_to for the nth obs.field in the MET configuration file for PointStat and EnsembleStat.
+
+     | *Used by:*  PointStat, EnsembleStat
+
+   OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_FROM
+     Sets msl_agl_conversion.apply_from for the nth obs.field in the MET configuration file for PointStat and EnsembleStat.
+
+     | *Used by:*  PointStat, EnsembleStat
+
+   OBS_VAR<n>_MSL_AGL_CONVERSION_THRESH
+     Sets msl_agl_conversion.thresh for the nth obs.field in the MET configuration file for PointStat and EnsembleStat.
+
+     | *Used by:*  PointStat, EnsembleStat
+
+   OBS_VAR<n>_MSL_AGL_CONVERSION_MSL_TO_AGL
+     Sets msl_agl_conversion.msl_to_agl for the nth obs.field in the MET configuration file for PointStat and EnsembleStat.
+
+     | *Used by:*  PointStat, EnsembleStat
+
+   POINT_STAT_TOPO_MASK_INTERP_VLD_THRESH
+     Specify the value for 'topo_mask.interp.vld_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_TOPO_MASK_INTERP_SHAPE
+     Specify the value for 'topo_mask.interp.shape' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_TOPO_MASK_INTERP_METHOD
+     Specify the value for 'topo_mask.interp.method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_TOPO_MASK_INTERP_WIDTH
+     Specify the value for 'topo_mask.interp.width' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   ENSEMBLE_STAT_TOPO_MASK_INTERP_VLD_THRESH
+     Specify the value for 'topo_mask.interp.vld_thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_TOPO_MASK_INTERP_SHAPE
+     Specify the value for 'topo_mask.interp.shape' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_TOPO_MASK_INTERP_METHOD
+     Specify the value for 'topo_mask.interp.method' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_TOPO_MASK_INTERP_WIDTH
+     Specify the value for 'topo_mask.interp.width' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ASCII2NC_INPUTRX
+     Specify the value for the -inputrx command line argument for ASCII2NC.
+
+     | *Used by:* ASCII2NC

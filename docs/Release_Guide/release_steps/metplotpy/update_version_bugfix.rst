@@ -5,4 +5,6 @@ Update the software version information.
 
 .. dropdown:: Instructions
 
-  * In 'docs/conf.py', update the 'version', 'release_year', and 'release_date' variables for the documentation.
+  * In 'metplotpy/_version.py', update the version number.
+
+  * In 'docs/conf.py', update the 'release_year' and 'release_date' variables.

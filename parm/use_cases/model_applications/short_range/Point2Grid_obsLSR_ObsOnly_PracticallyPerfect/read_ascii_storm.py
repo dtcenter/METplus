@@ -85,7 +85,7 @@ point_frame["Valid_Time"] = year_month_day+"_"+temp_data["Time"]+"00"
 point_frame["Observation_Value"] = 1.0
 
 #Ascii2nc wants the final values in a list
-point_data = point_frame.values.tolist()
+point_data = point_frame.to_numpy().tolist()
 
 print("Data Length:\t" + repr(len(point_data)))
 print("Data Type:\t" + repr(type(point_data)))

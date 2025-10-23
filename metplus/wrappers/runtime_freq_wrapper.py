@@ -10,7 +10,9 @@ Output Files:
 Condition codes: 0 for success, 1 for failure
 """
 
-from ..util import time_util
+import os
+
+from ..util import time_util, is_python_script
 from ..util import log_runtime_banner, get_lead_sequence, get_lead_sequence_groups
 from ..util import skip_time, getlist, get_start_and_end_times, get_time_prefix
 from ..util import time_generator, add_to_time_input, format_lead_seq
@@ -21,6 +23,8 @@ from . import CommandBuilder
 @brief Parent class for wrappers that run over a grouping of times
 @endcode
 '''
+
+SKIPPING_FOR_NO_LEADS_LOG = 'Skipping because no leads were found'
 
 
 class RuntimeFreqWrapper(CommandBuilder):
@@ -129,32 +133,22 @@ class RuntimeFreqWrapper(CommandBuilder):
             prefix = info.get('prefix')
             required = info.get('required', True)
 
-            template = self.config.getraw('config', f'{prefix}_INPUT_FILE_LIST')
-            # if explicit file list is specified, use it
-            if template:
-                c_dict['EXPLICIT_FILE_LIST'] = True
-                template_dict[label.rstrip('_')] = (template, True, False)
+            prefix_list = [prefix] if isinstance(prefix, str) else prefix
+            templates = []
+            c_dict[f'{label}INPUT_DIR'] = ''
+            c_dict[f'{label}INPUT_TEMPLATE'] = ''
+
+            if self._handle_input_file_list(prefix_list, c_dict, template_dict, label):
                 continue
 
-            # otherwise read INPUT_DIR/TEMPLATE
-            input_dir = self.config.getdir(f'{prefix}_INPUT_DIR', '')
-            c_dict[f'{label}INPUT_DIR'] = input_dir
-            templates = getlist(
-                self.config.getraw('config', f'{prefix}_INPUT_TEMPLATE')
-            )
-            # if *_INPUT_TEMPLATE is not set, check if *_TEMPLATE is set
-            if not templates:
-                templates = getlist(
-                    self.config.getraw('config', f'{prefix}_TEMPLATE')
-                )
+            templates = self._get_templates_from_prefixes(prefix_list, c_dict, label)
 
             template = ','.join(templates)
             c_dict[f'{label}INPUT_TEMPLATE'] = template
             if not c_dict[f'{label}INPUT_TEMPLATE']:
                 # don't add template to output dictionary if it is not set
                 # report an error if it was marked as required
-                if required:
-                    self.log_error(f'{prefix}_INPUT_TEMPLATE required to run')
+                self._log_error_if_required(f'{prefix_list[0]}_INPUT_TEMPLATE required to run', required)
                 continue
 
             template_dict[label.rstrip('_')] = (template, True, False)
@@ -164,6 +158,65 @@ class RuntimeFreqWrapper(CommandBuilder):
         if d_type:
             key = f'{key}_{d_type}'
         c_dict[key] = template_dict
+
+    def _get_templates_from_prefixes(self, prefix_list, c_dict, label):
+        found_prefix = False
+        return_templates = []
+        for prefix in prefix_list:
+
+            # otherwise read INPUT_DIR/TEMPLATE
+            input_dir = self.config.getdir(f'{prefix}_INPUT_DIR', '')
+            templates = self._get_templates_for_prefix(prefix)
+
+            # If templates were found with this prefix, use it
+            if templates:
+                if found_prefix:
+                    self.logger.warning(f'{prefix_list[0]}_INPUT_TEMPLATE and '
+                                        f'{prefix}_INPUT_TEMPLATE are set. Using the former. ')
+                    continue
+
+                return_templates = templates.copy()
+                # Use the first successful prefix for setting c_dict entries
+                c_dict[f'{label}INPUT_DIR'] = input_dir
+                found_prefix = True
+
+        return return_templates
+
+    def _log_error_if_required(self, error_msg, required):
+        if required:
+            self.log_error(error_msg)
+
+    def _handle_input_file_list(self, prefix_list, c_dict, template_dict, label):
+        template_found = False
+        for prefix in prefix_list:
+            template = self.config.getraw('config', f'{prefix}_INPUT_FILE_LIST')
+            # if explicit file list is specified, use it
+            if template:
+                # log a warning if multiple formats of config are set
+                if template_found:
+                    self.logger.warning(f'{prefix_list[0]}_INPUT_FILE_LIST and '
+                                        f'{prefix}_INPUT_TEMPLATE are set. Using the former. ')
+                c_dict['EXPLICIT_FILE_LIST'] = True
+                template_dict[label.rstrip('_')] = (template, True, False)
+                template_found = True
+
+        return template_found
+
+    def _get_templates_for_prefix(self, prefix):
+        """!Get templates for a given prefix, trying INPUT_TEMPLATE first, then TEMPLATE.
+
+        @param prefix the prefix to use for config lookup
+        @returns list of templates, or empty list if none found
+        """
+        templates = getlist(
+            self.config.getraw('config', f'{prefix}_INPUT_TEMPLATE')
+        )
+        # if *_INPUT_TEMPLATE is not set, check if *_TEMPLATE is set
+        if not templates:
+            templates = getlist(
+                self.config.getraw('config', f'{prefix}_TEMPLATE')
+            )
+        return templates
 
     def get_input_templates_multiple(self, c_dict):
         """!Read input templates from config. Use this function when a given
@@ -202,9 +255,15 @@ class RuntimeFreqWrapper(CommandBuilder):
     def run_all_times(self):
         wrapper_instance_name = self.get_wrapper_instance_name()
         self.logger.info(f'Running wrapper: {wrapper_instance_name}')
+        # set CURRENT_INSTANCE to instance string or empty string if None
+        # this is done so instance can be substituted for template-based time generation
+        self.config.set('config', 'CURRENT_INSTANCE', self.instance if self.instance else '')
 
         # loop over all custom strings
         for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+            # set CURRENT_CUSTOM to custom string
+            # this is done so custom can be substituted for template-based time generation
+            self.config.set('config', 'CURRENT_CUSTOM', custom_string)
             if custom_string:
                 self.logger.info(
                     f"Processing custom string: {custom_string}"
@@ -346,6 +405,9 @@ class RuntimeFreqWrapper(CommandBuilder):
     def run_once_per_lead_group(self, lead_groups, time_input):
         success = True
         for label, lead_seq in lead_groups.items():
+            if not lead_seq:
+                self.logger.debug(SKIPPING_FOR_NO_LEADS_LOG)
+                continue
             self._log_lead_group(label, lead_seq)
             time_input['label'] = label
             self.c_dict['ALL_FILES'] = (
@@ -382,6 +444,10 @@ class RuntimeFreqWrapper(CommandBuilder):
         success = True
 
         lead_seq = get_lead_sequence(self.config, input_dict=None)
+        if not lead_seq:
+            self.logger.debug(SKIPPING_FOR_NO_LEADS_LOG)
+            return True
+
         for lead in lead_seq:
             # add forecast lead to time input
             time_input['lead'] = lead
@@ -431,6 +497,10 @@ class RuntimeFreqWrapper(CommandBuilder):
             lead_seq = [0]
         else:
             lead_seq = get_lead_sequence(self.config, input_dict)
+
+        if not lead_seq:
+            self.logger.debug(SKIPPING_FOR_NO_LEADS_LOG)
+            return True
 
         for lead in lead_seq:
             input_dict['lead'] = lead
@@ -517,6 +587,10 @@ class RuntimeFreqWrapper(CommandBuilder):
             lead_seq = get_lead_sequence(self.config,
                                          time_input,
                                          wildcard_if_empty=use_wildcard)
+            if not lead_seq:
+                self.logger.debug(SKIPPING_FOR_NO_LEADS_LOG)
+                continue
+
             lead_files = self.get_all_files_from_leads(time_input, lead_seq)
             self._update_list_with_new_files(lead_files, all_files)
 
@@ -782,12 +856,13 @@ class RuntimeFreqWrapper(CommandBuilder):
             if label == 'OBS':
                 input_files, offset_time_info = (
                     self.find_obs_offset(time_info, mandatory=mandatory,
-                                         return_list=True)
+                                         return_list=True, allow_dir=self.c_dict.get('ALLOW_DIR', False))
                 )
             else:
                 input_files = self.find_data(time_info, data_type=data_type,
                                              return_list=True,
-                                             mandatory=mandatory)
+                                             mandatory=mandatory,
+                                             allow_dir=self.c_dict.get('ALLOW_DIR', False))
 
             if not input_files:
                 # if no files are found and fill missing is set, add 'missing'
@@ -974,7 +1049,9 @@ class RuntimeFreqWrapper(CommandBuilder):
             return
 
         # if there is more than 1 file, create file list file
-        if not self.c_dict.get('SUPPORTS_FILE_LIST', True):
+        # unless any of the files are actually directories
+        if (not self.c_dict.get('SUPPORTS_FILE_LIST', True)
+                or any([os.path.isdir(filename) or is_python_script(filename) for filename in file_list])):
             self.infiles.extend(file_list)
             return
 

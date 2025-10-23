@@ -220,7 +220,7 @@ def test_met_db_load_wrapper(tmp_path_factory, metplus_config):
     wrapper = METDbLoadWrapper(config)
     all_cmds = wrapper.run_all_times()
 
-    assert wrapper.isOK
+    assert wrapper.is_ok
     assert wrapper.logger.error.assert_not_called
     assert len(all_cmds) == 3
 

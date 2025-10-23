@@ -50,6 +50,7 @@ class Point2GridWrapper(ReformatPointWrapper):
                                                  c_dict['VERBOSITY'])
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
+        c_dict['SUPPORTS_FILE_LIST'] = False
 
         # handle window variables [POINT2GRID_]FILE_WINDOW_[BEGIN/END]
         c_dict['OBS_FILE_WINDOW_BEGIN'] = \
@@ -116,13 +117,12 @@ class Point2GridWrapper(ReformatPointWrapper):
         self.add_met_config(name='valid_time', data_type='string')
         self.add_met_config_window('obs_window')
         self.add_met_config(name='message_type', data_type='list')
-        if not add_met_config_dict_list(config=self.config,
-                                        app_name=self.app_name,
-                                        output_dict=self.env_var_dict,
-                                        dict_name='var_name_map',
-                                        dict_items={'key': 'string',
-                                                    'val': 'string'}):
-            self.isOK = False
+        add_met_config_dict_list(config=self.config,
+                                 app_name=self.app_name,
+                                 output_dict=self.env_var_dict,
+                                 dict_name='var_name_map',
+                                 dict_items={'key': 'string',
+                                             'val': 'string'})
 
         self.add_met_config(name='obs_quality_inc', data_type='list',
                             metplus_configs=['POINT2GRID_OBS_QUALITY_INC',

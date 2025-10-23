@@ -172,7 +172,8 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         c_dict['ENS_VAR_LIST_TEMP'] = parse_var_list(
             self.config,
             data_type='ENS',
-            met_tool=self.app_name
+            met_tool=self.app_name,
+            var_options=self.var_options
         )
 
         self.add_met_config(name='file_type',

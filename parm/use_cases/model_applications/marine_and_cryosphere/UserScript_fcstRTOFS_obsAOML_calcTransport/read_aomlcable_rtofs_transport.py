@@ -4,6 +4,8 @@ Florida Cable Transport Class-4 Validation System
 Adapted from Todd Spindler's code
 """
 
+import sys, os
+
 from netCDF4 import Dataset
 import numpy as np
 from pyproj import Geod
@@ -11,8 +13,6 @@ import math
 from sklearn.metrics import mean_squared_error
 from datetime import datetime, timedelta
 import pandas as pd
-import sys, os
-import logging
 
 vDate=datetime.strptime(sys.argv[1],'%Y%m%d')
 rtofsdir = os.environ.get('CALC_TRANSPORT_RTOFS_DIRNAME') 
@@ -95,7 +95,7 @@ def calc_transport(dates,fcst):
         vsection=vsection[:-1,:-1]
 
         dist,depth=np.meshgrid(dist,depth)
-        u,v=rotate(usection,vsection,cable_angle)
+        _,v=rotate(usection,vsection,cable_angle)
         trans1=(v*dist*depth).sum()/1e6
         #print(date.strftime('%Y-%m-%d'),' transport:',transport,'Sv')
         transport.append(trans1)
@@ -116,7 +116,6 @@ def get_model(dates,fcsts):
     model=pd.DataFrame(transport)
     model.index=model.dates
     del model['dates']
-    #del model['validDates']
 
     print(model)
     return model
@@ -165,7 +164,7 @@ if __name__ == "__main__":
     diff=both[fcst] - both.transport
     bias=diff.mean()
     rmse=mean_squared_error(both.transport,both[fcst])**0.5
-    if both[fcst].mean() != 0.0:
+    if not math.isclose(both[fcst].mean(), 0.0, rel_tol=1e-09, abs_tol=1e-09):
         scatter_index=100.0*(((diff**2).mean())**0.5 - bias**2)/both.transport.mean()
     else:
         scatter_index=np.nan

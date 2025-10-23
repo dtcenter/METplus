@@ -1,6 +1,3 @@
-from __future__ import print_function
-
-import pandas as pd
 import os
 from glob import glob
 import sys
@@ -8,6 +5,11 @@ import xarray as xr
 import datetime as dt
 
 ########################################################################
+
+HOFX_STRING = '@hofx'
+OBS_VALUE_STRING = '@ObsValue'
+DATETIME_METADATA_STRING = 'datetime@MetaData'
+STATION_ID_METADATA_STRING = 'station_id@MetaData'
 
 def read_netcdfs(files, dim):
     paths = sorted(glob(files))
@@ -41,31 +43,31 @@ if len(sys.argv) == 2:
         print('Number of locations in set: ' + str(nlocs)) 
 
         # Decode strings
-        ioda_df.loc[:,'datetime@MetaData'] = ioda_df.loc[:,'datetime@MetaData'].str.decode('utf-8') 
-        ioda_df.loc[:,'station_id@MetaData'] = ioda_df.loc[:,'station_id@MetaData'].str.decode('utf-8')
+        ioda_df.loc[:,DATETIME_METADATA_STRING] = ioda_df.loc[:,DATETIME_METADATA_STRING].str.decode('utf-8')
+        ioda_df.loc[:,STATION_ID_METADATA_STRING] = ioda_df.loc[:,STATION_ID_METADATA_STRING].str.decode('utf-8')
 
         # Datetime format. Need YYYYMMD_HHMMSS from YYYY-MM-DDTHH:MM:SSZ.           
-        time = ioda_df.loc[:,'datetime@MetaData'].values.tolist()
+        time = ioda_df.loc[:,DATETIME_METADATA_STRING].values.tolist()
 
         for i in range(0,nlocs):        
             temp = dt.datetime.strptime(time[i], '%Y-%m-%dT%H:%M:%SZ')
             time[i] = temp.strftime('%Y%m%d_%H%M%S')
             
-        ioda_df.loc[:,'datetime@MetaData'] = time
+        ioda_df.loc[:,DATETIME_METADATA_STRING] = time
 
         mpr_data = []
-        var_list = [i for i in var_list if i+'@hofx' in ioda_df.columns]
+        var_list = [i for i in var_list if i+HOFX_STRING in ioda_df.columns]
 
         for var_name in var_list:
             
             # Subset the needed columns
-            ioda_df_var = ioda_df[['datetime@MetaData','station_id@MetaData',var_name+'@ObsType',
+            ioda_df_var = ioda_df[[DATETIME_METADATA_STRING,STATION_ID_METADATA_STRING,var_name+'@ObsType',
                                 'latitude@MetaData','longitude@MetaData','air_pressure@MetaData',
-                                var_name+'@hofx',var_name+'@ObsValue',
+                                var_name+HOFX_STRING,var_name+OBS_VALUE_STRING,
                                 var_name+'@PreQC']]
             
             # Find locations with ObsValues
-            ioda_df_var = ioda_df_var[ioda_df_var[var_name+'@ObsValue'] < 1e9] 
+            ioda_df_var = ioda_df_var[ioda_df_var[var_name+OBS_VALUE_STRING] < 1e9]
             nlocs = len(ioda_df_var.index)
             print(var_name+' has '+str(nlocs)+' obs.')
             
@@ -78,11 +80,11 @@ if len(sys.argv) == 2:
             ioda_df_var['na'] = 'NA'
 
             # Arrange columns in MPR format
-            cols = ['na','na','lead','datetime@MetaData','datetime@MetaData','lead','datetime@MetaData',
-                    'datetime@MetaData','varname','na','lead','varname','na','na',
+            cols = ['na','na','lead',DATETIME_METADATA_STRING,DATETIME_METADATA_STRING,'lead',DATETIME_METADATA_STRING,
+                    DATETIME_METADATA_STRING,'varname','na','lead','varname','na','na',
                     var_name+'@ObsType','na','na','lead','na','na','na','na','MPR',
-                    'nobs','index','station_id@MetaData','latitude@MetaData','longitude@MetaData',
-                    'air_pressure@MetaData','na',var_name+'@hofx',var_name+'@ObsValue',
+                    'nobs','index',STATION_ID_METADATA_STRING,'latitude@MetaData','longitude@MetaData',
+                    'air_pressure@MetaData','na',var_name+HOFX_STRING,var_name+OBS_VALUE_STRING,
                     var_name+'@PreQC','na','na','na','na','na']
             
             ioda_df_var = ioda_df_var[cols]
