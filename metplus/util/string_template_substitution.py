@@ -18,7 +18,7 @@ import datetime
 from dateutil.relativedelta import relativedelta
 
 from . import time_util
-from .constants import COMPRESSION_EXTENSIONS
+from .constants import COMPRESSION_EXTENSIONS, NullLogger
 
 TEMPLATE_IDENTIFIER_BEGIN = "{"
 TEMPLATE_IDENTIFIER_END = "}"
@@ -49,6 +49,7 @@ LENGTH_DICT = {'Y': 4,
 
 MAX_ATTEMPTS = 5
 
+
 def multiple_replace(replace_dict, text):
     """Helper function for do_string_sub. Replace in 'text' all occurrences of any key in the
     given dictionary by its corresponding value.  Returns the new string. """
@@ -58,6 +59,7 @@ def multiple_replace(replace_dict, text):
 
     # For each match, look-up corresponding value in dictionary
     return regex.sub(lambda mo: replace_dict[mo.string[mo.start():mo.end()]], text)
+
 
 def get_tags(template):
     """!Parse template and pull out all wildcard characters (* or ?) and all
@@ -82,6 +84,7 @@ def get_tags(template):
         i += 1
     return tags
 
+
 def format_one_time_item(item, time_str, unit):
     """!Helper function for do_string_sub. Determine precision of time offset value and format
         Args:
@@ -91,44 +94,66 @@ def format_one_time_item(item, time_str, unit):
         Returns: Padded value or empty string if unit is not found in item
     """
     count = item.count(unit)
-    if count > 0:
-        rest = ''
-        # get precision from number (%3H)
-        res = re.match(r"^\.*(\d+)"+unit+"(.*)", item)
-        if res:
-            padding = int(res.group(1))
-            rest = res.group(2)
-        else:
-            padding = count
-            res = re.match("^"+unit+"+(.*)", item)
-            if res:
-                rest = res.group(1)
-                if unit != 's':
-                    padding = max(2, count)
-
-        # add formatted time
-        return str(time_str).zfill(padding)+rest
-
     # return empty string if no match
-    return ''
+    if not count:
+        return ''
 
-def format_hms(fmt, obj):
-    """!Helper function for do_string_sub. For time offset values, get hour, minute, and
-        second values to format as necessary
-        Args:
-            @param fmt format to substitute, i.e. %3H or %2M or %S
-            @param obj time value in seconds to format, i.e. 3600
-        Returns: Formatted time value
+    rest = ''
+    # get precision from number (%3H)
+    res = re.match(r"^\.*(\d+)"+unit+"(.*)", item)
+    if res:
+        padding = int(res.group(1))
+        rest = res.group(2)
+    else:
+        padding = count
+        res = re.match("^"+unit+"+(.*)", item)
+        if res:
+            rest = res.group(1)
+            if unit != 's':
+                padding = max(2, count)
+
+    # add formatted time
+    return str(time_str).zfill(padding)+rest
+
+
+def format_time_offset(fmt, obj, month_len=None, year_len=None):
+    """!Helper function for do_string_sub. For time offset values, get hour,
+     minute, and second values to format as necessary.
+
+     @param fmt format to substitute, e.g. %3H or %2M or %S
+     @param obj time value in seconds to format, e.g. 3600
+     @param month_len (optional) number of seconds in the month being processed
+     @param year_len (optional) number of seconds in the year being processed
+     @returns Formatted time value
     """
     out_str = ''
     fmt_split = fmt.split('%')[1:]
-    # split time into days, hours, mins, and secs
+    # split time into days, hours, minutes, and seconds
     # time should be relative to the next highest unit if higher units are specified
-    # i.e. 90 minutes %M => 90, but %H%M => 0130
+    # e.g. 90 minutes %M => 90, but %H%M => 0130
+    # if length of month and/or year are available, also split using those
+    years = obj // year_len if year_len else 0
+    months = obj // month_len if month_len else 0
     days = obj // 86400
     hours = obj // 3600
     minutes = obj // 60
     seconds = obj
+
+    # if years are specified, change smaller units to relative
+    if True in ['Y' in x for x in fmt_split] and years:
+        if months:
+            months = (obj % year_len) // month_len
+            days = (obj % month_len) // 86400
+        hours = (obj % 86400) // 3600
+        minutes = (obj % 3600) // 60
+        seconds = (obj % 3600) % 60
+
+    # if months are specified, change smaller units to relative
+    if True in ['m' in x for x in fmt_split] and months:
+        days = (obj % month_len) // 86400
+        hours = (obj % 86400) // 3600
+        minutes = (obj % 3600) // 60
+        seconds = (obj % 3600) % 60
 
     # if days are specified, change hours, minutes, and seconds to relative
     if True in ['d' in x for x in fmt_split]:
@@ -147,6 +172,8 @@ def format_hms(fmt, obj):
 
     # parse format
     for item in fmt_split:
+        out_str += format_one_time_item(item, years, 'Y')
+        out_str += format_one_time_item(item, months, 'm')
         out_str += format_one_time_item(item, hours, 'H')
         out_str += format_one_time_item(item, minutes, 'M')
         out_str += format_one_time_item(item, seconds, 'S')
@@ -154,6 +181,7 @@ def format_hms(fmt, obj):
         out_str += format_one_time_item(item, days, 'd')
 
     return out_str
+
 
 def set_output_dict_from_time_info(time_dict, output_dict, key):
     """!Create datetime object from time data,
@@ -178,6 +206,7 @@ def set_output_dict_from_time_info(time_dict, output_dict, key):
                                              time_dict['d'],
                                              time_dict['H'],
                                              time_dict['M'])
+
 
 def add_to_dict(match, match_dict, filepath, new_len):
     """!Add extracted information to match dictionary
@@ -205,6 +234,7 @@ def add_to_dict(match, match_dict, filepath, new_len):
 
     # item was added or already existed in match dictionary
     return True
+
 
 def get_seconds_from_template(split_string, element_name, kwargs):
     """!Get seconds value from tag that contains a shift or truncate item
@@ -234,6 +264,7 @@ def get_seconds_from_template(split_string, element_name, kwargs):
     # if not found, return 0
     return 0
 
+
 def round_time_down(obj, truncate_seconds):
     """!If template value needs to be truncated, round the value down
         to the given truncate interval"""
@@ -247,56 +278,127 @@ def round_time_down(obj, truncate_seconds):
                                        -obj.microsecond)
     return new_obj
 
+
 def handle_format_delimiter(split_string, idx, shift_seconds, truncate_seconds, kwargs):
-    """!Check for formatting/length request by splitting on
-        FORMATTING_VALUE_DELIMITER
+    """!Check for formatting/length request by splitting on FORMATTING_VALUE_DELIMITER
         split_string[1]
-        Args:
-            @param split_string holds the formatting/length
-              information (e.g. "fmt=%Y%m%d", "len=3")
-            @param idx index in split_string of the format item
+
+        @param split_string holds the formatting/length information
+         (e.g. "fmt=%Y%m%d", "len=3")
+        @param idx index in split_string of the format item
         Returns: Formatted string
     """
-    format_split_string = \
-        split_string[idx].split(FORMATTING_VALUE_DELIMITER)
+    format_split_string = split_string[idx].split(FORMATTING_VALUE_DELIMITER)
 
     # Check for requested FORMAT_STRING
     # format_split_string[0] holds the formatting/length
     # value delimiter (e.g. "fmt", "len")
-    if format_split_string[0] == FORMAT_STRING:
-        obj = kwargs.get(split_string[0], None)
+    if format_split_string[0] != FORMAT_STRING:
+        return None
 
-        fmt = format_split_string[idx]
-        # if input is datetime object, format appropriately
-        if isinstance(obj, datetime.datetime):
-            # shift date time if set
-            obj = obj + datetime.timedelta(seconds=shift_seconds)
+    obj = kwargs.get(split_string[0], None)
 
-            # truncate date time if set
-            obj = round_time_down(obj, truncate_seconds)
-            return obj.strftime(fmt)
+    fmt = format_split_string[idx]
+    # if input is datetime object, format appropriately
+    if isinstance(obj, datetime.datetime):
+        # shift date time if set
+        obj = obj + datetime.timedelta(seconds=shift_seconds)
 
-        # if input is relativedelta
-        if isinstance(obj, relativedelta):
-            seconds = time_util.ti_get_seconds_from_relativedelta(obj)
-            if seconds is None:
-                return time_util.ti_get_lead_string(obj, letter_only=True)
-            seconds += shift_seconds
-            return format_hms(fmt, seconds)
+        # truncate date time if set
+        obj = round_time_down(obj, truncate_seconds)
+        return obj.strftime(fmt)
 
-        # if input is integer, format with H, M, and S
-        if isinstance(obj, int):
-            obj += shift_seconds
-            return format_hms(fmt, obj)
+    # if input is relativedelta, it should be a forecast lead
+    if isinstance(obj, relativedelta):
+        return format_forecast_lead(obj, fmt, shift_seconds, kwargs)
 
-        # if string, format if possible
-        if isinstance(obj, str):
-            return '{}'.format(obj)
+    # if input is integer, format with H, M, and S
+    if isinstance(obj, int):
+        obj += shift_seconds
+        return format_time_offset(fmt, obj)
 
-        raise TypeError('Could not format item {} with format {} in {}'
-                        .format(obj, fmt, split_string))
+    # if string, format if possible
+    if isinstance(obj, str):
+        return '{}'.format(obj)
 
-    return None
+    raise TypeError('Could not format item {} with format {} in {}'
+                    .format(obj, fmt, split_string))
+
+
+def format_forecast_lead(obj, fmt, shift_seconds, kwargs):
+    """!Formats the forecast lead time based on the given format, time shift, and additional
+    time-related attributes.
+
+    The function calculates the exact lead time in seconds, considering optional
+    attributes like months or years, by using valid or initialization time and
+    to adjust time shifts accordingly. Returns a formatted lead-time string.
+
+    @param obj relativedelta object representing the lead time
+    @param fmt: format to be applied to the lead-time string during conversion,
+     like '%H%M%S'.
+    @param shift_seconds time shift to adjust the lead time, in seconds.
+    @param kwargs dict containing additional time-related attributes, such as
+     'valid' or 'init', which provide base valid or initialization datetime information.
+    @returns str: The formatted lead-time string.
+    @raises KeyError: If required keys like 'valid' or 'init' are missing in kwargs.
+    """
+    # get valid time if valid or init is available to get the number of
+    # seconds for months or years
+    valid_time = kwargs.get('valid')
+    if valid_time is None and kwargs.get('init'):
+        valid_time = kwargs['init'] + obj
+
+    seconds = time_util.ti_get_seconds_from_relativedelta(obj, valid_time=valid_time)
+    # if we cannot compute the number of seconds
+    if seconds is None:
+        return _format_unknown_seconds_relativedelta(obj, fmt)
+
+    # if there are months, get the number of seconds in the month relative to valid
+    month_seconds = None
+    if obj.months:
+        month_seconds = (
+            time_util.ti_get_seconds_from_relativedelta(relativedelta(months=1),
+                                                        valid_time=valid_time)
+        )
+
+    # if there are years, get the number of seconds in the year relative to valid
+    year_seconds = None
+    if obj.years:
+        year_seconds = (
+            time_util.ti_get_seconds_from_relativedelta(relativedelta(years=1),
+                                                        valid_time=valid_time)
+        )
+
+    seconds += shift_seconds
+    return format_time_offset(fmt, seconds, month_seconds, year_seconds)
+
+def _format_unknown_seconds_relativedelta(obj, fmt):
+    """!Formats the lead-time string for relativedelta objects with an unknown number
+     of seconds. This is likely because it contains months or years and there is
+     no available reference time to compute the number of seconds.
+
+    @param obj: relativedelta object representing the lead time
+    @param fmt: format to be applied to the lead-time string during conversion
+    @returns str: The formatted lead-time string.
+    """
+    # if the format is just requesting month or year and the value is
+    # a month or year, use the month or year value directly
+    match = re.match(r'%(\d*)([Ym])', fmt)
+    if match:
+
+        # pad with 0's if specified by the format, minimum 2
+        padding = 2
+        if match.group(1):
+            padding = max(2, int(match.group(1)))
+
+        if obj.years and match.group(2) == 'Y':
+            return f'{obj.years}'.zfill(padding)
+
+        if obj.months and match.group(2) == 'm':
+            return f'{obj.months}'.zfill(padding)
+
+    # otherwise return lead with letter suffix
+    return time_util.ti_get_lead_string(obj, letter_only=True)
 
 def do_string_sub(tmpl,
                   skip_missing_tags=False,
@@ -367,6 +469,7 @@ def do_string_sub(tmpl,
                          attempt=attempt_local-1,
                          **kwargs)
 
+
 def find_and_replace_tags_in_template(match_list, tmpl, kwargs, skip_missing_tags=False):
     """! Loop through tags from template and replace them with the correct time values
          @param match_list list of tags to process
@@ -379,53 +482,7 @@ def find_and_replace_tags_in_template(match_list, tmpl, kwargs, skip_missing_tag
     replacement_dict = {}
     # Search for the FORMATTING_DELIMITER within the first string
     for match in match_list:
-
-        string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + \
-                            TEMPLATE_IDENTIFIER_END
-        split_string = match.split(FORMATTING_DELIMITER)
-
-        # valid, init, lead, etc.
-        # print split_string[0]
-        # value e.g. 2016012606, 3
-
-        # split_string[0] holds the key (e.g. "init", "valid", etc)
-        if split_string[0] not in kwargs.keys():
-            # if skip_missing_tags is True, leave template tag if key was not found
-            if skip_missing_tags:
-                continue
-
-            # otherwise log and exit
-            raise TypeError("The key " + split_string[0] +
-                            " was not passed to do_string_sub " +
-                            " for template: " + tmpl + ": " + str(kwargs))
-
-        # if shift is set, get that value before handling formatting
-        shift_seconds = get_seconds_from_template(split_string, SHIFT_STRING, kwargs)
-
-        # if truncate is set, get that value before handling formatting
-        truncate_seconds = get_seconds_from_template(split_string, TRUNCATE_STRING, kwargs)
-
-        # format times appropriately and add to replacement_dict
-        formatted = False
-        for idx, split_item in enumerate(split_string):
-            if split_item.startswith(FORMAT_STRING):
-                replacement_dict[string_to_replace] = \
-                    handle_format_delimiter(split_string,
-                                            idx,
-                                            shift_seconds,
-                                            truncate_seconds,
-                                            kwargs)
-                formatted = True
-
-        # No formatting or length is requested
-        if not formatted:
-            # Add back the template identifiers to the matched
-            # string to replace and add the key, value pair to the
-            # dictionary
-            value = kwargs.get(split_string[0], None)
-            if isinstance(value, int):
-                value = f"{value}S"
-            replacement_dict[string_to_replace] = value
+        _add_to_replacement_dict(replacement_dict, match, skip_missing_tags, tmpl, kwargs)
 
     # Replace regex with properly formatted information
     if not replacement_dict:
@@ -433,12 +490,58 @@ def find_and_replace_tags_in_template(match_list, tmpl, kwargs, skip_missing_tag
 
     return multiple_replace(replacement_dict, tmpl)
 
-def parse_template(template, filepath, logger=None):
+def _add_to_replacement_dict(replacement_dict, match, skip_missing_tags, tmpl, kwargs):
+    string_to_replace = f"{TEMPLATE_IDENTIFIER_BEGIN}{match}{TEMPLATE_IDENTIFIER_END}"
+    split_string = match.split(FORMATTING_DELIMITER)
+
+    # split_string[0] holds the key (e.g. "init", "valid", etc)
+    if split_string[0] not in kwargs.keys():
+        # if skip_missing_tags is True, leave template tag if key was not found
+        if skip_missing_tags:
+            return
+
+        # otherwise log and exit
+        raise TypeError("The key " + split_string[0] +
+                        " was not passed to do_string_sub " +
+                        " for template: " + tmpl + ": " + str(kwargs))
+
+    # if shift is set, get that value before handling formatting
+    shift_seconds = get_seconds_from_template(split_string, SHIFT_STRING, kwargs)
+
+    # if truncate is set, get that value before handling formatting
+    truncate_seconds = get_seconds_from_template(split_string, TRUNCATE_STRING, kwargs)
+
+    # format times appropriately and add to replacement_dict
+    formatted = False
+    for idx, split_item in enumerate(split_string):
+        if not split_item.startswith(FORMAT_STRING):
+            continue
+
+        replacement_dict[string_to_replace] = (
+            handle_format_delimiter(split_string, idx, shift_seconds, truncate_seconds, kwargs)
+        )
+        formatted = True
+
+    if formatted:
+        return
+
+    # No formatting or length is requested
+    # Add back the template identifiers to the matched
+    # string to replace and add the key, value pair to the
+    # dictionary
+    value = kwargs.get(split_string[0], None)
+    if isinstance(value, int):
+        value = f"{value}S"
+
+    replacement_dict[string_to_replace] = value
+
+
+def parse_template(template, filepath, logger=NullLogger):
     """!Extract time information from path using the filename template
-         Args:
-             @param template filename template to use to extract time information
-             @param filepath path to examine
-             @returns time_info dictionary with time information if successful, None if not"""
+
+       @param template filename template to use to extract time information
+       @param filepath path to examine
+       @returns time_info dictionary with time information if successful, None if not"""
 
     match_dict, valid_shift = populate_match_dict(template, filepath, logger)
     if match_dict is None:
@@ -448,11 +551,7 @@ def parse_template(template, filepath, logger=None):
     output_dict = populate_output_dict(match_dict, valid_shift)
 
     if not output_dict:
-        if logger:
-            logger.debug(f"Could not extract enough time information from {filepath}")
-        else:
-            print(f"DEBUG: Could not extract enough time information from {filepath}")
-
+        logger.debug(f"Could not extract enough time information from {filepath}")
         return None
 
     # fill in the rest of the time info dictionary items with ti_calculate
@@ -460,27 +559,27 @@ def parse_template(template, filepath, logger=None):
 
     return time_info
 
-def populate_match_dict(template, filepath, logger=None):
+
+def populate_match_dict(template, filepath, logger=NullLogger):
     """! Use template to extract time information from filepath, add each value to a dictionary.
          Populates a dictionary with keys that contain tag name + time type, i.e. init+Y,
          valid+M, or lead+S, with string values containing the number extracted from the filepath.
          Also determines the shift amount  for valid time if it was found, i.e.
          {valid?fmt=%Y%m%d?shift=-30}. Valid shift will be 0 if no shift.
          Note: valid time values will not have the shift applied.
-         Args:
-             @param template filename template to use to find time information, i.e.
-                 file.{valid?fmt=%Y%m%d}.ext
-             @param filepath path to examine, i.e. file.20190201.ext
-             @returns tuple of match dictionary and valid shift value if success, i.e.
-                 ({'init+Y': '2019'}, -30)
-              Returns (None, None) if could not extract time info
+
+    @param template filename template to use to find time information, i.e.
+     file.{valid?fmt=%Y%m%d}.ext
+    @param filepath path to examine, i.e. file.20190201.ext
+    @returns tuple of match dictionary and valid shift value if success, i.e.
+     ({'init+Y': '2019'}, -30).
+     Returns (None, None) if could not extract time info
     """
     # get the text before any tags, between tags, and after any tags
     match = re.match(r'([^{]*)({.*})([^}]*)', template)
     if not match:
         # if there were no tags, we can't extract time info, so return None, None
-        if logger:
-            logger.debug("No tags found (1)")
+        logger.debug("No tags found (1)")
         return None, None
 
     all_tags = match.group(2)
@@ -492,6 +591,7 @@ def populate_match_dict(template, filepath, logger=None):
         return None, None
 
     return process_match_tags(all_tags, filepath, logger)
+
 
 def process_match_tags(all_tags, filepath, logger):
     """! Loop through tags and process each.
@@ -507,8 +607,7 @@ def process_match_tags(all_tags, filepath, logger):
 
     match_tags = re.findall(r'{(.*?)}([^{]*)', all_tags)
     if not match_tags:
-        if logger:
-            logger.debug("No tags found (2)")
+        logger.debug("No tags found (2)")
         return None, None
 
     for match_tag in match_tags:
@@ -521,14 +620,12 @@ def process_match_tags(all_tags, filepath, logger):
 
         # if length of formatted text couldn't be determined
         if fmt_len is None:
-            if logger:
-                logger.debug("Could not determine length of formatted text")
+            logger.debug("Could not determine length of formatted text")
             return None, None
 
         # if length of formatted text is longer than remaining text in file path
         if fmt_len > len(filepath):
-            if logger:
-                logger.debug("Length of formatted text is longer than remaining text in file path")
+            logger.debug("Length of formatted text is longer than remaining text in file path")
             return None, None
 
         # strip off length of formatted text from filepath
@@ -540,6 +637,7 @@ def process_match_tags(all_tags, filepath, logger):
             return None, None
 
     return match_dict, valid_shift
+
 
 def _check_pre_text(filepath, pre_text):
     """! Check if there is an text before all tags and if they match the template.
@@ -555,23 +653,22 @@ def _check_pre_text(filepath, pre_text):
     # if length of extra text is longer than remaining text in file path
     if len(pre_text) > len(filepath):
         # too much logging output comes from this - if verbose is added, this is a good candidate
-#        if logger:
-#            logger.debug("Length of pre text is longer than "
-#                         "remaining text in file path")
+#        logger.debug("Length of pre text is longer than "
+#                     "remaining text in file path")
         return None
 
     # if there is text before any tags, check that the text in the template matches the file path
     if pre_text:
         if pre_text != filepath[0:len(pre_text)]:
             # too much logging output comes from this - if verbose is added, this is a good candidate
-#            if logger:
-#                logger.debug("Text at beginning of filepath does not match template")
+#            logger.debug("Text at beginning of filepath does not match template")
             return None
 
         # strip off pre text from file path
         filepath = filepath[len(pre_text):]
 
     return filepath
+
 
 def _check_post_text(filepath, post_text):
     """! Check if there is an text after all tags and if they match the template.
@@ -593,6 +690,7 @@ def _check_post_text(filepath, post_text):
 
     return filepath
 
+
 def get_format_and_shift(tag_content, filepath, match_dict, valid_shift, extra_text):
     """! Extract format and shift information from tag. Raises TypeError if shift keyword
          is applied to a tag other than valid or if 2 different shift values are found
@@ -611,11 +709,7 @@ def get_format_and_shift(tag_content, filepath, match_dict, valid_shift, extra_t
     identifier, *sections = tag_content.split('?')
 
     if identifier == 'storm_id':
-        fmt_len = filepath.find(extra_text)
-        if fmt_len < 0:
-            fmt_len = 0
-        return fmt_len, 0
-
+        return max(filepath.find(extra_text), 0), 0
 
     for section in sections:
         element_name, element_value = section.split('=')
@@ -648,18 +742,20 @@ def get_format_and_shift(tag_content, filepath, match_dict, valid_shift, extra_t
 
     return fmt_len, valid_shift
 
+
 def get_fmt_info(fmt, filepath, match_dict, identifier):
     """!Helper function for parse_template. Reads format information from tag and
         populates dictionary with extracted values.
-        Args:
-            @param fmt formatting values from template tag, i.e. %Y%m%d
-            @param filepath rest of text from filename that can be parsed
-            @param match_dict dictionary of extracted information. Key is made up
-                   of the identifier and the format tag, i.e. init_H or valid_M.
-                   Value is the extracted information, i.e. 19870201
-            @param identifier tag name, i.e. 'init' or 'lead'
-            @returns Number of characters processed from the filename if success,
-                 -1 if failed to parse all format items in template tag"""
+
+    @param fmt formatting values from template tag, i.e. %Y%m%d
+    @param filepath rest of text from filename that can be parsed
+    @param match_dict dictionary of extracted information. Key is made up
+     of the identifier and the format tag, i.e. init_H or valid_M.
+     Value is the extracted information, i.e. 19870201
+    @param identifier tag name, i.e. 'init' or 'lead'
+    @returns Number of characters processed from the filename if success,
+     None if failed to parse all format items in template tag
+    """
     length = 0
     # find all items that start with %, i.e. %Y or %3H, %10S, or %.2d
     # group 1 is optional number, i.e. 3 in %3H or 2 in %.2d
@@ -704,8 +800,7 @@ def get_fmt_info(fmt, filepath, match_dict, identifier):
             new_len = int(time_number)
 
         # if lead or level hours are found
-        if (match[1] == 'H' and
-                (identifier in ('lead', 'level'))):
+        if match[1] == 'H' and identifier in ('lead', 'level'):
             # look forward until non-digit is found
             new_len = 0
             while new_len < len(filepath) and filepath[new_len].isdigit():
@@ -723,6 +818,7 @@ def get_fmt_info(fmt, filepath, match_dict, identifier):
         filepath = filepath[new_len+extra_len:]
 
     return length
+
 
 def populate_output_dict(match_dict, valid_shift):
     """! Get all time values in match dictionary to add to the output dictionary
@@ -753,6 +849,7 @@ def populate_output_dict(match_dict, valid_shift):
         return output_dict
 
     return None
+
 
 def add_date_matches_to_output_dict(match_dict, output_dict, time_type, valid_shift=0):
     """! Look for time values in match dictionary add combine the values to add to the
@@ -788,6 +885,7 @@ def add_date_matches_to_output_dict(match_dict, output_dict, time_type, valid_sh
     if valid_shift:
         output_dict[time_type] -= datetime.timedelta(seconds=valid_shift)
 
+
 def add_lead_matches_to_output_dict(match_dict, output_dict):
     """! Look for forecast lead values in match dictionary add combine the values
          to add to the output dictionary
@@ -810,6 +908,7 @@ def add_lead_matches_to_output_dict(match_dict, output_dict):
     lead_seconds = lead['H'] * 3600 + lead['M'] * 60 + lead['S']
     output_dict['lead'] = lead_seconds
 
+
 def add_offset_matches_to_output_dict(match_dict, output_dict):
     """! Look for offset value in match dictionary and add the value to the
          output dictionary
@@ -826,6 +925,7 @@ def add_offset_matches_to_output_dict(match_dict, output_dict):
             offset = int(value)
 
     output_dict['offset_hours'] = offset
+
 
 def get_time_from_file(filepath, template, logger=None):
     """! Extract time information from path using the filename template

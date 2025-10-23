@@ -60,9 +60,8 @@ def set_minimum_config_settings(config):
     'once_per_field, missing, run, thresh, errors, allow_missing', stat_runtime_freq_test_params
 )
 @pytest.mark.wrapper_b
-def test_wavelet_stat_missing_inputs(metplus_config, get_test_data_dir,
-                                     once_per_field, missing, run, thresh, errors,
-                                     allow_missing):
+def test_wavelet_stat_missing_inputs(metplus_config, get_test_data_dir, run_all_and_check_missing,
+                                     once_per_field, missing, run, thresh, errors, allow_missing):
     config = metplus_config
     set_minimum_config_settings(config)
     config.set('config', 'INPUT_MUST_EXIST', True)
@@ -87,16 +86,7 @@ def test_wavelet_stat_missing_inputs(metplus_config, get_test_data_dir,
     config.set('config', 'WAVELET_STAT_ONCE_PER_FIELD', once_per_field)
 
     wrapper = WaveletStatWrapper(config)
-    assert wrapper.isOK
-
-    all_cmds = wrapper.run_all_times()
-    for cmd, _ in all_cmds:
-        print(cmd)
-
-    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
-    assert wrapper.missing_input_count == missing
-    assert wrapper.run_count == run
-    assert wrapper.errors == errors
+    run_all_and_check_missing(wrapper, missing, run, errors)
 
 
 @pytest.mark.parametrize(
@@ -141,7 +131,7 @@ def test_wavelet_stat_is_prob(metplus_config, config_overrides, expected_values)
         config.set('config', key, value)
 
     wrapper = WaveletStatWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
     for key, expected_value in expected_values.items():
         assert expected_value == wrapper.c_dict[key]
 
@@ -327,7 +317,7 @@ def test_wavelet_stat_single_field(metplus_config, config_overrides,
         config.set('config', key, value)
 
     wrapper = WaveletStatWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"

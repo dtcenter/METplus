@@ -66,7 +66,7 @@ def set_minimum_config_settings(config):
     ]
 )
 @pytest.mark.wrapper_a
-def test_mode_missing_inputs(metplus_config, get_test_data_dir,
+def test_mode_missing_inputs(metplus_config, get_test_data_dir, run_all_and_check_missing,
                              missing, run, thresh, errors, allow_missing):
     config = metplus_config
     set_minimum_config_settings(config)
@@ -85,16 +85,7 @@ def test_mode_missing_inputs(metplus_config, get_test_data_dir,
                '{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A06.nc')
 
     wrapper = MODEWrapper(config)
-    assert wrapper.isOK
-
-    all_cmds = wrapper.run_all_times()
-    for cmd, _ in all_cmds:
-        print(cmd)
-
-    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
-    assert wrapper.missing_input_count == missing
-    assert wrapper.run_count == run
-    assert wrapper.errors == errors
+    run_all_and_check_missing(wrapper, missing, run, errors)
 
 
 @pytest.mark.parametrize(
@@ -405,7 +396,7 @@ def test_mode_single_field(metplus_config, config_overrides, env_var_values,
         config.set('config', key, value)
 
     wrapper = MODEWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -480,7 +471,7 @@ def test_mode_multi_variate(metplus_config, config_overrides,
                '{valid?fmt=%Y%m%d%H}/obs_file,{valid?fmt=%Y%m%d%H}/obs_file')
 
     wrapper = MODEWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -584,7 +575,7 @@ def test_config_synonyms(metplus_config, config_name, env_var_name,
     set_minimum_config_settings(config)
     config.set('config', config_name, in_value)
     wrapper = MODEWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     expected_output = f'{met_name} = {out_value};'
     assert wrapper.env_var_dict[env_var_name] == expected_output

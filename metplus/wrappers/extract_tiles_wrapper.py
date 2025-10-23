@@ -13,8 +13,7 @@ import os
 from datetime import datetime
 import re
 
-from ..util import do_string_sub, ti_calculate
-from ..util import sub_var_list
+from ..util import ti_calculate
 from ..util import parse_var_list, round_0p5, get_storms
 from .regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from . import LoopTimesWrapper
@@ -70,59 +69,22 @@ class ExtractTilesWrapper(LoopTimesWrapper):
 
         et_upper = self.app_name.upper()
 
-        # get TCStat data dir/template to read
-        c_dict['TC_STAT_INPUT_DIR'] = (
-            self.config.getdir('EXTRACT_TILES_TC_STAT_INPUT_DIR', '')
-        )
-
-        c_dict['TC_STAT_INPUT_TEMPLATE'] = (
-            self.config.getraw('config', 'EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE')
-        )
-        # get MTD data dir/template to read
-        c_dict['MTD_INPUT_DIR'] = (
-            self.config.getdir('EXTRACT_TILES_MTD_INPUT_DIR', '')
-        )
-
-        c_dict['MTD_INPUT_TEMPLATE'] = (
-            self.config.getraw('config', 'EXTRACT_TILES_MTD_INPUT_TEMPLATE')
-        )
+        self.get_input_templates(c_dict, {
+            'TC_STAT': {'prefix': 'EXTRACT_TILES_TC_STAT', 'required': False},
+            'MTD': {'prefix': 'EXTRACT_TILES_MTD', 'required': False},
+        })
 
         # determine which location input to use: TCStat or MTD
-        # TC_STAT template is not set
-        if not c_dict['TC_STAT_INPUT_TEMPLATE']:
-            # neither are set
-            if not c_dict['MTD_INPUT_TEMPLATE']:
-                self.log_error('Must set '
-                               'EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE '
-                               'or EXTRACT_TILES_MTD_INPUT_TEMPLATE '
-                               'to run ExtractTiles wrapper')
-            # MTD is set only
-            else:
-                c_dict['LOCATION_INPUT'] = 'MTD'
-        # TC_STAT is set
-        else:
-            # both are set
-            if c_dict['MTD_INPUT_TEMPLATE']:
-                self.log_error('Cannot set both '
-                               'EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE '
-                               'and EXTRACT_TILES_MTD_INPUT_TEMPLATE '
-                               'to run ExtractTiles wrapper')
-            # TC_STAT is set only
-            else:
-                c_dict['LOCATION_INPUT'] = 'TC_STAT'
+        self._get_location_input(c_dict)
 
-        if not c_dict.get('LOCATION_INPUT'):
-            self.log_error("Could not determine location input type")
-
-        # get gridded input/output directory/template to read
+        # get gridded output directory/template to read
+        # read the input templates from config directly instead of using get_input_templates because the time info
+        # used to find these files is read from the tracks, not the current run time of the run
         for data_type in ['FCST', 'OBS']:
             # get [FCST/OBS]_INPUT_DIR
             c_dict[f'{data_type}_INPUT_DIR'] = (
                 self.config.getdir(f'{data_type}_EXTRACT_TILES_INPUT_DIR', '')
             )
-            if not c_dict[f'{data_type}_INPUT_DIR']:
-                self.log_error(f'Must set {data_type}_EXTRACT_TILES_INPUT_DIR to '
-                               'run ExtractTiles wrapper')
 
             # get [FCST/OBS]_[INPUT/OUTPUT]_TEMPLATE
             for put in ['INPUT', 'OUTPUT']:
@@ -134,29 +96,40 @@ class ExtractTilesWrapper(LoopTimesWrapper):
                 if not c_dict[local_name]:
                     self.log_error(f"{config_name} must be set.")
 
-        c_dict['OUTPUT_DIR'] = (
-            self.config.getdir('EXTRACT_TILES_OUTPUT_DIR', '')
-        )
+        c_dict['OUTPUT_DIR'] = self.config.getdir('EXTRACT_TILES_OUTPUT_DIR', '')
         if not c_dict['OUTPUT_DIR']:
-            self.log_error('Must set EXTRACT_TILES_OUTPUT_DIR to run '
-                           'ExtractTiles wrapper')
+            self.log_error('Must set EXTRACT_TILES_OUTPUT_DIR to run ExtractTiles wrapper')
 
         c_dict['NLAT'] = self.config.getstr('config', 'EXTRACT_TILES_NLAT')
         c_dict['NLON'] = self.config.getstr('config', 'EXTRACT_TILES_NLON')
         c_dict['DLAT'] = self.config.getstr('config', 'EXTRACT_TILES_DLAT')
         c_dict['DLON'] = self.config.getstr('config', 'EXTRACT_TILES_DLON')
-        c_dict['LAT_ADJ'] = self.config.getfloat('config',
-                                                 'EXTRACT_TILES_LAT_ADJ')
-        c_dict['LON_ADJ'] = self.config.getfloat('config',
-                                                 'EXTRACT_TILES_LON_ADJ')
+        c_dict['LAT_ADJ'] = self.config.getfloat('config', 'EXTRACT_TILES_LAT_ADJ')
+        c_dict['LON_ADJ'] = self.config.getfloat('config', 'EXTRACT_TILES_LON_ADJ')
 
-        c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
-                                                 met_tool=self.app_name)
-        # skip RuntimeFreq input file logic - remove once integrated
-        c_dict['FIND_FILES'] = False
-        # force error if inputs are missing
+        c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config, met_tool=self.app_name,
+                                                 var_options=self.var_options)
+
+        # force error if track inputs are missing
         c_dict['ALLOW_MISSING_INPUTS'] = False
+
         return c_dict
+
+    def _get_location_input(self, c_dict):
+        tc_stat_set = bool(c_dict['TC_STAT_INPUT_TEMPLATE'])
+        mtd_set = bool(c_dict['MTD_INPUT_TEMPLATE'])
+
+        # Check for invalid configurations first
+        if not tc_stat_set and not mtd_set:
+            self.log_error('Must set EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE or EXTRACT_TILES_MTD_INPUT_TEMPLATE')
+            return
+
+        if tc_stat_set and mtd_set:
+            self.log_error('Cannot set both EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE and EXTRACT_TILES_MTD_INPUT_TEMPLATE')
+            return
+
+        # Set the location input type
+        c_dict['LOCATION_INPUT'] = 'TC_STAT' if tc_stat_set else 'MTD'
 
     def regrid_data_plane_init(self):
         """! create instance of RegridDataPlane wrapper, overriding default
@@ -166,7 +139,10 @@ class ExtractTilesWrapper(LoopTimesWrapper):
         """
         rdp = 'REGRID_DATA_PLANE'
 
-        overrides = {f'{rdp}_METHOD': 'NEAREST'}
+        overrides = {
+            f'{rdp}_METHOD': 'NEAREST',
+            f'{rdp}_ALLOW_MISSING_INPUTS': True,
+        }
         for data_type in ['FCST', 'OBS']:
             overrides[f'{data_type}_{rdp}_RUN'] = True
 
@@ -174,17 +150,10 @@ class ExtractTilesWrapper(LoopTimesWrapper):
             template = os.path.join(self.c_dict.get(f'{data_type}_INPUT_DIR'),
                                     self.c_dict[f'{data_type}_INPUT_TEMPLATE'])
             overrides[f'{data_type}_{rdp}_INPUT_TEMPLATE'] = template
-            overrides[f'{data_type}_{rdp}_OUTPUT_TEMPLATE'] = (
-                self.c_dict[f'{data_type}_OUTPUT_TEMPLATE']
-            )
+            overrides[f'{data_type}_{rdp}_OUTPUT_TEMPLATE'] = self.c_dict[f'{data_type}_OUTPUT_TEMPLATE']
+            overrides[f'{data_type}_{rdp}_OUTPUT_DIR'] = self.c_dict['OUTPUT_DIR']
 
-            overrides[f'{data_type}_{rdp}_OUTPUT_DIR'] = (
-                self.c_dict['OUTPUT_DIR']
-            )
-
-        overrides[f'{rdp}_SKIP_IF_OUTPUT_EXISTS'] = (
-            self.c_dict['SKIP_IF_OUTPUT_EXISTS']
-        )
+        overrides[f'{rdp}_SKIP_IF_OUTPUT_EXISTS'] = self.c_dict['SKIP_IF_OUTPUT_EXISTS']
         overrides[f'{rdp}_ONCE_PER_FIELD'] = False
         overrides[f'{rdp}_MANDATORY'] = False
 
@@ -192,13 +161,18 @@ class ExtractTilesWrapper(LoopTimesWrapper):
         instance = 'extract_tiles_rdp'
         if not self.config.has_section(instance):
             self.config.add_section(instance)
+
         for key, value in overrides.items():
             self.config.set(instance, key, value)
 
-        rdp_wrapper = RegridDataPlaneWrapper(self.config,
-                                             instance=instance)
-        rdp_wrapper.c_dict['SHOW_WARNINGS'] = False
+        rdp_wrapper = RegridDataPlaneWrapper(self.config, instance=instance)
+        rdp_wrapper.c_dict['SUPPRESS_WARNINGS'] = True
         return rdp_wrapper
+
+    def run_all_times(self):
+        super().run_all_times()
+        if not self.all_commands:
+            self.log_error("No commands were generated")
 
     def run_at_time_once(self, time_info):
         """!Read TCPairs track data into TCStat to filter the data. Using the
@@ -209,31 +183,33 @@ class ExtractTilesWrapper(LoopTimesWrapper):
         """
         self.logger.debug("Begin extract tiles")
         location_input = self.c_dict.get('LOCATION_INPUT')
-        input_path = self.get_location_input_file(time_info, location_input)
+        if not self.c_dict['ALL_FILES']:
+            return
+
+        input_path = self.c_dict['ALL_FILES'][0][location_input][0]
         if not input_path:
             return
 
         # get unique storm ids or object cats from the input file
         # store list of lines from tcst/mtd file for each ID as the value
-        storm_dict = get_storms(
-            input_path,
-            sort_column=self.SORT_COLUMN[location_input]
-        )
+        storm_dict = get_storms(input_path, sort_column=self.SORT_COLUMN[location_input])
         if not storm_dict:
             # No storms found for init time, init_fmt
-            self.logger.debug("No storms were found for "
-                              f"{time_info['init'].strftime('%Y%m%d_%H')}"
-                              "...continue to next in list")
+            self.logger.debug(
+                f"No storms were found for {time_info['init'].strftime('%Y%m%d_%H')}. Continue to next in list"
+            )
             return
 
         # get indices of values from header
-        idx_dict = self.get_header_indices(storm_dict['header'],
-                                           location_input)
+        idx_dict = self.get_header_indices(storm_dict['header'], location_input)
 
         if location_input == 'MTD':
             self.use_mtd_input(storm_dict, idx_dict)
         else:
             self.use_tc_stat_input(storm_dict, idx_dict)
+
+        if self.regrid_data_plane.errors:
+            self.errors += self.regrid_data_plane.errors
 
     def use_tc_stat_input(self, storm_dict, idx_dict):
         """! Find storms in TCStat input file and create tiles using the storm.
@@ -250,13 +226,11 @@ class ExtractTilesWrapper(LoopTimesWrapper):
             # loop over storm track
             for storm_line in storm_lines:
                 track_data = {}
-                storm_data = self.get_data_from_track_line(idx_dict,
-                                                           storm_line)
+                storm_data = self.get_data_from_track_line(idx_dict, storm_line)
                 track_data['FCST'] = storm_data
                 track_data['OBS'] = storm_data
 
-                time_info = self.set_time_info_from_track_data(storm_data,
-                                                               storm_id)
+                time_info = self.set_time_info_from_track_data(storm_data, storm_id)
                 self.call_regrid_data_plane(time_info, track_data, 'TC_STAT')
 
     def use_mtd_input(self, object_dict, idx_dict):
@@ -268,15 +242,13 @@ class ExtractTilesWrapper(LoopTimesWrapper):
         """
         indices = self.get_object_indices(object_dict.keys())
         if not indices:
-            self.logger.warning(f"No non-zero OBJECT_CAT found")
+            self.logger.warning("No non-zero OBJECT_CAT found")
             return
 
         # loop over corresponding CF### and CO### lines
         for index in indices:
-            fcst_data_list = self.get_cluster_data(object_dict[f'CF{index}'],
-                                                   idx_dict)
-            obs_data_list = self.get_cluster_data(object_dict[f'CO{index}'],
-                                                  idx_dict)
+            fcst_data_list = self.get_cluster_data(object_dict[f'CF{index}'], idx_dict)
+            obs_data_list = self.get_cluster_data(object_dict[f'CO{index}'], idx_dict)
 
             track_data = {}
             # loop through fcst data and find obs data that matches the time
@@ -295,9 +267,7 @@ class ExtractTilesWrapper(LoopTimesWrapper):
                 track_data['FCST'] = fcst_data
                 track_data['OBS'] = obs_data[0]
 
-                time_info = (
-                    self.set_time_info_from_track_data(track_data['FCST'])
-                )
+                time_info = self.set_time_info_from_track_data(track_data['FCST'])
                 self.call_regrid_data_plane(time_info, track_data, 'MTD')
 
     def get_cluster_data(self, lines, idx_dict):
@@ -306,29 +276,12 @@ class ExtractTilesWrapper(LoopTimesWrapper):
             line_data = self.get_data_from_track_line(idx_dict, line)
             if self.object_id_equals_cat(line_data):
                 cluster_data.append(line_data)
+
         return cluster_data
 
     @staticmethod
     def object_id_equals_cat(track_line):
         return track_line['OBJECT_CAT'] == track_line['OBJECT_ID']
-
-    def get_location_input_file(self, time_info, input_type):
-        """! Get the name of the filter file to use.
-
-          @param time_info dictionary containing time information
-          @param input_type type of input to read: TC_STAT or MTD
-          @returns file path if found or None if not
-        """
-        input_path = os.path.join(self.c_dict[f'{input_type}_INPUT_DIR'],
-                                  self.c_dict[f'{input_type}_INPUT_TEMPLATE'])
-        input_path = do_string_sub(input_path, **time_info)
-
-        self.logger.debug(f"Looking for {input_type} file: {input_path}")
-        if not os.path.exists(input_path):
-            self.log_error(f"Could not find {input_type} file: {input_path}")
-            return None
-
-        return input_path
 
     @staticmethod
     def get_object_indices(object_cats):
@@ -340,6 +293,7 @@ class ExtractTilesWrapper(LoopTimesWrapper):
                 indices.add(match.group(1))
 
         indices = sorted(list(indices))
+
         # if no indices were found, return None
         if not indices:
             return None
@@ -348,8 +302,7 @@ class ExtractTilesWrapper(LoopTimesWrapper):
 
     def call_regrid_data_plane(self, time_info, track_data, input_type):
         # set var list from config using time info
-        var_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
-        self.regrid_data_plane.c_dict['VAR_LIST'] = var_list
+        self.regrid_data_plane.c_dict['VAR_LIST_TEMP'] = self.c_dict['VAR_LIST_TEMP']
 
         for data_type in ['FCST', 'OBS']:
             grid = self.get_grid(data_type, track_data[data_type], input_type)
@@ -358,6 +311,14 @@ class ExtractTilesWrapper(LoopTimesWrapper):
 
             # run RegridDataPlane wrapper
             self.regrid_data_plane.c_dict['DATA_SRC'] = data_type
+            self.regrid_data_plane.c_dict['TEMPLATE_DICT'] = self.regrid_data_plane.c_dict[f'TEMPLATE_DICT_{data_type}']
+            self.regrid_data_plane.c_dict['OUTPUT_DIR'] = self.regrid_data_plane.c_dict[f'{data_type}_OUTPUT_DIR']
+            self.regrid_data_plane.c_dict['OUTPUT_TEMPLATE'] = self.regrid_data_plane.c_dict[f'{data_type}_OUTPUT_TEMPLATE']
+            self.logger.debug(f'Calling regrid_data_plane for {data_type}')
+            self.regrid_data_plane.c_dict['ALL_FILES'] = self.regrid_data_plane.get_all_files_for_each(time_info)
+            if not self.regrid_data_plane._check_input_files(skip_log=True):
+                break
+
             ret = self.regrid_data_plane.run_at_time_once(time_info)
             self.all_commands.extend(self.regrid_data_plane.all_commands)
             self.regrid_data_plane.all_commands.clear()
@@ -380,11 +341,11 @@ class ExtractTilesWrapper(LoopTimesWrapper):
 
     @staticmethod
     def get_data_from_track_line(idx_dict, track_line):
-        """! Read line from storm track and populate a dictionary with the
+        """!Read line from storm track and populate a dictionary with the
         relevant items
 
         @param idx_dict dictionary where key is column name and value is the
-        index of that column
+         index of that column
         @param track_line line from tcst storm track file to parse
         @returns dictionary containing storm data where key is column name and
         value is the value extracted from the appropriate column of the line
@@ -422,8 +383,7 @@ class ExtractTilesWrapper(LoopTimesWrapper):
 
         # add amodel to time_info dictionary for substitution
         # use AMODEL (TC_STAT) or MODEL (MTD)
-        time_info['amodel'] = storm_data.get('AMODEL',
-                                             storm_data.get('MODEL', ''))
+        time_info['amodel'] = storm_data.get('AMODEL', storm_data.get('MODEL', ''))
         if storm_id:
             time_info['storm_id'] = storm_id
 
@@ -448,13 +408,10 @@ class ExtractTilesWrapper(LoopTimesWrapper):
             lat = 'BLAT'
             lon = 'BLON'
         else:
-            self.log_error("Invalid data type provided to get_grid: "
-                           f"{data_type}")
+            self.log_error(f"Invalid data type provided to get_grid: {data_type}")
             return None
 
-        return self.get_grid_info(storm_data[lat],
-                                  storm_data[lon],
-                                  data_type)
+        return self.get_grid_info(storm_data[lat], storm_data[lon], data_type)
 
     def get_grid_info(self, lat, lon, data_type):
         """! Create the grid specification string with the format:
@@ -484,5 +441,4 @@ class ExtractTilesWrapper(LoopTimesWrapper):
                           f'lon: {lon} (track lon) => {lon0} (lon lower left)')
 
         grid_def = f"latlon {nlat} {nlon} {lat0} {lon0} {dlat} {dlon}"
-
         return grid_def

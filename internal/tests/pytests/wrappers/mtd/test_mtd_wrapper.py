@@ -102,7 +102,7 @@ def set_minimum_config_settings(config, set_inputs=True):
     ]
 )
 @pytest.mark.wrapper_a
-def test_mtd_missing_inputs(metplus_config, get_test_data_dir,
+def test_mtd_missing_inputs(metplus_config, get_test_data_dir, run_all_and_check_missing,
                             missing, run, thresh, errors, allow_missing, inputs):
     config = metplus_config
     set_minimum_config_settings(config, set_inputs=False)
@@ -125,19 +125,10 @@ def test_mtd_missing_inputs(metplus_config, get_test_data_dir,
 
     wrapper = MTDWrapper(config)
     if inputs == 'CHOCOLATE':
-        assert not wrapper.isOK
+        assert not wrapper.is_ok
         return
 
-    assert wrapper.isOK
-
-    all_cmds = wrapper.run_all_times()
-    for cmd, _ in all_cmds:
-        print(cmd)
-
-    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
-    assert wrapper.missing_input_count == missing
-    assert wrapper.run_count == run
-    assert wrapper.errors == errors
+    run_all_and_check_missing(wrapper, missing, run, errors)
 
 
 @pytest.mark.parametrize(
@@ -227,7 +218,7 @@ def test_mode_single_field(metplus_config, config_overrides, env_var_values,
         config.set('config', key, value)
 
     wrapper = MTDWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"

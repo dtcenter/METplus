@@ -74,17 +74,18 @@ class ReformatPointWrapper(RuntimeFreqWrapper):
         if not self.c_dict.get('ALL_FILES'):
             return None
 
-        input_files = []
         for files in self.c_dict['ALL_FILES']:
             new_files = files.get('OBS', [])
             if not new_files:
                 continue
-            input_files.extend(new_files)
+            self.add_to_infiles(files, time_info)
 
-        if not input_files:
+        if not self.infiles:
             return None
 
-        self.logger.debug(f"Adding input: {' and '.join(input_files)}")
-        self.infiles.extend(input_files)
+        if len(self.infiles) > 100:
+            self.logger.debug(f"Adding {len(self.infiles)} input files")
+        else:
+            self.logger.debug(f"Adding input: {' and '.join(self.infiles)}")
 
         return self._get_offset_time_info(time_info)

@@ -82,7 +82,7 @@ yrend = yr_dm[-1]
 anom = np.zeros(dm_data.shape)
 
 for y in np.arange(yrstrt,yrend+1,1):
-    curyr = np.where(yr_dm == y)
+    curyr = np.nonzero(yr_dm == y)
     dd = doy_dm[curyr] - 1
     ndd = len(curyr[0])
     clmshp = [np.arange(dd[0]*nobs,dd[0]*nobs+ndd,1)]

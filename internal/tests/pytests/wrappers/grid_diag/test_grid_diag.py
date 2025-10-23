@@ -72,7 +72,7 @@ def set_minimum_config_settings(config):
     ]
 )
 @pytest.mark.wrapper
-def test_grid_diag_missing_inputs(metplus_config, get_test_data_dir,
+def test_grid_diag_missing_inputs(metplus_config, get_test_data_dir, run_all_and_check_missing,
                                   missing, run, thresh, errors, allow_missing,
                                   runtime_freq):
     config = metplus_config
@@ -90,16 +90,7 @@ def test_grid_diag_missing_inputs(metplus_config, get_test_data_dir,
                '{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d_i%H}_f{lead?fmt=%3H}_HRRRTLE_PHPT.grb2')
 
     wrapper = GridDiagWrapper(config)
-    assert wrapper.isOK
-
-    all_cmds = wrapper.run_all_times()
-    for cmd, _ in all_cmds:
-        print(cmd)
-
-    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
-    assert wrapper.missing_input_count == missing
-    assert wrapper.run_count == run
-    assert wrapper.errors == errors
+    run_all_and_check_missing(wrapper, missing, run, errors)
 
 
 @pytest.mark.parametrize(
@@ -339,7 +330,7 @@ def test_grid_diag(metplus_config, config_overrides, env_var_values,
         config.set('config', key, value)
 
     wrapper = GridDiagWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"

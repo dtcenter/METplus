@@ -10,6 +10,7 @@ UPGRADE_INSTRUCTIONS_URL = (
 LOWER_TO_WRAPPER_NAME = {
     'ascii2nc': 'ASCII2NC',
     'cycloneplotter': 'CyclonePlotter',
+    'dataingest': 'DataIngest',
     'ensemblestat': 'EnsembleStat',
     'example': 'Example',
     'extracttiles': 'ExtractTiles',
@@ -51,6 +52,7 @@ LOWER_TO_WRAPPER_NAME = {
 # supported file extensions that will automatically be uncompressed
 COMPRESSION_EXTENSIONS = [
     '.gz',
+    '.gzip',
     '.bz2',
     '.zip',
 ]
@@ -183,3 +185,10 @@ DEPRECATED_DICT = {
 # If any of these items are found, then an error will be reported
 DEPRECATED_MET_LIST = [
 ]
+
+# logger used to skip logging if logger was not provided to function calls
+class NullLogger:
+    def debug(self, message): pass # skip logging
+    def info(self, message): pass # skip logging
+    def warning(self, message): pass # skip logging
+    def error(self, message): pass # skip logging

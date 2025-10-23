@@ -83,8 +83,8 @@ def set_minimum_config_settings(config, set_fields=True, set_obs=True):
     ]
 )
 @pytest.mark.wrapper_b
-def test_ensemble_stat_missing_inputs(metplus_config, get_test_data_dir, allow_missing,
-                                      optional_input, missing, run, thresh, errors):
+def test_ensemble_stat_missing_inputs(metplus_config, get_test_data_dir, run_all_and_check_missing,
+                                      allow_missing, optional_input, missing, run, thresh, errors):
     config = metplus_config
     set_minimum_config_settings(config, set_obs=False)
     config.set('config', 'INPUT_MUST_EXIST', True)
@@ -116,16 +116,7 @@ def test_ensemble_stat_missing_inputs(metplus_config, get_test_data_dir, allow_m
         config.set('config', f'{prefix}_INPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}_obs_file')
 
     wrapper = EnsembleStatWrapper(config)
-    assert wrapper.isOK
-
-    all_cmds = wrapper.run_all_times()
-    for cmd, _ in all_cmds:
-        print(cmd)
-
-    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
-    assert wrapper.missing_input_count == missing
-    assert wrapper.run_count == run
-    assert wrapper.errors == errors
+    run_all_and_check_missing(wrapper, missing, run, errors)
 
 
 @pytest.mark.parametrize(
@@ -158,7 +149,7 @@ def test_ensemble_stat_level_in_template(metplus_config, config_overrides,
         config.set('config', key, value)
 
     wrapper = EnsembleStatWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     file_list_dir = wrapper.config.getdir('FILE_LISTS_DIR')
     file_list_file = f"{file_list_dir}/ensemble_stat_files_FCST_init_20050807000000_valid_20050807120000_lead_43200.txt"
@@ -205,7 +196,7 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
         config.set('config', key, value)
 
     wrapper = EnsembleStatWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     all_cmds = wrapper.run_all_times()
 
@@ -817,6 +808,106 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
          {'METPLUS_POINT_WEIGHT_FLAG': 'point_weight_flag = SID;'}),
         ({'ENSEMBLE_STAT_OBTYPE_AS_GROUP_VAL_FLAG': 'FALSE', },
          {'METPLUS_OBTYPE_AS_GROUP_VAL_FLAG': 'obtype_as_group_val_flag = FALSE;'}),
+        ({'ENSEMBLE_STAT_MESSAGE_TYPE_GROUP_MAP': '{ key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";},{ key = "ANYAIR";  val = "AIRCAR,AIRCFT";}', },
+         {'METPLUS_MESSAGE_TYPE_GROUP_MAP': 'message_type_group_map = [{ key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";}, { key = "ANYAIR";  val = "AIRCAR,AIRCFT";}];'}),
+        # land_mask dictionary
+        ({'ENSEMBLE_STAT_LAND_MASK_FLAG': 'false', },
+         {'METPLUS_LAND_MASK_DICT': 'land_mask = {flag = FALSE;}'}),
+        ({'ENSEMBLE_STAT_LAND_MASK_FILE_NAME': '/some/file/path.nc', },
+         {'METPLUS_LAND_MASK_DICT': 'land_mask = {file_name = ["/some/file/path.nc"];}'}),
+        ({'ENSEMBLE_STAT_LAND_MASK_FIELD_NAME': 'LAND',
+          'ENSEMBLE_STAT_LAND_MASK_FIELD_LEVEL': 'L0'},
+         {'METPLUS_LAND_MASK_DICT': 'land_mask = {field = {name = "LAND";level = "L0";}}'}),
+        ({'ENSEMBLE_STAT_LAND_MASK_REGRID_METHOD': 'NEAREST',
+          'ENSEMBLE_STAT_LAND_MASK_REGRID_WIDTH': '1'},
+         {'METPLUS_LAND_MASK_DICT': 'land_mask = {regrid = {method = NEAREST;width = 1;}}'}),
+        ({'ENSEMBLE_STAT_LAND_MASK_THRESH': 'eq1', },
+         {'METPLUS_LAND_MASK_DICT': 'land_mask = {thresh = eq1;}'}),
+        ({'ENSEMBLE_STAT_LAND_MASK_FLAG': 'false',
+          'ENSEMBLE_STAT_LAND_MASK_FILE_NAME': '/some/file/path.nc',
+          'ENSEMBLE_STAT_LAND_MASK_FIELD_NAME': 'LAND',
+          'ENSEMBLE_STAT_LAND_MASK_FIELD_LEVEL': 'L0',
+          'ENSEMBLE_STAT_LAND_MASK_REGRID_METHOD': 'NEAREST',
+          'ENSEMBLE_STAT_LAND_MASK_REGRID_WIDTH': '1',
+          'ENSEMBLE_STAT_LAND_MASK_THRESH': 'eq1',
+          },
+         {'METPLUS_LAND_MASK_DICT': ('land_mask = {flag = FALSE;file_name = ["/some/file/path.nc"];'
+                                     'field = {name = "LAND";level = "L0";}'
+                                     'regrid = {method = NEAREST;width = 1;}thresh = eq1;}')}),
+        # topo_mask dictionary
+        ({'ENSEMBLE_STAT_TOPO_MASK_FLAG': 'false', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {flag = FALSE;}'}),
+        ({'ENSEMBLE_STAT_TOPO_MASK_FILE_NAME': '/some/file/path.nc', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {file_name = ["/some/file/path.nc"];}'}),
+        ({'ENSEMBLE_STAT_TOPO_MASK_FIELD_NAME': 'TOPO',
+          'ENSEMBLE_STAT_TOPO_MASK_FIELD_LEVEL': 'L0'},
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {field = {name = "TOPO";level = "L0";}}'}),
+        ({'ENSEMBLE_STAT_TOPO_MASK_REGRID_METHOD': 'NEAREST',
+          'ENSEMBLE_STAT_TOPO_MASK_REGRID_WIDTH': '1'},
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {regrid = {method = NEAREST;width = 1;}}'}),
+        ({'ENSEMBLE_STAT_TOPO_MASK_USE_OBS_THRESH': 'ge-100&&le100', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {use_obs_thresh = ge-100&&le100;}'}),
+        ({'ENSEMBLE_STAT_TOPO_MASK_INTERP_FCST_THRESH': 'ge-50&&le50', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {interp_fcst_thresh = ge-50&&le50;}'}),
+        ({'ENSEMBLE_STAT_TOPO_MASK_INTERP_VLD_THRESH': '0.3', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {interp = {vld_thresh = 0.3;}}'}),
+        ({'ENSEMBLE_STAT_TOPO_MASK_INTERP_SHAPE': 'CIRCLE', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {interp = {shape = CIRCLE;}}'}),
+
+        ({'ENSEMBLE_STAT_TOPO_MASK_INTERP_METHOD': 'GAUSSIAN', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {interp = {method = GAUSSIAN;}}'}),
+
+        ({'ENSEMBLE_STAT_TOPO_MASK_INTERP_WIDTH': '2', },
+         {'METPLUS_TOPO_MASK_DICT': 'topo_mask = {interp = {width = 2;}}'}),
+
+        ({'ENSEMBLE_STAT_TOPO_MASK_FLAG': 'false',
+          'ENSEMBLE_STAT_TOPO_MASK_FILE_NAME': '/some/file/path.nc',
+          'ENSEMBLE_STAT_TOPO_MASK_FIELD_NAME': 'TOPO',
+          'ENSEMBLE_STAT_TOPO_MASK_FIELD_LEVEL': 'L0',
+          'ENSEMBLE_STAT_TOPO_MASK_REGRID_METHOD': 'NEAREST',
+          'ENSEMBLE_STAT_TOPO_MASK_REGRID_WIDTH': '1',
+          'ENSEMBLE_STAT_TOPO_MASK_USE_OBS_THRESH': 'ge-100&&le100',
+          'ENSEMBLE_STAT_TOPO_MASK_INTERP_FCST_THRESH': 'ge-50&&le50',
+          'ENSEMBLE_STAT_TOPO_MASK_INTERP_VLD_THRESH': '0.3',
+          'ENSEMBLE_STAT_TOPO_MASK_INTERP_SHAPE': 'CIRCLE',
+          'ENSEMBLE_STAT_TOPO_MASK_INTERP_METHOD': 'GAUSSIAN',
+          'ENSEMBLE_STAT_TOPO_MASK_INTERP_WIDTH': '2',
+          },
+         {'METPLUS_TOPO_MASK_DICT': (
+                 'topo_mask = {flag = FALSE;file_name = ["/some/file/path.nc"];'
+                 'field = {name = "TOPO";level = "L0";}regrid = {method = NEAREST;width = 1;}'
+                 'interp = {vld_thresh = 0.3;shape = CIRCLE;method = GAUSSIAN;width = 2;}'
+                 'use_obs_thresh = ge-100&&le100;interp_fcst_thresh = ge-50&&le50;'
+                 '}'
+         )}),
+        ({'ENSEMBLE_STAT_LAPSE_RATE_CORRECTION_APPLY_TO': 'FCST', },
+         {'METPLUS_LAPSE_RATE_CORRECTION_DICT': 'lapse_rate_correction = {apply_to = FCST;}'}),
+
+        ({'ENSEMBLE_STAT_LAPSE_RATE_CORRECTION_VALUE': 'DRY_LAPSE_RATE_K_per_M', },
+         {'METPLUS_LAPSE_RATE_CORRECTION_DICT': 'lapse_rate_correction = {value = DRY_LAPSE_RATE_K_per_M;}'}),
+
+        ({'ENSEMBLE_STAT_LAPSE_RATE_CORRECTION_APPLY_TO': 'FCST',
+          'ENSEMBLE_STAT_LAPSE_RATE_CORRECTION_VALUE': 'DRY_LAPSE_RATE_K_per_M',
+         },
+         {'METPLUS_LAPSE_RATE_CORRECTION_DICT': 'lapse_rate_correction = {apply_to = FCST;value = DRY_LAPSE_RATE_K_per_M;}'}),
+        ({'ENSEMBLE_STAT_MSL_AGL_CONVERSION_APPLY_TO': 'FCST', },
+         {'METPLUS_MSL_AGL_CONVERSION_DICT': 'msl_agl_conversion = {apply_to = FCST;}'}),
+
+        ({'ENSEMBLE_STAT_MSL_AGL_CONVERSION_APPLY_FROM': 'OBS', },
+         {'METPLUS_MSL_AGL_CONVERSION_DICT': 'msl_agl_conversion = {apply_from = OBS;}'}),
+
+        ({'ENSEMBLE_STAT_MSL_AGL_CONVERSION_THRESH': 'ne99999', },
+         {'METPLUS_MSL_AGL_CONVERSION_DICT': 'msl_agl_conversion = {thresh = ne99999;}'}),
+
+        ({'ENSEMBLE_STAT_MSL_AGL_CONVERSION_MSL_TO_AGL': 'false', },
+         {'METPLUS_MSL_AGL_CONVERSION_DICT': 'msl_agl_conversion = {msl_to_agl = FALSE;}'}),
+
+        ({'ENSEMBLE_STAT_MSL_AGL_CONVERSION_APPLY_TO': 'FCST',
+          'ENSEMBLE_STAT_MSL_AGL_CONVERSION_APPLY_FROM': 'OBS',
+          'ENSEMBLE_STAT_MSL_AGL_CONVERSION_THRESH': 'ne99999',
+          'ENSEMBLE_STAT_MSL_AGL_CONVERSION_MSL_TO_AGL': 'false',
+         },
+         {'METPLUS_MSL_AGL_CONVERSION_DICT': 'msl_agl_conversion = {apply_to = FCST;apply_from = OBS;thresh = ne99999;msl_to_agl = FALSE;}'}),
 
     ]
 )
@@ -833,7 +924,7 @@ def test_ensemble_stat_single_field(metplus_config, config_overrides,
         config.set('config', key, value)
 
     wrapper = EnsembleStatWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"

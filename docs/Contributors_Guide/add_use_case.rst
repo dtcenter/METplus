@@ -713,11 +713,8 @@ the environment file to the staging directory:
     scp ${METPLUS_USER_ENV_FILE} |dtc_web_server|:|metplus_staging_dir|/
 
 If you do not have access to the internal DTC web server,
-upload the files to the RAL FTP server::
-
-    ftp -p ftp.rap.ucar.edu
-
-For an example on how to upload data to the ftp site see
+please follow the instructions for sending sample data using Google Drive.
+For more information on this process, please see
 “How to Send Us Data” on the
 `Resources for Troubleshooting page <https://github.com/dtcenter/METplus/discussions/954>`_.
 
@@ -925,6 +922,12 @@ Example::
 
 This example adds a new use case group that contains the climate use case
 with index 2 and is marked to "run" for every push.
+
+.. note::
+    Be sure to remember and change the "run" entry in this file to false
+    prior to the final merge after pull request review. This will trigger
+    a complete run of the testing suite prior to merging, so allow time
+    for that to complete as well.
 
 New use cases are added as a separate item to make reviewing the test results
 easier. A new use case will produce new output data that is not found in the
@@ -1306,21 +1309,41 @@ Check that the link now points to the new tarfile that was just created::
 
   ls -lh sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
 
+Return the test run setting to false
+------------------------------------
+
+In the *.github/parm/use_case_groups.json* file, return the *run* setting
+to false for the new use case in :ref:`add_new_category_to_test_runs` 
+and commit the file to the feature branch. This will trigger a full run of the 
+automated testing suite, so allow time for that to complete prior to merging.
+
+Example (note the setting for *run*)::
+
+      {
+        "category": "climate",
+        "index_list": "2",
+        "run": false
+      }
+
 After the Pull Request is Approved
 ==================================
   
-Merge the pull request and ensure that all tests pass
------------------------------------------------------
+Merge the pull request and review testing workflow run
+-------------------------------------------------------
 
-Merge the pull request on GitHub. Then go to the "Actions" tab and verify that
-all of the GitHub Actions tests pass for the develop branch. A green check mark
-for the latest run that lists "develop" as the branch signifies that the run
-completed successfully.
+Merge the pull request on GitHub.
+Then go to the "Actions" tab and monitor the latest develop branch run.
+This run should "fail" with a red X.
+Ensure that the only failures are in the use case that was added and
+that the failures are only in the *Run difference tests* job.
+**Any failures in a "Run Use Cases" job suggest that something went wrong.**
+A failing use case is likely due to the develop branch data not being updated.
 
 .. figure:: figure/github_actions_develop.png
 
 If the circle on the left side is yellow, then the run has not completed yet.
-If everything ran smoothly, clean up the files on the web server.
+If you have confirmed that the only failures are due to difference in new use
+case output, then follow the instructions below to update the truth data.
 
 Consider rearranging the use case groups
 ----------------------------------------

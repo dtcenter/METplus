@@ -66,9 +66,9 @@ Was locked by worker %d (info %s)
 Last seen %d = %s
 Lock legacy time %d
 Time left: %d''' % (self.did,self.checktime,
-                    datetime.datetime.utcfromtimestamp(self.checktime).ctime(),
+                    datetime.datetime.fromtimestamp(self.checktime, datetime.timezone.utc).ctime(),
                     self.owner,self.owninfo,self.ownseen,
-                    datetime.datetime.utcfromtimestamp(self.ownseen).ctime(),
+                    datetime.datetime.fromtimestamp(self.ownseen, datetime.timezone.utc).ctime(),
                     self.ownlegacy,self.ownseen+self.ownlegacy-self.checktime)
     def __repr__(self):
         """!String representation of this object."""

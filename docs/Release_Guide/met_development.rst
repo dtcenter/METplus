@@ -12,10 +12,11 @@ Create a new vX.Y.Z-betaN or vX.Y.Z-rcN development release from the develop bra
 .. include:: release_steps/met/update_version_development.rst
 .. include:: release_steps/update_release_notes_development.rst
 .. include:: release_steps/update_upgrade_instructions.rst
+.. include:: release_steps/update_appendix_a_python.rst
 .. include:: release_steps/merge_release_issue.rst
 .. include:: release_steps/met/update_web_server_data.rst
 .. include:: release_steps/met/create_release_reference_branch.rst
-.. include:: release_steps/create_release_branch.rst
+.. include:: release_steps/met/create_release_branch.rst
 .. include:: release_steps/create_release_on_github.rst
 .. include:: release_steps/met/update_dtc_website.rst
 .. include:: release_steps/finalize_release_on_github_development.rst

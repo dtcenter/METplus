@@ -6,10 +6,10 @@ For rc1 development releases, create a new reference branch for the upcoming off
 .. dropdown:: If creating an rc1 release
 
   * For METplus, the corresponding MET release must be created before starting
-    this step. Specifically, a DockerHub tag on dtcenter/met that is named
-    (X+6).Y-latest must already exist. For example, for METplus 4.1.0, the MET
-    DockerHub tag for 10.1-latest must be built.
-    See https://hub.docker.com/repository/docker/dtcenter/met/general for
+    this step. Specifically, a DockerHub tag on dtcenter/met-dev that is named
+    main_v(X+6).Y must already exist. For example, for METplus 6.2.0-rc1,
+    the MET-Dev DockerHub tag for main_v12.2 must be built.
+    See https://hub.docker.com/repository/docker/dtcenter/met-dev/general for
     a list of existing tags.
 
   * Create a branch from the develop branch for the reference branch for the
@@ -58,7 +58,8 @@ For rc1 development releases, create a new reference branch for the upcoming off
   * Monitor GitHub Actions Workflow
 
     * Navigate to https://github.com/dtcenter/METplus/actions and verify that a
-      *Testing* workflow was triggered on the *main_vX.Y-ref* branch.
+      *Update and Upload Truth Data* workflow was triggered on the
+      *main_vX.Y-ref* branch and all of the use cases are run.
 
     .. figure:: /Release_Guide/release_steps/metplus/metplus-automation-reference-data.png
 

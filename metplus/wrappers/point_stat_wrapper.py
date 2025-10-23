@@ -35,6 +35,8 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_MESSAGE_TYPE',
         'METPLUS_LAND_MASK_DICT',
         'METPLUS_TOPO_MASK_DICT',
+        'METPLUS_LAPSE_RATE_CORRECTION_DICT',
+        'METPLUS_MSL_AGL_CONVERSION_DICT',
         'METPLUS_OBS_WINDOW_DICT',
         'METPLUS_MASK_DICT',
         'METPLUS_OUTPUT_PREFIX',
@@ -134,8 +136,8 @@ class PointStatWrapper(CompareGriddedWrapper):
             self.config.getstr('config', 'POINT_STAT_OFFSETS', '0')
         )
         self.get_input_templates(c_dict, {
-            'FCST': {'prefix': 'FCST_POINT_STAT', 'required': True},
-            'OBS': {'prefix': 'OBS_POINT_STAT', 'required': True},
+            'FCST': {'prefix': ('POINT_STAT_FCST', 'FCST_POINT_STAT'), 'required': True},
+            'OBS': {'prefix': ('POINT_STAT_OBS', 'OBS_POINT_STAT'), 'required': True},
         })
 
         c_dict['FCST_INPUT_DATATYPE'] = (
@@ -190,6 +192,18 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         self.handle_land_mask()
         self.handle_topo_mask()
+
+        self.add_met_config_dict('lapse_rate_correction', {
+            'apply_to': ('string', 'remove_quotes, uppercase'),
+            'value': ('string', 'remove_quotes'),
+        })
+
+        self.add_met_config_dict('msl_agl_conversion', {
+            'apply_to': ('string', 'remove_quotes, uppercase'),
+            'apply_from': ('string', 'remove_quotes, uppercase'),
+            'thresh': ('string', 'remove_quotes'),
+            'msl_to_agl': 'bool',
+        })
 
         c_dict['OBS_VALID_BEG'] = (
             self.config.getraw('config', 'POINT_STAT_OBS_VALID_BEG', '')
@@ -281,6 +295,16 @@ class PointStatWrapper(CompareGriddedWrapper):
         if not c_dict['OUTPUT_DIR']:
             self.log_error('Must set POINT_STAT_OUTPUT_DIR in config file')
         return c_dict
+
+    def populate_var_options(self):
+        var_options = super().populate_var_options()
+
+        self.handle_land_mask_var_options(var_options)
+        self.handle_topo_mask_var_options(var_options)
+        self.handle_lapse_rate_correction_var_options(var_options)
+        self.handle_msl_agl_conversion_var_options(var_options)
+
+        return var_options
 
     def set_command_line_arguments(self, time_info):
         """!Set command line arguments in self.args to add to command to run.

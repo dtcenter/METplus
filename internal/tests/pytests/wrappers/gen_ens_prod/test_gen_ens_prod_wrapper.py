@@ -28,7 +28,6 @@ def set_minimum_config_settings(config, set_ctrl=True):
     config.set('config', 'INIT_END', run_times[-1])
     config.set('config', 'INIT_INCREMENT', '6H')
     config.set('config', 'LEAD_SEQ', '24H, 48H')
-    config.set('config', 'LOOP_ORDER', 'times')
     config.set('config', 'GEN_ENS_PROD_CONFIG_FILE',
                '{PARM_BASE}/met_config/GenEnsProdConfig_wrapped')
 
@@ -70,8 +69,8 @@ def handle_input_dir(config):
     ]
 )
 @pytest.mark.wrapper
-def test_gen_ens_prod_missing_inputs(metplus_config, get_test_data_dir, allow_missing,
-                                     optional_input, missing, run, thresh, errors):
+def test_gen_ens_prod_missing_inputs(metplus_config, get_test_data_dir, run_all_and_check_missing,
+                                     allow_missing, optional_input, missing, run, thresh, errors):
     config = metplus_config
     set_minimum_config_settings(config, set_ctrl=False)
     config.set('config', 'INPUT_MUST_EXIST', True)
@@ -97,16 +96,7 @@ def test_gen_ens_prod_missing_inputs(metplus_config, get_test_data_dir, allow_mi
         config.set('config', f'{prefix}_INPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}_obs_file')
 
     wrapper = GenEnsProdWrapper(config)
-    assert wrapper.isOK
-
-    all_cmds = wrapper.run_all_times()
-    for cmd, _ in all_cmds:
-        print(cmd)
-
-    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
-    assert wrapper.missing_input_count == missing
-    assert wrapper.run_count == run
-    assert wrapper.errors == errors
+    run_all_and_check_missing(wrapper, missing, run, errors)
 
 
 @pytest.mark.parametrize(
@@ -546,7 +536,7 @@ def test_gen_ens_prod_single_field(metplus_config, config_overrides,
     input_dir = handle_input_dir(config)
 
     wrapper = GenEnsProdWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"

@@ -6,12 +6,10 @@ package:
   version: {{ version }}
 
 source:
-  # METplus Wrappers
   - url: https://github.com/dtcenter/METplus/archive/refs/tags/v{{ version }}.tar.gz
     md5: a5612dfd025055707f4a45dff028e628
     sha256: e9358aede2fd2abecd81806227de7b165d68fdf2fc9defcbba24df229461b155
 
-  # MET
   - url: https://github.com/dtcenter/MET/archive/refs/tags/v{{ met_version }}.tar.gz
     md5: 4b9dba80639a74f1a3ecb15357785603
     sha256: 613c74cbe5a0afa87422e81a4cd70984238c1a0eaf1a395503486331223ede45
@@ -19,16 +17,18 @@ source:
 
 
 build:
-  skip: True  # [win]
-  skip: True  # [py!=310]
+  skip: True  # [win or py!=310]
   number: 0
   entry_points:
     - run_metplus.py = metplus.scripts.run_metplus:cli_main
   ignore_run_exports:
     - numpy
 
+
 requirements:
   build:
+    - python                                 # [build_platform != target_platform]
+    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
     - {{ compiler('c') }}
     - {{ stdlib("c") }}
     - {{ compiler('fortran') }}
@@ -53,6 +53,8 @@ requirements:
     - hdfeos2
     - setuptools
     - setuptools-git-versioning >=2.0,<3
+    - llvm-openmp  # [osx]
+    - libgomp      # [linux]
 
   run:
     - gsl
@@ -88,6 +90,7 @@ test:
     - test -f $PREFIX/bin/pcp_combine
     - test -f $PREFIX/bin/plot_data_plane
     - test -f $PREFIX/bin/plot_point_obs
+    - test -f $PREFIX/bin/point2grid
     - test -f $PREFIX/bin/point_stat
     - test -f $PREFIX/bin/regrid_data_plane
     - test -f $PREFIX/bin/series_analysis

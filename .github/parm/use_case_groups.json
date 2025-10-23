@@ -1,18 +1,13 @@
 [
    {
     "category": "met_tool_wrapper",
-    "index_list": "0-29,59-66",
+    "index_list": "0-29,59-67",
     "run": false
   },
   {
     "category": "met_tool_wrapper",
-    "index_list": "30-58",
+    "index_list": "30-58,68-69",
     "run": false
-  },
-  {
-    "category": "met_tool_wrapper",
-    "index_list": "67",
-    "run": true
   },
   {
     "category": "air_quality_and_comp",
@@ -82,6 +77,16 @@
   {
     "category": "land_surface",
     "index_list": "0",
+    "run": false
+  },
+  {
+    "category": "land_surface",
+    "index_list": "1",
+    "run": false
+  },
+  {
+    "category": "land_surface",
+    "index_list": "2",
     "run": false
   },
   {
@@ -161,6 +166,16 @@
     "index_list": "9",
     "run": false
   },
+  { 
+    "category": "medium_range",
+    "index_list": "11",
+    "run": false
+  },
+  { 
+    "category": "medium_range",
+    "index_list": "12",
+    "run": false
+  },
   {
     "category": "pbl",
     "index_list": "0",
@@ -226,6 +241,11 @@
   {
     "category": "s2s",
     "index_list": "5",
+    "run": false
+  },
+  {
+    "category": "s2s",
+    "index_list": "6",
     "run": false
   },
   {
@@ -356,6 +376,11 @@
   {
     "category": "tc_and_extra_tc",
     "index_list": "3-5",
+    "run": false
+  },
+  {
+    "category": "tc_and_extra_tc",
+    "index_list": "6",
     "run": false
   },
   {

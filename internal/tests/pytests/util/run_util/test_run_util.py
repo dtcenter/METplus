@@ -224,7 +224,7 @@ def test_run_metplus_usage(metplus_config, capfd):
             4,
             [
                 'Must set either FCST_PCP_COMBINE_RUN or OBS_PCP_COMBINE_RUN',
-                'OBS_GRID_STAT_INPUT_TEMPLATE required to run',
+                'GRID_STAT_OBS_INPUT_TEMPLATE required to run',
             ],
         ),
         (
@@ -356,8 +356,8 @@ def test__check_wrapper_init_errors(
     process_list = [('EnsembleStat', 1), ('GridStat', None)]
     processes = ru._load_all_wrappers(metplus_config, process_list)
 
-    processes[0].isOK = is_ok_1
-    processes[1].isOK = is_ok_2
+    processes[0].is_ok = is_ok_1
+    processes[1].is_ok = is_ok_2
 
     if reset_error:
         processes[0].errors = 0
@@ -391,7 +391,7 @@ def test__check_wrapper_run_errors(
     if not use_logger:
         mock_logger.__bool__.return_value = False
 
-    actual = ru._check_wrapper_run_errors(processes, mock_logger)
+    actual = ru._get_total_errors_and_log_counts(processes, mock_logger)
     assert actual == errors_1 + errors_2
 
     if use_logger:

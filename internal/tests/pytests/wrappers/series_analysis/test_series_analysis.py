@@ -118,7 +118,7 @@ def set_minimum_config_settings(config):
     ]
 )
 @pytest.mark.wrapper_a
-def test_series_analysis_missing_inputs(metplus_config, get_test_data_dir,
+def test_series_analysis_missing_inputs(metplus_config, get_test_data_dir, run_all_and_check_missing,
                                         missing, run, thresh, errors, allow_missing,
                                         runtime_freq):
     config = metplus_config
@@ -139,16 +139,7 @@ def test_series_analysis_missing_inputs(metplus_config, get_test_data_dir,
                '{valid?fmt=%Y%m%d}/qpe_{valid?fmt=%Y%m%d%H}_A06.nc')
 
     wrapper = SeriesAnalysisWrapper(config)
-    assert wrapper.isOK
-
-    all_cmds = wrapper.run_all_times()
-    for cmd, _ in all_cmds:
-        print(cmd)
-
-    print(f'missing: {wrapper.missing_input_count} / {wrapper.run_count}, errors: {wrapper.errors}')
-    assert wrapper.missing_input_count == missing
-    assert wrapper.run_count == run
-    assert wrapper.errors == errors
+    run_all_and_check_missing(wrapper, missing, run, errors)
 
 
 @pytest.mark.parametrize(
@@ -631,7 +622,7 @@ def test_series_analysis_single_field(metplus_config, config_overrides,
         config.set('config', key, value)
 
     wrapper = SeriesAnalysisWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     is_both = wrapper.c_dict.get('USING_BOTH')
     
@@ -1250,7 +1241,7 @@ def test_run_once_per_lead(metplus_config):
 
     # basic test
     actual = wrapper.run_once_per_lead(None)
-    assert wrapper.isOK
+    assert wrapper.is_ok
     assert actual is True
 
     # lead_hours None

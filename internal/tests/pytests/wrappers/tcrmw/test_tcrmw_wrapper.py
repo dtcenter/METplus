@@ -141,7 +141,7 @@ def test_tc_rmw_run(metplus_config, get_test_data_dir, config_overrides,
         config.set('config', key, value)
 
     wrapper = TCRMWWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     file_list_dir = wrapper.config.getdir('FILE_LISTS_DIR')
     file_list_file = f"{file_list_dir}/aal142016_short.dat_data_files.txt"

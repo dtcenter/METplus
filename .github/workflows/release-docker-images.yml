@@ -1,40 +1,137 @@
-name: Create Docker images for release
+name: Create Release Docker Images
 
 on:
+
   release:
     types:
       - published
 
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: 'Comma-separated list of versions to build, e.g. v6.0,v6.1'
+        default: 'v6.0,v6.1'
+        required: true
+        type: string
+      update_latest:
+        description: 'Update "X.Y-latest" images.'
+        default: false
+        required: true
+        type: boolean
+
+  schedule:
+    - cron: "30 06 * * 0"
+
+env:
+  DOCKERHUB_BASE_REPO: dtcenter/metplus
+  DOCKERHUB_ANALYSIS_REPO: dtcenter/metplus-analysis
+
 jobs:
-  build_and_push:
-    name: Build and Push Images
+
+  define-matrix:
+    name: Define Matrix
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.get-versions.outputs.matrix }}
+      update_latest: ${{ steps.get-versions.outputs.update_latest }}
+
     steps:
+
       - uses: actions/checkout@v4
+        with:
+          repository: 'dtcenter/metplus'
+          ref: 'develop'
+          sparse-checkout: metplus/component_versions.py
+          sparse-checkout-cone-mode: false
+
+      - name: Get versions to build 
+        id: get-versions
+        run: |
+          if [[ ${{ github.event_name }} == 'schedule' ]]; then
+            version_string="v6.0,v6.1"
+            update_latest="true"
+          elif [[ ${{ github.event_name }} == 'workflow_dispatch' ]]; then
+            version_string=${{ toJSON(inputs.release_version) }}
+            update_latest=${{ toJSON(inputs.update_latest) }}
+          else
+            version_string=${{ toJSON(github.ref_name) }}
+            update_latest="true"
+          fi
+          IFS=',' read -r -a version_array <<< "${version_string}"
+          matrix="{\"version\": ["
+          for version in "${version_array[@]}"; do
+            if [[ ${version} =~ ^v[0-9]+.[0-9]+$ ]]; then
+              matrix+=\"$(${GITHUB_WORKSPACE}/metplus/component_versions.py -v ${version} -i METplus -o METplus)\",
+            else
+              matrix+=\"${version}\",
+            fi
+          done
+          matrix+="]}"
+          echo "matrix=${matrix}" >> $GITHUB_OUTPUT
+          echo "update_latest=${update_latest}" >> $GITHUB_OUTPUT
+ 
+  build_scan_and_push:
+    name: Build, Scan, and Push Images
+    runs-on: ubuntu-latest
+    needs: define-matrix
+    strategy:
+      matrix: ${{ fromJSON(needs.define-matrix.outputs.matrix) }}
+      fail-fast: false
+
+    steps:
+      - name: Free Disk Space
+        uses: dtcenter/metplus-action-free-disk-space@v1
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.version }}
+          path: ${{ matrix.version }}
+          sparse-checkout: internal/scripts/docker
+          sparse-checkout-cone-mode: false
+
       - uses: actions/checkout@v4
         with:
           ref: 'develop'
           path: 'develop'
           sparse-checkout: metplus/component_versions.py
           sparse-checkout-cone-mode: false
-      - name: Get and check tag name
-        id: get_tag_name
+
+      - name: Set version without v prefix
+        id: set-version
         run: |
-          SOURCE_BRANCH=${GITHUB_REF#refs/tags/}
-          if [[ ! "${SOURCE_BRANCH}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
-            echo "ERROR: Tag name (${SOURCE_BRANCH}) does not start with vX.Y.Z format"
-            exit 1
-          fi
-          echo SOURCE_BRANCH=${SOURCE_BRANCH} >> $GITHUB_OUTPUT
-      - name: Build metplus and metplus-analysis images
+          version="${{ matrix.version }}"
+          echo "VERSION_NO_V=${version#v}" >> $GITHUB_ENV
+
+      - name: Build Docker Images
         id: build_images
         run: .github/jobs/docker_build_metplus_images.sh
         env:
-          SOURCE_BRANCH: ${{ steps.get_tag_name.outputs.SOURCE_BRANCH }}
-      - name: Push metplus and metplus-analysis images
+          SOURCE_BRANCH: ${{ matrix.version }}
+          METPLUS_VERSION: ${{ env.VERSION_NO_V }}
+          DOCKERHUB_BASE_REPO: ${{ env.DOCKERHUB_BASE_REPO }}
+          DOCKERHUB_ANALYSIS_REPO: ${{ env.DOCKERHUB_ANALYSIS_REPO }}
+
+      - name: Scan Docker Images
+        id: security-scan
+        continue-on-error: false
+        uses: dtcenter/metplus-action-scan-docker-images@v1
+        with:
+          images: |
+            [
+              "${{ env.DOCKERHUB_BASE_REPO }}:${{ env.VERSION_NO_V }}",
+              "${{ env.DOCKERHUB_ANALYSIS_REPO }}:${{ env.VERSION_NO_V }}"
+            ]
+          fail-on-critical: "true"
+          log-artifact-name: 'security-scan-logs_${{ env.VERSION_NO_V }}'
+
+      - name: Push Docker Images
         run: .github/jobs/docker_push_metplus_images.sh
         env:
-          SOURCE_BRANCH: ${{ steps.get_tag_name.outputs.SOURCE_BRANCH }}
-          LATEST_TAG: ${{ steps.build_images.outputs.LATEST_TAG }}
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          METPLUS_VERSION: ${{ env.VERSION_NO_V }}
+          UPDATE_LATEST: ${{ fromJSON(needs.define-matrix.outputs.update_latest) }}
+          DOCKERHUB_BASE_REPO: ${{ env.DOCKERHUB_BASE_REPO }}
+          DOCKERHUB_ANALYSIS_REPO: ${{ env.DOCKERHUB_ANALYSIS_REPO }}
+          DOCKER_USERNAME: 'dtcenter'
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
