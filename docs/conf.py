@@ -223,7 +223,7 @@ sphinx_gallery_conf = {
 }
 
 # -- Intersphinx control ---------------------------------------------------------------
-intersphinx_mapping = {'numpy':("https://docs.scipy.org/doc/numpy/", None)}
+intersphinx_mapping = {'numpy':("https://numpy.org/doc/stable/", None)}
 
 # -- Include the CSS -------------------------------------------------------------------
 def setup(app):
