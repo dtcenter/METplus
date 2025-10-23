@@ -337,6 +337,11 @@ X.Y.Z release, the file contains the following entries specific to the X.Y.Z rel
 If installing a beta release (X.Y.Z-betaN) or a rc release (X.Y.Z-rcN), these values will
 need to be modified appropriately.
 
+.. warning::
+
+   The values for **TEST_BASE** and **MET_TARBALL** should be modified in the *install_met_env.<system-name>*
+   file and should **NOT** be executed on the command line.
+
 Similarly, if installing with Python embedding functionality (recommended), there are
 references to the specific conda environment. For example:
 
