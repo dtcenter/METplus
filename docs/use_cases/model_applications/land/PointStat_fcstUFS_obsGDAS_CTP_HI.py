@@ -116,10 +116,8 @@ model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 # This use case has four Python embedding scripts, one for each diagnostic (CTP/HI)
 # for both the forecast and observations
 #
-# * pyembed_ctp_fcst_HR1.py
-# * pyembed_ctp_obs_gdas.py
-# * pyembed_hi_fcst_HR1.py
-# * pyembed_hi_obs_gdas.py
+# * pyembed_fcst_HR1.py
+# * pyembed_obs_gdas.py
 #
 # In addition to the `basic package requirements for Python embedding <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/appendixF.html#compiling-met-for-python-embedding>`_, these Python scripts also require
 #
@@ -130,25 +128,15 @@ model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 # to the mask file created with GenVxMask, while the observation Python embedding scripts
 # only require the output file from PB2NC.
 # 
-# .. dropdown:: parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_ctp_fcst_HR1.py
+# .. dropdown:: parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_fcst_HR1.py
 #
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_ctp_fcst_HR1.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_fcst_HR1.py
 #
-# .. dropdown:: parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_ctp_obs_gdas.py
-#
-#   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_ctp_obs_gdas.py
-#
-# .. dropdown:: parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_hi_fcst_HR1.py
+# .. dropdown:: parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_obs_gdas.py
 #
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_hi_fcst_HR1.py
-#
-# .. dropdown:: parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_hi_obs_gdas.py
-#
-#   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_hi_obs_gdas.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_obs_gdas.py
 #
 # For more information on the basic requirements to utilize Python Embedding in METplus,
 # please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
