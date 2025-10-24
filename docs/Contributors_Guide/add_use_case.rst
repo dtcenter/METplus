@@ -50,7 +50,7 @@ one of the following:
 * data_assimilation
 * fire
 * extremes
-* land_surface
+* land
 * marine_and_cryosphere
 * medium_range
 * miscellaneous

@@ -83,7 +83,7 @@ Use Cases by Application:
    | `Data Assimilation  <../search.html?q=DataAssimilationAppUseCase&check_keywords=yes&area=default>`_
    | `Ensemble  <../search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_
    | `Fire  <../search.html?q=FireAppUseCase&check_keywords=yes&area=default>`_
-   | `Land Surface <../search.html?q=LandSurfaceAppUseCase&check_keywords=yes&area=default>`_
+   | `Land <../search.html?q=LandAppUseCase&check_keywords=yes&area=default>`_
    | `Marine and Cryosphere <../search.html?q=MarineAndCryosphereAppUseCase&check_keywords=yes&area=default>`_
    | `Medium Range <../search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_
    | `PBL <../search.html?q=PBLAppUseCase&check_keywords=yes&area=default>`_
@@ -103,7 +103,7 @@ Use Cases by Application:
    | **Data Assimilation**: *DataAssimilationAppUseCase*
    | **Ensemble**: *EnsembleAppUseCase*
    | **Fire**: *FireAppUseCase*
-   | **LandSurface**: *LandSurfaceAppUseCase*
+   | **Land**: *LandAppUseCase*
    | **Marine and Cryosphere**: *MarineAndCryosphereAppUseCase*
    | **Medium Range**: *MediumRangeAppUseCase*
    | **PBL**: *PBLAppUseCase*

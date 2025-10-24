@@ -2,7 +2,7 @@
 PointStat: Use Python embedding and METcalcpy to calculate and verify CTP/HI
 ============================================================================
 
-model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
+model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 
 """
 ##############################################################################
@@ -90,7 +90,7 @@ model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 # i.e. parm/use_cases/model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 
 ##############################################################################
 # MET Configuration
@@ -130,25 +130,25 @@ model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 # to the mask file created with GenVxMask, while the observation Python embedding scripts
 # only require the output file from PB2NC.
 # 
-# .. dropdown:: parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_ctp_fcst_HR1.py
+# .. dropdown:: parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_ctp_fcst_HR1.py
 #
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_ctp_fcst_HR1.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_ctp_fcst_HR1.py
 #
-# .. dropdown:: parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_ctp_obs_gdas.py
-#
-#   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_ctp_obs_gdas.py
-#
-# .. dropdown:: parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_hi_fcst_HR1.py
+# .. dropdown:: parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_ctp_obs_gdas.py
 #
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_hi_fcst_HR1.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_ctp_obs_gdas.py
 #
-# .. dropdown:: parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_hi_obs_gdas.py
+# .. dropdown:: parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_hi_fcst_HR1.py
 #
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_hi_obs_gdas.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_hi_fcst_HR1.py
+#
+# .. dropdown:: parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_hi_obs_gdas.py
+#
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI/pyembed_hi_obs_gdas.py
 #
 # For more information on the basic requirements to utilize Python Embedding in METplus,
 # please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
@@ -173,15 +173,15 @@ model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 #
 # * `Matplotlib <https://matplotlib.org/stable/>`_
 #
-# .. dropdown:: parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI/create_raob_mask_file.py
+# .. dropdown:: parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI/create_raob_mask_file.py
 # 
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI/create_raob_mask_file.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI/create_raob_mask_file.py
 #
-# .. dropdown:: parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI/plot_2panel_ctp_hi.py
+# .. dropdown:: parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI/plot_2panel_ctp_hi.py
 # 
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI/plot_2panel_ctp_hi.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI/plot_2panel_ctp_hi.py
 
 ##############################################################################
 # Running METplus
@@ -200,7 +200,7 @@ model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 # Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired::
 #
-#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI.conf /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 
@@ -214,7 +214,7 @@ model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
 # Output for this use case will be found in 
-# {OUTPUT_BASE}/model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI 
+# {OUTPUT_BASE}/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI
 # and will contain the following files::
 #
 #  * point_stat/CTP/point_stat_600000L_20200805_120000V_mpr.txt
@@ -238,9 +238,9 @@ model_applications/land_surface/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 #   * PointStatToolUseCase
 #   * PythonEmbeddingFileUseCase
 #   * METcalcpyUseCase
-#   * LandSurfaceAppUseCase
+#   * LandAppUseCase
 #   * UserScriptUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
-# sphinx_gallery_thumbnail_path = '_static/land_surface-PointStat_fcstUFS_obsGDAS_CTP_HI.png'
+# sphinx_gallery_thumbnail_path = '_static/land-PointStat_fcstUFS_obsGDAS_CTP_HI.png'

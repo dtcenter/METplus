@@ -2,7 +2,7 @@
 PointStat: Verify UFS Soil Moisture and Temperature with ISMN Observations
 ==========================================================================
 
-model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
+model_applications/land/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
 
 """
 ##############################################################################
@@ -91,10 +91,10 @@ model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config, 
 # then it loads any configuration files passed to METplus via the command line, 
-# i.e. parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
+# i.e. parm/use_cases/model_applications/land/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/land/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
 
 ##############################################################################
 # MET Configuration
@@ -137,15 +137,15 @@ model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
 # for both variables analyzed, as well as a 2D histogram plotting the frequency of
 # each forecast minus observation and forecast value combination.
 #
-# .. dropdown:: parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp/plot_point_stat_bias_map_ISMN.py
+# .. dropdown:: parm/use_cases/model_applications/land/PointStat_fcstUFS_obsISMN_SoilMoistureTemp/plot_point_stat_bias_map_ISMN.py
 # 
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp/plot_point_stat_bias_map_ISMN.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land/PointStat_fcstUFS_obsISMN_SoilMoistureTemp/plot_point_stat_bias_map_ISMN.py
 #
-# .. dropdown:: parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp/plot_point_stat_bias_2d_hist_ISMN.py
+# .. dropdown:: parm/use_cases/model_applications/land/PointStat_fcstUFS_obsISMN_SoilMoistureTemp/plot_point_stat_bias_2d_hist_ISMN.py
 #
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp/plot_point_stat_bias_map_ISMN.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land/PointStat_fcstUFS_obsISMN_SoilMoistureTemp/plot_point_stat_bias_map_ISMN.py
 
 ##############################################################################
 # Running METplus
@@ -154,7 +154,7 @@ model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
 # Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired::
 #
-#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/land/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 
@@ -168,7 +168,7 @@ model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
 # Output for this use case will be found in 
-# {OUTPUT_BASE}/model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp 
+# {OUTPUT_BASE}/model_applications/land/PointStat_fcstUFS_obsISMN_SoilMoistureTemp
 # and will contain the following files::
 #
 #  * ascii2nc/2020080512_ismn.nc
@@ -190,9 +190,9 @@ model_applications/land_surface/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
 #   * PointStatToolUseCase
 #   * StatAnalysisToolUseCase
 #   * UserScriptUseCase
-#   * LandSurfaceAppUseCase
+#   * LandAppUseCase
 #   * VxDataISMN
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
-# sphinx_gallery_thumbnail_path = '_static/land_surface-PointStat_fcstUFS_obsISMN_SoilMoistureTemp.png'
+# sphinx_gallery_thumbnail_path = '_static/land-PointStat_fcstUFS_obsISMN_SoilMoistureTemp.png'
