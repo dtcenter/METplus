@@ -174,7 +174,7 @@
   { 
     "category": "medium_range",
     "index_list": "12",
-    "run": false
+    "run": true
   },
   {
     "category": "pbl",
