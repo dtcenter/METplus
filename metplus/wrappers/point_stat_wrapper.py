@@ -177,16 +177,14 @@ class PointStatWrapper(CompareGriddedWrapper):
                             metplus_configs=['POINT_STAT_FCST_FILE_TYPE',
                                              'FCST_POINT_STAT_FILE_TYPE',
                                              'POINT_STAT_FILE_TYPE'],
-                            extra_args={'remove_quotes': True,
-                                        'uppercase': True})
+                            extra_args={'constant': True})
 
         self.add_met_config(name='file_type', data_type='string',
                             env_var_name='OBS_FILE_TYPE',
                             metplus_configs=['POINT_STAT_OBS_FILE_TYPE',
                                              'OBS_POINT_STAT_FILE_TYPE',
                                              'POINT_STAT_FILE_TYPE'],
-                            extra_args={'remove_quotes': True,
-                                        'uppercase': True})
+                            extra_args={'constant': True})
 
         self.handle_climo_cdf_dict()
 
@@ -194,13 +192,13 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.handle_topo_mask()
 
         self.add_met_config_dict('lapse_rate_correction', {
-            'apply_to': ('string', 'remove_quotes, uppercase'),
+            'apply_to': ('string', 'constant'),
             'value': ('string', 'remove_quotes'),
         })
 
         self.add_met_config_dict('msl_agl_conversion', {
-            'apply_to': ('string', 'remove_quotes, uppercase'),
-            'apply_from': ('string', 'remove_quotes, uppercase'),
+            'apply_to': ('string', 'constant'),
+            'apply_from': ('string', 'constant'),
             'thresh': ('string', 'remove_quotes'),
             'msl_to_agl': 'bool',
         })
@@ -232,9 +230,9 @@ class PointStatWrapper(CompareGriddedWrapper):
                                              'POINT_STAT_OBS_QUALITY_EXCLUDE'])
 
         self.add_met_config(name='duplicate_flag', data_type='string',
-                            extra_args={'remove_quotes': True, 'uppercase': True})
+                            extra_args={'constant': True})
         self.add_met_config(name='obs_summary', data_type='string',
-                            extra_args={'remove_quotes': True, 'uppercase': True})
+                            extra_args={'constant': True})
 
         self.add_met_config(name='obs_perc_value', data_type='int')
 
@@ -246,13 +244,13 @@ class PointStatWrapper(CompareGriddedWrapper):
             name='time_interp_method', data_type='string',
             env_var_name='CLIMO_MEAN_TIME_INTERP_METHOD',
             metplus_configs=['POINT_STAT_CLIMO_MEAN_TIME_INTERP_METHOD'],
-            extra_args={'remove_quotes': True, 'uppercase': True},
+            extra_args={'constant': True},
         )
         self.add_met_config(
             name='time_interp_method', data_type='string',
             env_var_name='CLIMO_STDEV_TIME_INTERP_METHOD',
             metplus_configs=['POINT_STAT_CLIMO_STDEV_TIME_INTERP_METHOD'],
-            extra_args={'remove_quotes': True, 'uppercase': True},
+            extra_args={'constant': True},
         )
 
         self.add_met_config(name='hss_ec_value', data_type='float',
@@ -263,7 +261,7 @@ class PointStatWrapper(CompareGriddedWrapper):
             'width': ('list', 'remove_quotes'),
             'vld_thresh': 'float',
             'cov_thresh': ('list', 'remove_quotes'),
-            'shape': ('string', 'remove_quotes, uppercase'),
+            'shape': ('string', 'constant'),
             'prob_cat_thresh': ('list', 'remove_quotes'),
         })
 
@@ -281,8 +279,7 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         self.add_met_config(name='point_weight_flag',
                             data_type='string',
-                            extra_args={'remove_quotes': True,
-                                        'uppercase': True})
+                            extra_args={'constant': True})
 
         if not c_dict['FCST_INPUT_TEMPLATE']:
             self.log_error('Must set FCST_POINT_STAT_INPUT_TEMPLATE '

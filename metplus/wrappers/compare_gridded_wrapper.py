@@ -306,7 +306,7 @@ that reformat gridded data
         var_options['obs']['lapse_rate_correction'] = {
             'data_type': 'dict',
             'items': {
-                'apply_to': ('string', 'remove_quotes, uppercase'),
+                'apply_to': ('string', 'constant'),
                 'value': ('string', 'remove_quotes'),
             }
         }
@@ -316,8 +316,8 @@ that reformat gridded data
         var_options['obs']['msl_agl_conversion'] = {
             'data_type': 'dict',
             'items': {
-                'apply_to': ('string', 'remove_quotes, uppercase'),
-                'apply_from': ('string', 'remove_quotes, uppercase'),
+                'apply_to': ('string', 'constant'),
+                'apply_from': ('string', 'constant'),
                 'thresh': ('string', 'remove_quotes'),
                 'msl_to_agl': 'bool',
             }

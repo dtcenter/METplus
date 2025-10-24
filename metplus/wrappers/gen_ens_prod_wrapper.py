@@ -182,12 +182,11 @@ class GenEnsProdWrapper(LoopTimesWrapper):
                             metplus_configs=['GEN_ENS_PROD_ENS_FILE_TYPE',
                                              'GEN_ENS_PROD_FILE_TYPE',
                                              'ENS_FILE_TYPE'],
-                            extra_args={'remove_quotes': True,
-                                        'uppercase': True})
+                            extra_args={'constant': True})
 
         self.add_met_config_dict('nbrhd_prob', {
             'width': ('list', 'remove_quotes'),
-            'shape': ('string', 'uppercase,remove_quotes'),
+            'shape': ('string', 'constant'),
             'vld_thresh': 'float',
         })
 
@@ -195,11 +194,10 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         # but only setting 1 dictionary in the list is supported
         self.add_met_config_dict('nmep_smooth', {
             'vld_thresh': 'float',
-            'shape': ('string', 'uppercase,remove_quotes'),
+            'shape': ('string', 'constant'),
             'gaussian_dx': 'float',
             'gaussian_radius': 'int',
-            'type': ('dictlist', '', {'method': ('string',
-                                                 'uppercase,remove_quotes'),
+            'type': ('dictlist', '', {'method': ('string', 'constant'),
                                       'width': 'int',
                                       }
                      )

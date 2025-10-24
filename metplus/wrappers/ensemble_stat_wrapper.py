@@ -253,13 +253,13 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.handle_topo_mask()
 
         self.add_met_config_dict('lapse_rate_correction', {
-            'apply_to': ('string', 'remove_quotes, uppercase'),
+            'apply_to': ('string', 'constant'),
             'value': ('string', 'remove_quotes'),
         })
 
         self.add_met_config_dict('msl_agl_conversion', {
-            'apply_to': ('string', 'remove_quotes, uppercase'),
-            'apply_from': ('string', 'remove_quotes, uppercase'),
+            'apply_to': ('string', 'constant'),
+            'apply_from': ('string', 'constant'),
             'thresh': ('string', 'remove_quotes'),
             'msl_to_agl': 'bool',
         })
@@ -329,13 +329,11 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         self.add_met_config(name='grid_weight_flag',
                             data_type='string',
-                            extra_args={'remove_quotes': True,
-                                        'uppercase': True})
+                            extra_args={'constant': True})
 
         self.add_met_config(name='point_weight_flag',
                             data_type='string',
-                            extra_args={'remove_quotes': True,
-                                        'uppercase': True})
+                            extra_args={'constant': True})
 
         self.add_met_config(name='prob_pct_thresh',
                             data_type='list',
