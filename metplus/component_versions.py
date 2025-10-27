@@ -14,6 +14,16 @@
 import sys
 
 VERSION_LOOKUP = {
+    '7.0': {
+        'metplus': '7.0.0',
+        'met': '13.0.0',
+        'metplotpy': '4.0.0',
+        'metcalcpy': '4.0.0',
+        'metdataio': '4.0.0',
+        'metviewer': '7.0.0',
+        'metexpress': None,
+        'metbaseimage': '3.5.0',
+    },
     '6.2': {
         'metplus': '6.2.0',
         'met': '12.2.0',
@@ -56,9 +66,7 @@ VERSION_LOOKUP = {
     },
 }
 
-# assumes the 2nd highest version in the table is the latest
-# the highest version in the table is in development
-LATEST_OFFICIAL_RELEASE = sorted(VERSION_LOOKUP.keys(), reverse=True)[1]
+LATEST_OFFICIAL_RELEASE = '6.1'
 
 DEFAULT_OUTPUT_FORMAT = "v{X}.{Y}.{Z}{N}"
 
