@@ -14920,3 +14920,12 @@ METplus Configuration Glossary
      Specify the value for the -inputrx command line argument for ASCII2NC.
 
      | *Used by:* ASCII2NC
+
+   GEN_ENS_PROD_N_MEMBERS
+     Expected number of ensemble members found.
+     This should correspond to the number of items in
+     :term:`GEN_ENS_PROD_INPUT_TEMPLATE`.
+     If this number differs from the number of files are found for a given run,
+     then gen_ens_prod will not run for that time.
+
+     | *Used by:*  GenEnsProd

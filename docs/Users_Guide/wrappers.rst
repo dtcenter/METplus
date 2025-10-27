@@ -1559,6 +1559,7 @@ METplus Configuration
 | :term:`GEN_ENS_PROD_INC_INIT_TIMES`
 | :term:`GEN_ENS_PROD_ALLOW_MISSING_INPUTS`
 | :term:`GEN_ENS_PROD_INPUT_THRESH`
+| :term:`GEN_ENS_PROD_N_MEMBERS`
 
 
 .. _gen-ens-prod-met-conf:
