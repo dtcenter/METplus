@@ -1560,6 +1560,8 @@ METplus Configuration
 | :term:`GEN_ENS_PROD_ALLOW_MISSING_INPUTS`
 | :term:`GEN_ENS_PROD_INPUT_THRESH`
 | :term:`GEN_ENS_PROD_N_MEMBERS`
+| :term:`GEN_ENS_PROD_VLD_THRESH`
+
 
 
 .. _gen-ens-prod-met-conf:

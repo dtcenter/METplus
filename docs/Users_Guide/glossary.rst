@@ -931,7 +931,10 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_VLD_THRESH` instead.
 
    ENSEMBLE_STAT_VLD_THRESH
-     Threshold for the ratio of the number of valid data values to the total number of expected ensemble members. This value is passed into the ensemble_stat config file to make sure the percentage of files that are valid meets the expectation.
+     Threshold for the ratio of the number of valid data values to the total
+     number of expected ensemble members. This value is passed into the
+     ensemble_stat config file to make sure the percentage of files that are
+     valid meets the expectation.
 
      | *Used by:*  EnsembleStat
 
@@ -8159,6 +8162,11 @@ METplus Configuration Glossary
    GEN_ENS_PROD_CTRL_INPUT_TEMPLATE
      Template used to specify an optional control filename for the
      MET tool gen_ens_prod.
+     The control member will be removed from the list of input ensembles
+     specified with :term:`GEN_ENS_PROD_INPUT_TEMPLATE`.
+     This may require adjusting the value for
+     :term:`GEN_ENS_PROD_N_MEMBERS` and/or
+     :term:`GEN_ENS_PROD_VLD_THRESH`.
 
      | *Used by:*  GenEnsProd
 
@@ -8985,7 +8993,8 @@ METplus Configuration Glossary
 
    ENSEMBLE_STAT_CTRL_INPUT_TEMPLATE
      Template used to specify an optional control filename for EnsembleStat.
-     Note that if a control member file is found in the ensemble file list,
+     Note that if a control member file is found in the ensemble file list
+     specified with :term:`FCST_ENSEMBLE_STAT_INPUT_TEMPLATE`,
      it will automatically be removed by the wrapper to prevent an error in the
      MET tool. This may require adjusting the value for
      :term:`ENSEMBLE_STAT_N_MEMBERS` and/or
@@ -14925,7 +14934,18 @@ METplus Configuration Glossary
      Expected number of ensemble members found.
      This should correspond to the number of items in
      :term:`GEN_ENS_PROD_INPUT_TEMPLATE`.
+     This number should not include the control member is specified with
+     :term:`GEN_ENS_PROD_CTRL_INPUT_TEMPLATE`.
      If this number differs from the number of files are found for a given run,
      then gen_ens_prod will not run for that time.
+
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_VLD_THRESH
+     Threshold for the ratio of the number of valid data values to the total
+     number of expected ensemble members. This value is passed into the
+     gen_ens_prod config file to make sure the percentage of files that are
+     valid meets the expectation.
 
      | *Used by:*  GenEnsProd
