@@ -224,7 +224,7 @@ def test_run_metplus_usage(metplus_config, capfd):
             4,
             [
                 'Must set either FCST_PCP_COMBINE_RUN or OBS_PCP_COMBINE_RUN',
-                'OBS_GRID_STAT_INPUT_TEMPLATE required to run',
+                'GRID_STAT_OBS_INPUT_TEMPLATE required to run',
             ],
         ),
         (
@@ -356,8 +356,8 @@ def test__check_wrapper_init_errors(
     process_list = [('EnsembleStat', 1), ('GridStat', None)]
     processes = ru._load_all_wrappers(metplus_config, process_list)
 
-    processes[0].isOK = is_ok_1
-    processes[1].isOK = is_ok_2
+    processes[0].is_ok = is_ok_1
+    processes[1].is_ok = is_ok_2
 
     if reset_error:
         processes[0].errors = 0

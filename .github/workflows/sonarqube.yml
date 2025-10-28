@@ -59,6 +59,7 @@ jobs:
       run: |
         python3 -m pip install --upgrade pip
         python3 -m pip install -r internal/tests/pytests/requirements.txt
+        python3 -m pip install requests
 
     - name: Install ImageMagick convert
       run: sudo apt update && sudo apt install imagemagick

@@ -15,4 +15,5 @@ RUN conda update -y -n base -c conda-forge conda \
  && ./py_embed_base_env.sh ${METPLUS_ENV_VERSION}
 
 ARG METPLUS_ENV_VERSION
-RUN conda list --name py_embed_base.${METPLUS_ENV_VERSION} > /usr/local/conda/envs/py_embed_base.${METPLUS_ENV_VERSION}/environments.yml
+RUN conda list --name py_embed_base.${METPLUS_ENV_VERSION} \
+  > /usr/local/conda/envs/py_embed_base.${METPLUS_ENV_VERSION}/environments.yml

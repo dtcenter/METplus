@@ -622,7 +622,7 @@ def test_series_analysis_single_field(metplus_config, config_overrides,
         config.set('config', key, value)
 
     wrapper = SeriesAnalysisWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     is_both = wrapper.c_dict.get('USING_BOTH')
     
@@ -1241,7 +1241,7 @@ def test_run_once_per_lead(metplus_config):
 
     # basic test
     actual = wrapper.run_once_per_lead(None)
-    assert wrapper.isOK
+    assert wrapper.is_ok
     assert actual is True
 
     # lead_hours None

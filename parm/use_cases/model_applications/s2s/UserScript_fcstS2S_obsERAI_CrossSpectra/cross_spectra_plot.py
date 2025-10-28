@@ -42,9 +42,6 @@ source = ""
 spd = 4
 
 symmetry = "symm"      #("symm", "asymm", "latband")
-#filenames = os.environ.get("INPUT_FILE_NAMES","ERAI_TRMM_P_symn,ERAI_P_D850_symn,ERAI_P_D200_symn").split(",")
-#vars1 = ['ERAI P', 'ERAI P', 'ERAI P']
-#vars2 = ['TRMM', 'ERAI D850', 'ERAI D200']
 filenames = os.environ.get("PLOT_SPECTRA_INPUT_FILE_NAMES","ERAI_P_D850_symn,ERAI_P_D200_symn,ERAI_P_D200_symn").split(",")
 vars1 = [model+' P',model+' P',model+' P']
 vars2 = [model+' '+var2,model+' '+var3,model+' '+var3]
@@ -62,9 +59,6 @@ for pp in np.arange(0, nplot, 1):
     wnum = fin['wnum']
     freq = fin['freq']
 
-    #ifreq = np.where((freq[:] >= 0) & (freq[:] <= flim))
-    #iwave = np.where(abs(wnum[:]) <= nWavePlt)
-
     STC[:, freq[:] == 0, :] = 0.
     STC = STC.sel(wnum=slice(-nWavePlt, nWavePlt))
     STC = STC.sel(freq=slice(0, flim))
@@ -79,8 +73,8 @@ for pp in np.arange(0, nplot, 1):
     pow2.where(pow2 <= 0, drop=True)
 
     if pp == 0:
-        ifreq = np.where((freq[:] >= 0) & (freq[:] <= flim))
-        iwave = np.where(abs(wnum[:]) <= nWavePlt)
+        ifreq = np.nonzero((freq[:] >= 0) & (freq[:] <= flim))
+        iwave = np.nonzero(abs(wnum[:]) <= nWavePlt)
         Coh2 = np.full([npanel, len(freq[ifreq]), len(wnum[iwave])], np.nan)
         Phs1 = np.full([npanel, len(freq[ifreq]), len(wnum[iwave])], np.nan)
         Phs2 = np.full([npanel, len(freq[ifreq]), len(wnum[iwave])], np.nan)

@@ -55,11 +55,11 @@ print("min", data.min())
 
 # Automatically fill out time information from input file.
 for token in os.path.basename(input_file).replace('-', '_').split('_'):
-    if(re.search("[0-9]{8,8}", token)):
+    if(re.search("\d{8}", token)):
         ymd = dt.datetime.strptime(token[0:8],"%Y%m%d")
-    elif(re.search("^[0-9]{4}$", token)):
+    elif(re.search("^\d{4}$", token)):
         hh  = int(token[0:2])
-    elif(re.search("^[0-9]{3}$", token)):
+    elif(re.search("^\d{3}$", token)):
         day = int(token.replace("", ""))
 
 
@@ -69,7 +69,6 @@ print("Data Type:  " + repr(met_data.dtype))
 # GFS Analysis
 valid  = ymd  + dt.timedelta(hours=hh)
 init = valid
-#lead, rem = divmod((valid-init).total_seconds(), 3600)
 
 
 print(valid)

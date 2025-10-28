@@ -10,7 +10,7 @@ Taken from original test_difficulty_index.py but replacing with METcalcpy and ME
 
 """
 import os
-import sys
+
 import numpy as np
 import matplotlib.pyplot as plt
 from metcalcpy.calc_difficulty_index import forecast_difficulty as di
@@ -19,6 +19,7 @@ from metcalcpy.piecewise_linear import PiecewiseLinear as plin
 import metplotpy.plots.difficulty_index.mycolormaps as mcmap
 from metplotpy.plots.difficulty_index.plot_difficulty_index import plot_field
 
+LONGITUDE_STRING = 'Longitude \u00b0E'
 
 def load_data(filename):
     """Load ensemble data from file"""
@@ -49,18 +50,18 @@ def compute_wind_envelope():
     """
     # Envelope for version 6.1, the default
     xunits = 'kn'
-    A6_1_name = "A6_1"
-    A6_1_left = 0.0
-    A6_1_right = 0.0
-    A6_1_xlist = [5.0, 28.0, 34.0, 50.0]
-    A6_1_ylist = [0.0, 1.5, 1.5, 0.0]
-    Aplin =\
-            plin(A6_1_xlist, A6_1_ylist, xunits=xunits,
-                    right=A6_1_right, left=A6_1_left, name=A6_1_name)
+    a6_1_name = "A6_1"
+    a6_1_left = 0.0
+    a6_1_right = 0.0
+    a6_1_xlist = [5.0, 28.0, 34.0, 50.0]
+    a6_1_ylist = [0.0, 1.5, 1.5, 0.0]
+    aplin =\
+            plin(a6_1_xlist, a6_1_ylist, xunits=xunits,
+                    right=a6_1_right, left=a6_1_left, name=a6_1_name)
 
-    return Aplin
+    return aplin
 
-def compute_difficulty_index(field, mu, sigma, thresholds, Aplin):
+def compute_difficulty_index(field, mu, sigma, thresholds, aplin):
     """
     Compute difficulty index for an ensemble forecast given
     a set of thresholds, returning a dictionary of fields.
@@ -68,7 +69,7 @@ def compute_difficulty_index(field, mu, sigma, thresholds, Aplin):
     dij = {}
     for threshold in thresholds:
         dij[threshold] =\
-            di(sigma, mu, threshold, field, Aplin=Aplin, sigma_over_mu_ref=EPS)
+            di(sigma, mu, threshold, field, Aplin=aplin, sigma_over_mu_ref=EPS)
 
     return dij
 
@@ -92,7 +93,7 @@ def plot_difficulty_index(dij, lats, lons, thresholds, units):
         figs[threshold] =\
             plot_field(dij[threshold],
                           lats, lons, vmin=0.0, vmax=vmax, cmap=cmap,
-                          xlab='Longitude \u00b0E', ylab='Latitude',
+                          xlab=LONGITUDE_STRING, ylab='Latitude',
                           clab='thresh={} {}'.format(threshold, units),
                           title='Forecast Decision Difficulty Index')
 
@@ -115,7 +116,7 @@ def save_difficulty_figures(figs, save_thresh, units):
         thresh_str = '{:.2f}'.format(thresh).replace('.', '_')
         fig_name = (fig_basename + thresh_str +
                     '_' + units + '.' + fig_fmt)
-        print('Saving {}...\n'.format(fig_name))
+        print(f'Saving {fig_name}...\n')
         figs[thresh].savefig(fig_name, format=fig_fmt)
 
 
@@ -125,13 +126,13 @@ def plot_statistics(mu, sigma, lats, lons, units='feet'):
     mu_fig =\
         plot_field(mu, lats, lons, cmap=cmap, clab=units,
                       vmin=0.0, vmax=np.nanmax(mu),
-                      xlab='Longitude \u00b0E',
+                      xlab=LONGITUDE_STRING,
                       ylab='Latitude',
                       title='Forecast Ensemble Mean')
     sigma_fig =\
         plot_field(sigma, lats, lons, cmap=cmap, clab=units,
                       vmin=0.0, vmax=np.nanmax(sigma),
-                      xlab='Longitude \u00b0E',
+                      xlab=LONGITUDE_STRING,
                       ylab='Latitude',
                       title='Forecast Ensemble Std')
 
@@ -146,10 +147,10 @@ def save_stats_figures(mu_fig, sigma_fig):
     fig_fmt = os.environ.get('DIFF_INDEX_FIG_FMT')
     fig_basename = os.environ.get('DIFF_INDEX_FIG_BASENAME')
     mu_name = fig_basename + 'mean.' + fig_fmt
-    print('Saving {}...\n'.format(mu_name))
+    print(f'Saving {mu_name}...\n')
     mu_fig.savefig(mu_name, format=fig_fmt)
     sigma_name = fig_basename + 'std.' + fig_fmt
-    print('Saving {}...\n'.format(sigma_name))
+    print(f'Saving {sigma_name}...\n')
     sigma_fig.savefig(sigma_name, format=fig_fmt)
 
 
@@ -169,14 +170,14 @@ def main():
     # Ensemble mean, std dev
     muij, sigmaij = compute_stats(fieldijn)
     # Windspeed envelope
-    Aplin = compute_wind_envelope()
+    aplin = compute_wind_envelope()
     # Difficulty index for a set of thresholds
     #thresholds = np.arange(os.environ.get('DIFF_INDEX_THRESH_START'), os.environ.get('DIFF_INDEX_THRESH_END'), os.environ.get('DIFF_INDEX_THRESH_STEP'))
     start = float(os.environ.get('DIFF_INDEX_THRESH_START'))
     stop = float(os.environ.get('DIFF_INDEX_THRESH_END'))
     step = float(os.environ.get('DIFF_INDEX_THRESH_STEP'))
     thresholds = np.arange(start, stop, step)
-    dij = compute_difficulty_index(fieldijn, muij, sigmaij, thresholds, Aplin=Aplin)
+    dij = compute_difficulty_index(fieldijn, muij, sigmaij, thresholds, aplin=aplin)
     # Plot and save difficulty index figures
     figs = plot_difficulty_index(dij, lats, lons, thresholds, units)
     save_start = float(os.environ.get('DIFF_INDEX_SAVE_THRESH_START'))

@@ -11,10 +11,6 @@ import getpass
 import gzip
 import bz2
 import zipfile
-import urllib.request
-import urllib.error
-import urllib.parse
-from urllib.request import HTTPPasswordMgrWithDefaultRealm, HTTPBasicAuthHandler, build_opener
 
 from .constants import PYTHON_EMBEDDING_TYPES, COMPRESSION_EXTENSIONS
 
@@ -432,24 +428,21 @@ def download_file_http(url, output_path, username=None, password=None, chunk_siz
     @returns: Dict with 'success': bool, 'file_size': int, 'error': str (if failed), 'decompressed': bool
     @raises: urllib.error.URLError, urllib.error.HTTPError for network issues
     """
+    import requests
     result = {'success': False, 'file_size': 0, 'error': '', 'decompressed': False}
 
+    # Create directory if it doesn't exist
+    mkdir_p(os.path.dirname(output_path))
+
+    # Create request
     try:
-        # Create directory if it doesn't exist
-        mkdir_p(os.path.dirname(output_path))
+        # Use requests.get() with basic authentication and streaming
+        auth = (username, password) if username and password else None
+        with requests.get(url, auth=auth, stream=True) as response:
+            # Check if the request was successful
+            response.raise_for_status()
 
-        # Set up authentication if credentials provided
-        _setup_http_auth(username, password, url)
-
-        # Create request
-        request = urllib.request.Request(url)
-
-        # Add user agent to avoid being blocked by some servers
-        request.add_header('User-Agent', 'Python-urllib/3.x')
-
-        # Open URL and download
-        with urllib.request.urlopen(request) as response:
-            # Get file size if available
+            # check size of file and report error if size is 0 or content length info not available
             content_length = response.headers.get('Content-Length')
             total_size = int(content_length) if content_length else None
             if not total_size:
@@ -469,42 +462,13 @@ def download_file_http(url, output_path, username=None, password=None, chunk_siz
             with open(output_path, 'wb') as output_file:
                 output_file.write(final_data)
 
-        result['success'] = True
-        result['file_size'] = len(final_data)
-        return result
-
-    except urllib.error.HTTPError as e:
-        result['error'] = f"HTTP Error {e.code}: {e.reason}"
-        return result
-
-    except urllib.error.URLError as e:
-        result['error'] = f"URL Error: {e.reason}"
-        return result
-
-    except IOError as e:
-        result['error'] = f"IO Error: {e}"
-        return result
-
-    except Exception as e:
+    except requests.exceptions.RequestException as e:
         result['error'] = f"Unexpected error: {e}"
         return result
 
-
-def _setup_http_auth(username, password, url):
-    """!Set up HTTP authentication if credentials provided.
-
-    @param username: Username for authentication
-    @param password: Password for authentication
-    @param url: URL for authentication scope
-    """
-    if username is None or password is None:
-        return
-
-    password_mgr = HTTPPasswordMgrWithDefaultRealm()
-    password_mgr.add_password(None, url, username, password)
-    auth_handler = HTTPBasicAuthHandler(password_mgr)
-    opener = build_opener(auth_handler)
-    urllib.request.install_opener(opener)
+    result['success'] = True
+    result['file_size'] = len(final_data)
+    return result
 
 
 def _download_chunks(response, chunk_size, url, auto_decompress, config):
@@ -517,24 +481,19 @@ def _download_chunks(response, chunk_size, url, auto_decompress, config):
     @param config: Optional config object for logging
     @returns: Tuple of (downloaded_data, compression_type)
     """
-    downloaded_data = b''
     first_chunk = True
     compression_type = None
 
-    while True:
-        chunk = response.read(chunk_size)
-        if not chunk:
-            break
-
-        downloaded_data += chunk
-
-        if first_chunk and auto_decompress:
-            compression_type = _detect_compression_type(downloaded_data, url)
+    all_chunks = []
+    for chunk in response.iter_content(chunk_size=chunk_size):
+        all_chunks.append(chunk)
+        if auto_decompress and first_chunk:
+            compression_type = _detect_compression_type(b''.join(all_chunks), url)
             first_chunk = False
             if compression_type and config:
                 config.logger.debug(f"Detected {compression_type} compression in downloaded file")
 
-    return downloaded_data, compression_type
+    return b''.join(all_chunks), compression_type
 
 
 def _process_downloaded_data(downloaded_data, compression_type, auto_decompress, config, result):

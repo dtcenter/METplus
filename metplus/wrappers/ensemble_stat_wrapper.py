@@ -22,8 +22,7 @@ from . import CompareGriddedWrapper
 
 
 class EnsembleStatWrapper(CompareGriddedWrapper):
-    """!Wraps the MET tool ensemble_stat to compare ensemble datasets
-    """
+    """!Wraps the MET tool ensemble_stat to compare ensemble datasets"""
 
     RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
     RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_FOR_EACH']
@@ -55,6 +54,10 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_CLIMO_MEAN_DICT',
         'METPLUS_CLIMO_STDEV_DICT',
         'METPLUS_CLIMO_CDF_DICT',
+        'METPLUS_LAND_MASK_DICT',
+        'METPLUS_TOPO_MASK_DICT',
+        'METPLUS_LAPSE_RATE_CORRECTION_DICT',
+        'METPLUS_MSL_AGL_CONVERSION_DICT',
         'METPLUS_OBS_WINDOW_DICT',
         'METPLUS_MASK_GRID',
         'METPLUS_MASK_POLY',
@@ -172,23 +175,17 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         self.get_input_templates(c_dict, {
             'CTRL': {'prefix': 'ENSEMBLE_STAT_CTRL', 'required': False},
-            'FCST': {'prefix': 'FCST_ENSEMBLE_STAT', 'required': True},
-            'OBS_POINT': {'prefix': 'OBS_ENSEMBLE_STAT_POINT', 'required': False},
-            'OBS_GRID': {'prefix': 'OBS_ENSEMBLE_STAT_GRID', 'required': False},
+            'FCST': {'prefix': ('ENSEMBLE_STAT_FCST', 'FCST_ENSEMBLE_STAT'), 'required': True},
+            'OBS_POINT': {'prefix': ('ENSEMBLE_STAT_OBS_POINT', 'OBS_ENSEMBLE_STAT_POINT'), 'required': False},
+            'OBS_GRID': {'prefix': ('ENSEMBLE_STAT_OBS_GRID', 'OBS_ENSEMBLE_STAT_GRID'), 'required': False},
             'ENS_MEAN': {'prefix': 'ENSEMBLE_STAT_ENS_MEAN', 'required': False},
         })
 
-        c_dict['OUTPUT_DIR'] = (
-            self.config.getdir('ENSEMBLE_STAT_OUTPUT_DIR', '')
-        )
+        c_dict['OUTPUT_DIR'] = self.config.getdir('ENSEMBLE_STAT_OUTPUT_DIR', '')
         if not c_dict['OUTPUT_DIR']:
-            self.log_error("Must set ENSEMBLE_STAT_OUTPUT_DIR "
-                           "in configuration file")
+            self.log_error("Must set ENSEMBLE_STAT_OUTPUT_DIR in configuration file")
 
-        c_dict['OUTPUT_TEMPLATE'] = (
-            self.config.getraw('config',
-                               'ENSEMBLE_STAT_OUTPUT_TEMPLATE')
-        )
+        c_dict['OUTPUT_TEMPLATE'] =  self.config.getraw('config', 'ENSEMBLE_STAT_OUTPUT_TEMPLATE')
 
         # get climatology config variables
         self.handle_climo_dict()
@@ -251,6 +248,21 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         # set climo_cdf dictionary variables
         self.handle_climo_cdf_dict()
+
+        self.handle_land_mask()
+        self.handle_topo_mask()
+
+        self.add_met_config_dict('lapse_rate_correction', {
+            'apply_to': ('string', 'remove_quotes, uppercase'),
+            'value': ('string', 'remove_quotes'),
+        })
+
+        self.add_met_config_dict('msl_agl_conversion', {
+            'apply_to': ('string', 'remove_quotes, uppercase'),
+            'apply_from': ('string', 'remove_quotes, uppercase'),
+            'thresh': ('string', 'remove_quotes'),
+            'msl_to_agl': 'bool',
+        })
 
         # interp dictionary values
         self.handle_interp_dict()
@@ -335,12 +347,26 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                             data_type='list',
                             extra_args={'remove_quotes': True})
 
-        # parse optional var list for FCST and/or OBS fields
-        c_dict['VAR_LIST_TEMP'] = parse_var_list(
-            self.config,
-            met_tool=self.app_name
-        )
         return c_dict
+
+    def populate_var_options(self):
+        var_options = super().populate_var_options()
+
+        # add options that are supported for both fcst and obs fields
+        both_options = {
+            'ens_ssvar_bin_size': {'data_type': 'float'},
+            'ens_phist_bin_size': {'data_type': 'float'},
+        }
+        for key, value in both_options.items():
+            var_options['fcst'][key] = value
+            var_options['obs'][key] = value
+
+        self.handle_land_mask_var_options(var_options)
+        self.handle_topo_mask_var_options(var_options)
+        self.handle_lapse_rate_correction_var_options(var_options)
+        self.handle_msl_agl_conversion_var_options(var_options)
+
+        return var_options
 
     def get_command(self):
         """! Builds the command to run the MET application

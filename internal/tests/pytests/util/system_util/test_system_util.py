@@ -255,13 +255,13 @@ def test_get_files(tmp_path_factory, regex, expected):
 @pytest.mark.parametrize(
     'url, rel_path, username, password, success', [
         # successful download
-        ('https://madis-data.ncep.noaa.gov/madisPublic/data/archive/2022/07/20/point/metar/netcdf/20220720_1200.gz',
+        ('https://dtcenter.ucar.edu/dfiles/code/METplus/DataIngest_input/2022/07/20/point/metar/netcdf/20220720_1200.gz',
          'metar/netcdf/20220720_1200.gz', None, None, True),
         # unsuccessful download, bad url
-        ('https://madis-data.ncep.noaa.gov/madisPublicFAKE/data/archive/2022/07/20/point/metar/netcdf/20220720_1200.gz',
+        ('https://dtcenter.ucar.edu/dfiles/code/METplus/DataIngest_input_FAKE/2022/07/20/point/metar/netcdf/20220720_1200.gz',
          'metar/netcdf/20220720_1200.gz', None, None, False),
         # successful download, anonymous credentials
-        ('https://madis-data.ncep.noaa.gov/madisPublic/data/archive/2022/07/20/point/metar/netcdf/20220720_1200.gz',
+        ('https://dtcenter.ucar.edu/dfiles/code/METplus/DataIngest_input/2022/07/20/point/metar/netcdf/20220720_1200.gz',
          'metar/netcdf/20220720_1200.gz', 'anonymous', 'anonymous', True),
     ]
 )

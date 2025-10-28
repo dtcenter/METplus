@@ -138,24 +138,24 @@ def _get_dir_template_pairs(config):
             clean_dir, clean_template = split_dir_and_template(input_dir, template)
             if clean_template:  # Only add pairs that have a valid template
                 dir_template_pairs.append((clean_dir, clean_template))
-        return dir_template_pairs
-
-    else:
-        # Lists must be the same length for pairing
-        if len(input_dirs) != len(input_templates):
-            config.logger.error(f"TIME_GENERATOR_INPUT_DIR list length ({len(input_dirs)}) "
-                                f"must match TIME_GENERATOR_INPUT_TEMPLATE list length ({len(input_templates)}) "
-                                f"or TIME_GENERATOR_INPUT_DIR must contain exactly one item")
-            return []
-
-        # Pair up directories and templates using zip, applying smart splitting
-        dir_template_pairs = []
-        for input_dir, input_template in zip(input_dirs, input_templates):
-            clean_dir, clean_template = split_dir_and_template(input_dir, input_template)
-            if clean_template:  # Only add pairs that have a valid template
-                dir_template_pairs.append((clean_dir, clean_template))
 
         return dir_template_pairs
+
+    # Lists must be the same length for pairing
+    if len(input_dirs) != len(input_templates):
+        config.logger.error(f"TIME_GENERATOR_INPUT_DIR list length ({len(input_dirs)}) "
+                            f"must match TIME_GENERATOR_INPUT_TEMPLATE list length ({len(input_templates)}) "
+                            f"or TIME_GENERATOR_INPUT_DIR must contain exactly one item")
+        return []
+
+    # Pair up directories and templates using zip, applying smart splitting
+    dir_template_pairs = []
+    for input_dir, input_template in zip(input_dirs, input_templates):
+        clean_dir, clean_template = split_dir_and_template(input_dir, input_template)
+        if clean_template:  # Only add pairs that have a valid template
+            dir_template_pairs.append((clean_dir, clean_template))
+
+    return dir_template_pairs
 
 
 def _template_is_forecast(input_dir, input_template):
@@ -690,12 +690,8 @@ def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
     init_seq = getlistint(config.getstr('config', 'INIT_SEQ', ''))
     lead_groups = get_lead_sequence_groups(config)
 
-    if not _are_lead_configs_ok(lead_seq,
-                                init_seq,
-                                lead_groups,
-                                config,
-                                input_dict,
-                                no_max):
+    if not _are_lead_configs_ok(lead_seq, init_seq, lead_groups,
+                                config, input_dict, no_max):
         return None
 
     if lead_seq:
@@ -703,23 +699,22 @@ def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
         if lead_seq == ['*']:
             return lead_seq
 
-        out_leads = _handle_lead_seq(config,
-                                     lead_seq,
-                                     lead_min,
-                                     lead_max)
+        out_leads = _handle_lead_seq(config, lead_seq, lead_min, lead_max)
 
     # use INIT_SEQ to build lead list based on the valid time
     elif init_seq:
-        out_leads = _handle_init_seq(init_seq,
-                                     input_dict,
-                                     lead_min,
-                                     lead_max)
+        out_leads = _handle_init_seq(init_seq, input_dict, lead_min, lead_max)
     elif lead_groups:
         out_leads = _handle_lead_groups(lead_groups)
 
+    # if no leads were found
     if not out_leads:
         if wildcard_if_empty:
             return ['*']
+
+        # init sequence should return an empty list if no matches were found
+        if init_seq:
+            return []
 
         return [0]
 

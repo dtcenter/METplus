@@ -52,7 +52,7 @@ class CommandBuilder:
     MET_OVERRIDES_KEY = 'METPLUS_MET_CONFIG_OVERRIDES'
 
     def __init__(self, config, instance=None):
-        self.isOK = True
+        self.is_ok = True
         self.errors = 0
         self.config = config
         self.logger = config.logger
@@ -89,6 +89,9 @@ class CommandBuilder:
 
         self.instance = instance
         self.env = config.env if hasattr(config, 'env') else os.environ.copy()
+
+        # store information about MET config settings that can be set per field
+        self.var_options = self.populate_var_options()
 
         # populate c_dict dictionary
         self.c_dict = self.create_c_dict()
@@ -140,6 +143,10 @@ class CommandBuilder:
         self.log_name = self.app_name if hasattr(self, 'app_name') else ''
 
         self.clear()
+
+    def populate_var_options(self):
+        return {}
+
 
     def check_for_unused_env_vars(self):
         config_file = self.c_dict.get('CONFIG_FILE')
@@ -266,7 +273,7 @@ class CommandBuilder:
         caller = getframeinfo(stack()[1][0])
         self.logger.error(f"({os.path.basename(caller.filename)}:{caller.lineno}) {error_string}")
         self.errors += 1
-        self.isOK = False
+        self.is_ok = False
 
     def set_user_environment(self, time_info):
         """!Set environment variables defined in [user_env_vars] section of config
@@ -422,7 +429,7 @@ class CommandBuilder:
                               mandatory=mandatory,
                               return_list=return_list)
 
-    def find_obs(self, time_info, mandatory=True, return_list=False):
+    def find_obs(self, time_info, mandatory=True, return_list=False, allow_dir=False):
         """! Finds the observation file to compare
 
                 @param time_info dictionary containing timing information
@@ -434,9 +441,10 @@ class CommandBuilder:
         return self.find_data(time_info,
                               data_type="OBS",
                               mandatory=mandatory,
-                              return_list=return_list)
+                              return_list=return_list,
+                              allow_dir=allow_dir)
 
-    def find_obs_offset(self, time_info, mandatory=True, return_list=False):
+    def find_obs_offset(self, time_info, mandatory=True, return_list=False, allow_dir=False):
         """! Finds the observation file to compare, looping through offset
             list until a file is found
 
@@ -461,7 +469,8 @@ class CommandBuilder:
             time_info = ti_calculate(time_info)
             obs_path = self.find_obs(time_info,
                                      mandatory=is_mandatory,
-                                     return_list=return_list)
+                                     return_list=return_list,
+                                     allow_dir=allow_dir)
 
             if obs_path is not None:
                 self.c_dict['SUPPRESS_WARNINGS'] = suppress_warnings
@@ -1113,11 +1122,11 @@ class CommandBuilder:
 
     def check_gempaktocf(self, gempaktocf_jar):
         if not gempaktocf_jar:
-            self.log_error("[exe] GEMPAKTOCF_JAR was not set in configuration file. "
+            self.log_error("[config] GEMPAKTOCF_JAR was not set in configuration file. "
                            "This is required to process Gempak data.")
             self.logger.info("Refer to the GempakToCF use case documentation for information "
                              "on how to obtain the tool: parm/use_cases/met_tool_wrapper/GempakToCF/GempakToCF.py")
-            self.isOK = False
+            self.is_ok = False
         elif not os.path.exists(gempaktocf_jar):
             self.log_error(f"GempakToCF Jar file does not exist at {gempaktocf_jar}. " +
                            "This is required to process Gempak data.")
@@ -1126,7 +1135,7 @@ class CommandBuilder:
                 "information on how to obtain the tool: "
                 "https://metplus.readthedocs.io/en/latest/generated/met_tool_wrapper/GempakToCF/GempakToCF.html#external-dependencies"
             )
-            self.isOK = False
+            self.is_ok = False
 
     def set_current_field_config(self, field_info=None):
         """! Sets config variables for current fcst/obs name/level that can be
@@ -1658,7 +1667,7 @@ class CommandBuilder:
                                           dict_name=dict_name,
                                           items=items)
         if not return_code:
-            self.isOK = False
+            self.is_ok = False
 
         return return_code
 
@@ -1694,7 +1703,7 @@ class CommandBuilder:
         item = METConfig(**kwargs)
         output_dict = kwargs.get('output_dict', self.env_var_dict)
         if not add_met_config_item(self.config, item, output_dict):
-            self.isOK = False
+            self.is_ok = False
 
     def get_config_file(self, default_config_file=None):
         """! Get the MET config file path for the wrapper from the

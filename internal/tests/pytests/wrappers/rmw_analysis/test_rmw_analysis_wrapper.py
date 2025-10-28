@@ -85,7 +85,7 @@ def test_rmw_analysis_run(metplus_config, tmp_path_factory, config_overrides,
     config.set('config', 'RMW_ANALYSIS_INPUT_DIR', fake_input_dir)
 
     wrapper = RMWAnalysisWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     data_file = os.path.join(fake_input_dir, 'tc_rmw_aal142023.nc')

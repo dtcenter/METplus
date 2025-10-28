@@ -54,7 +54,7 @@ print("max", data.max())
 print("min", data.min())
 
 # Automatically fill out time information from input file.
-file_regex = r"^.*([0-9]{8}_[0-9]{4})_([0-9]{3}).*$"
+file_regex = r"^.*(\d{8}_\d{4})_(\d{3}).*$"
 match = re.match(file_regex, os.path.basename(input_file).replace('-', '_'))
 if not match:
     print(f"Could not extract time information from filename: {input_file} using regex {file_regex}")

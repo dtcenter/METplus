@@ -601,6 +601,28 @@ def test_get_lead_sequence_init_min_10(metplus_config):
     lead_seq = [12, 24]
     assert test_seq == [relativedelta(hours=lead) for lead in lead_seq]
 
+
+@pytest.mark.parametrize(
+    'valid, expected', [
+        (datetime(2025, 5, 28, 18), [12] ),
+        (datetime(2025, 5, 29, 0), [] ),
+        (datetime(2025, 5, 29, 6), [] ),
+        (datetime(2025, 5, 29, 12), [6] ),
+        (datetime(2025, 5, 29, 18), [12] ),
+    ]
+)
+@pytest.mark.util
+def test_get_lead_sequence_init_no_match(metplus_config, valid, expected):
+    input_dict = {'valid': valid}
+    config = metplus_config
+    config.set('config', 'INIT_SEQ', "6")
+    config.set('config', 'LEAD_SEQ_MIN', 6)
+    config.set('config', 'LEAD_SEQ_MAX', 12)
+    test_seq = tl.get_lead_sequence(config, input_dict)
+    assert test_seq == [relativedelta(hours=lead) for lead in expected]
+
+
+@pytest.mark.util
 def test_get_start_and_end_times_empty_times(mock_time_generator):
     """Test empty times list returns (None, None)"""
     config = {"mock_times": []}
@@ -609,6 +631,7 @@ def test_get_start_and_end_times_empty_times(mock_time_generator):
     assert end is None
 
 
+@pytest.mark.util
 def test_get_start_and_end_times_single_entry(mock_time_generator):
     """Test handling of a single entry in the times list"""
     config = {"mock_times": [{"loop_by": "valid", "valid": "2023-10-15"}]}
@@ -617,6 +640,7 @@ def test_get_start_and_end_times_single_entry(mock_time_generator):
     assert end == "2023-10-15"
 
 
+@pytest.mark.util
 def test_get_start_and_end_times_missing_loop_by_key(mock_time_generator):
     """Test when 'loop_by' key is missing in a dictionary"""
     config = {
@@ -629,6 +653,7 @@ def test_get_start_and_end_times_missing_loop_by_key(mock_time_generator):
         get_start_and_end_times(config)  # Should raise an error for missing key
 
 
+@pytest.mark.util
 def test_get_start_and_end_times_invalid_config(mock_time_generator):
     """Test when time_generator produces invalid or corrupted time data"""
     config = {"mock_times": [None]}  # Simulate corrupted output
@@ -637,6 +662,7 @@ def test_get_start_and_end_times_invalid_config(mock_time_generator):
     assert end is None
 
 
+@pytest.mark.util
 def test_get_start_and_end_times_multiple_entries(mock_time_generator):
     """Test handling multiple entries in the times list"""
     config = {

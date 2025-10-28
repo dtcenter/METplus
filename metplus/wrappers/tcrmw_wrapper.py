@@ -13,7 +13,7 @@ Condition codes: 0 for success, 1 for failure
 import os
 
 from ..util import ti_calculate, ti_get_hours_from_relativedelta
-from ..util import do_string_sub, skip_time, get_lead_sequence
+from ..util import do_string_sub, get_lead_sequence
 from ..util import parse_var_list, sub_var_list
 from . import RuntimeFreqWrapper
 
@@ -138,7 +138,8 @@ class TCRMWWrapper(RuntimeFreqWrapper):
 
         c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
                                                  data_type='FCST',
-                                                 met_tool=self.app_name)
+                                                 met_tool=self.app_name,
+                                                 var_options=self.var_options)
         if not c_dict['VAR_LIST_TEMP']:
             self.log_error("Could not get field information from config.")
         # skip RuntimeFreq input file logic - remove once integrated

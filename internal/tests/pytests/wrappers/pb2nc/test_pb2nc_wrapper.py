@@ -279,7 +279,7 @@ def test_pb2nc_all_fields(metplus_config, config_overrides, env_var_values,
         config.set('config', key, value)
 
     wrapper = PB2NCWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"

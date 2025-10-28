@@ -127,7 +127,7 @@ def test_point2grid_run(metplus_config, config_overrides, optional_args,
         config.set('config', key, value)
 
     wrapper = Point2GridWrapper(config)
-    assert wrapper.isOK
+    assert wrapper.is_ok
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"

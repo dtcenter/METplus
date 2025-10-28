@@ -5,7 +5,7 @@ Update the development version information.
 
 .. dropdown:: Instructions
 
-  Change METplotpy/docs/version __version__ value to the next release after this one with -dev added
+  In 'metplotpy/_version.py', update the version number to the next release after this one with -dev added
   to the end. Releases will loosely following these names, but are subject to change:
 
   +-------------------+----------------------------+
