@@ -17,6 +17,7 @@ from ..util import log_runtime_banner, get_lead_sequence, get_lead_sequence_grou
 from ..util import skip_time, getlist, get_start_and_end_times, get_time_prefix
 from ..util import time_generator, add_to_time_input, format_lead_seq
 from ..util import sub_var_list, add_field_info_to_time_info, remove_quotes
+from ..util import do_string_sub, has_time_tag
 from . import CommandBuilder
 
 '''!@namespace RuntimeFreqWrapper
@@ -764,6 +765,7 @@ class RuntimeFreqWrapper(CommandBuilder):
                 self.get_input_files(time_info, fill_missing=allow_missing)
             )
             file_dict['time_info'] = offset_time_info.copy()
+            file_dict['input_time_info'] = [offset_time_info.copy()]
             if input_files:
                 for key, value in input_files.items():
                     file_dict[key] = value
@@ -1029,7 +1031,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         @param time_info dictionary containing time information for string substitution
                          and file identification.
         """
-        for data_type in [item for item in file_dict.keys() if item not in ('var_list', 'time_info')]:
+        for data_type in [item for item in file_dict.keys() if item not in ('var_list', 'time_info', 'input_time_info')]:
             self._add_file(file_dict, time_info, data_type)
 
 
@@ -1081,3 +1083,57 @@ class RuntimeFreqWrapper(CommandBuilder):
             input_file = file_list[0]
 
         self.infiles.append(input_file)
+
+
+    def get_field_list(self, data_type, var_info, time_info):
+        """!Get formatted field information in a list.
+        If no time (init/valid/lead) filename template tags were found in the
+        level value or if the time info contains all init/valid/lead values
+        (none are wildcards), then return a single formatted field item.
+        Otherwise, loop through the file list files and use the input template
+        to extract time information to use for each field entry.
+        The latter is done when processing one data type that has individual
+        files for each time and one data type has a single file with all times.
+
+        @param data_type type of data to process, e.g. fcst or obs
+        @param var_info dictionary containing info to format
+        @param time_info dictionary containing time information
+        @returns list containing formatted field info to pass to MET config
+        """
+        # if there are no time tags (init/valid/lead) in the field level
+        # or if init, valid, and lead have values in time_info,
+        # get field info for a single field to pass to the MET config file
+        if (not has_time_tag(var_info[f'{data_type}_level']) and
+                not has_time_tag(var_info[f'{data_type}_name'])):
+            return self.get_field_sub_level(data_type, var_info, time_info)
+
+        field_list = []
+
+        # loop through fcst/obs files to read time info
+        # for each file apply time info to field info and add to list
+        for file_time_info in self.c_dict['ALL_FILES'][0].get('input_time_info', []):
+            field = self.get_field_sub_level(data_type, var_info, file_time_info)
+            if field:
+                field_list.extend(field)
+
+        return field_list
+
+
+    def get_field_sub_level(self, data_type, var_info, time_dict):
+        """!Get formatted field information for data type, substituting time
+        information into level value.
+
+        @param data_type type of data to find, e.g. fcst or obs
+        @param var_info dictionary containing info to format
+        @param time_dict dictionary containing time information
+        @returns string with formatted field info or None
+        """
+        name = do_string_sub(var_info[f'{data_type}_name'], **time_dict)
+        level = do_string_sub(var_info[f'{data_type}_level'], **time_dict)
+        return self.get_field_info(
+            v_level=level,
+            v_thresh=var_info[f'{data_type}_thresh'],
+            v_name=name,
+            v_extra=var_info[f'{data_type}_extra'],
+            d_type=data_type.upper()
+        )
