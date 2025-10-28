@@ -25,7 +25,7 @@ data_fmt = ('data = {field = [ '
             ' ];}')
 
 
-def set_minimum_config_settings(config):
+def set_minimum_config_settings(config, set_fields=True):
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
     config.set('config', 'DO_NOT_RUN_EXE', True)
@@ -51,12 +51,13 @@ def set_minimum_config_settings(config):
                '{OUTPUT_BASE}/grid_diag/output')
     config.set('config', 'GRID_DIAG_OUTPUT_TEMPLATE',
                'grid_diag.{valid?fmt=%Y%m%d%H}.nc')
-    config.set('config', 'BOTH_VAR1_NAME', data_name_1)
-    config.set('config', 'BOTH_VAR1_LEVELS', data_level)
-    config.set('config', 'BOTH_VAR1_OPTIONS', data_options_1)
-    config.set('config', 'BOTH_VAR2_NAME', data_name_2)
-    config.set('config', 'BOTH_VAR2_LEVELS', data_level)
-    config.set('config', 'BOTH_VAR2_OPTIONS', data_options_2)
+    if set_fields:
+        config.set('config', 'BOTH_VAR1_NAME', data_name_1)
+        config.set('config', 'BOTH_VAR1_LEVELS', data_level)
+        config.set('config', 'BOTH_VAR1_OPTIONS', data_options_1)
+        config.set('config', 'BOTH_VAR2_NAME', data_name_2)
+        config.set('config', 'BOTH_VAR2_LEVELS', data_level)
+        config.set('config', 'BOTH_VAR2_OPTIONS', data_options_2)
 
 
 @pytest.mark.parametrize(
@@ -316,6 +317,20 @@ def test_get_config_file(metplus_config):
                                   'censor_thresh = [>12000, <5000];'
                                   'censor_val = [12000, 5000];}'
                                   )}),
+        ({'BOTH_VAR1_NAME': 'WRF_precip',
+          'BOTH_VAR1_LEVELS': '(@{valid?fmt=%Y%m%d%H},*,*)',
+          },
+         {'METPLUS_DATA_DICT': [
+             ('data = {field = [ { name="WRF_precip"; level="(@2016100421,*,*)"; },'
+              '{ name="WRF_precip"; level="(@2016100500,*,*)"; },'
+              '{ name="WRF_precip"; level="(@2016100503,*,*)"; } ];}'
+             ),
+             ('data = {field = [ { name="WRF_precip"; level="(@2016100503,*,*)"; },'
+              '{ name="WRF_precip"; level="(@2016100506,*,*)"; },'
+              '{ name="WRF_precip"; level="(@2016100509,*,*)"; } ];}'
+             ),
+         ]
+         }),
 
     ]
 )
@@ -323,7 +338,7 @@ def test_get_config_file(metplus_config):
 def test_grid_diag(metplus_config, config_overrides, env_var_values,
                    compare_command_and_env_vars):
     config = metplus_config
-    set_minimum_config_settings(config)
+    set_minimum_config_settings(config, 'BOTH_VAR1_NAME' not in config_overrides)
 
     # set config variable overrides
     for key, value in config_overrides.items():
@@ -348,11 +363,14 @@ def test_grid_diag(metplus_config, config_overrides, env_var_values,
     ]
 
     all_cmds = wrapper.run_all_times()
-    special_values = {
-        'METPLUS_DATA_DICT': data_fmt,
-    }
-    compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values,
-                                 wrapper, special_values)
+    if 'METPLUS_DATA_DICT' in env_var_values:
+        # for testing time info in data field, loop over commands to compare because the data field info differs for each run
+        for actual_cmd, expected_cmd, data_dict in zip(all_cmds, expected_cmds, env_var_values['METPLUS_DATA_DICT']):
+            compare_command_and_env_vars([actual_cmd], [expected_cmd], env_var_values,
+                                         wrapper, {'METPLUS_DATA_DICT': data_dict})
+    else:
+        compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values,
+                                     wrapper, {'METPLUS_DATA_DICT': data_fmt})
 
 
 @pytest.mark.wrapper
