@@ -22,7 +22,7 @@ VERSION_LOOKUP = {
         'metdataio': '4.0.0',
         'metviewer': '7.0.0',
         'metexpress': None,
-        'metbaseimage': '3.5.0',
+        'metbaseimage': '3.5.1',
     },
     '6.2': {
         'metplus': '6.2.0',
