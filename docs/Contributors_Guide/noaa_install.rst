@@ -466,6 +466,19 @@ The METplus Sample Data is available online at this
 `location <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/>`_.
 Click on the link for the desired version of METplus to access the data for that version.
 
+Use the following commands to download the desired data, replacing the X.Y with the
+appropriate version number:
+
+.. code-block::
+
+   wget -r --no-parent https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v6.2/met_test/
+   wget -r --no-parent https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v6.2/model_applications/
+
+.. note::
+
+   Due to the size of the data, the wget commands could potentially take hours to download all of the data.
+
+
 Data Installation Location
 --------------------------
 
@@ -531,6 +544,7 @@ and the account used for the installation.
    * - Hercules
      - /apps/contrib/MET/METplus
      - role-ovp
+
 
 Installation Process
 --------------------
