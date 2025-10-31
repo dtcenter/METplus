@@ -50,7 +50,7 @@ VERSION_LOOKUP = {
         'metplotpy': '3.0.2',
         'metcalcpy': '3.0.0',
         'metdataio': '3.0.0',
-        'metviewer': '6.0.2',
+        'metviewer': '6.0.3',
         'metexpress': '6.0.0',
         'metbaseimage': '3.3.6',
     },
