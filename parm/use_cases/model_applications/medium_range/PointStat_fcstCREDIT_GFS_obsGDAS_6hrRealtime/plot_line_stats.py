@@ -38,18 +38,7 @@ def main(plot_type):
     for s in plotting_stat_list:
         os.environ['PLOTTING_STAT'] = s
 
-        if s == 'MAE':
-            os.environ['PLOTTING_STAT_LONG'] = 'Mean Absolute Error'
-        elif s == 'ME':
-            os.environ['PLOTTING_STAT_LONG'] = 'Mean Error'
-        elif s == 'RMSE':
-            os.environ['PLOTTING_STAT_LONG'] = 'Root Mean Squared Error'
-        elif s == 'CSI':
-            os.environ['PLOTTING_STAT_LONG'] = 'Critical Success Index'
-        elif s == 'FBIAS':
-            os.environ['PLOTTING_STAT_LONG'] = 'Frequency Bias'
-        else:
-            os.environ['PLOTTING_STAT_LONG'] = s
+        set_plotting_stat_long_env_var(s)
 
         # Loop through the variables
         for v,n,u in zip(plotting_vars,var_longnames,var_units):
@@ -58,7 +47,7 @@ def main(plot_type):
             os.environ[f'PLOTTING_{plot_type}_LONG_VAR'] = n
             os.environ[f'PLOTTING_{plot_type}_VAR_UNITS'] = u
 
-            # Loop throuth masks
+            # Loop through masks
             for m in plotting_masks:
 
                 os.environ[f'PLOTTING_{plot_type}_OUTPUT_FILENAME'] = os.path.join(plot_output_dir,v+'_'+m)
@@ -70,26 +59,45 @@ def main(plot_type):
                     # Build yaml config file name
                     os.environ[f'PLOTTING_{plot_type}_YAML_CONFIG_NAME'] = os.path.join(yaml_file_dir,i)
 
-                    # Read in the YAML configuration file.  Environment variables in
-                    # the configuration file are supported.
-                    try:
-                        input_config_file = os.getenv(f"PLOTTING_{plot_type}_YAML_CONFIG_NAME", "custom_line.yaml")
-                        settings = readconfig.parse_config(input_config_file)
-                        logging.info(settings)
-                    except yaml.YAMLError as exc:
-                        logging.error(exc)
+                    create_plot(plot_type)
 
-                    try:
-                        start = perf_counter()
-                        plot = line.Line(settings)
-                        plot.save_to_file()
-                        plot.write_html()
-                        plot.write_output_file()
-                        end = perf_counter()
-                        execution_time = end - start
-                        plot.logger.info(f"Finished creating line plot, execution time: {execution_time} seconds")
-                    except ValueError as val_er:
-                        print(val_er)
+
+def set_plotting_stat_long_env_var(s):
+    if s == 'MAE':
+        os.environ['PLOTTING_STAT_LONG'] = 'Mean Absolute Error'
+    elif s == 'ME':
+        os.environ['PLOTTING_STAT_LONG'] = 'Mean Error'
+    elif s == 'RMSE':
+        os.environ['PLOTTING_STAT_LONG'] = 'Root Mean Squared Error'
+    elif s == 'CSI':
+        os.environ['PLOTTING_STAT_LONG'] = 'Critical Success Index'
+    elif s == 'FBIAS':
+        os.environ['PLOTTING_STAT_LONG'] = 'Frequency Bias'
+    else:
+        os.environ['PLOTTING_STAT_LONG'] = s
+
+
+def create_plot(plot_type):
+    try:
+        input_config_file = os.getenv(f"PLOTTING_{plot_type}_YAML_CONFIG_NAME", "custom_line.yaml")
+        config = readconfig.parse_config(input_config_file)
+        logging.info(config)
+    except yaml.YAMLError as exc:
+        logging.error(exc)
+        return None
+
+    try:
+        start = perf_counter()
+        plot = line.Line(config)
+        plot.save_to_file()
+        plot.write_html()
+        plot.write_output_file()
+        end = perf_counter()
+        execution_time = end - start
+        plot.logger.info(f"Finished creating line plot, execution time: {execution_time} seconds")
+    except ValueError as val_er:
+        print(val_er)
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
