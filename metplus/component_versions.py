@@ -22,7 +22,7 @@ VERSION_LOOKUP = {
         'metdataio': '4.0.0',
         'metviewer': '7.0.0',
         'metexpress': None,
-        'metbaseimage': '3.5.0',
+        'metbaseimage': '3.5.1',
     },
     '6.2': {
         'metplus': '6.2.0',
@@ -32,7 +32,7 @@ VERSION_LOOKUP = {
         'metdataio': '3.2.0',
         'metviewer': '6.2.0',
         'metexpress': '6.2.0',
-        'metbaseimage': '3.4.5',
+        'metbaseimage': '3.4.6',
     },
     '6.1': {
         'metplus': '6.1.0',
@@ -42,7 +42,7 @@ VERSION_LOOKUP = {
         'metdataio': '3.1.0',
         'metviewer': '6.1.0',
         'metexpress': '6.1.4',
-        'metbaseimage': '3.4.5',
+        'metbaseimage': '3.4.6',
     },
     '6.0': {
         'metplus': '6.0.0',
@@ -50,9 +50,9 @@ VERSION_LOOKUP = {
         'metplotpy': '3.0.2',
         'metcalcpy': '3.0.0',
         'metdataio': '3.0.0',
-        'metviewer': '6.0.2',
+        'metviewer': '6.0.3',
         'metexpress': '6.0.0',
-        'metbaseimage': '3.3.5',
+        'metbaseimage': '3.3.6',
     },
     '5.1': {
         'metplus': '5.1.0',
