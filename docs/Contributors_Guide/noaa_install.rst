@@ -471,8 +471,8 @@ appropriate version number:
 
 .. code-block::
 
-   wget -r --no-parent https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v6.2/met_test/
-   wget -r --no-parent https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v6.2/model_applications/
+   wget -r --no-parent https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/vX.Y/met_test/
+   wget -r --no-parent https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/vX.Y/model_applications/
 
 .. note::
 
