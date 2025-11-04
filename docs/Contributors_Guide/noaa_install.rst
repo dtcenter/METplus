@@ -459,28 +459,11 @@ X.Y.Z to X.Y.Z-rcN. Save the file.
 Installing METplus
 ==================
 
-Sample Data
------------
-
+Sample Data Installation Location
+---------------------------------
 The METplus Sample Data is available online at this
 `location <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/>`_.
 Click on the link for the desired version of METplus to access the data for that version.
-
-Use the following commands to download the desired data, replacing the X.Y with the
-appropriate version number:
-
-.. code-block::
-
-   wget -r --no-parent https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/vX.Y/met_test/
-   wget -r --no-parent https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/vX.Y/model_applications/
-
-.. note::
-
-   Due to the size of the data, the wget commands could potentially take hours to download all of the data.
-
-
-Data Installation Location
---------------------------
 
 The table below lists the system name, the location for the installation of the
 METplus sample data and the account used for the installation of the sample data.
@@ -488,7 +471,23 @@ Check to see if a directory exists with the format *METplus-X.Y_sample_data* for
 desired version of METplus. If no data exists, create a new directory for the sample
 data. Note the directory should be named *METplus-X.Y_sample_data* even for a
 beta or rc installation as the data is the same for development and official releases.
-Download and unpack the sample data as directed in the **Sample Data** section above.
+
+If the sample data does not yet exist or needs to be updated, use the following commands
+to download the desired data, replacing the X.Y with the appropriate version number.
+First, navigate to the correct directory as listed in the table below. If necessary,
+create the *METplus-X.Y_sample_data* directory, otherwise, navigate into that directory.
+
+.. code-block::
+
+   wget -r --no-parent https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/vX.Y/met_test/
+   wget -r --no-parent https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/vX.Y/model_applications/
+   mv dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/vX.Y/met_test .
+   mv dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/vX.Y/model_applications .
+   rm -rf dtcenter.ucar.edu
+
+.. note::
+
+   Due to the size of the data, the wget commands could potentially take hours to download all of the data.
 
 .. list-table::
 
