@@ -2,7 +2,7 @@
 
 ***************
 Python Wrappers
-******************
+***************
 
 This chapter provides a description of each supported Python wrapper in
 METplus Wrappers. A wrapper is generally a Python script that
@@ -38,7 +38,7 @@ METplus Configuration
 | :term:`ASCII2NC_OUTPUT_TEMPLATE`
 | :term:`ASCII2NC_INPUTRX`
 | :term:`LOG_ASCII2NC_VERBOSITY`
-| :term:`ASCII2NC_SKIP_IF_OUTPUT_EXISTS`
+| :term:`ASCII2NC_SKIP_IF_OUTPUT_EXISTSXYZ`
 | :term:`ASCII2NC_CONFIG_FILE`
 | :term:`ASCII2NC_FILE_WINDOW_BEGIN`
 | :term:`ASCII2NC_FILE_WINDOW_END`
