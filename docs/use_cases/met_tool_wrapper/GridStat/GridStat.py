@@ -21,7 +21,7 @@ met_tool_wrapper/GridStat/GridStat.conf
 
 ##############################################################################
 # Version Added
-# ----------------
+# -------------
 #
 # METplus version 3.0
 
