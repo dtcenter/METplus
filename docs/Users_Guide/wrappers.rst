@@ -2,7 +2,7 @@
 
 ***************
 Python Wrappers
-***************
+******************
 
 This chapter provides a description of each supported Python wrapper in
 METplus Wrappers. A wrapper is generally a Python script that
