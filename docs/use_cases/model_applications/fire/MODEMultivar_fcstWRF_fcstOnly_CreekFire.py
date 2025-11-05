@@ -2,7 +2,7 @@
 MODEMultivar: Create objects of Relative Humidity and Wind Speed using the Red Flag Criteria 
 ============================================================================================
 
-model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_CreekFire.conf
+model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf
 
 """
 ##############################################################################
@@ -35,9 +35,9 @@ model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_CreekFire.conf
 # Datasets
 # --------
 #
-# **Forecast:** WRF Fire
+# **Forecast:** HRRR
 #
-# **Observation:** WRF Fire (same as forecast)
+# **Observation:** HRRR (same as forecast)
 #
 # **Climatology:** None
 #
@@ -79,10 +79,10 @@ model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_CreekFire.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config, 
 # then it loads any configuration files passed to METplus via the command line, 
-# i.e. parm/use_cases/model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_CreekFire.conf
+# i.e. parm/use_cases/model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_CreekFire.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf
 
 ##############################################################################
 # MET Configuration
@@ -120,7 +120,7 @@ model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_CreekFire.conf
 # Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired::
 #
-#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_CreekFire.conf /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 
@@ -134,25 +134,25 @@ model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_CreekFire.conf
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
 # Output for this use case will be found in 
-# {OUTPUT_BASE}/model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_CreekFire
+# {OUTPUT_BASE}/model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire
 # and will contain the following files::
 #
-#  * mode_Fcst_Super_LO_Obs_Super_LO_WRF_Fire_Creek_010000L_20200908_200000V_000000A_cts.txt
-#  * mode_Fcst_Super_LO_Obs_Super_LO_WRF_Fire_Creek_010000L_20200908_200000V_000000A_obj.nc
-#  * mode_Fcst_Super_LO_Obs_Super_LO_WRF_Fire_Creek_010000L_20200908_200000V_000000A_obj.txt
-#  * mode_Fcst_Super_LO_Obs_Super_LO_WRF_Fire_Creek_010000L_20200908_200000V_000000A.ps
-#  * mode_Fcst_Super_LO_Obs_Super_LO_WRF_Fire_Creek_011500L_20200908_201500V_000000A_cts.txt
-#  * mode_Fcst_Super_LO_Obs_Super_LO_WRF_Fire_Creek_011500L_20200908_201500V_000000A_obj.nc
-#  * mode_Fcst_Super_LO_Obs_Super_LO_WRF_Fire_Creek_011500L_20200908_201500V_000000A_obj.txt
-#  * mode_Fcst_Super_LO_Obs_Super_LO_WRF_Fire_Creek_011500L_20200908_201500V_000000A.ps
-#  * mode_Fcst_Super_LO_Obs_Super_LO_WRF_Fire_Creek_013000L_20200908_203000V_000000A_cts.txt
-#  * mode_Fcst_Super_LO_Obs_Super_LO_WRF_Fire_Creek_013000L_20200908_203000V_000000A_obj.nc
-#  * mode_Fcst_Super_LO_Obs_Super_LO_WRF_Fire_Creek_013000L_20200908_203000V_000000A_obj.txt
-#  * mode_Fcst_Super_LO_Obs_Super_LO_WRF_Fire_Creek_013000L_20200908_203000V_000000A.ps
-#  * mode_Fcst_Super_LO_Obs_Super_LO_WRF_Fire_Creek_014500L_20200908_204500V_000000A_cts.txt
-#  * mode_Fcst_Super_LO_Obs_Super_LO_WRF_Fire_Creek_014500L_20200908_204500V_000000A_obj.nc
-#  * mode_Fcst_Super_LO_Obs_Super_LO_WRF_Fire_Creek_014500L_20200908_204500V_000000A_obj.txt
-#  * mode_Fcst_Super_LO_Obs_Super_LO_WRF_Fire_Creek_014500L_20200908_204500V_000000A.ps
+#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_010000L_20200908_200000V_000000A_cts.txt
+#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_010000L_20200908_200000V_000000A_obj.nc
+#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_010000L_20200908_200000V_000000A_obj.txt
+#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_010000L_20200908_200000V_000000A.ps
+#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_011500L_20200908_201500V_000000A_cts.txt
+#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_011500L_20200908_201500V_000000A_obj.nc
+#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_011500L_20200908_201500V_000000A_obj.txt
+#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_011500L_20200908_201500V_000000A.ps
+#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_013000L_20200908_203000V_000000A_cts.txt
+#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_013000L_20200908_203000V_000000A_obj.nc
+#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_013000L_20200908_203000V_000000A_obj.txt
+#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_013000L_20200908_203000V_000000A.ps
+#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_014500L_20200908_204500V_000000A_cts.txt
+#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_014500L_20200908_204500V_000000A_obj.nc
+#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_014500L_20200908_204500V_000000A_obj.txt
+#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_014500L_20200908_204500V_000000A.ps
 #
 # The cts files contain contingency table statistics while the obj.txt files contain the object 
 # attributes.  The postscript output shows images of the objects.  For the netCDF file, 18 variable 
@@ -185,10 +185,10 @@ model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_CreekFire.conf
 #
 #   * MODEToolUseCase
 #   * FireAppUseCase
-#   * WRFFileUseCase
+#   * HRRRFileUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/fire-MODEMultivar_fcstWRF_fcstOnly_CreekFire.png'
+# sphinx_gallery_thumbnail_path = '_static/fire-MODEMultivar_fcstHRRR_fcstOnly_CreekFire.png'
