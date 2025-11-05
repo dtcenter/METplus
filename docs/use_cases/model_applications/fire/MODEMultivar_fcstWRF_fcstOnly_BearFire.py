@@ -28,7 +28,7 @@ model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_BearFire.conf
 # Version Added
 # -------------
 #
-# METplus version 6.2
+# METplus version 7.0
 
 ##############################################################################
 # Datasets
