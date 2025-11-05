@@ -105,15 +105,7 @@ model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_CreekFire.conf
 # Python Embedding
 # ----------------
 #
-# This use case reads the input model data usoing a python embedding script.  Although
-# the WRF subgrid files are able to be read directly in MET, here we use the Python
-# embedding script to calculate Relative Humidity from Specific Humidity, temperature, 
-# and pressure and wind speed from the U and V wind components using MetPy functions.
-#
-# .. dropdown:: read_wrfout_fire_rh_wind.py
-#
-#   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_CreekFire/read_wrfout_fire_rh_wind.py
+# This use case does not use Python embedding.
 
 ##############################################################################
 # User Scripting
@@ -192,7 +184,6 @@ model_applications/fire/MODEMultivar_fcstWRF_fcstOnly_CreekFire.conf
 # .. note::
 #
 #   * MODEToolUseCase
-#   * PythonEmbeddingFileUseCase
 #   * FireAppUseCase
 #   * WRFFileUseCase
 #
