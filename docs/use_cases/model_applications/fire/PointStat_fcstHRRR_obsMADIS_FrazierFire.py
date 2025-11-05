@@ -143,8 +143,10 @@ model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.py
 # needed for the Red Flag Criteria but didn't exist in the MADIS data.  The script
 # is /parm/use_cases/model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire/convert_madis_sfc_rh_wind.py
 #
-# .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire/convert_madis_sfc_rh_wind.py
+# .. dropdown:: convert_madis_sfc_rh_wind.py
+#
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire/convert_madis_sfc_rh_wind.py
 
 ##############################################################################
 # User Scripting
@@ -175,10 +177,10 @@ model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.py
 #
 #   parm/use_cases/model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire
 #
-# .. dropdown:: reformat_CTS_linetype.py
+# .. dropdown:: reformat_linetype.py
 #
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire/reformat_CTS_linetype.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire/reformat_linetype.py
 #
 # .. dropdown:: plot_performance_diagram.py
 #
