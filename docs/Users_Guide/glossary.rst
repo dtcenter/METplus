@@ -14936,7 +14936,7 @@ METplus Configuration Glossary
      :term:`GEN_ENS_PROD_INPUT_TEMPLATE`.
      This number should not include the control member is specified with
      :term:`GEN_ENS_PROD_CTRL_INPUT_TEMPLATE`.
-     If this number differs from the number of files are found for a given run,
+     If this number differs from the number of files found for a given run,
      then gen_ens_prod will not run for that time.
 
 
