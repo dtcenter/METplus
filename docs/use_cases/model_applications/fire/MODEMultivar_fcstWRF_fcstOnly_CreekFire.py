@@ -62,7 +62,7 @@ model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf
 #
 # **Beginning time (VALID_BEG):** 2020-09-03 0000 UTC
 #
-# **End time (VALID_END):** 2020-09-05 0600 UTC
+# **End time (VALID_END):** 2020-09-06 0000 UTC
 #
 # **Increment between beginning and end times (VALID_INCREMENT):** 6 hours
 #
@@ -71,7 +71,7 @@ model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf
 # **Forecast lead min and max to process:** 6 to 24 hours
 #
 # With an increment of 6 hours for the 0, 6, 12, and 18 hour model initializations MvMODE is run
-# using lead times between 6 and 24 hours, for a total of 20 runs. 
+# using lead times between 6 and 24 hours, for a total of 52 runs. 
 
 ##############################################################################
 # METplus Configuration
