@@ -341,6 +341,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             if time_input is None:
                 self.errors += 1
                 success = False
+                continue
 
             # check if time should be skipped
             if not self._should_init_or_valid_be_run(time_input, custom):
@@ -479,6 +480,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             if time_input is None:
                 self.errors += 1
                 success = False
+                continue
 
             if not self._should_init_or_valid_be_run(time_input, custom):
                 continue
