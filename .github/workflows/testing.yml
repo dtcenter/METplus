@@ -165,7 +165,7 @@ jobs:
         if: always()
         continue-on-error: true
       - name: Run Coveralls
-        uses: AndreMiras/coveralls-python-action@8799c9f4443ac4201d2e2f2c725d577174683b99
+        uses: AndreMiras/coveralls-python-action@ac868b9540fad490f7ca82b8ca00480fd751ed19k
         if: always()
         continue-on-error: true
         with:
