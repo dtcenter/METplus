@@ -99,11 +99,11 @@ class PlotPointObsWrapper(LoopTimesWrapper):
         self.add_met_config_dict('grid_data', {
             'field': ('list', 'remove_quotes'),
             'regrid': ('dict', '', {
-                'to_grid': ('string', 'uppercase,to_grid'),
-                'method': ('string', 'uppercase,remove_quotes'),
+                'to_grid': ('string', 'to_grid'),
+                'method': ('string', 'constant'),
                 'width': 'int',
                 'vld_thresh': 'float',
-                'shape': ('string', 'uppercase,remove_quotes'),
+                'shape': ('string', 'constant'),
             }),
             'grid_plot_info': ('dict', '', {
                 'color_table': 'string',

@@ -121,12 +121,10 @@ class WaveletStatWrapper(CompareGriddedWrapper):
                             extra_args={'remove_quotes': True})
 
         self.add_met_config(name='mask_missing_flag', data_type='string',
-                            extra_args={'remove_quotes': True,
-                                        'uppercase': True})
+                            extra_args={'constant': True})
 
         self.add_met_config(name='grid_decomp_flag', data_type='string',
-                            extra_args={'remove_quotes': True,
-                                        'uppercase': True})
+                            extra_args={'constant': True})
 
         self.handle_flags('output')
         self.handle_flags('nc_pairs')
@@ -136,16 +134,14 @@ class WaveletStatWrapper(CompareGriddedWrapper):
                             metplus_configs=[f'{app}_FCST_FILE_TYPE',
                                              f'FCST_{app}_FILE_TYPE',
                                              f'{app}_FILE_TYPE'],
-                            extra_args={'remove_quotes': True,
-                                        'uppercase': True})
+                            extra_args={'constant': True})
 
         self.add_met_config(name='file_type', data_type='string',
                             env_var_name='OBS_FILE_TYPE',
                             metplus_configs=[f'{app}_OBS_FILE_TYPE',
                                              f'OBS_{app}_FILE_TYPE',
                                              f'{app}_FILE_TYPE'],
-                            extra_args={'remove_quotes': True,
-                                        'uppercase': True})
+                            extra_args={'constant': True})
 
         self.add_met_config_dict('tile', {
             'width': 'int',
@@ -153,7 +149,7 @@ class WaveletStatWrapper(CompareGriddedWrapper):
         })
 
         self.add_met_config_dict('wavelet', {
-            'type': ('string', 'remove_quotes,uppercase'),
+            'type': ('string', 'constant'),
             'member': 'int'
         })
 

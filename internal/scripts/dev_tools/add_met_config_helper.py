@@ -313,13 +313,7 @@ def _print_unit_test(var):
     for metplus_config_name, met_config_name in zip(metplus_names, met_names):
         child_name = None
         item_name = None
-        output_item = 'VALUE;'
-        if dict_items:
-            item_name, child_name, *_ = met_config_name.split('.')[1:]
-            value = 'VALUE;'
-            if child_name:
-                value = f"{{{child_name} = VALUE;}}"
-            output_item = f"{item_name} = {value}"
+        output_item = _get_output_item(dict_items, met_config_name)
 
         mp_config_dict_item = f"'{metplus_config_name}': 'VALUE',"
         input_dict_items.append(mp_config_dict_item)
@@ -354,6 +348,17 @@ def _print_unit_test(var):
     all_items_text += ''.join(output_items)
     all_items_text += "}'}),"
     print(all_items_text)
+
+
+def _get_output_item(dict_items, met_config_name):
+    if not dict_items:
+        return 'VALUE'
+
+    item_name, child_name, *_ = met_config_name.split('.')[1:]
+    value = 'VALUE;'
+    if child_name:
+        value = f"{{{child_name} = VALUE;}}"
+    return f"{item_name} = {value}"
 
 
 def doc_util_usage():

@@ -195,8 +195,7 @@ class PairStatWrapper(CompareGriddedWrapper):
 
         self.handle_mask(get_point=True)
 
-        self.add_met_config(name='ci_alpha',
-                            data_type='list',
+        self.add_met_config(name='ci_alpha', data_type='list',
                             extra_args={'remove_quotes': True})
 
         self.add_met_config_dict('boot', {
@@ -215,16 +214,14 @@ class PairStatWrapper(CompareGriddedWrapper):
                             metplus_configs=['PAIR_STAT_FCST_FILE_TYPE',
                                              'FCST_PAIR_STAT_FILE_TYPE',
                                              'PAIR_STAT_FILE_TYPE'],
-                            extra_args={'remove_quotes': True,
-                                        'uppercase': True})
+                            extra_args={'constant': True})
 
         self.add_met_config(name='file_type', data_type='string',
                             env_var_name='OBS_FILE_TYPE',
                             metplus_configs=['PAIR_STAT_OBS_FILE_TYPE',
                                              'OBS_PAIR_STAT_FILE_TYPE',
                                              'PAIR_STAT_FILE_TYPE'],
-                            extra_args={'remove_quotes': True,
-                                        'uppercase': True})
+                            extra_args={'constant': True})
 
         c_dict['FCST_PROB_THRESH'] = (
             self.config.getstr('config', 'FCST_PAIR_STAT_PROB_THRESH', '==0.1')
@@ -241,10 +238,8 @@ class PairStatWrapper(CompareGriddedWrapper):
 
         self.handle_interp_dict()
 
-        self.add_met_config(name='point_weight_flag',
-                            data_type='string',
-                            extra_args={'remove_quotes': True,
-                                        'uppercase': True})
+        self.add_met_config(name='point_weight_flag', data_type='string',
+                            extra_args={'constant': True})
 
         if not c_dict['OUTPUT_DIR']:
             self.log_error('Must set PAIR_STAT_OUTPUT_DIR in config file')

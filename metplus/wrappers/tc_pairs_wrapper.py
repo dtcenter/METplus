@@ -178,8 +178,7 @@ class TCPairsWrapper(RuntimeFreqWrapper):
         self.add_met_config(name='check_dup', data_type='bool')
 
         self.add_met_config(name='interp12', data_type='string',
-                            extra_args={'remove_quotes': True,
-                                        'uppercase': True})
+                            extra_args={'constant': True})
 
         self.add_met_config(name='match_points', data_type='bool')
 
