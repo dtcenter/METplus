@@ -68,7 +68,7 @@ fi
 ENV PATH="${PATH}:/metplus/METplus/ush"
 
 # Create non-root user for running the container
-RUN groupadd -r metuser && useradd -r -g metuser -u 1000 metuser
+RUN groupadd -r metuser && useradd -g metuser -u 1000 metuser
 
 # Switch to non-root user
 USER metuser
