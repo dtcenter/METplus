@@ -17,6 +17,8 @@ ARG MET_DOCKER_REPO=met
 
 ARG MET_TAG=develop
 
+USER root
+
 # if OBTAIN_SOURCE_CODE=copy, copy files from build context into image
 FROM dtcenter/${MET_DOCKER_REPO}:${MET_TAG} AS build_copy
 ONBUILD WORKDIR /metplus
@@ -66,10 +68,10 @@ fi
 ENV PATH="${PATH}:/metplus/METplus/ush"
 
 # Create non-root user for running the container
-RUN groupadd -r metplus && useradd -r -g metplus -u 1000 metplus
+RUN groupadd -r metuser && useradd -r -g metuser -u 1000 metuser
 
 # Switch to non-root user
-USER metplus
+USER metuser
 
 # Set working directory to the user workspace
 WORKDIR /work
