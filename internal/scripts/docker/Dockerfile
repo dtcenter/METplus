@@ -52,9 +52,6 @@ ONBUILD WORKDIR /metplus
 FROM build_${OBTAIN_SOURCE_CODE}
 LABEL maintainer="George McCabe <mccabe@ucar.edu>"
 
-RUN echo export PATH="$PATH":$(pwd)/METplus/ush >> /root/.bashrc \
- && echo setenv PATH "$PATH":$(pwd)/METplus/ush >> /etc/csh.cshrc
-
 # if source code was retrieved, set default config variables and install package
 ARG OBTAIN_SOURCE_CODE=clone
 RUN if [ ${OBTAIN_SOURCE_CODE} != "none" ]; then \
@@ -65,3 +62,14 @@ RUN if [ ${OBTAIN_SOURCE_CODE} != "none" ]; then \
   sed -i 's|INPUT_BASE = /path/to|INPUT_BASE = /data/input/METplus_Data|g' parm/metplus_config/*.conf; \
   pip install .; \
 fi
+
+ENV PATH="${PATH}:/metplus/METplus/ush"
+
+# Create non-root user for running the container
+RUN groupadd -r metplus && useradd -r -g metplus -u 1000 metplus
+
+# Switch to non-root user
+USER metplus
+
+# Set working directory to the user workspace
+WORKDIR /work
