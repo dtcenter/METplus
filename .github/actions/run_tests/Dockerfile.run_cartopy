@@ -21,7 +21,7 @@ RUN if [ "${METPLUS_GET_CHROME}" = "true" ]; then \
       apt-get install -y --no-install-recommends \
           libasound2 libatk-bridge2.0-0 libcairo2 libcups2 libgbm1 \
           libnss3 libpango-1.0-0 libxcomposite1 libxdamage1 \
-          libxfixes3 libxkbcommon0 libxrandr2; \
+          libxfixes3 libxkbcommon0 libxrandr2 && \
       apt-get clean; \
     fi
 
