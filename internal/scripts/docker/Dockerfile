@@ -17,10 +17,9 @@ ARG MET_DOCKER_REPO=met
 
 ARG MET_TAG=develop
 
-USER root
-
 # if OBTAIN_SOURCE_CODE=copy, copy files from build context into image
 FROM dtcenter/${MET_DOCKER_REPO}:${MET_TAG} AS build_copy
+ONBUILD USER root
 ONBUILD WORKDIR /metplus
 ONBUILD RUN mkdir -p METplus
 ONBUILD COPY metplus METplus/metplus
@@ -36,6 +35,7 @@ ONBUILD RUN if [ ! -e "METplus/ush/run_metplus.py" ]; then \
 
 # if OBTAIN_SOURCE_CODE=clone, clone repository
 FROM dtcenter/${MET_DOCKER_REPO}:${MET_TAG} AS build_clone
+ONBUILD USER root
 ONBUILD WORKDIR /metplus
 ONBUILD ARG SOURCE_VERSION
 ONBUILD RUN echo "Cloning METplus repository"; \
