@@ -227,15 +227,15 @@ model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.py
 # YYYYMMDDHH.  There should be 20 files total output for each Point-Stat directory.  The files have 
 # the following format::
 #
-#  * point_stat_240000L_20250528_180000V.stat
+#  * point_stat_HHMMSSL_YYYYMMDD_HHMMSSV.stat
 #
 # Where HHMMSSL is the hour, minute, and second of the forecast lead time, YYYYMMDD is the valid year, month,
 # and day, and HHMMSSV is the hour, minute, and second of the valid time.
 #
 # The output from Stat-Analysis has the same three directories as are output from Point-Stat, 
-# Individual_Variables, RH_10, and RH_15.  The Individual_Variables directory contains # files::
+# Individual_Variables, RH_10, and RH_15.  The Individual_Variables directory contains 1 file::
 #
-#  * 
+#  * HRRR_MADIS_2025052818_2025052918_separate_leads_allValidHours_CTS.stat
 #
 # The RH_10 directory contains 3 files::
 #
@@ -250,14 +250,14 @@ model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.py
 #  * HRRR_MADIS_RH15_wind25_gust35_2025052818_2025052918_separate_leads_allValidHours_CTS.stat
 #
 # Output from the 2 UserScripts are in 2 directories, reformatted and plots.  The reformatted 
-# directory contains # file::
+# directory contains 1 file::
 #
-#  * 
+#  * reformat_CTS_leads.data
 # 
-# The plots directory contains # plots::
+# The plots directory contains 2 plots::
 #
-#  *
-#  *
+#  * performance_diagram_rh_lead.png
+#  * performance_diagram_wind_lead.png
 
 
 ##############################################################################

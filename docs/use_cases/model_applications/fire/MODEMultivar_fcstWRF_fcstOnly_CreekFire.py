@@ -16,14 +16,15 @@ model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf
 # --------------------
 #
 # This use case runs Multivatiate MODE using the red flag criteria for fire weather 
-# (relative humidity less than 10% and wind speed greater than 15 miles per hour, or
-# relative humidity less than 15% and wind speed greater than 25 miles per hour).
-# The purpose is to identify areas in the model that meet the red flag criteria for
-# fire weather forecasting.  Observations are not used in this use case.  Rather, the 
-# model is input for both the forecast and observations (since Multivariate MODE 
-# requires both to run).  As such, matched object statistics are not useful for this 
-# use case.  Rather simple and cluster object statistics on the area meeting the Red 
-# Flag criteria are the goal.
+# (relative humidity less than 10% and wind speed greater than 15 miles per hour or 
+# wind gusts greater than 25 miles per hour, or relative humidity less than 15% and 
+# wind speed greater than 25 miles per hour or wind gusts greater than 35 miles per 
+# hour).  The purpose is to identify areas in the model that meet the Red Flag 
+# Criteria for fire weather forecasting.  Observations are not used.  Rather, the 
+# model is used as input for both the forecast and observations (since Multivariate 
+# MODE requires both to run).  As such, matched object statistics are not useful for 
+# this use case.  Instead, simple and cluster object statistics on the area meeting 
+# the Red Flag Criteria are the goal.
 
 ##############################################################################
 # Version Added
@@ -54,7 +55,7 @@ model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf
 # METplus Components
 # ------------------
 #
-# This use case calls Multivariate MODE once.
+# This use case calls GenVxMask once and Multivariate MODE twice.
 
 ##############################################################################
 # METplus Workflow
@@ -70,8 +71,12 @@ model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf
 #
 # **Forecast lead min and max to process:** 6 to 24 hours
 #
-# With an increment of 6 hours for the 0, 6, 12, and 18 hour model initializations MvMODE is run
-# using lead times between 6 and 24 hours, for a total of 52 runs. 
+# GenVxMask is run once to create a mask over the Hanford CWA.  Then, with an 
+# increment of 6 hours for the 0, 6, 12, and 18 hour model initializations MvMODE is run
+# using lead times between 6 and 24 hours.  This makes a total of 50 runs for each call
+# of MvMODE.  The first run uses relative humidity and wind speed thresholds to identify
+# objects while the second uses relative humidity and wind gust threshold to identify
+# objects.
 
 ##############################################################################
 # METplus Configuration
@@ -134,29 +139,62 @@ model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
 # Output for this use case will be found in 
-# {OUTPUT_BASE}/model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire
-# and will contain the following files::
+# {OUTPUT_BASE}/model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.  There will
+# be 3 output directories, VxMasks, mv_mode_rh_wind, and mv_mode_rh_gust.  The VxMasks 
+# directory will contain one file::
 #
-#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_010000L_20200908_200000V_000000A_cts.txt
-#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_010000L_20200908_200000V_000000A_obj.nc
-#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_010000L_20200908_200000V_000000A_obj.txt
-#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_010000L_20200908_200000V_000000A.ps
-#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_011500L_20200908_201500V_000000A_cts.txt
-#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_011500L_20200908_201500V_000000A_obj.nc
-#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_011500L_20200908_201500V_000000A_obj.txt
-#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_011500L_20200908_201500V_000000A.ps
-#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_013000L_20200908_203000V_000000A_cts.txt
-#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_013000L_20200908_203000V_000000A_obj.nc
-#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_013000L_20200908_203000V_000000A_obj.txt
-#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_013000L_20200908_203000V_000000A.ps
-#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_014500L_20200908_204500V_000000A_cts.txt
-#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_014500L_20200908_204500V_000000A_obj.nc
-#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_014500L_20200908_204500V_000000A_obj.txt
-#  * mode_Fcst_Super_LO_Obs_Super_LO_HRRR_Fire_Creek_014500L_20200908_204500V_000000A.ps
+#  * Hanford_CWA_mask.nc
+# 
+# The mv_mode_rh_wind directory will contain 16 output files for each timestep, 8 for relative
+# humidity and 8 for wind.  The files fill have the following format::
 #
-# The cts files contain contingency table statistics while the obj.txt files contain the object 
-# attributes.  The postscript output shows images of the objects.  For the netCDF file, 18 variable 
-# fields are present (not including the lat/lon fields). Those variables are::
+#  * mode_Fcst_RH_Z2_Obs_RH_Z2_HRRR_Fire_Creek_rh_wind_HHMMSSL_YYYYMMDD_HHMMSSV_000000A_R1_T1_cts.txt
+#  * mode_Fcst_RH_Z2_Obs_RH_Z2_HRRR_Fire_Creek_rh_wind_HHMMSSL_YYYYMMDD_HHMMSSV_000000A_R1_T1_obj.nc
+#  * mode_Fcst_RH_Z2_Obs_RH_Z2_HRRR_Fire_Creek_rh_wind_HHMMSSL_YYYYMMDD_HHMMSSV_000000A_R1_T1_obj.txt
+#  * mode_Fcst_RH_Z2_Obs_RH_Z2_HRRR_Fire_Creek_rh_wind_HHMMSSL_YYYYMMDD_HHMMSSV_000000A_R1_T1.ps
+#  * mode_Fcst_RH_Z2_Obs_RH_Z2_HRRR_Fire_Creek_rh_wind_HHMMSSL_YYYYMMDD_HHMMSSV_000000A_R2_T2_cts.txt
+#  * mode_Fcst_RH_Z2_Obs_RH_Z2_HRRR_Fire_Creek_rh_wind_HHMMSSL_YYYYMMDD_HHMMSSV_000000A_R2_T2_obj.nc
+#  * mode_Fcst_RH_Z2_Obs_RH_Z2_HRRR_Fire_Creek_rh_wind_HHMMSSL_YYYYMMDD_HHMMSSV_000000A_R2_T2_obj.txt
+#  * mode_Fcst_RH_Z2_Obs_RH_Z2_HRRR_Fire_Creek_rh_wind_HHMMSSL_YYYYMMDD_HHMMSSV_000000A_R2_T2.ps
+#  * mode_Fcst_WIND_Z10_Obs_WIND_Z10_HRRR_Fire_Creek_rh_wind_HHMMSSL_YYYYMMDD_HHMMSSV_010000A_R1_T1_cts.txt
+#  * mode_Fcst_WIND_Z10_Obs_WIND_Z10_HRRR_Fire_Creek_rh_wind_HHMMSSL_YYYYMMDD_HHMMSSV_010000A_R1_T1_obj.nc
+#  * mode_Fcst_WIND_Z10_Obs_WIND_Z10_HRRR_Fire_Creek_rh_wind_HHMMSSL_YYYYMMDD_HHMMSSV_010000A_R1_T1_obj.txt
+#  * mode_Fcst_WIND_Z10_Obs_WIND_Z10_HRRR_Fire_Creek_rh_wind_HHMMSSL_YYYYMMDD_HHMMSSV_010000A_R1_T1.ps
+#  * mode_Fcst_WIND_Z10_Obs_WIND_Z10_HRRR_Fire_Creek_rh_wind_HHMMSSL_YYYYMMDD_HHMMSSV_010000A_R2_T2_cts.txt
+#  * mode_Fcst_WIND_Z10_Obs_WIND_Z10_HRRR_Fire_Creek_rh_wind_HHMMSSL_YYYYMMDD_HHMMSSV_010000A_R2_T2_obj.nc
+#  * mode_Fcst_WIND_Z10_Obs_WIND_Z10_HRRR_Fire_Creek_rh_wind_HHMMSSL_YYYYMMDD_HHMMSSV_010000A_R2_T2_obj.txt
+#  * mode_Fcst_WIND_Z10_Obs_WIND_Z10_HRRR_Fire_Creek_rh_wind_HHMMSSL_YYYYMMDD_HHMMSSV_010000A_R2_T2.ps
+#
+# Here, HHMMSSL is the hour, minute, and second of the forecast lead time, YYYYMMDD is the year, month
+# and day of the valid time, and HHMMSSV is the hour, minute, and second of the valid time.  R1_T1
+# indicates the first convolution radius and threshold (radius of 3, threshold of <=10% for relative 
+# humidity and >=15 miles per hour for wind speed).  R2_T2 is the second radius and threhsold (radius 
+# of 3, threshold of <=15% for relative humidity and >=25 miles per hour for wind speed).
+#
+# The mv_mode_rh_gust directory also contains 16 output fiels for each timestep, 8 for relative humidity
+# and 8 for wind gust.  The files have the same format as above, but the thresholds for wind gusts are
+# >=25 miles per hour for R1 and >=35 miles per hour for R2.  These files have the following format::
+#
+#  * mode_Fcst_RH_Z2_Obs_RH_Z2_HRRR_Fire_Creek_rh_gust_HHMMSSL_YYYYMMDD_HHMMSSV_000000A_R1_T1_cts.txt
+#  * mode_Fcst_RH_Z2_Obs_RH_Z2_HRRR_Fire_Creek_rh_gust_HHMMSSL_YYYYMMDD_HHMMSSV_000000A_R1_T1_obj.nc
+#  * mode_Fcst_RH_Z2_Obs_RH_Z2_HRRR_Fire_Creek_rh_gust_HHMMSSL_YYYYMMDD_HHMMSSV_000000A_R1_T1_obj.txt
+#  * mode_Fcst_RH_Z2_Obs_RH_Z2_HRRR_Fire_Creek_rh_gust_HHMMSSL_YYYYMMDD_HHMMSSV_000000A_R1_T1.ps
+#  * mode_Fcst_RH_Z2_Obs_RH_Z2_HRRR_Fire_Creek_rh_gust_HHMMSSL_YYYYMMDD_HHMMSSV_000000A_R2_T2_cts.txt
+#  * mode_Fcst_RH_Z2_Obs_RH_Z2_HRRR_Fire_Creek_rh_gust_HHMMSSL_YYYYMMDD_HHMMSSV_000000A_R2_T2_obj.nc
+#  * mode_Fcst_RH_Z2_Obs_RH_Z2_HRRR_Fire_Creek_rh_gust_HHMMSSL_YYYYMMDD_HHMMSSV_000000A_R2_T2_obj.txt
+#  * mode_Fcst_RH_Z2_Obs_RH_Z2_HRRR_Fire_Creek_rh_gust_HHMMSSL_YYYYMMDD_HHMMSSV_000000A_R2_T2.ps
+#  * mode_Fcst_GUST_Z10_Obs_GUST_Z10_HRRR_Fire_Creek_rh_gust_HHMMSSL_YYYYMMDD_HHMMSSV_010000A_R1_T1_cts.txt
+#  * mode_Fcst_GUST_Z10_Obs_GUST_Z10_HRRR_Fire_Creek_rh_gust_HHMMSSL_YYYYMMDD_HHMMSSV_010000A_R1_T1_obj.nc
+#  * mode_Fcst_GUST_Z10_Obs_GUST_Z10_HRRR_Fire_Creek_rh_gust_HHMMSSL_YYYYMMDD_HHMMSSV_010000A_R1_T1_obj.txt
+#  * mode_Fcst_GUST_Z10_Obs_GUST_Z10_HRRR_Fire_Creek_rh_gust_HHMMSSL_YYYYMMDD_HHMMSSV_010000A_R1_T1.ps
+#  * mode_Fcst_GUST_Z10_Obs_GUST_Z10_HRRR_Fire_Creek_rh_gust_HHMMSSL_YYYYMMDD_HHMMSSV_010000A_R2_T2_cts.txt
+#  * mode_Fcst_GUST_Z10_Obs_GUST_Z10_HRRR_Fire_Creek_rh_gust_HHMMSSL_YYYYMMDD_HHMMSSV_010000A_R2_T2_obj.nc
+#  * mode_Fcst_GUST_Z10_Obs_GUST_Z10_HRRR_Fire_Creek_rh_gust_HHMMSSL_YYYYMMDD_HHMMSSV_010000A_R2_T2_obj.txt
+#  * mode_Fcst_GUST_Z10_Obs_GUST_Z10_HRRR_Fire_Creek_rh_gust_HHMMSSL_YYYYMMDD_HHMMSSV_010000A_R2_T2.ps
+#
+# For both directories, the cts files contain contingency table statistics while the obj.txt files contain 
+# the object attributes.  The postscript output shows images of the objects.  For the netCDF file, 18 
+# variable fields are present (not including the lat/lon fields). Those variables are::
 #
 #  * fcst_raw(lat, lon)
 #  * fcst_obj_raw(lat, lon)
@@ -186,6 +224,7 @@ model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf
 #   * MODEToolUseCase
 #   * FireAppUseCase
 #   * HRRRFileUseCase
+#   * GRIB2FileUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

@@ -65,8 +65,9 @@ model_applications/fire/MTD_fcstWRF_obsMMA_416Fire.conf
 # **Sequence of forecast leads to process (LEAD_SEQ):** 1 - 33 hours with hourly increments
 #
 # With an increment of 1 hour, one forecast initialization time is processed to result in 32
-# runs of Gen-Vx-Mask, once for each lead time.  Then, Mode-Time-Domain is run once which 
-# uses all model and observation times as input.
+# runs of Gen-Vx-Mask, once for each lead time.  The runs of Gen-Vx-Mask create netCDF files 
+# from the interpolated fire perimiters that are used as input observations to Mode-Time-Domain.
+#  Then, Mode-Time-Domain is run once which uses all model and observation times as input.
 
 ##############################################################################
 # METplus Configuration

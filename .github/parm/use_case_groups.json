@@ -76,7 +76,17 @@
   },
   {
     "category": "fire",
-    "index_list": "1-3",
+    "index_list": "1",
+    "run": false
+  },
+  {
+    "category": "fire",
+    "index_list": "2",
+    "run": false
+  },
+  {
+    "category": "fire",
+    "index_list": "3",
     "run": false
   },
   {

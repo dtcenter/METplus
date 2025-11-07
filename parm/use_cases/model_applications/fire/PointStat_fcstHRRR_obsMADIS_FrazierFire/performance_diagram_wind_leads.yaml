@@ -61,8 +61,8 @@ fcst_var_val_2:
     # y-axis/dependent variable
     #- PODY
 user_legend:
-   - '>=11.176'
-   - '>=6.7056'
+   - '>=25'
+   - '>=15'
 
 plot_stat: median
 colors:
