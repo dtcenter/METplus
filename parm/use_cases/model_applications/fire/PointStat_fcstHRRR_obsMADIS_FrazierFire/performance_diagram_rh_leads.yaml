@@ -1,0 +1,118 @@
+---
+# Custom settings specific to performance diagram plot
+# Write points file. Set to True for METviewer use,
+# False otherwise
+dump_points_1: 'False'
+
+# Optional, uncomment and set to directory to store the .points1 file
+# that is used by METviewer (created when dump_points_1 is set to True)
+# if dump_points_1 is True and this is uncommented, the points1 file
+# will be saved in the default location (i.e. where the input data file is stored).
+#points_path: /dir_to_save_points1_file
+
+
+
+# Line and marker plots of series data of Success Rate (1-FAR) on x-axis vs. PODY on y-axis.
+title: HRRR Relative Humidity Performance Diagram
+xaxis: Success Ratio (1 - FAR)
+# support two y-axes
+yaxis_1: Probability of Detection (PODY)
+yaxis_2: ''
+legend_ncol: 1
+plot_ci:
+  - none
+  - none
+plot_disp:
+  - True
+  - True
+series_order:
+  - 1
+  - 2
+indy_var: fcst_lead
+indy_vals:
+  # defining the datetimes of interest
+  - 60000
+  - 120000
+  - 180000
+  - 240000
+
+# support two series values
+series_val_1:
+  model:
+    - HRRR
+  fcst_thresh:
+    - '<=10'
+    - '<=15'
+series_val_2: {}
+fcst_var_val_1:
+  # Name of the variables of interest, the independent and dependent variables
+  # will be the same across all fcst_var values
+
+  # fcst_var1
+  RH:
+    # x-axis/independent variable
+    - FAR
+    # y-axis/dependent variable
+    - PODY
+fcst_var_val_2:
+  #RH:
+    # x-axis/independent variable
+    #- FAR
+    # y-axis/dependent variable
+    #- PODY
+user_legend:
+   - '<=10'
+   - '<=15'
+
+plot_stat: median
+colors:
+  # red
+  - "#ff0000"
+  # limegreen, as name of color
+  #- limegreen
+  # electric indigo/vivid purple
+  - "#8000ff"
+series_line_width:
+  - 0
+  - 0
+series_symbols:
+  # Other supported symbols: small circle = ".", ring/hexagon = "H", rhombus/diamond="d"
+  # Circle
+  - "o"
+  # square
+  #- "s"
+  # triangle
+  - "^"
+  # ring
+  #- "H"
+series_line_style:
+  # solid line
+  - "-"
+  - "-"
+  # dashed line
+  #- "--"
+  # dotted line
+  #- ":"
+stat_input: !ENV '${PERF_DIAGRAM_STAT_INPUT}'
+plot_filename: !ENV '${PERF_DIAGRAM_OUTPUT_DIR}/performance_diagram_rh_lead.png'
+event_equal: False
+
+plot_caption: ""
+
+# x-axis title size
+xlab_size:  1.0
+# x-axis tick label sze
+xtlab_size: 0.9
+
+# y-axis title size
+ylab_size:  1.0
+# y-axis tick label size
+ytlab_size: 0.9
+
+# To save your log output to a file, specify a path and filename and uncomment the line below.  Make sure you have
+# permissions to the directory you specify.  The default, as specified in the default config file is stdout.
+#log_filename: !ENV '${PERF_DIAGRAM_LOG_FILENAME}'
+
+# To change the log level, specify a log level: debug, info, warning, error and uncomment the line below.
+#  Debug and info log level will produce more log output.
+#log_level: WARNING
