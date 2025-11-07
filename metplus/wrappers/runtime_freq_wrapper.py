@@ -134,7 +134,6 @@ class RuntimeFreqWrapper(CommandBuilder):
             required = info.get('required', True)
 
             prefix_list = [prefix] if isinstance(prefix, str) else prefix
-            templates = []
             c_dict[f'{label}INPUT_DIR'] = ''
             c_dict[f'{label}INPUT_TEMPLATE'] = ''
 
@@ -341,6 +340,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             if time_input is None:
                 self.errors += 1
                 success = False
+                continue
 
             # check if time should be skipped
             if not self._should_init_or_valid_be_run(time_input, custom):
