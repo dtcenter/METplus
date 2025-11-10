@@ -68,10 +68,10 @@ fi
 ENV PATH="${PATH}:/metplus/METplus/ush"
 
 # Create non-root user for running the container
-RUN groupadd -r metuser && useradd --gid metuser --uid 1000 --shell bash metuser
+RUN useradd --uid 1000 --shell bash --create-home --user-group metuser
 
 # Switch to non-root user
 USER metuser
 
 # Set working directory to the user workspace
-WORKDIR /work
+WORKDIR /home/metuser

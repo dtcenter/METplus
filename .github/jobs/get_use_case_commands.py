@@ -132,7 +132,7 @@ def handle_automation_env(host_name, reqs):
 
 
 def _add_to_bashrc(command):
-    return f"echo '{command};' >> /root/.bashrc"
+    return f"echo '{command};' >> /home/metuser/.bashrc"
 
 
 def main(categories, subset_list, work_dir=None,

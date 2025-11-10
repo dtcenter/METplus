@@ -24,4 +24,4 @@ RUN git clone --branch "$METDATAIO_VERSION" https://github.com/dtcenter/METdatai
 USER metuser
 
 # Set working directory to the user workspace
-WORKDIR /work
+WORKDIR /home/metuser
