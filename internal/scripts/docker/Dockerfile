@@ -68,7 +68,7 @@ fi
 ENV PATH="${PATH}:/metplus/METplus/ush"
 
 # Create non-root user for running the container
-RUN useradd --uid 1000 --shell bash --create-home --user-group metuser
+RUN useradd --uid 1000 --shell /bin/bash --create-home --user-group metuser
 
 # Switch to non-root user
 USER metuser
