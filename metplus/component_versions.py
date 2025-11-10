@@ -72,7 +72,7 @@ DEFAULT_OUTPUT_FORMAT = "v{X}.{Y}.{Z}{N}"
 
 def get_component_version(input_component, input_version, output_component,
                           output_format=DEFAULT_OUTPUT_FORMAT, get_dev=True,
-                          rc_is_dev=False):
+                          rc_is_dev=False, require_exact=False):
     """!Get the version of a requested METplus component given another METplus
     component and its version. Parses out X.Y version numbers of input version
     to find desired version. Optionally specific format of output content.
@@ -89,6 +89,7 @@ def get_component_version(input_component, input_version, output_component,
      @param get_dev (optional) if True, get corresponding -beta version.
      If False, return "develop" if input is beta. Also include -rc version if
      rc_is_dev is True.
+     @param require_exact (optional) if True, require input version to match X.Y.Z exactly
      @returns string of requested version number, or "develop" if input version
      ends with "-dev", or None if version number could not be determined.
      @param rc_is_dev (optional) if True, an -rcN version will be considered a
@@ -99,7 +100,7 @@ def get_component_version(input_component, input_version, output_component,
     if _is_development(input_version, get_dev, rc_is_dev):
         return 'develop'
 
-    coord_version = get_coordinated_version(input_component, input_version)
+    coord_version = get_coordinated_version(input_component, input_version, require_exact)
     versions = VERSION_LOOKUP.get(coord_version)
     if versions is None:
         return None
@@ -123,19 +124,21 @@ def _is_development(input_version, get_dev, rc_is_dev):
         return True
     return False
 
-def get_coordinated_version(component, version):
+def get_coordinated_version(component, version, require_exact=False):
     """!Get coordinated release version number based on the X.Y version number
     of a given METplus component.
 
     @param component name of METplus component to search (case-insensitive)
     @param version number of version to search for. Can be formatted with main_v
     prefix and development release info, e.g. main_vX.Y or X.Y.Z-beta3.
+    @param require_exact (optional) if True, require input version to match X.Y.Z exactly
     @returns string of coordinated release version number X.Y or None.
     """
     # remove main_v or v prefix, remove content after dash
     search_version = version.removeprefix('main_').lstrip('v').split('-')[0]
-    # get X.Y only
-    search_version = '.'.join(search_version.split('.')[:2])
+    # get X.Y only if an exact match is not required
+    if not require_exact:
+        search_version = '.'.join(search_version.split('.')[:2])
     # look for component version that begins with search version
     for coord_version, versions in VERSION_LOOKUP.items():
         try:
@@ -177,10 +180,17 @@ def main():
                              'Defaults to False because we create a main_vX.Y '
                              'branch for the rc1 release, so we do not want to '
                              'use the develop branch for rc versions')
+    parser.add_argument("-e", "--require_exact", action=argparse.BooleanOptionalAction,
+                        default=False,
+                        help='If True, require input version to exactly match '
+                             'the X.Y.Z version, e.g. X.Y.Z must match X.Y.Z. '
+                             'If False (default), only X.Y is checked.')
+
     args = parser.parse_args()
     return get_component_version(args.input_component, args.input_version,
                                  args.output_component, args.output_format,
-                                 args.get_dev_version, args.rc_is_dev)
+                                 args.get_dev_version, args.rc_is_dev,
+                                 args.require_exact)
 
 def init():
     if __name__ == "__main__":
