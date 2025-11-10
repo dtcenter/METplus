@@ -65,10 +65,10 @@ RUN if [ ${OBTAIN_SOURCE_CODE} != "none" ]; then \
   pip install .; \
 fi
 
-ENV PATH="${PATH}:/metplus/METplus/ush"
-
+# add the METplus ush directory to the path for all profiles
 # Create non-root user for running the container
-RUN useradd --uid 1000 --shell /bin/bash --create-home --user-group metuser
+RUN echo "export PATH=$PATH:/metplus/METplus/ush" >> /etc/profile.d/metplus_env.sh \
+ && useradd --uid 1000 --shell /bin/bash --create-home --user-group metuser
 
 # Switch to non-root user
 USER metuser

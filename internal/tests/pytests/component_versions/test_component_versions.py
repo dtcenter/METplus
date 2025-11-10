@@ -54,6 +54,16 @@ def test_get_coordinated_version(component, version, expected_result):
 def test_get_component_version(input_component, input_version, output_component, output_format, expected_result):
     assert component_versions.get_component_version(input_component, input_version, output_component, output_format) == expected_result
 
+@pytest.mark.parametrize(
+    'input_component, input_version, expected_result', [
+        # get MET version for Docker dtcenter/metplus
+        ('met', '11.1.1', '5.1'),
+        ('met', '11.1.0', None),
+    ]
+)
+def test_get_component_version_exact(input_component, input_version, expected_result):
+    assert component_versions.get_component_version(input_component, input_version, 'METplus', '{X}.{Y}', require_exact=True) == expected_result
+
 
 @pytest.mark.parametrize(
     'input_version, get_dev, rc_is_dev, expected_result', [
