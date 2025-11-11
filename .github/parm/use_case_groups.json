@@ -77,12 +77,12 @@
   {
     "category": "fire",
     "index_list": "1",
-    "run": false
+    "run": true
   },
   {
     "category": "fire",
     "index_list": "2",
-    "run": true
+    "run": false
   },
   {
     "category": "fire",
