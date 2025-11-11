@@ -82,7 +82,7 @@
   {
     "category": "fire",
     "index_list": "2",
-    "run": false
+    "run": true
   },
   {
     "category": "fire",

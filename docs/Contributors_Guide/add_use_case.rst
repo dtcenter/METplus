@@ -684,6 +684,10 @@ the tarfile contains directories, i.e.
 
     tar czf ${METPLUS_NEW_DATA_TARFILE} model_applications/${METPLUS_USE_CASE_CATEGORY}/${METPLUS_USE_CASE_NAME}
 
+Note, if you are adding more than one use case in the same category, use the following command::
+
+    tar czf ${METPLUS_NEW_DATA_TARFILE} model_applications/${METPLUS_USE_CASE_CATEGORY}/*
+
 OR for a met_tool_wrapper use case, run::
 
     tar czf ${METPLUS_NEW_DATA_TARFILE} met_test/new
