@@ -16,12 +16,12 @@ model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.py
 # --------------------
 #
 # This use case evaluates the HRRR model using the Red Flag Criteria for Fire 
-# weather.  The purpose is to identify points that meet the Red Flag Criteria.
-# The evaluation is done two ways.  The first is to identify areas that match the
-# relative humidity, wind speed, and wind gust criteria separately.  The second
-# way takes a relative humidity mask and finds the points that meet the wind 
-# criteria inside each mask.  This way we can identify the points that meet
-# both the relative humidity and wind speed/wind gust criteria.
+# weather.  The purpose is verify the model performance at predicting the Red
+# Flag Criteria thresholds.  The evaluation is done two ways.  The first is to 
+# identify areas that match the relative humidity, wind speed, and wind gust 
+# criteria separately.  The second way takes a relative humidity mask and finds 
+# the points that meet the wind criteria inside each mask.  This way we can identify 
+# the points that meet both the relative humidity and wind speed/wind gust criteria.
 
 ##############################################################################
 # Version Added
@@ -33,9 +33,9 @@ model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.py
 # Datasets
 # --------
 #
-# **Forecast:** HRRR
+# **Forecast:** High Resolution Rapid Refresh (HRRR) model
 #
-# **Observation:** MADIS
+# **Observation:** Meteorological Assimilation Data Ingest System (MADIS) point observations
 #
 # **Climatology:** None
 #
@@ -85,16 +85,17 @@ model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.py
 # **Forecast lead min and max to process:** 6 to 24 hours
 #
 # The first call to Gen-Vx-Mask is run once to create the mask for the Hanford CWA domain.
-# Then, the second 2 calls to Gen-Vx-Mask and the 3 calls to Point-Stat are processed at 6 
+# Then, the next 2 calls to Gen-Vx-Mask and the 3 calls to Point-Stat are processed at 6 
 # hourly increments for the 0, 6, 12, and 18 hour model initializations using lead times 
-# between 6 and 24 hours, for a total of 20 runs.
+# between 6 and 24 hours.  This results in a total of 20 runs for each of these processes.
 #
 # The first call of Point-Stat processes statistics for each variable (relative humidity,
 # wind speed, and wind gusts) individually.  The second call uses a data mask of relative 
-# humidity less than 15% and calculates statistics for wind speed and wind gusts.  This
-# enables the identification of points that meet both the wind and relative humidity threshold
-# for fire weather.  Similarly, the third call to Point-Stat uses a data mask of relative 
-# humidity less than 10% and calculates statistics for wind speed and wind gusts.
+# humidity less than 15% and calculates statistics for wind speed and wind gusts using the 
+# corresponding thresholds.  This enables the identification of points that meet both the 
+# wind and relative humidity threshold for fire weather.  Similarly, the third call to 
+# Point-Stat uses a data mask of relative humidity less than 10% and calculates statistics 
+# for wind speed and wind gusts.
 #
 # Stat-Analysis is called once for the entire time period for each of the 3 calls.  Each of the 
 # 3 runs aggregates statistics for the different runs of Point-Stat above.  Addiationally, both
@@ -137,11 +138,12 @@ model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.py
 # Python Embedding
 # ----------------
 #
-# This use case calls a Python embedding script to read the MADIS data.  While
-# the MADIS data would run through MET after calling madis2nc, in this case, 
-# the Python embedding script is used to calculate relative humidity, which is 
-# needed for the Red Flag Criteria but didn't exist in the MADIS data.  The script
-# is /parm/use_cases/model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire/convert_madis_sfc_rh_wind.py
+# This use case calls a Python embedding script to read the MADIS data.  MADIS data 
+# can typically be read directly into Point-Stat after running madis2nc.  However, 
+# in this case, the Python embedding script is used to calculate relative humidity, 
+# which is needed for the Red Flag Criteria but was not a variable found in the MADIS 
+# data.  The script is
+# /parm/use_cases/model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire/convert_madis_sfc_rh_wind.py
 #
 # .. dropdown:: convert_madis_sfc_rh_wind.py
 #
@@ -152,25 +154,27 @@ model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.py
 # User Scripting
 # --------------
 #
-# There are two Python scripts used in this use case, called using the "UserScript" keyword
+# There are two Python scripts in this use case, both called using the "UserScript" keyword
 # in the METplus wrappers PROCESS_LIST configuration item.  These scripts provide an
 # interface to the functions in the METdataio, METcalcpy, and METplotpy Python modules
-# of METplus.  The functions used in these scripts demonstrate reformatting
-# aggregated StatAnalysis output to meet the format required by METcalcpy and METplotpy,
-# and then plotting that reformatted output using functions from METcalcpy and METplotpy.  
+# of METplus.  The functions used in these scripts demonstrate reformatting aggregated
+# Stat-Analysis output to meet the format required by METcalcpy and METplotpy, and then
+# plotting that reformatted output using functions from METcalcpy and METplotpy.  
 # 
 # The first Python script is called reformat_CTS_linetype.py.  This script takes the aggregated 
 # output CTS linetype from Stat Analysis and reformats it so that the data can be plotted.  
 # The script takes an input .yaml file, reformat_CTS.yaml.  Environment variables in the yaml
-# file are specified in the [user_env_vars] section of the 
+# file are specified in the [user_env_vars] section of the  
 # PointStat_fcstHRRR_obsMADIS_FrazierFire.conf METplus configuration file.
 #
 # The second Python script is plot_performance_diagram.py.  This script creates performance
 # diagrams for wind and relative humidity.  Some input variables to the script are set in the
 # [user_env_vars] section of the PointStat_fcstHRRR_obsMADIS_FrazierFire.conf METplus 
-# configuration file.
-#
-# For more information about YAML configuration options for the Performance Diagram plots, see the METplotpy
+# configuration file.  Options to control the symbols used and colors can be found in the 
+# yaml plotting configurations, performance_diagram_rh_leads.yaml and 
+# performance_diagram_wind_leads.yaml.  Both of these scripts are located in 
+# /parm/use_cases/model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.  For more 
+# information about YAML configuration options for the Performance Diagram plots, see the METplotpy
 # `Performance Diagram plot documentation <https://metplus.readthedocs.io/projects/metplotpy/en/latest/Users_Guide/performance_diagram.html>`_.
 #
 # Both Python scripts are located at::
@@ -208,8 +212,9 @@ model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.py
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
 # Output for this use case will be found in 
-# {OUTPUT_BASE}/model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.  The output from 
-# Gen-Vx-Mask will be in the VxMasks directory.  The VxMasks directory contains the Hanford CWA
+# {OUTPUT_BASE}/model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.  The output will 
+# contain 5 directories: plots, PointStat, reformatted, StatAnalysis, and VxMasks.  The VxMasks 
+# directory contains output from the 3 runs of Gen-Vx-Mask.  That output includes the Hanford CWA
 # mask::
 #
 #  * Hanford_CWA_mask.nc
