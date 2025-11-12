@@ -100,6 +100,7 @@ def main():
         commands = [
             'docker images',
             (f"docker run -d --rm -it -e GITHUB_WORKSPACE "
+             f"-e USER_ID={os.getuid()} -e GROUP_ID={os.getgid()} "
              f"--name {RUN_TAG} "
              f"{os.environ.get('NETWORK_ARG', '')} "
              f"{' '.join(VOLUME_MOUNTS)} "
