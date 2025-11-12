@@ -100,7 +100,7 @@ Category: fire
 0::GridStat_fcstWRF_obsMMA_fire_perimeter::model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 1::MTD_fcstWRF_obsMMA_416Fire::model_applications/fire/MTD_fcstWRF_obsMMA_416Fire.conf
 2::MODEMultivar_fcstHRRR_fcstOnly_CreekFire::model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf
-3::PointStat_fcstHRRR_obsMADIS_FrazierFire::model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.conf:: metdataio, metcalcpy, metplotpy, mp_analysis_env
+3::PointStat_fcstHRRR_obsMADIS_FrazierFire::model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.conf:: metdataio, metcalcpy, metplotpy, mp_analysis_env, py_embed
 
 
 Category: land_surface
