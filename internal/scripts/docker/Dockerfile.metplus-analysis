@@ -11,8 +11,6 @@ ARG METPLOTPY_VERSION
 # clone and install METplus Analysis Python packages
 # ensure root is used to install, then switch to metplus user
 
-USER root
-
 RUN git clone --branch "$METDATAIO_VERSION" https://github.com/dtcenter/METdataio \
     && pip install -r METdataio/requirements.txt && pip install METdataio/. \
     && git clone --branch "$METCALCPY_VERSION" https://github.com/dtcenter/METcalcpy \
@@ -20,8 +18,14 @@ RUN git clone --branch "$METDATAIO_VERSION" https://github.com/dtcenter/METdatai
     && git clone --branch "$METPLOTPY_VERSION" https://github.com/dtcenter/METplotpy \
     && pip install -r METplotpy/requirements.txt && pip install METplotpy/.
 
-# Switch to non-root user
-USER metuser
+# run entrypoint script to set uid and gid for metplus_user to running user's values
+
+ENTRYPOINT ["/usr/local/bin/user-entrypoint.sh"]
 
 # Set working directory to the user workspace
-WORKDIR /home/metuser
+
+WORKDIR /home/metplus_user
+
+# run bash if no command is specified
+
+CMD ["bash"]

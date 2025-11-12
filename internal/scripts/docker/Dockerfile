@@ -70,8 +70,14 @@ fi
 RUN echo "export PATH=$PATH:/metplus/METplus/ush" >> /etc/profile.d/metplus_env.sh \
  && useradd --uid 1000 --shell /bin/bash --create-home --user-group metuser
 
-# Switch to non-root user
-USER metuser
+# run entrypoint script to set uid and gid for metplus_user to running user's values
+
+ENTRYPOINT ["/usr/local/bin/user-entrypoint.sh"]
 
 # Set working directory to the user workspace
-WORKDIR /home/metuser
+
+WORKDIR /home/metplus_user
+
+# run bash if no command is specified
+
+CMD ["bash"]
