@@ -66,9 +66,7 @@ RUN if [ ${OBTAIN_SOURCE_CODE} != "none" ]; then \
 fi
 
 # add the METplus ush directory to the path for all profiles
-# Create non-root user for running the container
-RUN echo "export PATH=$PATH:/metplus/METplus/ush" >> /etc/profile.d/metplus_env.sh \
- && useradd --uid 1000 --shell /bin/bash --create-home --user-group metuser
+RUN echo "export PATH=$PATH:/metplus/METplus/ush" >> /etc/profile.d/metplus_env.sh
 
 # run entrypoint script to set uid and gid for metplus_user to running user's values
 
