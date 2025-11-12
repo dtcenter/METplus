@@ -299,8 +299,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                  f'{data_type}_FILE_TYPE',
                                  f'{data_type}_SERIES_ANALYSIS_INPUT_DATATYPE',
                                  'SERIES_ANALYSIS_FILE_TYPE'],
-                extra_args={'remove_quotes': True,
-                            'uppercase': True})
+                extra_args={'constant': True})
 
             self.add_met_config(
                 name='cat_thresh',
