@@ -17,10 +17,10 @@ model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf
 #
 # This use case runs Multivatiate MODE using relative humidity, wind speed, and wind
 # gusts to identify areas that meet the Red Flag criteria for fire weather.  The
-# specfic thresholds are:
+# specfic thresholds are as follows.
 #
-# - relative humidity <= 10% and wind speed >= 15 mph or wind gusts >= 25 mph
-# - relative humidity <= 15% and wind speed >= 25 mph or wind gusts >= 35 mph
+#  * relative humidity <= 10% and wind speed >= 15 mph or wind gusts >= 25 mph
+#  * relative humidity <= 15% and wind speed >= 25 mph or wind gusts >= 35 mph
 #
 # The purpose is to identify objects in the model that meet the Red Flag Criteria for 
 # fire weather forecasting.  Observations are not used.  Rather, the model is used as 
