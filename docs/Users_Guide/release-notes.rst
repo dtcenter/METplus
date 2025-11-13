@@ -47,7 +47,7 @@ describes the bugfix, enhancement, or new feature.
 Important issues are listed **in bold** for emphasis.
 
 
-METplus Version 6.2.0 Release Notes (2025-11-13)
+METplus Version 6.2.0 Release Notes (2025-11-14)
 ------------------------------------------------
 
   .. dropdown:: Enhancements
