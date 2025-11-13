@@ -30,28 +30,29 @@ author = 'UCAR/NCAR, NOAA, CSU/CIRA, and CU/CIRES'
 # list of contributing authors currently involved with the project
 # To rotate this list of authors for each official release,
 # move the first author to the end of the list
-CURRENT_AUTHORS = [
+CURRENT_AUTHORS = (
+    'Michelle Harrold',
     'Julie Prestopnik',
     'John Opatz',
     'John Halley Gotway',
-    'Tara Jensen',
     'Jonathan Vigh',
-    'Mallory Row',
     'Christina Kalb',
-    'Hank Fisher',
     'Lisa Goodrich',
     'Dan Adriaansen',
     'Minna Win-Gildenmeister',
     'George McCabe',
-]
+)
 
 # list of former contributors who are no longer involved with the project
 # but still deserve citation credit
-FORMER_AUTHORS = [
+FORMER_AUTHORS = (
+    'Tara Jensen',
+    'Mallory Row',
+    'Hank Fisher',
     'James Frimel',
     'Lindsay Blank',
     'Todd Arbetter',
-]
+)
 
 # format citation authors list
 formatted_authors = []
