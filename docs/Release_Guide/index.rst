@@ -12,6 +12,25 @@ repositories.
 .. note:: Please use the `develop <https://metplus.readthedocs.io/en/develop/Release_Guide>`_
           branch version of this **Release Guide**.
 
+
+Release instructions are described in the following sections.
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+   :numbered: 4
+
+   coordinated
+   metplus
+   met
+   metdataio
+   metcalcpy
+   metplotpy
+   metviewer
+   metexpress
+   recreate_release
+
+
 .. _releaseTypes:
 
 *************
@@ -123,20 +142,3 @@ Instructions are provided for the following types of software releases:
 The instructions that are common to all components are documented only once and then included
 in the release steps for all components.  However some instructions are specific to individual
 repositories and documented separately.
-
-Release instructions are described in the following sections.
-
-.. toctree::
-   :titlesonly:
-   :maxdepth: 1
-   :numbered: 4
-
-   coordinated
-   metplus
-   met
-   metdataio
-   metcalcpy
-   metplotpy
-   metviewer
-   metexpress
-   recreate_release
