@@ -680,8 +680,8 @@ Create new data tarfile
 
 Create a tarfile on the development machine with the new dataset. Make sure
 the tarfile contains directories, i.e.
-*model_applications/${METPLUS_USE_CASE_CATEGORY}*.  **ONLY RUN THE COMMAND THAT 
-IS APPROPRIATE TO THE USE CASE. READ CAREFULLY!**
+*model_applications/${METPLUS_USE_CASE_CATEGORY}*.  
+**ONLY RUN THE COMMAND THAT IS APPROPRIATE TO YOUR CASE. READ CAREFULLY!**
 
 **CONDITION 1:** You are adding data for a single new use case::
 
