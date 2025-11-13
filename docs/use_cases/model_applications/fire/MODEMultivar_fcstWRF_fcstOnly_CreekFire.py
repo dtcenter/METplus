@@ -16,18 +16,18 @@ model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf
 # --------------------
 #
 # This use case runs Multivatiate MODE using relative humidity, wind speed, and wind
-# gusts to identify areas that meet the Red Flag criteria for fire weather.  The
-# specfic thresholds are as follows.
+# gusts to identify areas that meet the Red Flag criteria for fire weather.  There are 
+# 2 sets of thresholds for the Red Flag criteria.  The first is relative humidity less 
+# than 10% and wind speed greater than 15 mph or wind gusts greater than 25 mph.  The
+# second is relative humidity greater than 15% and wind speed less than 25 mph or wind 
+# gusts greater than 35 mph.
 #
-#  * relative humidity <= 10% and wind speed >= 15 mph or wind gusts >= 25 mph
-#  * relative humidity <= 15% and wind speed >= 25 mph or wind gusts >= 35 mph
-#
-# The purpose is to identify objects in the model that meet the Red Flag Criteria for 
-# fire weather forecasting.  Observations are not used.  Rather, the model is used as 
-# input for both the forecast and observations (since Multivariate MODE requires both 
-# to run).  As such, matched object statistics are not useful for this use case.  Instead, 
-#simple and cluster object statistics on the area meeting the Red Flag Criteria are the 
-# goal.
+# The purpose of this use case is to identify objects in the model that meet the Red Flag 
+# Criteria for fire weather forecasting.  Observations are not used.  Rather, the model is 
+# used as input for both the forecast and observations (since Multivariate MODE requires 
+# both to run).  As such, matched object statistics are not useful for this use case.  
+# Instead, simple and cluster object statistics on the area meeting the Red Flag Criteria 
+# are the goal.
 
 ##############################################################################
 # Version Added
@@ -176,7 +176,7 @@ model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf
 #
 # The mv_mode_rh_gust directory also contains 16 output fiels for each timestep, 8 for relative humidity
 # and 8 for wind gust.  The files have the same format as above, but the thresholds for wind gusts are
-# >=25 miles per hour for R1 and >=35 miles per hour for R2.  These files have the following format::
+# >=25 miles per hour for T1 and >=35 miles per hour for T2.  These files have the following format::
 #
 #  * mode_Fcst_RH_Z2_Obs_RH_Z2_HRRR_Fire_Creek_rh_gust_HHMMSSL_YYYYMMDD_HHMMSSV_000000A_R1_T1_cts.txt
 #  * mode_Fcst_RH_Z2_Obs_RH_Z2_HRRR_Fire_Creek_rh_gust_HHMMSSL_YYYYMMDD_HHMMSSV_000000A_R1_T1_obj.nc
