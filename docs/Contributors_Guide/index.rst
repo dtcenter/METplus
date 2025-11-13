@@ -12,6 +12,7 @@ Contributor's Guide
    coding_standards
    utilities
    conda_recipe
+   noaa_install
    basic_components
    create_wrapper
    conda_env

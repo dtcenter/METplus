@@ -1421,10 +1421,10 @@ class CommandBuilder:
             if 'METPLUS_REGRID_TO_GRID' in c_dict:
                 del c_dict['METPLUS_REGRID_TO_GRID']
 
-        dict_items['method'] = ('string', 'uppercase,remove_quotes')
+        dict_items['method'] = ('string', 'constant')
         dict_items['width'] = 'int'
         dict_items['vld_thresh'] = 'float'
-        dict_items['shape'] = ('string', 'uppercase,remove_quotes')
+        dict_items['shape'] = ('string', 'constant')
         dict_items['convert'] = ('string', 'remove_quotes,add_x')
         dict_items['censor_thresh'] = ('list', 'remove_quotes')
         dict_items['censor_val'] = ('list', 'remove_quotes')
@@ -1550,7 +1550,7 @@ class CommandBuilder:
 
         flag_info_dict = {}
         for flag in getattr(self, f'{flag_type_upper}_FLAGS'):
-            flag_info_dict[flag] = ('string', 'remove_quotes,uppercase')
+            flag_info_dict[flag] = ('string', 'constant')
 
         self.add_met_config_dict(f'{flag_type_lower}_flag', flag_info_dict)
 
@@ -1640,8 +1640,8 @@ class CommandBuilder:
         }
 
         if get_flags:
-            items['grid_flag'] = ('string', 'remove_quotes,uppercase')
-            items['poly_flag'] = ('string', 'remove_quotes,uppercase')
+            items['grid_flag'] = ('string', 'constant')
+            items['poly_flag'] = ('string', 'constant')
 
         if get_point:
             items['sid'] = 'list'

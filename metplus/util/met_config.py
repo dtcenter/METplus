@@ -529,7 +529,7 @@ def set_met_config_list(config, c_dict, mp_config, met_config_name,
 
     out_values = []
     for conf_value in conf_values:
-        remove_quotes = kwargs.get('remove_quotes', False)
+        remove_quotes = kwargs.get('remove_quotes', False) or kwargs.get('constant', False)
         # if not removing quotes, escape any quotes found in list items
         if not remove_quotes:
             conf_value = conf_value.replace('"', '\\"')
@@ -538,7 +538,7 @@ def set_met_config_list(config, c_dict, mp_config, met_config_name,
         if not remove_quotes:
             conf_value = f'"{conf_value}"'
 
-        if kwargs.get('uppercase', False):
+        if kwargs.get('uppercase', False) or kwargs.get('constant', False):
             conf_value = conf_value.upper()
 
         out_values.append(conf_value)
@@ -589,11 +589,12 @@ def set_met_config_string(config, c_dict, mp_config, met_config_name,
         return True
 
     conf_value = util_remove_quotes(conf_value)
-    # add quotes back if remote quotes is False
-    if not kwargs.get('remove_quotes'):
+
+    # add quotes back if 'remote_quotes' or 'constant' are False
+    if not kwargs.get('remove_quotes') and not kwargs.get('constant'):
         conf_value = f'"{conf_value}"'
 
-    if kwargs.get('uppercase', False):
+    if kwargs.get('uppercase', False) or kwargs.get('constant', False):
         conf_value = conf_value.upper()
 
     if kwargs.get('to_grid', False):
@@ -804,15 +805,16 @@ def _parse_extra_args(extra):
     if not extra:
         return extra_args
 
-    VALID_EXTRAS = (
+    valid_extras = (
         'remove_quotes',
         'uppercase',
+        'constant',
         'allow_empty',
         'to_grid',
         'default',
         'add_x',
     )
-    for extra_option in VALID_EXTRAS:
+    for extra_option in valid_extras:
         if extra_option in extra:
             extra_args[extra_option] = True
     return extra_args
@@ -834,14 +836,14 @@ def handle_climo_dict(config, app_name, output_dict, sub_groups):
         'file_name': 'list',
         'field': ('list', 'remove_quotes'),
         'regrid': ('dict', '', {
-            'method': ('string', 'uppercase,remove_quotes'),
+            'method': ('string', 'constant'),
             'width': 'int',
             'vld_thresh': 'float',
-            'shape': ('string', 'uppercase,remove_quotes'),
+            'shape': ('string', 'constant'),
         }),
-        'time_interp_method': ('string', 'remove_quotes,uppercase'),
-        'day_interval': ('string', 'remove_quotes,uppercase'),
-        'hour_interval': ('string', 'remove_quotes,uppercase'),
+        'time_interp_method': ('string', 'constant'),
+        'day_interval': ('string', 'constant'),
+        'hour_interval': ('string', 'constant'),
         'file_type': ('string', 'remove_quotes'),
     }
     is_ok = True

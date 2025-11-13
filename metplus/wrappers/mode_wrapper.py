@@ -250,10 +250,7 @@ class MODEWrapper(CompareGriddedWrapper):
                                  f'{tool}_{data_type}_MERGE_FLAG',
                                  f'{tool}_MERGE_FLAG'
                                  ],
-                extra_args={
-                    'remove_quotes': True,
-                    'uppercase': True,
-                }
+                extra_args={'constant': True}
             )
 
             self.add_met_config(
@@ -324,19 +321,13 @@ class MODEWrapper(CompareGriddedWrapper):
         self.add_met_config(
             name='mask_missing_flag',
             data_type='string',
-            extra_args={
-                'remove_quotes': True,
-                'uppercase': True,
-            }
+            extra_args={'constant': True}
         )
 
         self.add_met_config(
             name='match_flag',
             data_type='string',
-            extra_args={
-                'remove_quotes': True,
-                'uppercase': True,
-            }
+            extra_args={'constant': True}
         )
 
         self.add_met_config_dict('weight', self.WEIGHTS)
@@ -395,8 +386,7 @@ class MODEWrapper(CompareGriddedWrapper):
                             metplus_configs=[f'{tool}_FCST_FILE_TYPE',
                                              f'FCST_{tool}_FILE_TYPE',
                                              f'{tool}_FILE_TYPE'],
-                            extra_args={'remove_quotes': True,
-                                        'uppercase': True})
+                            extra_args={'constant': True})
 
         self.add_met_config(name='file_type',
                             data_type='string',
@@ -404,8 +394,7 @@ class MODEWrapper(CompareGriddedWrapper):
                             metplus_configs=[f'{tool}_OBS_FILE_TYPE',
                                              f'OBS_{tool}_FILE_TYPE',
                                              f'{tool}_FILE_TYPE'],
-                            extra_args={'remove_quotes': True,
-                                        'uppercase': True})
+                            extra_args={'constant': True})
 
         self.add_met_config(name='multivar_name', data_type='string',
                             env_var_name='FCST_MULTIVAR_NAME',

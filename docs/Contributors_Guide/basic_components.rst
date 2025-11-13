@@ -469,13 +469,18 @@ should be set.
 * extra_args (optional): Dictionary containing additional information about the
   variable. Valid options are described below.
 
-    * remove_quotes: If set to True, do not add quotation marks around value.
+    * **remove_quotes**: If set to True, do not add quotation marks around value.
       Used only if data_type is string or list.
-    * uppercase: If True, change all letters to capital letters.
+    * **uppercase**: If True, change all letters to capital letters.
       Used only if data_type is string or list.
-    * allow_empty: If True and METplus configuration value is set to an empty
+    * **constant**: If True, set **remove_quotes** and **uppercase** to True.
+      Used for MET config constants found in *MET/data/config/ConfigConstants*
+    * **allow_empty**: If True and the METplus configuration value is set to an empty
       string, override the value to an empty list. This is used if the
       value in the default MET config file is not an empty list.
+    * **to_grid**: If True, format "to_grid" value in MET config. This can be
+      a constant NONE, FCST, OBS, or a quoted string such as a path.
+    * **add_x**: If True, add (x) to variable name, e.g. convert(x)
 
 ::
 
