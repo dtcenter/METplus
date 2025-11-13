@@ -19,13 +19,13 @@ Update the tar file links for each official release.
 
      # Replace "A.B" with the METbaseimage version
      # upon which the MET "X.Y" version depends
-     ln -sf tar_files.met-base.vA.B.tgz tar_files.met-vX.Y.tgz
+     ln -sf tar_files.met-base-vA.B.tgz tar_files.met-vX.Y.tgz
  
   - Update the "latest" link for the newly created MET "X.Y" version.
  
   .. parsed-literal::
 
      # Replace "A.B" with the METbaseimage version
-     ln -sf tar_files.met-base.vA.B.tgz tar_files.latest.tgz
+     ln -sf tar_files.met-base-vA.B.tgz tar_files.latest.tgz
 
   - Confirm the result at https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation.
