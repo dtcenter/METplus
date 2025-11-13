@@ -11,16 +11,11 @@ the METplus Components.
 
 .. _development_timeline:
 
-A minor METplus 6.2.0 Coordinated Release is planned during the last
-3 months of 2025 to provide targeted enhancements to specific funding
-partners. Note that the target dates listed below are tentative and
-may change in the future.
-
 The **development timeline** for the METplus 6.2.0 Coordinated Release
 is broken down into the following development cycles for each component:
 
 1. **Release Candidate 1** releases occurred around 2025-09-30.
-2. **Official Release** releases are tenatively scheduled for 2025-10-15.
+2. **Official Release** releases occurred around 2025-11-14.
 
 .. include:: existing_builds.rst
 
