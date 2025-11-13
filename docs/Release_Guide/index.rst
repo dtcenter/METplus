@@ -12,6 +12,23 @@ repositories.
 .. note:: Please use the `develop <https://metplus.readthedocs.io/en/develop/Release_Guide>`_
           branch version of this **Release Guide**.
 
+********************
+Instructions Summary
+********************
+
+Instructions are provided for the following types of software releases:
+
+#. **Coordinated Release** consisting of a group of software component releases
+
+#. **Official Release** (e.g. vX.Y.0) from the develop branch (becomes the new main_vX.Y branch)
+
+#. **Bugfix Release** (e.g. vX.Y.Z) from the corresponding main_vX.Y branch
+
+#. **Development Release** (e.g. vX.Y.Z-betaN or vX.Y.Z-rcN) from the develop branch
+
+The instructions that are common to all components are documented only once and then included
+in the release steps for all components.  However some instructions are specific to individual
+repositories and documented separately.
 
 Release instructions are described in the following sections.
 
@@ -124,21 +141,3 @@ Before METplus wrappers is released, MET, METdataio, METcalcpy, METplotpy, and
 METviewer all need to have been released.
 
 Before METexpress is released, METdataio needs to have been released.
-
-********************
-Instructions Summary
-********************
-
-Instructions are provided for the following types of software releases:
-
-#. **Coordinated Release** consisting of a group of software component releases
-
-#. **Official Release** (e.g. vX.Y.0) from the develop branch (becomes the new main_vX.Y branch)
-
-#. **Bugfix Release** (e.g. vX.Y.Z) from the corresponding main_vX.Y branch
-
-#. **Development Release** (e.g. vX.Y.Z-betaN or vX.Y.Z-rcN) from the develop branch
-
-The instructions that are common to all components are documented only once and then included
-in the release steps for all components.  However some instructions are specific to individual
-repositories and documented separately.
