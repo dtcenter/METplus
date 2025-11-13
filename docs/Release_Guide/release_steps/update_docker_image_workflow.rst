@@ -9,7 +9,7 @@ Update the list of versions whose Docker images should be rebuilt on schedule.
 
   * In the 'workflow_dispatch' section, consider updating the *default* 'release_version' to be built.
 
-  * In the 'define-matrix' job, update the 'version_list' for **schedule** events:
+  * In the 'define-matrix' job, update the 'version_string' for **schedule** events:
 
     * For official releases, add the new vX.Y version to the list of versions.
 
