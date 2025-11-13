@@ -54,7 +54,6 @@ model_applications/fire/MTD_fcstWRF_obsMMA_416Fire.conf
 ##############################################################################
 # METplus Workflow
 # ----------------
-# [UPDATE_SECTION_CONTENT]
 #
 # **Beginning time (INIT_BEG):** 2018-06-01 16 UTC
 #
