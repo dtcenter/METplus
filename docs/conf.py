@@ -93,7 +93,7 @@ release_date = __release_date__
 
 release_year = release_date[0:4]
 
-copyright = f'{release_year}, {author}'
+copyright_string = f'{release_year}, {author}'
 
 release_monthyear = datetime.strptime(release_date, '%Y%m%d').strftime('%B %Y')
 
@@ -231,7 +231,7 @@ def setup(app):
 
 # -- Replace values in docs ------------------------------------------------------------
 rst_epilog = f"""
-.. |copyright|    replace:: {copyright}
+.. |copyright|    replace:: {copyright_string}
 .. |author_list|  replace:: {author_list}
 .. |release_date| replace:: {release_date}
 .. |release_year| replace:: {release_year}
