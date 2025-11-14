@@ -31,7 +31,7 @@ VERSION_LOOKUP = {
         'metcalcpy': '3.2.0',
         'metdataio': '3.2.0',
         'metviewer': '6.2.0',
-        'metexpress': '6.2.0',
+        'metexpress': '6.2.1',
         'metbaseimage': '3.4.6',
     },
     '6.1': {
