@@ -11,16 +11,11 @@ the METplus Components.
 
 .. _development_timeline:
 
-A minor METplus 6.2.0 Coordinated Release is planned during the last
-3 months of 2025 to provide targeted enhancements to specific funding
-partners. Note that the target dates listed below are tentative and
-may change in the future.
-
 The **development timeline** for the METplus 6.2.0 Coordinated Release
 is broken down into the following development cycles for each component:
 
 1. **Release Candidate 1** releases occurred around 2025-09-30.
-2. **Official Release** releases are tenatively scheduled for 2025-10-15.
+2. **Official Release** releases occurred around 2025-11-14.
 
 .. include:: existing_builds.rst
 
@@ -47,8 +42,8 @@ describes the bugfix, enhancement, or new feature.
 Important issues are listed **in bold** for emphasis.
 
 
-METplus Version 6.2.0 RC 1 Release Notes (2025-09-30)
------------------------------------------------------
+METplus Version 6.2.0 Release Notes (2025-11-14)
+------------------------------------------------
 
   .. dropdown:: Enhancements
 
@@ -58,7 +53,7 @@ METplus Version 6.2.0 RC 1 Release Notes (2025-09-30)
        (`#3028 <https://github.com/dtcenter/METplus/issues/3028>`_)
      * Enhance the ASCII2NC Wrapper to support the new `-inputrx` command line option
        (`#3033 <https://github.com/dtcenter/METplus/issues/3033>`_)
-     * Data discovery utility defining time information based on existing files
+     * **Data discovery utility defining time information based on existing files**
        (`#3069 <https://github.com/dtcenter/METplus/issues/3069>`_)
      * Refine support for MESSAGE_TYPE_GROUP_MAP configuration options
        (`#3087 <https://github.com/dtcenter/METplus/issues/3087>`_)
@@ -99,7 +94,7 @@ METplus Version 6.2.0 RC 1 Release Notes (2025-09-30)
        (`#2999 <https://github.com/dtcenter/METplus/issues/2999>`_)
      * Add CVE scanning to the `release-docker-images.yml` workflow
        (`#3054 <https://github.com/dtcenter/METplus/issues/3054>`_)
-     * Address Critical CVEs
+     * **Address Critical CVEs**
      * Enhance the logic and functionality of the METplus CVE scanning workflows
 
 
