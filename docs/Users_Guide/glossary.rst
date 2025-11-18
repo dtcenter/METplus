@@ -3516,7 +3516,9 @@ METplus Configuration Glossary
      | *Used by:*  RegridDataPlane
 
    REGRID_DATA_PLANE_VERIF_GRID
-     Specify the absolute path to a file containing information about the desired output grid from the MET regrid_data_plane tool.
+     Defines the output grid to regrid the input data.
+     This can be a named grid, the path to a gridded data file,
+     or an explicit grid specification string.
 
      | *Used by:*  RegridDataPlane
 
