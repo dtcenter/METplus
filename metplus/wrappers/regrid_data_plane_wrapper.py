@@ -119,7 +119,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             grid = do_string_sub(self.c_dict['VERIFICATION_GRID'], **time_info)
 
             # put quotes around verification grid in case it is a grid description
-            self.infiles.append(f'"{grid}"')
+            self.infiles.append(f'"{remove_quotes(grid)}"')
 
             # if no field info or input field configs are set, error and return
             if not file_dict.get('var_list'):
