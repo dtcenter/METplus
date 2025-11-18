@@ -24,6 +24,17 @@ test_var_list = [
     {'index': '2', 'fcst_name': fcst_name2, 'fcst_level': fcst_level2, 'fcst_output_name': fcst_out2},
 ]
 
+verif_grid_test_params = [
+    ('VERIF_GRID', '"VERIF_GRID"'),
+    ('"VERIF_GRID"', '"VERIF_GRID"'),
+    ('G003', '"G003"'),
+    ('"G003"', '"G003"'),
+    ('/some/file/path/name.nc', '"/some/file/path/name.nc"'),
+    ('"/some/file/path/name.nc"', '"/some/file/path/name.nc"'),
+    ('"latlon 8000 4000 -90.0 0.0 0.045 0.045"', '"latlon 8000 4000 -90.0 0.0 0.045 0.045"'),
+    ('latlon 8000 4000 -90.0 0.0 0.045 0.045', '"latlon 8000 4000 -90.0 0.0 0.045 0.045"'),
+]
+
 def set_test_configs(config):
     config.set('config', 'DO_NOT_RUN_EXE', True)
     config.set('config', 'LOOP_BY', 'VALID')
@@ -38,7 +49,6 @@ def set_test_configs(config):
     config.set('config', 'FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}_ZENITH')
     config.set('config', 'REGRID_DATA_PLANE_METHOD', 'BUDGET')
     config.set('config', 'REGRID_DATA_PLANE_WIDTH', '2')
-    config.set('config', 'REGRID_DATA_PLANE_VERIF_GRID', 'VERIF_GRID')
     config.set('config', 'FCST_REGRID_DATA_PLANE_OUTPUT_DIR', '{OUTPUT_BASE}/RDP_test')
 
 def rdp_wrapper(metplus_config):
@@ -186,12 +196,15 @@ def _override_c_dict(wrapper, var_list, data_type):
     wrapper.c_dict['OUTPUT_DIR'] = wrapper.c_dict[f'{data_type}_OUTPUT_DIR']
     wrapper.c_dict['OUTPUT_TEMPLATE'] = wrapper.c_dict[f'{data_type}_OUTPUT_TEMPLATE']
 
-
+@pytest.mark.parametrize(
+    'input_verif_grid, expected_verif_grid', verif_grid_test_params
+)
 @pytest.mark.wrapper
-def test_run_rdp_once_per_field(metplus_config):
+def test_run_rdp_once_per_field(metplus_config, input_verif_grid, expected_verif_grid):
     config = metplus_config
     config.set('config', 'REGRID_DATA_PLANE_ONCE_PER_FIELD', True)
     config.set('config', 'FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}_accum{level?fmt=%2H}.nc')
+    config.set('config', 'REGRID_DATA_PLANE_VERIF_GRID', input_verif_grid)
     set_test_configs(config)
 
     wrapper = RegridDataPlaneWrapper(config)
@@ -201,11 +214,11 @@ def test_run_rdp_once_per_field(metplus_config):
 
     expected_cmds = [
         f"{wrapper.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME1\"; "
-        "level=\"A06\";' -name FNAME1 2018020100_ZENITH \"VERIF_GRID\" "
+        f"level=\"A06\";' -name FNAME1 2018020100_ZENITH {expected_verif_grid} "
         f"{wrapper.config.getdir('OUTPUT_BASE')}/RDP_test/2018020100_accum06.nc",
         f"{wrapper.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME2\"; "
-        "level=\"A03\";' -name OUTNAME2 2018020100_ZENITH \"VERIF_GRID\" "
-       f"{wrapper.config.getdir('OUTPUT_BASE')}/RDP_test/2018020100_accum03.nc",
+        f"level=\"A03\";' -name OUTNAME2 2018020100_ZENITH {expected_verif_grid} "
+        f"{wrapper.config.getdir('OUTPUT_BASE')}/RDP_test/2018020100_accum03.nc",
     ]
 
     assert len(wrapper.all_commands) == len(expected_cmds)
@@ -214,12 +227,15 @@ def test_run_rdp_once_per_field(metplus_config):
         print(f"EXPECTED:{expected_cmd}")
         assert cmd == expected_cmd
 
-
+@pytest.mark.parametrize(
+    'input_verif_grid, expected_verif_grid', verif_grid_test_params
+)
 @pytest.mark.wrapper
-def test_run_rdp_all_fields(metplus_config):
+def test_run_rdp_all_fields(metplus_config, input_verif_grid, expected_verif_grid):
     config = metplus_config
     config.set('config', 'REGRID_DATA_PLANE_ONCE_PER_FIELD', False)
     config.set('config', 'FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}_ALL.nc')
+    config.set('config', 'REGRID_DATA_PLANE_VERIF_GRID', input_verif_grid)
     set_test_configs(config)
 
     wrapper = RegridDataPlaneWrapper(config)
@@ -227,11 +243,12 @@ def test_run_rdp_all_fields(metplus_config):
 
     wrapper.run_all_times()
 
-    expected_cmds = [f"{wrapper.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME1\"; "
-                     "level=\"A06\";' -field 'name=\"FNAME2\"; level=\"A03\";' "
-                     "-name FNAME1,OUTNAME2 2018020100_ZENITH \"VERIF_GRID\" "
-                     f"{wrapper.config.getdir('OUTPUT_BASE')}/RDP_test/2018020100_ALL.nc",
-                     ]
+    expected_cmds = [
+        f"{wrapper.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME1\"; "
+        "level=\"A06\";' -field 'name=\"FNAME2\"; level=\"A03\";' "
+        f"-name FNAME1,OUTNAME2 2018020100_ZENITH {expected_verif_grid} "
+        f"{wrapper.config.getdir('OUTPUT_BASE')}/RDP_test/2018020100_ALL.nc",
+    ]
 
     test_passed = True
 
