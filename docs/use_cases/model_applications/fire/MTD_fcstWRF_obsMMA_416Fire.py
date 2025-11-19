@@ -15,10 +15,10 @@ model_applications/fire/MTD_fcstWRF_obsMMA_416Fire.conf
 # Scientific Objective
 # --------------------
 #
-# This case runs MODE-Time-Domain (MTD) to create objects from modeled fire area and 
+# This case uses MODE-Time-Domain to create objects using fire area and 
 # Multimission Aircraft fire perimiters for the 416 Fire.  MTD is used specifically 
-# to create objects over time that provide information on fire area and spread 
-# in the model versus the observations. 
+# to create objects over time that provide information on fire area and spread over 
+# time. 
 
 ##############################################################################
 # Version Added
@@ -49,11 +49,12 @@ model_applications/fire/MTD_fcstWRF_obsMMA_416Fire.conf
 # METplus Components
 # ------------------
 #
-# This use case calls both Gen-Vx-Mask and MODE-Time-Domain once.
+# This use case calls Gen-Vx-Mask and MODE-Time-Domain once.
 
 ##############################################################################
 # METplus Workflow
 # ----------------
+# [UPDATE_SECTION_CONTENT]
 #
 # **Beginning time (INIT_BEG):** 2018-06-01 16 UTC
 #

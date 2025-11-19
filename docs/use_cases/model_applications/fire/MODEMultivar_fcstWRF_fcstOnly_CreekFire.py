@@ -15,19 +15,16 @@ model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf
 # Scientific Objective
 # --------------------
 #
-# This use case runs Multivatiate MODE using relative humidity, wind speed, and wind
-# gusts to identify areas that meet the Red Flag criteria for fire weather.  There are 
-# 2 sets of thresholds for the Red Flag criteria.  The first is relative humidity less 
-# than 10% and wind speed greater than 15 mph or wind gusts greater than 25 mph.  The
-# second is relative humidity greater than 15% and wind speed less than 25 mph or wind 
-# gusts greater than 35 mph.
-#
-# The purpose of this use case is to identify objects in the model that meet the Red Flag 
-# Criteria for fire weather forecasting.  Observations are not used.  Rather, the model is 
-# used as input for both the forecast and observations (since Multivariate MODE requires 
-# both to run).  As such, matched object statistics are not useful for this use case.  
-# Instead, simple and cluster object statistics on the area meeting the Red Flag Criteria 
-# are the goal.
+# This use case runs Multivatiate MODE using the red flag criteria for fire weather 
+# (relative humidity less than 10% and wind speed greater than 15 miles per hour or 
+# wind gusts greater than 25 miles per hour, or relative humidity less than 15% and 
+# wind speed greater than 25 miles per hour or wind gusts greater than 35 miles per 
+# hour).  The purpose is to identify areas in the model that meet the Red Flag 
+# Criteria for fire weather forecasting.  Observations are not used.  Rather, the 
+# model is used as input for both the forecast and observations (since Multivariate 
+# MODE requires both to run).  As such, matched object statistics are not useful for 
+# this use case.  Instead, simple and cluster object statistics on the area meeting 
+# the Red Flag Criteria are the goal.
 
 ##############################################################################
 # Version Added
@@ -39,7 +36,7 @@ model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf
 # Datasets
 # --------
 #
-# **Forecast:** High Resolution Rapid Refresh (HRRR) model relative humidity, wind speed, and wind gusts
+# **Forecast:** HRRR
 #
 # **Observation:** HRRR (same as forecast)
 #
@@ -58,7 +55,7 @@ model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf
 # METplus Components
 # ------------------
 #
-# This use case calls GenVxMask once and Multivariate MODE (MvMODE) twice.
+# This use case calls GenVxMask once and Multivariate MODE twice.
 
 ##############################################################################
 # METplus Workflow
@@ -76,7 +73,7 @@ model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf
 #
 # GenVxMask is run once to create a mask over the Hanford CWA.  Then, with an 
 # increment of 6 hours for the 0, 6, 12, and 18 hour model initializations MvMODE is run
-# using lead times between 6 and 24 hours.  This makes a total of 52 runs for each call
+# using lead times between 6 and 24 hours.  This makes a total of 50 runs for each call
 # of MvMODE.  The first run uses relative humidity and wind speed thresholds to identify
 # objects while the second uses relative humidity and wind gust threshold to identify
 # objects.
@@ -105,7 +102,7 @@ model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf
 # not supported by METplus you’d like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. dropdown:: MODEConfig_wrapped
+# .. dropdown:: MTDConfig_wrapped
 #
 #   .. literalinclude:: ../../../../parm/met_config/MODEConfig_wrapped
 
@@ -176,7 +173,7 @@ model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf
 #
 # The mv_mode_rh_gust directory also contains 16 output fiels for each timestep, 8 for relative humidity
 # and 8 for wind gust.  The files have the same format as above, but the thresholds for wind gusts are
-# >=25 miles per hour for T1 and >=35 miles per hour for T2.  These files have the following format::
+# >=25 miles per hour for R1 and >=35 miles per hour for R2.  These files have the following format::
 #
 #  * mode_Fcst_RH_Z2_Obs_RH_Z2_HRRR_Fire_Creek_rh_gust_HHMMSSL_YYYYMMDD_HHMMSSV_000000A_R1_T1_cts.txt
 #  * mode_Fcst_RH_Z2_Obs_RH_Z2_HRRR_Fire_Creek_rh_gust_HHMMSSL_YYYYMMDD_HHMMSSV_000000A_R1_T1_obj.nc
@@ -207,15 +204,15 @@ model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf
 #  * obs_obj_raw(lat, lon)
 #  * obs_obj_id(lat, lon)
 #  * obs_clus_id(lat, lon)
-#  * int fcst_conv_radius
-#  * obs_conv_radius
-#  * fcst_conv_threshold(fcst_thresh_length)
-#  * obs_conv_threshold(obs_thresh_length)
-#  * fcst_variable(fcst_variable_length)
-#  * obs_variable(obs_variable_length)
-#  * fcst_level(fcst_level_length)
-#  * obs_level(obs_level_length)
-#  * fcst_units(fcst_units_length)
+#  * int fcst_conv_radius ;
+#  * obs_conv_radius ;
+#  * fcst_conv_threshold(fcst_thresh_length) ;
+#  * obs_conv_threshold(obs_thresh_length) ;
+#  * fcst_variable(fcst_variable_length) ;
+#  * obs_variable(obs_variable_length) ;
+#  * fcst_level(fcst_level_length) ;
+#  * obs_level(obs_level_length) ;
+#  * fcst_units(fcst_units_length) ;
 #  * obs_units(obs_units_length)
 
 ##############################################################################
