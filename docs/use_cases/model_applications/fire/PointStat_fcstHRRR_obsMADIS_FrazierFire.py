@@ -285,6 +285,7 @@ model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.py
 # .. note::
 #
 #   * FireAppUseCase
+#   * DataIngestUseCase
 #   * PointStatToolUseCase
 #   * GenVxMaskToolUseCase
 #   * StatAnalysisToolUseCase
