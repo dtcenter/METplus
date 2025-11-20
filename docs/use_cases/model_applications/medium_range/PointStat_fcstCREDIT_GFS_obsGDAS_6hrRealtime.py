@@ -272,7 +272,7 @@ model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.con
 #
 # .. note::
 #
-#   * DataIngestToolUseCase
+#   * DataIngestUseCase
 #   * PB2NCToolUseCase
 #   * PointStatToolUseCase
 #   * StatAnalysisToolUseCase
@@ -284,6 +284,7 @@ model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.con
 #   * METdbLoadUseCase
 #   * METcalcpyUseCase
 #   * METplotpyUseCase
+#   * AIWPUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
