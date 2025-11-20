@@ -183,6 +183,7 @@ Use Cases by Feature:
 .. only:: latex
 
    | **Introductory Example**: *ExampleToolUseCase*
+   | `AI Weather Prediction <../search.html?q=AIWPUseCase&check_keywords=yes&area=default>`_
    | **Climatology**: *ClimatologyUseCase*
    | **Custom String Looping**: *CustomStringLoopingUseCase*
    | **DataIngest**: *DataIngestUseCase*
