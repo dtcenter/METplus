@@ -272,7 +272,7 @@ model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.con
 #
 # .. note::
 #
-#   * DataIngestUseCase
+#   * DataIngestToolUseCase
 #   * PB2NCToolUseCase
 #   * PointStatToolUseCase
 #   * StatAnalysisToolUseCase
