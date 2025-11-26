@@ -77,17 +77,17 @@
   {
     "category": "fire",
     "index_list": "1",
-    "run": true
+    "run": false
   },
   {
     "category": "fire",
     "index_list": "2",
-    "run": true
+    "run": false
   },
   {
     "category": "fire",
     "index_list": "3",
-    "run": true
+    "run": false
   },
   {
     "category": "land_surface",
@@ -184,12 +184,12 @@
   { 
     "category": "medium_range",
     "index_list": "11",
-    "run": true
+    "run": false
   },
   { 
     "category": "medium_range",
     "index_list": "12",
-    "run": true
+    "run": false
   },
   {
     "category": "pbl",
