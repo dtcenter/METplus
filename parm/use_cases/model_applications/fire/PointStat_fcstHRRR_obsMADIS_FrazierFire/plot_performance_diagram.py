@@ -18,8 +18,6 @@ def main():
     plot_input_files_list_str = os.environ['PERF_DIAGRAM_STAT_INPUT_FILES'].split(',')
     plot_input_files_list = [pi.lstrip() for pi in plot_input_files_list_str]
     plot_output_dir = os.environ['PERF_DIAGRAM_OUTPUT_DIR']
-    #plot_output_file_labels_str = os.environ['PERF_DIAGRAM_OUTPUT_LABELS'].split(',')
-    #plot_output_file_labels = [ol.lstrip() for ol in plot_output_file_labels_str]
 
     # Check to see that the two lists have the same number of elements
     # If they dont', error out
