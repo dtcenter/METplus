@@ -116,7 +116,7 @@ def _get_name_and_level(c_dict, data_type, name, level, thresh):
         return _handle_grib_pds_field_info(name, level, thresh)
 
     # add field name
-    field = f'name="{name}";'
+    field = f'name="{remove_quotes(name)}";'
 
     # add level if set
     if level:
