@@ -58,8 +58,23 @@ def compare_gridded_wrapper(metplus_config):
 
         # obs name only py script
         (['/some/script/name.py args /path/of/infile.txt', '', [], '', 'OBS'],
-         ['{ name=\"/some/script/name.py args /path/of/infile.txt\"; }']),
+         ['{ name="/some/script/name.py args /path/of/infile.txt"; }']),
 
+        # forecast name with single quotes
+        (["'NAME'", "L0", [], '', 'FCST'],
+         ['{ name="NAME"; level="L0"; }']),
+
+        # forecast level with single quotes
+        (['NAME', "'L0'", [], '', 'FCST'],
+         ['{ name="NAME"; level="L0"; }']),
+
+        # forecast name with double quotes
+        (['"NAME"', "L0", [], '', 'FCST'],
+         ['{ name="NAME"; level="L0"; }']),
+
+        # forecast level with double quotes
+        (['NAME', '"L0"', [], '', 'FCST'],
+         ['{ name="NAME"; level="L0"; }']),
     ]
 )
 @pytest.mark.wrapper
