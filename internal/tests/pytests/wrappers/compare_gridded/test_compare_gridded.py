@@ -125,10 +125,9 @@ def test_get_field_info_no_prob(metplus_config, key, value):
          ['{ name="PROB"; level="L0"; prob={ name="NAME"; thresh_lo=3.0; } cat_thresh=[ ==0.1 ]; }',
           '{ name="PROB"; level="L0"; prob={ name="NAME"; thresh_hi=5.0; } cat_thresh=[ ==0.1 ]; }']),
 
-        # grib pds True, no thresholds specified
+        # grib pds True, no thresholds specified - raises ValueError
         (True, ['NAME', 'L0', [], '', 'FCST'],
-         ['{ name="PROB"; level="L0"; prob={ name="NAME"; thresh_lo=3.0; } cat_thresh=[ ==0.1 ]; }',
-          '{ name="PROB"; level="L0"; prob={ name="NAME"; thresh_hi=5.0; } cat_thresh=[ ==0.1 ]; }']),
+         ValueError('Must set thresholds if FCST_PROB_IN_GRIB_PDS=True.')),
 
         # grib pds False, obs grib name level thresh
         (False, ['NAME', 'L0', ['gt3', '<=5'], '', 'OBS'],
@@ -174,8 +173,12 @@ def test_get_field_info_fcst_prob_grib(metplus_config, prob_in_grib_pds, key, va
         'd_type': key[4],
     }
 
-    fields = w.get_field_info(**field_dict)
-    assert fields == value
+    try:
+        fields = w.get_field_info(**field_dict)
+    except ValueError as e:
+        assert str(e) == str(value)
+    else:
+        assert fields == value
 
 
 @pytest.mark.parametrize(

@@ -96,7 +96,7 @@ def _get_thresholds(c_dict, v_thresh, v_name, data_type):
     if (c_dict.get(f'{data_type}_IS_PROB', False) and
             c_dict.get(f'{data_type}_PROB_IN_GRIB_PDS', False) and
             not is_python_script(v_name)):
-        return 'No threshold was specified for probabilistic GRIB data'
+        raise ValueError(f'Must set thresholds if {data_type}_PROB_IN_GRIB_PDS=True.')
 
     return [None]
 
