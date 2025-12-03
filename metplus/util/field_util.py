@@ -227,7 +227,7 @@ def _handle_grib_pds_field_info(v_name, v_level, thresh):
         @returns formatted field string
     """
 
-    field = f'name="PROB"; level="{v_level}"; prob={{ name="{v_name}";'
+    field = f'name="PROB"; level="{v_level}"; prob={{ name="{remove_quotes(v_name)}";'
 
     if thresh:
         thresh_tuple_list = get_threshold_via_regex(thresh)
