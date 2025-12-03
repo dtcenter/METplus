@@ -115,10 +115,15 @@ def test_get_field_info_no_prob(metplus_config, key, value):
         (True, ['/some/script/name.py args /path/of/infile.txt', '', [], '', 'OBS'],
          ['{ name="/some/script/name.py args /path/of/infile.txt"; }']),
 
-        # grib pds False, forecast grib name level thresh
-        (False, ['NAME', 'L0', ['gt3', '<=5'], '', 'FCST'],
-         ['{ name="NAME"; level="L0"; prob=TRUE; cat_thresh=[ ==0.1 ]; }',
-          '{ name="NAME"; level="L0"; prob=TRUE; cat_thresh=[ ==0.1 ]; }']),
+        # grib pds True, single quotes around field name
+        (True, ["'NAME'", 'L0', ['gt3', '<=5'], '', 'FCST'],
+         ['{ name="PROB"; level="L0"; prob={ name="NAME"; thresh_lo=3.0; } cat_thresh=[ ==0.1 ]; }',
+          '{ name="PROB"; level="L0"; prob={ name="NAME"; thresh_hi=5.0; } cat_thresh=[ ==0.1 ]; }']),
+
+        # grib pds True, double quotes around field name
+        (True, ['"NAME"', 'L0', ['gt3', '<=5'], '', 'FCST'],
+         ['{ name="PROB"; level="L0"; prob={ name="NAME"; thresh_lo=3.0; } cat_thresh=[ ==0.1 ]; }',
+          '{ name="PROB"; level="L0"; prob={ name="NAME"; thresh_hi=5.0; } cat_thresh=[ ==0.1 ]; }']),
 
         # grib pds False, obs grib name level thresh
         (False, ['NAME', 'L0', ['gt3', '<=5'], '', 'OBS'],
@@ -136,6 +141,16 @@ def test_get_field_info_no_prob(metplus_config, key, value):
         # grib pds False, obs name py script
         (False, ['/some/script/name.py args /path/of/infile.txt', '', [], '', 'OBS'],
          ['{ name="/some/script/name.py args /path/of/infile.txt"; }']),
+
+        # grib pds False, single quotes around field name
+        (False, ["'NAME'", 'L0', ['gt3', '<=5'], '', 'FCST'],
+         ['{ name="NAME"; level="L0"; prob=TRUE; cat_thresh=[ ==0.1 ]; }',
+          '{ name="NAME"; level="L0"; prob=TRUE; cat_thresh=[ ==0.1 ]; }']),
+
+        # grib pds False, double quotes around field name
+        (False, ['"NAME"', 'L0', ['gt3', '<=5'], '', 'FCST'],
+         ['{ name="NAME"; level="L0"; prob=TRUE; cat_thresh=[ ==0.1 ]; }',
+          '{ name="NAME"; level="L0"; prob=TRUE; cat_thresh=[ ==0.1 ]; }']),
     ]
 )
 @pytest.mark.wrapper
@@ -167,6 +182,22 @@ def test_get_field_info_fcst_prob_grib(metplus_config, prob_in_grib_pds, key, va
 
         # obs netcdf name level thresh
         (['NAME', 'L0', ['gt3'], '', 'OBS'],
+         ['{ name="NAME"; level="L0"; cat_thresh=[ gt3 ]; }']),
+
+        # forecast netcdf name level - single quotes around field name
+        (["'NAME_gt3'", 'L0', [], '', 'FCST'],
+         ['{ name="NAME_gt3"; level="L0"; prob=TRUE; }']),
+
+        # obs netcdf name level thresh - single quotes around field name
+        (["'NAME'", 'L0', ['gt3'], '', 'OBS'],
+         ['{ name="NAME"; level="L0"; cat_thresh=[ gt3 ]; }']),
+
+        # forecast netcdf name level - double quotes around field name
+        (['"NAME_gt3"', 'L0', [], '', 'FCST'],
+         ['{ name="NAME_gt3"; level="L0"; prob=TRUE; }']),
+
+        # obs netcdf name level thresh - double quotes around field name
+        (['"NAME"', 'L0', ['gt3'], '', 'OBS'],
          ['{ name="NAME"; level="L0"; cat_thresh=[ gt3 ]; }']),
     ]
 )
