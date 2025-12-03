@@ -85,6 +85,18 @@ def get_tags(template):
     return tags
 
 
+
+def has_time_tag(string_to_parse):
+    """!Get all filename template tags from raw string and check if any of
+    the time info tags (init/valid/lead) were found.
+
+    @param string_to_parse string to search for filename template tags
+    @returns True if init, valid, or lead tags, e.g. {lead?fmt=%H},
+     were found in string. False if none of them were found.
+    """
+    return any(item in ['init', 'valid', 'lead'] for item in get_tags(string_to_parse))
+
+
 def format_one_time_item(item, time_str, unit):
     """!Helper function for do_string_sub. Determine precision of time offset value and format
         Args:

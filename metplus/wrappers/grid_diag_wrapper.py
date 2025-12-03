@@ -171,21 +171,13 @@ class GridDiagWrapper(RuntimeFreqWrapper):
                 @param time_info time dictionary to use for string substitution
                 @returns True if field list could be built, False if not.
         """
-        field_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
-        if not field_list:
-            self.log_error("Could not get field information from config.")
-            return False
-
         all_fields = []
-        for field in field_list:
-            field_list = self.get_field_info(d_type='FCST',
-                                             v_name=field['fcst_name'],
-                                             v_level=field['fcst_level'],
-                                             v_extra=field['fcst_extra'])
-            if field_list is None:
+        for field in self.c_dict['VAR_LIST_TEMP']:
+            field_info = self.get_field_list('fcst', field, time_info)
+            if not field_info:
                 return False
 
-            all_fields.extend(field_list)
+            all_fields.extend(field_info)
 
         data_field = ','.join(all_fields)
         self.c_dict['DATA_FIELD_FMT'] = f"field = [ {data_field} ];"
