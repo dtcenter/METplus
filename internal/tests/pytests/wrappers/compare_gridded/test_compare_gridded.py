@@ -125,6 +125,11 @@ def test_get_field_info_no_prob(metplus_config, key, value):
          ['{ name="PROB"; level="L0"; prob={ name="NAME"; thresh_lo=3.0; } cat_thresh=[ ==0.1 ]; }',
           '{ name="PROB"; level="L0"; prob={ name="NAME"; thresh_hi=5.0; } cat_thresh=[ ==0.1 ]; }']),
 
+        # grib pds True, no thresholds specified
+        (True, ['NAME', 'L0', [], '', 'FCST'],
+         ['{ name="PROB"; level="L0"; prob={ name="NAME"; thresh_lo=3.0; } cat_thresh=[ ==0.1 ]; }',
+          '{ name="PROB"; level="L0"; prob={ name="NAME"; thresh_hi=5.0; } cat_thresh=[ ==0.1 ]; }']),
+
         # grib pds False, obs grib name level thresh
         (False, ['NAME', 'L0', ['gt3', '<=5'], '', 'OBS'],
          ['{ name="NAME"; level="L0"; cat_thresh=[ gt3 ]; }',
