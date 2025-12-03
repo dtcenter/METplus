@@ -109,14 +109,14 @@ in the
     .. dropdown:: NCAR/RAL Common Installation
 
        | **NCAR RAL MACHINES (STANDARD LOCATION)**
-       | *Last Updated: Month DD, YYY*
+       | *Last Updated: November 21, 2025*
        | *Compiler and version: GNU 12.2.0*
 
-       * **METplusv6.1.0** (**Coming Soon**)
+       * **METplusv6.2.0**
 
-	 * METplus INSTALLATION: /nrit/ral/METplus-6.1.0
+	 * METplus INSTALLATION: /nrit/ral/METplus-6.2.0
 	   
-       * **METv12.1.0** (**Coming Soon**)
+       * **METv12.2.0** 
 
          * MET BUILD: /nrit/ral/met/bin
 
@@ -124,19 +124,19 @@ in the
     .. dropdown:: NCAR/RAL Internal Development
 
        | **NCAR RAL MACHINES SENECA**
-       | **MET-12.1.0**
+       | **MET-12.2.0**
        | *Last Updated:*
 
          * MET BUILD: 
 
        | **NCAR RAL MACHINES KIOWA**
-       | **MET-12.1.0**
+       | **MET-12.2.0**
        | *Last Updated:*
 
          * MET BUILD: 
 
        | **NCAR RAL MACHINES MOHAWK**
-       | **METviewer-6.1.0**
+       | **METviewer-6.2.0**
        | *Last Updated:*
 
          * LOCATION: 
