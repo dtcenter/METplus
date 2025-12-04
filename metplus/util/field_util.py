@@ -96,7 +96,7 @@ def _get_thresholds(c_dict, v_thresh, v_name, data_type):
     if (c_dict.get(f'{data_type}_IS_PROB', False) and
             c_dict.get(f'{data_type}_PROB_IN_GRIB_PDS', False) and
             not is_python_script(v_name)):
-        return 'No threshold was specified for probabilistic GRIB data'
+        raise ValueError(f'Must set thresholds if {data_type}_PROB_IN_GRIB_PDS=True.')
 
     return [None]
 
@@ -116,7 +116,7 @@ def _get_name_and_level(c_dict, data_type, name, level, thresh):
         return _handle_grib_pds_field_info(name, level, thresh)
 
     # add field name
-    field = f'name="{name}";'
+    field = f'name="{remove_quotes(name)}";'
 
     # add level if set
     if level:
@@ -227,7 +227,7 @@ def _handle_grib_pds_field_info(v_name, v_level, thresh):
         @returns formatted field string
     """
 
-    field = f'name="PROB"; level="{v_level}"; prob={{ name="{v_name}";'
+    field = f'name="PROB"; level="{v_level}"; prob={{ name="{remove_quotes(v_name)}";'
 
     if thresh:
         thresh_tuple_list = get_threshold_via_regex(thresh)
