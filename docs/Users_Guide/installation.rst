@@ -80,15 +80,15 @@ or conda.
 
 To run most of the METplus wrappers, the following packages are required:
 
-- dateutil (2.8)
+- dateutil (>=2.8)
 
 Using pip::
 
-    pip3 install python-dateutil==2.8
+    pip3 install "python-dateutil>=2.8"
 
 Using conda::
 
-  conda install -c conda-forge python-dateutil=2.8
+  conda install -c conda-forge "python-dateutil>=2.8"
 
 
 **MET Python Embedding Requirements**
