@@ -540,3 +540,21 @@ file that was created by the **apptainer pull** command and the call to the
 
 Note that the full path to the run_metplus.py script and the configuration file for the use case you are running must be provided.
 
+.. _metplus-conda:
+
+Conda
+=====
+
+Starting in v6.0.0,
+the METplus Wrappers and the MET C++ executables are hosted on Conda Forge
+for easy installation using Conda::
+
+   conda install -c conda-forge metplus
+
+or Mamba::
+
+   mamba install -c conda-forge metplus
+
+Navigate to the
+`METplus Package Overview on Anaconda.org <https://anaconda.org/channels/conda-forge/packages/metplus/overview>`_
+for more information.

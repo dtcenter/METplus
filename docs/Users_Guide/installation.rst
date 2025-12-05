@@ -19,8 +19,13 @@ page includes a link to the **Existing Builds and Docker** for that version.
 The METplus team supports the installation of the METplus components on
 several operational and research high performance computing platforms,
 including those at NCAR, NOAA, and other community machines.
+
 Pre-built METplus images on DockerHub are also provided.
 See :ref:`metplus-docker` for information on running METplus using Docker.
+
+The METplus Wrappers bundled with the MET executables
+can be easily installed via Conda.
+See :ref:`metplus-conda` for more information.
 
 Programming/Scripting Languages
 ===============================
