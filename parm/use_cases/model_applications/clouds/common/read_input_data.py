@@ -11,7 +11,6 @@ from scipy.interpolate import NearestNDInterpolator, LinearNDInterpolator
 #### for Plotting
 import fnmatch
 import pygrib
-import pickle as pk
 #####
 
 ###########################################
@@ -408,45 +407,6 @@ def get_data_array(input_file, source, variable, data_source):
    if ftype == 'nc':   nc_fid.close() # Close the netCDF file
 
    return met_data
-
-def obs_error(fcst_data, obs_error_file, valid_date, data_source):
-
-   print('Adding noise to the cloud fraction fields')
-   print('Using obsErrorFile', obs_error_file)
-
-   # First load the obsError information
-   #obsErrorFile = 'ob_errors.pk'
-   infile = open(obs_error_file, 'rb')
-   bin_edges, bin_stddev = pk.load(infile) # 'numpy.ndarray' types
-   infile.close()
-
-   # Get 1d forecast data
-   shape = fcst_data.shape
-   fcst = fcst_data.flatten()
-
-   # Set random number seed based on valid time and model
-   if   data_source.upper().strip() == 'MPAS':   ii = 10
-   elif data_source.upper().strip() == 'GALWEM': ii = 20
-   elif data_source.upper().strip() == 'GFS':    ii = 30
-   np.random.seed(int(valid_date * .1 + ii))
-
-   # Find which bin the data is in
-   for i in range(0,len(bin_edges)-1):
-      idx = np.nonzero( (fcst >= bin_edges[i]) & (fcst < bin_edges[i+1]) )[0]
-      n = len(idx) # number of points in the ith bin
-      if n > 0: # check for empty bins
-         rand_vals = np.random.Generator.normal(0,bin_stddev[i],n)
-         fcst[idx] = fcst[idx] + rand_vals
-
-   # bound forecast values to between 0 and 100%
-   fcst = np.where( fcst < 0.0,     0.0,   fcst)
-   fcst = np.where( fcst > 100.0,   100.0, fcst)
-
-   # now reshape forecast data back to 2D
-   output = fcst.reshape(shape)
-   
-   # data will have NaNs where bad.
-   return output
 
 def get_fcst_cloud_frac(cfr, pmid, psfc, layer_definitions): # cfr is cloud fraction(%), pmid is 3D pressure(Pa), psfc is surface pressure (Pa) code from UPP ./INITPOST.F
 
