@@ -204,6 +204,13 @@ def get_cloud_top_pres(source, data):
    return x
 
 def get_cloud_top_height(source, data):
+   return get_cloud_top(source, data, get_base=False)
+
+def get_cloud_base_height(source, data):
+   return get_cloud_top(source, data, get_base=True)
+
+def get_cloud_top(source, data, get_base):
+   """If get_base is True, get cloud base, otherwise get cloud top."""
    if source == 'SATCORPS':
       x = data[0][0,:,:,0] * 1.0E+1  # scaling to [meters]
    elif source == 'MERRA2':
@@ -222,39 +229,14 @@ def get_cloud_top_height(source, data):
          sys.exit()
       tmp = np.array(data) # already in meters
       tmp = np.where( tmp <= 0, np.nan, tmp) # replace 0 or negative values with NAN
-      x = np.nanmax(tmp,axis=0) # get maximum cloud top height across all layers
+      if get_base:
+         x = np.nanmin(tmp,axis=0)
+      else:
+         x = np.nanmax(tmp,axis=0) # get maximum cloud top height across all layers
    else:
       x = data[0]
 
    # Eliminate unphysical values (assume cloud top shouldn't be > 50000 meters)
-   y = np.where( x > 50000.0 , np.nan, x )
-
-   return y
-
-def get_cloud_base_height(source, data):
-   if source == 'SATCORPS':
-      x = data[0][0,:,:,0] * 1.0E+1  # scaling to [meters]
-   elif source == 'MERRA2':
-      x = data[0][0,:,:]     #TBD
-   elif source == 'ERA5':
-      try:    x = data[0][0,0,:,:]
-      except IndexError: x = data[0][0,:,:]
-   elif source == 'GALWEM17':
-      x = data[0] * 1000.0 * 0.3048  # kilofeet -> meters
-   elif source == 'MPAS':
-      x = data[0][0,:,:] # already in meters
-   elif source == 'WWMCA':
-      # data is a list (should be length 4)
-      if len(data) != 4:
-         print('error with WWMCA Cloud base height')
-         sys.exit()
-      tmp = np.array(data) # already in meters
-      tmp = np.where( tmp <= 0, np.nan, tmp) # replace 0 or negative values with NAN
-      x = np.nanmin(tmp,axis=0) # get lowest cloud base over all layers
-   else:
-      x = data[0]
-
-   # Eliminate unphysical values (assume cloud base shouldn't be > 50000 meters)
    y = np.where( x > 50000.0 , np.nan, x )
 
    return y
@@ -290,80 +272,39 @@ def get_data_array(input_file, source, variable, data_source):
 
    ftype = griddedDatasets[source]['ftype'].lower().strip()
 
-   # Get file handle
-   if ftype == 'nc':
-      nc_fid = Dataset(input_file, "r", format="NETCDF4")
-      #nc_fid.set_auto_scale(True)
-   elif ftype == 'grib':
-      if source == 'WWMCA':
-        idx = pygrib.index(input_file, 'parameterName', 'typeOfLevel', 'level')
-      else:
-        idx = pygrib.index(input_file, 'parameterCategory', 'parameterNumber', 'typeOfFirstFixedSurface')
-
    # dataSource == 1 means forecast, 2 means obs
-#  if dataSource == 1: vars_to_read = verifVariablesModel[variable][source] # if ftype == 'grib', returns a list whose ith element is a dictionary. otherwise, just a list
-#  if dataSource == 2: vars_to_read = verifVariables[variable][source] # returns a list
-   vars_to_read = verifVariables[variable][source] # if ftype == 'grib', returns a list whose ith element is a dictionary. otherwise, just a list
+   #  if dataSource == 1: vars_to_read = verifVariablesModel[variable][source] # if ftype == 'grib', returns a list whose ith element is a dictionary. otherwise, just a list
+   #  if dataSource == 2: vars_to_read = verifVariables[variable][source] # returns a list
+   vars_to_read = verifVariables[variable][source]  # if ftype == 'grib', returns a list whose ith element is a dictionary. otherwise, just a list
 
    print('Trying to read ', input_file)
 
-   # get data
-   data = []
-   for v in vars_to_read:
-      if ftype == 'grib':
-         if source == 'WWMCA':
-           x = idx(parameterName=v['parameterName'],typeOfLevel=v['typeOfLevel'],level=v['level'])[0] # by getting element 0, you get a pygrib message
-         else:
-            # e.g., idx(parameterCategory=6,parameterNumber=1,typeOfFirstFixedSurface=234)
-            if ( variable == 'cloudTopHeight' or variable == 'cloudBaseHeight') and source == 'GALWEM17': 
-               x = idx(parameterCategory=v['parameterCategory'],parameterNumber=v['parameterNumber'],typeOfFirstFixedSurface=v['typeOfFirstFixedSurface'])[1] # by getting element 1, you get a pygrib message
-            else:
-               x = idx(parameterCategory=v['parameterCategory'],parameterNumber=v['parameterNumber'],typeOfFirstFixedSurface=v['typeOfFirstFixedSurface'])[0] # by getting element 0, you get a pygrib message
-            if x.shortName != v['shortName']: print('Name mismatch!')
-            #ADDED BY JOHN O
-            print(x)
-            print('Reading ', x.shortName, 'at level ', x.typeOfFirstFixedSurface)
-         read_var = x.values # same x.data()[0]
-         read_missing = x.missingValue
-         print('missing value = ',read_missing)
-
-         # The missing value (read_missing) for GALWEM17 and GALWEM cloud base/height is 9999, which is not the best choice because
-         # those could be actual values. So we need to use the masked array part (below) to handle which
-         # values are missing.  We also set read_missing to something unphysical to essentially disable it.
-         # Finally, if we don't change the 'missingValue' property in the GRIB2 file we are eventually outputting,
-         # the bitmap will get all messed up, because it will be based on 9999 instead of $missing_values
-         if variable == 'cloudTopHeight' or variable == 'cloudBaseHeight':
-            read_missing = -9999.
-            x['missingValue'] = read_missing
-            if source == 'GALWEM17':
-               #These are masked numpy arrays, with mask = True where there is a missing value (no cloud)
-               #Use np.ma.filled to create an ndarray where mask = True values are set to np.nan
-               read_var = np.ma.filled(read_var.astype(read_var.dtype), np.nan)
-      elif ftype == 'nc':
-         read_var = nc_fid.variables[v]         # extract/copy the data
-         try:
-            read_missing = read_var.missing_value  # get variable attributes. Each dataset has own missing values.
-         except AttributeError:
-            read_missing = -9999. # set a default missing value. probably only need to do this for MPAS
-
-      print('Reading ', v)
-
-      this_var = np.array( read_var )        # to numpy array
-      this_var = np.where( this_var==read_missing, np.nan, this_var )
-      data.append(this_var) # ith element of the list is a NUMPY ARRAY for the ith variable
+   # Get file handle
+   if ftype == 'nc':
+      data = get_nc_data(input_file, vars_to_read)
+   elif ftype == 'grib':
+       data = get_grib_data(input_file, vars_to_read, source, variable)
+   else:
+      print(f"ERROR: Invalid ftype: {ftype}. Should be nc or grib")
+      sys.exit(1)
 
    # Call a function to get the variable of interest.
    # Add a new function for each variable
    if variable == 'binaryCloud':     raw_data = get_binary_cloud(source, data)
-   if variable == 'totalCloudFrac':  raw_data = get_total_cloud_frac(source, data)
-   if variable == 'lowCloudFrac':    raw_data = get_layer_cloud_frac(source, data, 'low')
-   if variable == 'midCloudFrac':    raw_data = get_layer_cloud_frac(source, data, 'mid')
-   if variable == 'highCloudFrac':   raw_data = get_layer_cloud_frac(source, data, 'high')
-   if variable == 'cloudTopTemp':    raw_data = get_cloud_top_temp(source, data)
-   if variable == 'cloudTopPres':    raw_data = get_cloud_top_pres(source, data)
-   if variable == 'cloudTopHeight':  raw_data = get_cloud_top_height(source, data)
-   if variable == 'cloudBaseHeight': raw_data = get_cloud_base_height(source, data)
-   if variable == 'cloudCeiling':    raw_data = get_cloud_ceiling(source, data)
+   elif variable == 'totalCloudFrac':  raw_data = get_total_cloud_frac(source, data)
+   elif variable == 'lowCloudFrac':    raw_data = get_layer_cloud_frac(source, data, 'low')
+   elif variable == 'midCloudFrac':    raw_data = get_layer_cloud_frac(source, data, 'mid')
+   elif variable == 'highCloudFrac':   raw_data = get_layer_cloud_frac(source, data, 'high')
+   elif variable == 'cloudTopTemp':    raw_data = get_cloud_top_temp(source, data)
+   elif variable == 'cloudTopPres':    raw_data = get_cloud_top_pres(source, data)
+   elif variable == 'cloudTopHeight':  raw_data = get_cloud_top_height(source, data)
+   elif variable == 'cloudBaseHeight': raw_data = get_cloud_base_height(source, data)
+   elif variable == 'cloudCeiling':    raw_data = get_cloud_ceiling(source, data)
+   else:
+      print(f'ERROR: Invalid variable: {variable}. '
+            'Should be binaryCloud, totalCloudFrac, lowCloudFrac, midCloudFrac, highCloudFrac, cloudTopTemp, '
+            'cloudTopPres, cloudTopHeight, cloudBaseHeight, cloudCeiling')
+      sys.exit(1)
 
    raw_data = np.where(np.isnan(raw_data), missing_values, raw_data) # replace np.nan to missing_values (for MET)
 
@@ -375,38 +316,73 @@ def get_data_array(input_file, source, variable, data_source):
    else:
       met_data=raw_data.astype(float)
 
-   # Make plotting optional or Just use plot_data_plane
-#   plt_data=np.where(met_data<0, np.nan, met_data)
-#   map=Basemap(projection='cyl',llcrnrlat=-90,urcrnrlat=90,llcrnrlon=-180,urcrnrlon=180,resolution='c')
-#   map.drawcoastlines()
-#   map.drawcountries()
-#   map.drawparallels(np.arange(-90,90,30),labels=[1,1,0,1])
-#   map.drawmeridians(np.arange(0,360,60),labels=[1,1,0,1])
-#   plt.contourf(lons,lats,plt_data,20,origin='upper',cmap=cm.Greens) #cm.gist_rainbow)
-#   title=source+"_"+variable+"_"+str(validTime)
-#   plt.title(title)
-#   plt.colorbar(orientation='horizontal')
-#   plt.savefig(title+".png")
-
-   # If a forecast file, output a GRIB file with 
-   # 1 record containing the met_data
-   # This is a hack, because right now, MET python embedding doesn't work with pygrib,
-   #    so output the data to a temporary file, and then have MET read the temporary grib file.
-   # Starting with version 9.0 of MET, the hack isn't needed, and MET python embedding works with pygrib
-   output_fcst_file = False  # MUST be True for MET version < 9.0.  For MET 9.0+, optional
-   if data_source == 1 and ftype == 'grib' and output_fcst_file:
-      grbtmp = x
-      grbtmp['values']=met_data
-      grbout = open('temp_fcst.grb2','ab')
-      grbout.write(grbtmp.tostring())
-      grbout.close() # Close the outfile GRIB file
-      print('Successfully output temp_fcst.grb2')
-
-   # Close files
-   if ftype == 'grib': idx.close()    # Close the input GRIB file
-   if ftype == 'nc':   nc_fid.close() # Close the netCDF file
-
    return met_data
+
+def get_nc_data(input_file, vars_to_read):
+   data = []
+   nc_fid = Dataset(input_file, "r", format="NETCDF4")
+   for v in vars_to_read:
+      print('Reading ', v)
+      read_var = nc_fid.variables[v]  # extract/copy the data
+      try:
+         read_missing = read_var.missing_value  # get variable attributes. Each dataset has own missing values.
+      except AttributeError:
+         read_missing = -9999.  # set a default missing value. probably only need to do this for MPAS
+
+      this_var = np.array( read_var )        # to numpy array
+      this_var = np.where( this_var==read_missing, np.nan, this_var )
+      data.append(this_var) # ith element of the list is a NUMPY ARRAY for the ith variable
+
+   nc_fid.close()
+   return data
+
+def get_grib_data(input_file, vars_to_read, source, variable):
+   data = []
+   if source == 'WWMCA':
+      idx = pygrib.index(input_file, 'parameterName', 'typeOfLevel', 'level')
+   else:
+      idx = pygrib.index(input_file, 'parameterCategory', 'parameterNumber', 'typeOfFirstFixedSurface')
+
+   for v in vars_to_read:
+      print('Reading ', v)
+      if source == 'WWMCA':
+         x = idx(parameterName=v['parameterName'], typeOfLevel=v['typeOfLevel'], level=v['level'])[0]  # by getting element 0, you get a pygrib message
+      else:
+         # e.g., idx(parameterCategory=6,parameterNumber=1,typeOfFirstFixedSurface=234)
+         if (variable == 'cloudTopHeight' or variable == 'cloudBaseHeight') and source == 'GALWEM17':
+            element_idx = 1
+         else:
+            element_idx = 0
+
+         x = idx(parameterCategory=v['parameterCategory'], parameterNumber=v['parameterNumber'], typeOfFirstFixedSurface=v['typeOfFirstFixedSurface'])[element_idx]
+         if x.shortName != v['shortName']: print('Name mismatch!')
+         # ADDED BY JOHN O
+         print(x)
+         print('Reading ', x.shortName, 'at level ', x.typeOfFirstFixedSurface)
+
+      read_var = x.values  # same x.data()[0]
+      read_missing = x.missingValue
+      print('missing value = ', read_missing)
+
+      # The missing value (read_missing) for GALWEM17 and GALWEM cloud base/height is 9999, which is not the best choice because
+      # those could be actual values. So we need to use the masked array part (below) to handle which
+      # values are missing.  We also set read_missing to something unphysical to essentially disable it.
+      # Finally, if we don't change the 'missingValue' property in the GRIB2 file we are eventually outputting,
+      # the bitmap will get all messed up, because it will be based on 9999 instead of $missing_values
+      if variable == 'cloudTopHeight' or variable == 'cloudBaseHeight':
+         read_missing = -9999.
+         x['missingValue'] = read_missing
+         if source == 'GALWEM17':
+            # These are masked numpy arrays, with mask = True where there is a missing value (no cloud)
+            # Use np.ma.filled to create an ndarray where mask = True values are set to np.nan
+            read_var = np.ma.filled(read_var.astype(read_var.dtype), np.nan)
+
+      this_var = np.array( read_var )        # to numpy array
+      this_var = np.where( this_var==read_missing, np.nan, this_var )
+      data.append(this_var) # ith element of the list is a NUMPY ARRAY for the ith variable
+
+   idx.close()  # Close the input GRIB file
+   return data
 
 def get_fcst_cloud_frac(cfr, pmid, psfc, layer_definitions): # cfr is cloud fraction(%), pmid is 3D pressure(Pa), psfc is surface pressure (Pa) code from UPP ./INITPOST.F
 
@@ -571,189 +547,6 @@ def get_goes_retrival_data(goes_file, goes_var):
    print('Max GOES Lon = ',np.max(goes_lon))
 
    return goes_lon, goes_lat, goes_data
-
-def point2point(source, input_dir, satellite, channel, goes_file, condition, layer_definitions, data_source):
-
-   # Static Variables for QC and obs
-   qc_var  = 'brightness_temperature_'+str(channel)+'@EffectiveQC' #'@EffectiveQC0' # QC variable
-   obs_var = 'brightness_temperature_'+str(channel)+'@ObsValue'  # Observation variable
-
-   # Get GOES-16 retrieval file with auxiliary information
-   if 'abi' in satellite or 'ahi' in satellite:
-      goes_lon, goes_lat, goes_data = get_goes_retrival_data(goes_file, 'PRES') # return 1-d arrays
-      lonlat_goes = np.array( list(zip(goes_lon, goes_lat))) # lon/lat pairs for each GOES ob (nobs_GOES, 2)
-      print('getting data from ', goes_file)
-      my_goes_interpolator = NearestNDInterpolator(lonlat_goes,goes_data)
-
-   # First check to see if there's a concatenated file with all obs.
-   #  If so, use that.  If not, have to process one file per processor, which takes a lot more time
-   if os.path.exists(input_dir + '/obsout_omb_' + satellite + '_ALL.nc4'):
-      input_files =  [input_dir + '/obsout_omb_' + satellite + '_ALL.nc4'] # needs to be in a list since we loop over inputFiles
-   else:
-      # Get list of OMB files to process.  There is one file per processor.
-      # Need to get them in order so they are called in the same order for the 
-      # forecast and observed passes through this subroutine.
-      files = os.listdir(input_dir)
-      input_files = fnmatch.filter(files,'obsout*_'+satellite+'*nc4') # returns relative path names
-      input_files = [input_dir + '/' + s for s in input_files] # add on directory name
-      input_files.sort() # Get in order from low to high
-   if len(input_files) == 0: return -99999, -99999 # if no matching files, force a failure
-
-   # Variable to pull for brightness temperature
-   if data_source == 1: v = 'brightness_temperature_' + str(channel) + '@hofx' #'@depbg' # OMB
-   if data_source == 2: v = obs_var
-
-   # Read the files and put data in array
-   all_data, all_data_qc = [], []
-   for input_file in input_files:
-      nc_fid = Dataset(input_file, "r", format="NETCDF4") #Dataset is the class behavior to open the file
-      print('Trying to read ',v,' from ',input_file)
-
-      # Read forecast/obs data
-      read_var = nc_fid.variables[v]         # extract/copy the data
-      this_var = np.array( read_var )        # to numpy array
-
-      #Read QC data
-      qc_data = np.array(nc_fid.variables[qc_var])
-
-      # Sanity check...shapes should match
-      if qc_data.shape != this_var.shape: return -99999, -99999
-
-      if 'abi' in satellite or 'ahi' in satellite:
-
-         # Get the GOES-16 retrieval data at the observation locations in this file
-         #   GOES values < 0 mean clear sky
-         lats = np.array(nc_fid.variables['latitude@MetaData'])
-         lons = np.array(nc_fid.variables['longitude@MetaData'])
-
-	 # Get longitude to between (0,360) for consistency with GOES-16 files
-         lons = np.where( lons < 0, lons + 360.0, lons )
-
-         lonlat = np.array( list(zip(lons,lats)))  # lon/lat pairs for each ob (nobs, 2)
-         this_goes_data = my_goes_interpolator(lonlat) # GOES data at obs locations in this file. If pressure, units are hPa
-         this_goes_data = this_goes_data * 100.0 # get into Pa
-
-         geo_vals_file = input_file.replace('obsout','geoval')
-         if not os.path.exists(geo_vals_file):
-            print(geo_vals_file+' not there. exit')
-            sys.exit()
-
-         nc_fid2 = Dataset(geo_vals_file, "r", format="NETCDF4")
-         fcst_cldfra = np.array( nc_fid2.variables['cloud_area_fraction_in_atmosphere_layer'])*100.0 # Get into %
-         pressure   = np.array( nc_fid2.variables['air_pressure']) # Pa
-         pressure_edges   = np.array( nc_fid2.variables['air_pressure_levels']) # Pa
-         psfc = pressure_edges[:,-1]  # Surface pressure (Pa)...array order is top down
-         if layer_definitions.upper().strip() == 'ERA5':
-            PTOP_LOW = 0.8*psfc # these are arrays
-            PTOP_MID = 0.45*psfc
-            PTOP_HIGH = PTOP_HIGH_UPP * np.ones_like(psfc)
-         elif layer_definitions.upper().strip() == 'UPP':
-            PTOP_LOW = PTOP_LOW_UPP # these are constants
-            PTOP_MID = PTOP_MID_UPP
-            PTOP_HIGH = PTOP_HIGH_UPP
-         else:
-            print('layerDefinitions = ', layer_definitions, 'is invalid. exit')
-            sys.exit()
-         fcst_low,fcst_mid,fcst_high,fcst_tot_cld_fra = get_fcst_cloud_frac(fcst_cldfra, pressure, psfc, layer_definitions) # get low/mid/high/total forecast cloud fractions for each ob
-         nc_fid2.close()
-
-	 # Modify QC data based on correspondence between forecast and obs. qcData used to select good data later
-         # It's possible that there are multiple forecast layers, such that fcstLow,fcstMid,fcstHigh are all > $cldfraThresh
-         # However, GOES-16 CTP doesn't really account for layering.  So, we need to remove layered clouds from the forecast, 
-	 #   focusing only on the layers that we asked for when doing {low,mid,high}Only conditions
-	 # The "|" is symbol for "np.logcal_or"
-         yes = 2.0
-         no  = 0.0
-         cldfra_thresh = 20.0 # percent
-         if qc_data.shape == fcst_tot_cld_fra.shape == this_goes_data.shape:  # these should all match
-            print('Using condition ',condition,'for ABI/AHI')
-
-	    # Note that "&" is "np.logical_and" for boolean (true/false) quantities.
-	    # Thus, each condition should be enclosed in parentheses
-            if   condition.lower().strip() == 'clearOnly'.lower():  # clear in both forecast and obs
-               qc_data = np.where( (fcst_tot_cld_fra < cldfra_thresh)  & (this_goes_data <= 0.0), qc_data, missing_values)
-            elif condition.lower().strip() == 'cloudyOnly'.lower(): # cloudy in both forecast and obs
-               qc_data = np.where( (fcst_tot_cld_fra >= cldfra_thresh) & (this_goes_data > 0.0), qc_data, missing_values)
-            elif condition.lower().strip() == 'lowOnly'.lower(): # low clouds in both forecast and obs
-               fcst_low = np.where( (fcst_mid >= cldfra_thresh) | ( fcst_high >= cldfra_thresh), missing_values, fcst_low) # remove mid, high
-               qc_data = np.where( (fcst_low >= cldfra_thresh) & ( this_goes_data >= PTOP_LOW), qc_data, missing_values)
-            elif condition.lower().strip() == 'midOnly'.lower(): # mid clouds in both forecast and obs
-               fcst_mid = np.where( (fcst_low >= cldfra_thresh) | ( fcst_high >= cldfra_thresh), missing_values, fcst_mid) # remove low, high
-               qc_data = np.where( (fcst_mid >= cldfra_thresh) & (this_goes_data <  PTOP_LOW) & (this_goes_data >= PTOP_MID),   qc_data, missing_values)
-            elif condition.lower().strip() == 'highOnly'.lower(): # high clouds in both forecast and obs
-               fcst_high = np.where( (fcst_low >= cldfra_thresh) | ( fcst_mid >= cldfra_thresh), missing_values, fcst_high) # remove mid, high
-               qc_data = np.where( (fcst_high >= cldfra_thresh) & (this_goes_data <  PTOP_MID) & (this_goes_data >= PTOP_HIGH), qc_data, missing_values)
-            elif condition.lower().strip() == 'fcstLow'.lower(): # low clouds in forecast (layers possible); obs could be anything
-               qc_data = np.where( fcst_low >= cldfra_thresh , qc_data, missing_values)
-            elif condition.lower().strip() == 'fcstMid'.lower(): # low clouds in forecast (layers possible); obs could be anything
-               qc_data = np.where( fcst_mid >= cldfra_thresh , qc_data, missing_values)
-            elif condition.lower().strip() == 'fcstHigh'.lower(): # low clouds in forecast (layers possible); obs could be anything
-               qc_data = np.where( fcst_high >= cldfra_thresh , qc_data, missing_values)
-            elif condition.lower().strip() == 'cloudEventLow'.lower():
-               if data_source == 1: this_var = np.where(fcst_low >= cldfra_thresh, yes, no) # set cloudy points to 2, clear points to 0, use threshold of 1 in MET
-               if data_source == 2: this_var = np.where(this_goes_data >= PTOP_LOW, yes, no)
-            elif condition.lower().strip() == 'cloudEventMid'.lower():
-               if data_source == 1: this_var = np.where(fcst_mid >= cldfra_thresh, yes, no) # set cloudy points to 2, clear points to 0, use threshold of 1 in MET
-               if data_source == 2: this_var = np.where((this_goes_data < PTOP_LOW) & (this_goes_data >= PTOP_MID), yes, no)
-            elif condition.lower().strip() == 'cloudEventHigh'.lower():
-               if data_source == 1: this_var = np.where(fcst_high >= cldfra_thresh, yes, no) # set cloudy points to 2, clear points to 0, use threshold of 1 in MET
-               if data_source == 2: this_var = np.where((this_goes_data < PTOP_MID) & (this_goes_data >= PTOP_HIGH), yes, no)
-            elif condition.lower().strip() == 'cloudEventTot'.lower():
-               if data_source == 1: this_var = np.where(fcst_tot_cld_fra >= cldfra_thresh, yes, no) # set cloudy points to 2, clear points to 0, use threshold of 1 in MET
-               if data_source == 2: this_var = np.where(this_goes_data > 0.0, yes, no)
-            elif condition.lower().strip() == 'all':
-               print("not doing any conditional verification or stratifying by event")
-            else:
-               print("condition = ",condition," not recognized.")
-               sys.exit()
-
-            print('number removed = ', (qc_data==missing_values).sum())
-         else:
-            print('shape mismatch')
-            return -99999, -99999
-	   
-      # Append to arrays
-      all_data.append(this_var)
-      all_data_qc.append(qc_data)
-
-      nc_fid.close() # done with the file, so close it before going to next file in loop
-
-   # We're now all done looping over the individul files
-
-   # Get the indices with acceptable QC
-   all_qc = np.concatenate(all_data_qc) # Put list of numpy arrays into a single long 1-D numpy array.  All QC data.
-   idx = np.nonzero(all_qc==0) # returns indices
-
-   # Now get all the forecast/observed brightness temperature data with acceptable QC
-   this_var = np.concatenate(all_data)[idx] # Put list of numpy arrays into a single long 1-D numpy array. This is all the forecast/obs data with good QC
-   num_obs = this_var.shape[0] # number of points with good QC for this channel
-   print('Number of obs :',num_obs)
-
-   # Assume all the points actually fit into a square grid. Get the side of the square (use ceil to round up)
-   if num_obs <= 0:
-      return -99999, -99999
-
-   l = np.ceil(np.sqrt(num_obs)).astype('int') # Length of the side of the square
-
-   # Make an array that can be reshaped into the square
-   raw_data_1d = np.full(l*l,np.nan) # Initialize 1D array of length l**2 to np.nan
-   raw_data_1d[0:num_obs] = this_var[:] # Fill data to the extent possible. There will be some np.nan values at the end
-   raw_data = np.reshape(raw_data_1d,(l,l)) # Reshape into "square grid"
-
-   raw_data = np.where(np.isnan(raw_data), missing_values, raw_data) # replace np.nan to missing_values (for MET)
-
-   met_data=raw_data.astype(float) # Give MET this info
-
-   # Now need to tell MET the "grid" for the data
-   # Make a fake lat/lon grid going from 0.0 to 50.0 degrees, with the interval determined by number of points
-   griddedDatasets[source]['latDef'][0] = 0.0 # starting point
-   griddedDatasets[source]['latDef'][1] = np.diff(np.linspace(0,50,l)).round(6)[0] # interval (degrees)
-   griddedDatasets[source]['latDef'][2] = int(l) # number of points
-   griddedDatasets[source]['lonDef'][0:3] = griddedDatasets[source]['latDef']
-
-   grid_info = get_grid_info(source, griddedDatasets[source]['gridType']) # 'LatLon' gridType
-   return met_data, grid_info
-
 
 ###########
 def get_grid_info(source, grid_type):
