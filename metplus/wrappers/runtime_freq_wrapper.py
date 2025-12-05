@@ -135,7 +135,6 @@ class RuntimeFreqWrapper(CommandBuilder):
             required = info.get('required', True)
 
             prefix_list = [prefix] if isinstance(prefix, str) else prefix
-            templates = []
             c_dict[f'{label}INPUT_DIR'] = ''
             c_dict[f'{label}INPUT_TEMPLATE'] = ''
 
