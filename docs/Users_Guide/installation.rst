@@ -101,8 +101,7 @@ section in the MET User's Guide for more information.
 
 **Wrapper Specific Requirements**
 
-The following wrappers require that additional Python packages be installed
-to run.
+The following wrappers require additional Python packages be installed to run.
 
 -  DataIngest wrapper
 
@@ -121,7 +120,9 @@ Cartopy, one of the dependencies of CyclonePlotter, attempts to download
 shapefiles from the internet to complete successfully.
 So if CyclonePlotter is run on a closed system (i.e. no internet),
 additional steps need to be taken.
-First, go to the Natural Earth Data webpage and download the small scale (1:110m)
+First, go to the
+`Natural Earth Data webpage <https://www.naturalearthdata.com/downloads>`_
+and download the small scale (1:110m)
 cultural and physical files that will have multiple extensions
 (e.g. .dbf, .shp, .shx). Untar these files in a noted location.
 Finally, create an environment variable in the user-specific system
