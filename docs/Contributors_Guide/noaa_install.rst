@@ -504,7 +504,7 @@ create the *METplus-X.Y_sample_data* directory, otherwise, navigate into that di
      - /mnt/lfs6/HFIP/dtc-hurr/METplus/sample_data/
      - role.metplus
    * - Gaea
-     - /usw/met/METplus/
+     - /ncrc/proj/nggps_psd/METplus/sample_data
      - personal
    * - Orion
      - /work/noaa/ovp/METplus/sample_data
