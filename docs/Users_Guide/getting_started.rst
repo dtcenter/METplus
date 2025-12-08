@@ -554,11 +554,11 @@ Python 3.10 or higher and 3.13 or lower.
 
 Create a new conda environment (optional)::
 
-    conda create --name my_metplus_env python=3.12
+    conda create --name metplus_env python=3.12
 
 Activate the newly created environment or an existing environment::
 
-    conda activate my_metplus_env
+    conda activate metplus_env
 
 Install the **metplus** package from the **conda-forge** channel::
 
