@@ -485,21 +485,21 @@ in the
      .. dropdown:: GAEA
 
         | **NOAA MACHINE GAEA**
-        | *Last Updated: Month DD, YYYY*
+        | *Last Updated: December 8, 2025*
 	| *Compiler and version: Intel classic 2023.2.0*
 
-          * **METplus-6.1.0** (**Coming Soon**)
+          * **METplus-6.2.0**
 
-            * METplus-6.1.0 Installation
+            * METplus-6.2.0 Installation
 
-              * /usw/met/METplus/METplus-6.1.0
+              * /usw/met/METplus/METplus-6.2.0
 
-            * METplus-6.1 Sample Data
+            * METplus-6.2 Sample Data
 
-              * /ncrc/proj/nggps_psd/user_name/projects/METplus/sample_data/METplus-6.1_sample_data
+              * /ncrc/proj/nggps_psd/METplus/sample_data/METplus-6.2_sample_data
 
             * To use METplus run: Users should create a file like 
-              /ncrc/proj/nggps_psd/Julie.Prestopnik/projects/METplus/gaea.metplus.conf 
+              /ncrc/proj/nggps_psd/METplus/gaea.metplus.conf 
               to set a personalized INPUT_BASE and OUTPUT_BASE.
 
               .. code-block:: ini
@@ -507,9 +507,9 @@ in the
                  module unload cray-libsci/24.07.0
                  module load intel/2023.2.0
                  module use /usw/met/METplus/modulefiles
-                 module load metplus/6.1.0
+                 module load metplus/6.2.0
 
-          * **MET-12.1.0** (**Coming Soon**)
+          * **MET-12.2.0**
 
             * MODULES:
 
@@ -518,10 +518,10 @@ in the
                  module unload cray-libsci/24.07.0
                  module load intel/2023.2.0
                  module use -a /usw/met/modulefiles/
-                 module load met/12.1.0
+                 module load met/12.2.0
 
 
-          * **METcalcpy-3.1.0 / METplotpy-3.1.0** (**Coming Soon**)
+          * **METcalcpy-3.2.0 / METplotpy-3.2.0**
 
             * MODULES:
 
@@ -530,11 +530,11 @@ in the
                 module unload cray-libsci/24.07.0
                 module load intel/2023.2.0
                 module use /usw/met/METcalcpy/modulefiles
-                module load metcalcpy/3.1.0
+                module load metcalcpy/3.2.0
                 module use /usw/met/METplotpy/modulefiles
-                module load metplotpy/3.1.0
+                module load metplotpy/3.2.0
 
-          * **METdataio-3.1.0** (**Coming Soon**)
+          * **METdataio-3.2.0**
 
             * MODULES:
 
@@ -543,7 +543,7 @@ in the
                  module unload cray-libsci/24.07.0
                  module load intel/2023.2.0
                  module use /usw/met/METdataio/modulefiles
-                 module load metdataio/3.1.0
+                 module load metdataio/3.2.0
 
 .. dropdown:: Community machines
 
