@@ -164,7 +164,7 @@ def handle_kmeans(data_type, steps_list, steps, z500_detrend_2d, z500, timedict,
     if data_type == 'FCST':
         reorder_fcst = os.environ.get('REORDER_FCST', 'False').lower() == 'true'
         reorder_fcst_manual = os.environ.get('REORDER_FCST_MANUAL', 'False').lower() == 'true'
-        if reorder_fcst and kmeans_obs:
+        if reorder_fcst and kmeans_obs is not None:
             kmeans, perc, wrc = reorder_fcst_regimes_correlate(kmeans_obs, kmeans, perc, wrc, wrnum)
         if reorder_fcst_manual:
             fcst_order_str = os.environ['FCST_ORDER'].split(',')
