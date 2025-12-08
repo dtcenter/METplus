@@ -20,7 +20,7 @@ def main():
         warnings.warn('Set FCST_STEPS and/or OBS_STEPS in the [user_env_vars] section to process data')
 
     ######################################################################
-    # Blocking Calculation and Plotting
+    # Weather Regime Calculation and Plotting
     ######################################################################
     # Set up the data
     steps_obs = WeatherRegimeCalculation('OBS')
@@ -136,7 +136,7 @@ def handle_eof(data_type, steps_list, steps, z500, z500_detrend_2d, lons, lats, 
     if "EOF" not in steps_list:
         if "PLOTEOF" in steps_list:
             raise ValueError(f'Must set EOF in {data_type}_LIST if PLOTEOF is set.')
-        return None
+        return z500_detrend_2d
 
     print(f'Running {data_type.capitalize()} EOF')
     eof, pc, wrnum, variance_fractions = steps.Calc_EOF(z500)
