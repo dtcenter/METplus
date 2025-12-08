@@ -547,13 +547,22 @@ Conda
 
 Starting in v6.0.0,
 the METplus Wrappers and the MET C++ executables are hosted on Conda Forge
-for easy installation using Conda::
+for easy installation using Conda or Mamba.
+
+Version 6.2.0 supports Linux, MacOS, and MacOS arm platforms and
+Python 3.10 or higher and 3.13 or lower.
+
+Create a new conda environment (optional)::
+
+    conda create --name my_metplus_env python=3.12
+
+Activate the newly created environment or an existing environment::
+
+    conda activate my_metplus_env
+
+Install the **metplus** package from the **conda-forge** channel::
 
    conda install -c conda-forge metplus
-
-or Mamba::
-
-   mamba install -c conda-forge metplus
 
 Navigate to the
 `METplus Package Overview on Anaconda.org <https://anaconda.org/channels/conda-forge/packages/metplus/overview>`_
