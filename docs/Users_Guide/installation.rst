@@ -19,8 +19,13 @@ page includes a link to the **Existing Builds and Docker** for that version.
 The METplus team supports the installation of the METplus components on
 several operational and research high performance computing platforms,
 including those at NCAR, NOAA, and other community machines.
+
 Pre-built METplus images on DockerHub are also provided.
 See :ref:`metplus-docker` for information on running METplus using Docker.
+
+The METplus Wrappers bundled with the MET executables
+can be easily installed via Conda.
+See :ref:`metplus-conda` for more information.
 
 Programming/Scripting Languages
 ===============================
@@ -75,15 +80,15 @@ or conda.
 
 To run most of the METplus wrappers, the following packages are required:
 
-- dateutil (2.8)
+- dateutil (>=2.8)
 
 Using pip::
 
-    pip3 install python-dateutil==2.8
+    pip3 install "python-dateutil>=2.8"
 
 Using conda::
 
-  conda install -c conda-forge python-dateutil=2.8
+  conda install -c conda-forge "python-dateutil>=2.8"
 
 
 **MET Python Embedding Requirements**
@@ -96,8 +101,7 @@ section in the MET User's Guide for more information.
 
 **Wrapper Specific Requirements**
 
-The following wrappers require that additional Python packages be installed
-to run.
+The following wrappers require additional Python packages be installed to run.
 
 -  DataIngest wrapper
 
@@ -116,7 +120,9 @@ Cartopy, one of the dependencies of CyclonePlotter, attempts to download
 shapefiles from the internet to complete successfully.
 So if CyclonePlotter is run on a closed system (i.e. no internet),
 additional steps need to be taken.
-First, go to the Natural Earth Data webpage and download the small scale (1:110m)
+First, go to the
+`Natural Earth Data webpage <https://www.naturalearthdata.com/downloads>`_
+and download the small scale (1:110m)
 cultural and physical files that will have multiple extensions
 (e.g. .dbf, .shp, .shx). Untar these files in a noted location.
 Finally, create an environment variable in the user-specific system
