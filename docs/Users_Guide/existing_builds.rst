@@ -550,38 +550,38 @@ in the
      .. dropdown:: FRONTERA
 
         | **TEXAS ADVANCED COMPUTING CENTER (TACC) FRONTERA**
-	| *Last updated: Month DD, YYYY*
+	| *Last updated: December 9, 2025*
 	| *Compiler and version: Intel oneAPI 2023.1.0*
 
 
-          * **METplus-6.1.0** (**Coming Soon**)
+          * **METplus-6.2.0**
 
-            * METplus-6.1.0 Installation
+            * METplus-6.2.0 Installation
 
 	      * /work2/06612/tg859120/frontera/METplus
 		
-            * METplus-6.1 Sample Data
+            * METplus-6.2 Sample Data
 
-	      * /work2/06612/tg859120/frontera/METplus/METplus-6.1_sample_data
+	      * /work2/06612/tg859120/frontera/METplus/sample_data/METplus-6.2_sample_data
 		
             * To use METplus run:
 
 	      .. code-block:: ini
 
                 module use /work2/06612/tg859120/frontera/modulefiles
-		module load metplus/6.1.0
+		module load metplus/6.2.0
 	      
             * Users should create a file like /work2/06612/tg859120/frontera/METplus/frontera.metplus.conf
               to set a personalized INPUT_BASE and OUTPUT_BASE.
 
-	 * **MET-12.1.0** (**Coming Soon**)
+	 * **MET-12.2.0** 
 
 	   * MODULES:
 
 	     .. code-block:: ini
 
 	       module use /work2/06612/tg859120/frontera/modulefiles
-	       module load met/12.1.0
+	       module load met/12.2.0
 
 .. dropdown:: DockerHub
 
