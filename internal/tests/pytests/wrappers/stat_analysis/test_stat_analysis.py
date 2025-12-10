@@ -188,7 +188,7 @@ def set_minimum_config_settings(config):
 )
 @pytest.mark.wrapper_d
 def test_valid_init_env_vars(metplus_config, config_overrides,
-                             expected_env_vars):
+                             expected_env_vars, compare_command_and_env_vars):
     config = metplus_config
     set_minimum_config_settings(config)
     config.set('config', 'INIT_END', '20221015')
@@ -214,20 +214,16 @@ def test_valid_init_env_vars(metplus_config, config_overrides,
     wrapper._run_stat_analysis_job(first_runtime_only)
     all_cmds = wrapper.all_commands
 
-    print(f"ALL COMMANDS: {all_cmds}")
-    _, actual_env_vars = all_cmds[0]
+    app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
+    verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
+    config_file = wrapper.c_dict.get('CONFIG_FILE')
+    out_dir = wrapper.c_dict.get('OUTPUT_DIR')
+    lookin_dir = config.get('config', 'MODEL1_STAT_ANALYSIS_LOOKIN_DIR')
+    expected_cmds = [
+        f"{app_path} {verbosity} -lookin {lookin_dir} -config {config_file} -out {out_dir}/",
+    ]
 
-    missing_env = [item for item in expected_env_vars
-                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
-    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
-
-    for env_var_key in env_var_keys:
-        match = next((item for item in actual_env_vars if
-                      item.startswith(env_var_key)), None)
-        assert match is not None
-        actual_value = match.split('=', 1)[1]
-        print(f"ENV VAR: {env_var_key}")
-        assert expected_env_vars.get(env_var_key, '') == actual_value
+    compare_command_and_env_vars(all_cmds, expected_cmds, expected_env_vars, wrapper)
 
 
 @pytest.mark.parametrize(
