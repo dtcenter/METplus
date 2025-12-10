@@ -183,7 +183,23 @@ def set_minimum_config_settings(config):
         # 17 - obs_lev
         ({'OBS_LEVEL_LIST': 'R7'},
          {'METPLUS_OBS_LEVEL': 'obs_lev = ["R7"];'}),
-
+        # fcst lead list
+        ({'FCST_LEAD_LIST': '24, 48, 72, 96, 120, 24, 48, 72, 96, 120, 24, 48, 72, 96, 120, 24, 48, 72, 96, 120'},
+         {'METPLUS_FCST_LEAD': ('fcst_lead = ["240000", "480000", "720000", "960000", "1200000", "240000", "480000", '
+                                '"720000", "960000", "1200000", "240000", "480000", "720000", "960000", "1200000", '
+                                '"240000", "480000", "720000", "960000", "1200000"];')}),
+        # fcst var list
+        ({'FCST_VAR_LIST': 'HGT, HGT, HGT, HGT, HGT, PRMSL, PRMSL, PRMSL, PRMSL, PRMSL, HGT, HGT, HGT, HGT, HGT, PRMSL, PRMSL, PRMSL, PRMSL, PRMSL'},
+         {'METPLUS_FCST_VAR': ('fcst_var = ["HGT", "HGT", "HGT", "HGT", "HGT", "PRMSL", "PRMSL", "PRMSL", "PRMSL", '
+                               '"PRMSL", "HGT", "HGT", "HGT", "HGT", "HGT", "PRMSL", "PRMSL", "PRMSL", "PRMSL", "PRMSL"];')}),
+        # fcst lev list
+        ({'FCST_LEV_LIST': 'P500, P500, P500, P500, P500, Z0, Z0, Z0, Z0, Z0, P500, P500, P500, P500, P500, Z0, Z0, Z0, Z0, Z0'},
+         {'METPLUS_FCST_LEV': ('fcst_lev = ["P500", "P500", "P500", "P500", "P500", "Z0", "Z0", "Z0", "Z0", "Z0", '
+                               '"P500", "P500", "P500", "P500", "P500", "Z0", "Z0", "Z0", "Z0", "Z0"];')}),
+        # vx mask list
+        ({'VX_MASK_LIST': 'NHEM, NHEM, NHEM, NHEM, NHEM, NHEM, NHEM, NHEM, NHEM, NHEM, SHEM, SHEM, SHEM, SHEM, SHEM, SHEM, SHEM, SHEM, SHEM, SHEM'},
+         {'METPLUS_VX_MASK': ('vx_mask = ["NHEM", "NHEM", "NHEM", "NHEM", "NHEM", "NHEM", "NHEM", "NHEM", "NHEM", '
+                              '"NHEM", "SHEM", "SHEM", "SHEM", "SHEM", "SHEM", "SHEM", "SHEM", "SHEM", "SHEM", "SHEM"];')}),
     ]
 )
 @pytest.mark.wrapper_d
