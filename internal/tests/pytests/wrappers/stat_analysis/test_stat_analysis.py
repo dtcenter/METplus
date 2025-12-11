@@ -184,18 +184,31 @@ def set_minimum_config_settings(config):
         ({'OBS_LEVEL_LIST': 'R7'},
          {'METPLUS_OBS_LEVEL': 'obs_lev = ["R7"];'}),
         # fcst lead list
-        ({'FCST_LEAD_LIST': '24, 48, 72, 96, 120, 24, 48, 72, 96, 120, 24, 48, 72, 96, 120, 24, 48, 72, 96, 120'},
+        ({'FCST_LEAD_LIST': '24, 48, 72, 96, 120, 24, 48, 72, 96, 120, 24, 48, 72, 96, 120, 24, 48, 72, 96, 120',},
          {'METPLUS_FCST_LEAD': ('fcst_lead = ["240000", "480000", "720000", "960000", "1200000", "240000", "480000", '
                                 '"720000", "960000", "1200000", "240000", "480000", "720000", "960000", "1200000", '
-                                '"240000", "480000", "720000", "960000", "1200000"];')}),
+                                '"240000", "480000", "720000", "960000", "1200000"];'), }),
         # fcst var list
         ({'FCST_VAR_LIST': 'HGT, HGT, HGT, HGT, HGT, PRMSL, PRMSL, PRMSL, PRMSL, PRMSL, HGT, HGT, HGT, HGT, HGT, PRMSL, PRMSL, PRMSL, PRMSL, PRMSL'},
          {'METPLUS_FCST_VAR': ('fcst_var = ["HGT", "HGT", "HGT", "HGT", "HGT", "PRMSL", "PRMSL", "PRMSL", "PRMSL", '
                                '"PRMSL", "HGT", "HGT", "HGT", "HGT", "HGT", "PRMSL", "PRMSL", "PRMSL", "PRMSL", "PRMSL"];')}),
         # fcst lev list
-        ({'FCST_LEV_LIST': 'P500, P500, P500, P500, P500, Z0, Z0, Z0, Z0, Z0, P500, P500, P500, P500, P500, Z0, Z0, Z0, Z0, Z0'},
-         {'METPLUS_FCST_LEV': ('fcst_lev = ["P500", "P500", "P500", "P500", "P500", "Z0", "Z0", "Z0", "Z0", "Z0", '
+        ({'FCST_LEVEL_LIST': 'P500, P500, P500, P500, P500, Z0, Z0, Z0, Z0, Z0, P500, P500, P500, P500, P500, Z0, Z0, Z0, Z0, Z0'},
+         {'METPLUS_FCST_LEVEL': ('fcst_lev = ["P500", "P500", "P500", "P500", "P500", "Z0", "Z0", "Z0", "Z0", "Z0", '
                                '"P500", "P500", "P500", "P500", "P500", "Z0", "Z0", "Z0", "Z0", "Z0"];')}),
+        # obs lead list
+        ({'OBS_LEAD_LIST': '24, 48, 72, 96, 120, 24, 48, 72, 96, 120, 24, 48, 72, 96, 120, 24, 48, 72, 96, 120', },
+         {'METPLUS_OBS_LEAD': ('obs_lead = ["240000", "480000", "720000", "960000", "1200000", "240000", "480000", '
+                                '"720000", "960000", "1200000", "240000", "480000", "720000", "960000", "1200000", '
+                                '"240000", "480000", "720000", "960000", "1200000"];'), }),
+        # obs var list
+        ({'OBS_VAR_LIST': 'HGT, HGT, HGT, HGT, HGT, PRMSL, PRMSL, PRMSL, PRMSL, PRMSL, HGT, HGT, HGT, HGT, HGT, PRMSL, PRMSL, PRMSL, PRMSL, PRMSL'},
+         {'METPLUS_OBS_VAR': ('obs_var = ["HGT", "HGT", "HGT", "HGT", "HGT", "PRMSL", "PRMSL", "PRMSL", "PRMSL", '
+                               '"PRMSL", "HGT", "HGT", "HGT", "HGT", "HGT", "PRMSL", "PRMSL", "PRMSL", "PRMSL", "PRMSL"];')}),
+        # obs lev list
+        ({'OBS_LEVEL_LIST': 'P500, P500, P500, P500, P500, Z0, Z0, Z0, Z0, Z0, P500, P500, P500, P500, P500, Z0, Z0, Z0, Z0, Z0'},
+         {'METPLUS_OBS_LEVEL': ('obs_lev = ["P500", "P500", "P500", "P500", "P500", "Z0", "Z0", "Z0", "Z0", "Z0", '
+                                 '"P500", "P500", "P500", "P500", "P500", "Z0", "Z0", "Z0", "Z0", "Z0"];')}),
         # vx mask list
         ({'VX_MASK_LIST': 'NHEM, NHEM, NHEM, NHEM, NHEM, NHEM, NHEM, NHEM, NHEM, NHEM, SHEM, SHEM, SHEM, SHEM, SHEM, SHEM, SHEM, SHEM, SHEM, SHEM'},
          {'METPLUS_VX_MASK': ('vx_mask = ["NHEM", "NHEM", "NHEM", "NHEM", "NHEM", "NHEM", "NHEM", "NHEM", "NHEM", '
@@ -509,7 +522,7 @@ def test_set_lists_as_loop_or_group(metplus_config):
         # Test 0
         (['FCST_VALID_HOUR_LIST', 'MODEL_LIST'],
          {'DATE_BEG': '20190101', 'DATE_END': '20190105', 'DATE_TYPE': 'VALID'},
-         {'FCST_VALID_HOUR': '0', 'FCST_INIT_HOUR': '0, 6, 12, 18'},
+         {'FCST_VALID_HOUR': '0', 'FCST_INIT_HOUR': '0, 12, 6, 18'},
          {'valid_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
           'valid_end': datetime.datetime(2019, 1, 5, 0, 0, 0),
           'fcst_valid_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
@@ -522,7 +535,7 @@ def test_set_lists_as_loop_or_group(metplus_config):
           'valid_hour_end': relativedelta(),
           'model': MODEL_TEST,
           'obtype': MODEL_TEST_ANL,
-          'fcst_init_hour': '000000_060000_120000_180000',
+          'fcst_init_hour': '000000_120000_060000_180000',
           'fcst_init_hour_beg': relativedelta(),
           'fcst_init_hour_end': relativedelta(hours=18),
           'init_hour_beg': relativedelta(),
@@ -617,7 +630,7 @@ def test_set_lists_as_loop_or_group(metplus_config):
         (['FCST_LEAD_LIST'],
          {'DATE_BEG': '20190101', 'DATE_END': '20190105',
           'DATE_TYPE': 'INIT'},
-         {'FCST_INIT_HOUR': '0', 'FCST_LEAD': '12,24'},
+         {'FCST_INIT_HOUR': '0', 'FCST_LEAD': '24,12'},
          {'init_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
           'init_end': datetime.datetime(2019, 1, 5, 0, 0, 0),
           'valid_beg': datetime.datetime(2019, 1, 1, 12, 0, 0),
@@ -672,7 +685,7 @@ def test_build_stringsub_dict(metplus_config, lists_to_loop, c_dict_overrides,
         (('{model?fmt=%s}_{obtype?fmt=%s}_valid{valid?fmt=%Y%m%d}'
           '{valid_hour?fmt=%H}_init{fcst_init_hour?fmt=%s}.stat'),
          'out_stat', ('MODEL_TEST_MODEL_TEST_ANL_valid2019010100'
-                      '_init000000_060000_120000_180000.stat')
+                      '_init000000_120000_060000_180000.stat')
          ),
     ]
 )
@@ -687,7 +700,7 @@ def test_get_output_filename(metplus_config, filename_template, output_type,
     st = stat_analysis_wrapper(metplus_config)
     config_dict = _set_config_dict_values()
     config_dict['FCST_VALID_HOUR'] = '0'
-    config_dict['FCST_INIT_HOUR'] = '0, 6, 12, 18'
+    config_dict['FCST_INIT_HOUR'] = '0, 12, 6, 18'
 
     st.c_dict['DATE_BEG'] = datetime.datetime.strptime('20190101', '%Y%m%d')
     st.c_dict['DATE_END'] = datetime.datetime.strptime('20190101', '%Y%m%d')
@@ -825,11 +838,11 @@ def test_get_lookin_dir(metplus_config):
         # Test 3
         ({'DATE_BEG': '20190101', 'DATE_END': '20190101', 'DATE_TYPE': 'INIT'},
          {'FCST_VALID_HOUR': '', 'FCST_INIT_HOUR': '',
-          'OBS_VALID_HOUR': '000000', 'OBS_INIT_HOUR': '0, 12'},
+          'OBS_VALID_HOUR': '000000', 'OBS_INIT_HOUR': '12, 0'},
          {'OBS_INIT_BEG': '20190101_000000',
           'OBS_INIT_END': '20190101_120000',
           'OBS_VALID_HOUR': '"000000"',
-          'OBS_INIT_HOUR': '"000000", "120000"',
+          'OBS_INIT_HOUR': '"120000", "000000"',
           'FCST_INIT_BEG': '20190101_000000',
           'FCST_INIT_END': '20190101_235959',
           },
