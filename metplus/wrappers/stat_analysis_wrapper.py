@@ -658,7 +658,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         @param stringsub_dict dictionary to set values
         """
         sub_name = list_name.lower()
-        delta_list = get_delta_list(config_dict[list_name])
+        delta_list = get_delta_list(config_dict[list_name], sort_list=True)
         if not delta_list:
             list_name_value = self._get_list_name_value(list_name, config_dict)
             stringsub_dict[sub_name] = list_name_value
@@ -672,7 +672,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
             stringsub_dict[sub_name] = delta_list[0]
         else:
             stringsub_dict[sub_name] = (
-                '_'.join(get_met_time_list(config_dict[list_name]))
+                '_'.join(get_met_time_list(config_dict[list_name], sort_list=False))
             )
 
         stringsub_dict[sub_name + '_beg'] = delta_list[0]
@@ -715,7 +715,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         @param stringsub_dict dictionary to set values
         """
         sub_name = list_name.lower()
-        lead_list = get_met_time_list(config_dict.get(list_name))
+        lead_list = get_met_time_list(config_dict.get(list_name), sort_list=False)
 
         if not lead_list:
             return
@@ -728,7 +728,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
 
         stringsub_dict[sub_name] = lead_list[0]
 
-        lead_rd = get_delta_list(config_dict[list_name])[0]
+        lead_rd = get_delta_list(config_dict[list_name], sort_list=True)[0]
         total_sec = ti_get_seconds_from_relativedelta(lead_rd)
         stringsub_dict[sub_name + '_totalsec'] = str(total_sec)
 
@@ -781,12 +781,12 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         @param obs_hour_str string with list of observation hours to process
         """
         if fcst_hour_str:
-            fcst_hour_list = get_delta_list(fcst_hour_str)
+            fcst_hour_list = get_delta_list(fcst_hour_str, sort_list=True)
         else:
             fcst_hour_list = None
 
         if obs_hour_str:
-            obs_hour_list = get_delta_list(obs_hour_str)
+            obs_hour_list = get_delta_list(obs_hour_str, sort_list=True)
         else:
             obs_hour_list = None
 
@@ -881,12 +881,12 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         @param obs_lead_str string to parse list of observation leads
         """
         if fcst_lead_str:
-            fcst_lead_list = get_delta_list(fcst_lead_str)
+            fcst_lead_list = get_delta_list(fcst_lead_str, sort_list=True)
         else:
             fcst_lead_list = None
 
         if obs_lead_str:
-            obs_lead_list = get_delta_list(obs_lead_str)
+            obs_lead_list = get_delta_list(obs_lead_str, sort_list=True)
         else:
             obs_lead_list = None
 
@@ -999,7 +999,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         # set all of the HOUR and LEAD lists to include the MET time format
         for list_name in self.FORMAT_LISTS:
             list_name = list_name.replace('_LIST', '')
-            values = get_met_time_list(config_dict.get(list_name, ''))
+            values = get_met_time_list(config_dict.get(list_name, ''), sort_list=False)
             values = [f'"{item}"' for item in values]
             output_dict[list_name] = ', '.join(values)
 
