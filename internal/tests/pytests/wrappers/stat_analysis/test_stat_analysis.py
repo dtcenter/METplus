@@ -124,6 +124,11 @@ def set_minimum_config_settings(config, set_config_file=True):
 
 @pytest.mark.parametrize(
     'config_overrides, expected_env_vars', [
+        ({'BOTH_VAR1_NAME': 'HGT', 'BOTH_VAR1_LEVELS': 'P500'},
+         {'METPLUS_FCST_VAR': 'fcst_var = ["HGT"];',
+          'METPLUS_OBS_VAR': 'obs_var = ["HGT"];',
+          'METPLUS_FCST_LEVEL': 'fcst_lev = ["P500"];',
+          'METPLUS_OBS_LEVEL': 'obs_lev = ["P500"];'}),
         ({'MODEL1': 'gfs',
           'MODEL2': 'cfs',
           'MODEL1_OBTYPE': 'gfs_anl',
@@ -238,6 +243,11 @@ def set_minimum_config_settings(config, set_config_file=True):
         ({'VX_MASK_LIST': 'NHEM, NHEM, NHEM, NHEM, NHEM, NHEM, NHEM, NHEM, NHEM, NHEM, SHEM, SHEM, SHEM, SHEM, SHEM, SHEM, SHEM, SHEM, SHEM, SHEM'},
          {'METPLUS_VX_MASK': ('vx_mask = ["NHEM", "NHEM", "NHEM", "NHEM", "NHEM", "NHEM", "NHEM", "NHEM", "NHEM", '
                               '"NHEM", "SHEM", "SHEM", "SHEM", "SHEM", "SHEM", "SHEM", "SHEM", "SHEM", "SHEM", "SHEM"];')}),
+        # test that running once per init time with same init time produces the same command
+        ({'STAT_ANALYSIS_RUNTIME_FREQ': 'RUN_ONCE_PER_INIT_OR_VALID', 'INIT_END': '20221014'}, {}),
+        ({'STAT_ANALYSIS_JOB1': '-job filter -dump_row [dump_row_file]',
+          'MODEL1_STAT_ANALYSIS_DUMP_ROW_TEMPLATE': 'some/template'},
+         {'METPLUS_JOBS': 'jobs = ["-job filter -dump_row <OUTPUT_BASE>/some/template"];'}),
     ]
 )
 @pytest.mark.wrapper_d
@@ -270,6 +280,9 @@ def test_valid_init_env_vars(metplus_config, config_overrides,
     expected_cmds = [
         f"{app_path} {verbosity} -lookin {lookin_dir} -config {config_file} -out {out_dir}/ALL",
     ]
+
+    if 'METPLUS_JOBS' in expected_env_vars:
+        expected_env_vars['METPLUS_JOBS'] = expected_env_vars['METPLUS_JOBS'].replace('<OUTPUT_BASE>', out_dir)
 
     compare_command_and_env_vars(all_cmds, expected_cmds, expected_env_vars, wrapper)
 
@@ -317,6 +330,7 @@ def test_check_required_job_template(metplus_config, config_overrides,
     print(wrapper.c_dict['MODEL_INFO_LIST'])
     assert wrapper.is_ok == expected_result
 
+
 @pytest.mark.parametrize(
     'config_overrides, expected_result', [
         ({'STAT_ANALYSIS_JOB1': '-job filter -dump_row [dump_row_file]',
@@ -338,6 +352,65 @@ def test_error_check_no_config_required_single_job(metplus_config, config_overri
     wrapper = StatAnalysisWrapper(config)
     assert wrapper.is_ok == expected_result
 
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_result', [
+        # defining vars in FCST_VAR_LIST and VAR<n> is not allowed
+        ({'FCST_VAR_LIST': 'HGT, PRMSL',
+          'FCST_LEVEL_LIST': 'P500, ZO',
+          'BOTH_VAR1_NAME': 'HGT',
+          'BOTH_VAR1_LEVELS': 'P500',
+          'BOTH_VAR2_NAME': 'PRMSL',
+          'BOTH_VAR2_LEVELS': 'Z0',},
+         False),
+        # define vars in FCST_VAR_LIST only is OK
+        ({'FCST_VAR_LIST': 'HGT, PRMSL',
+          'FCST_LEVEL_LIST': 'P500, ZO',},
+         True),
+        # define vars in VAR<n> variables only is OK
+        ({'BOTH_VAR1_NAME': 'HGT',
+          'BOTH_VAR1_LEVELS': 'P500',
+          'BOTH_VAR2_NAME': 'PRMSL',
+          'BOTH_VAR2_LEVELS': 'Z0',},
+         True),
+        # excluding MODEL_LIST is OK, but warning should be displayed
+        ({'MODEL_LIST': '',}, True),
+    ]
+)
+@pytest.mark.wrapper_d
+def test_error_check_one_set_of_vars(metplus_config, config_overrides, expected_result):
+    config = metplus_config
+    set_minimum_config_settings(config)
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+    wrapper = StatAnalysisWrapper(config)
+    assert wrapper.is_ok == expected_result
+
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_result', [
+        ({}, 'RUN_ONCE'),
+        ({'LOOP_ORDER': 'times'}, 'RUN_ONCE'),
+        ({'LOOP_ORDER': 'times', 'INIT_END': '20221021'},
+         'RUN_ONCE_PER_INIT_OR_VALID'),
+        ({'INIT_END': '20221021'}, 'RUN_ONCE'),
+        ({'LOOP_ORDER': 'times', 'INIT_END': '20221021',
+          'STAT_ANALYSIS_RUNTIME_FREQ': 'RUN_ONCE_PER_LEAD'},
+         'RUN_ONCE_PER_LEAD'),
+    ]
+)
+@pytest.mark.wrapper_d
+def test_legacy_loop_order_handling(metplus_config, config_overrides, expected_result):
+    """If RUNTIME_FREQ is not set, LOOP_ORDER (deprecated) is set to times,
+     and begin/end times differ, then runtime frequency is automatically set
+     to run once per init or valid to preserve legacy behavior."""
+    config = metplus_config
+    set_minimum_config_settings(config)
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+    wrapper = StatAnalysisWrapper(config)
+    assert wrapper.is_ok
+    assert wrapper.c_dict['RUNTIME_FREQ'] == expected_result
 
 @pytest.mark.parametrize(
     'c_dict, expected_result', [
