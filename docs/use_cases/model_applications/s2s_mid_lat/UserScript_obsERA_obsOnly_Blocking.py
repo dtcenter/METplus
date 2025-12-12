@@ -64,6 +64,9 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking.py
 # for the appropriate release: https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will 
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
+#
+# Note that the data for the pre-processing steps that are turned off is not currently
+# included in the sample data tarball.
 
 ##############################################################################
 # METplus Components
@@ -188,9 +191,9 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking.py
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use 
-# case will be found in {OUTPUT_BASE}/model_applications/s2s_mid_lat/Blocking.  There should be 
-# 3 different graphics output to the plot directory in the above location.  Each will have png and pdf 
-# versions to make for 6 output plots::
+# case will be found in {OUTPUT_BASE}/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking.  There 
+# should be 3 different graphics output to the plot directory in the above location.  Each will have png and 
+# pdf versions to make for 6 output plots::
 #
 #  * ERA_CBL_avg.png
 #  * ERA_CBL_avg.pdf
