@@ -135,6 +135,14 @@ def set_minimum_config_settings(config):
           },
          {'METPLUS_MODEL': 'model = ["gfs", "cfs"];',
           'METPLUS_OBTYPE': 'obtype = ["gfs_anl", "gfs_anl"];'}),
+        ({'COLUMN_LIST': 'RMSE,   CNT:RMSE'},
+         {'METPLUS_COLUMN': 'column = ["RMSE", "CNT:RMSE"];'}),
+        ({'WEIGHT_LIST': '6.0,4.0,2.0,0.0, 0.0,  10.0, 8.0, 6.0, 4.0, 4.0, 3.0, 2.0, 1.0, 0.0, 0.0, 5.0, 4.0, 3.0, 2.0, 2.0'},
+         {'METPLUS_WEIGHT': 'weight = [6.0, 4.0, 2.0, 0.0, 0.0, 10.0, 8.0, 6.0, 4.0, 4.0, 3.0, 2.0, 1.0, 0.0, 0.0, 5.0, 4.0, 3.0, 2.0, 2.0];'}),
+        ({'STAT_ANALYSIS_HSS_EC_VALUE': '0.25'}, {'METPLUS_HSS_EC_VALUE': 'hss_ec_value = 0.25;'}),
+        ({'STAT_ANALYSIS_SS_INDEX_NAME': 'NWP_INDEX'}, {'METPLUS_SS_INDEX_NAME': 'ss_index_name = "NWP_INDEX";'}),
+        ({'STAT_ANALYSIS_SS_INDEX_VLD_THRESH': '1.0'}, {'METPLUS_SS_INDEX_VLD_THRESH': 'ss_index_vld_thresh = 1.0;'}),
+
         # 0
         ({}, {}),
         # 1 - fcst valid beg
@@ -490,7 +498,8 @@ def test_set_lists_as_loop_or_group(metplus_config):
                                      'INTERP_MTHD_LIST', 'INTERP_PNTS_LIST',
                                      'FCST_THRESH_LIST', 'OBS_THRESH_LIST',
                                      'COV_THRESH_LIST', 'ALPHA_LIST',
-                                     'LINE_TYPE_LIST']
+                                     'LINE_TYPE_LIST',
+                                     'COLUMN_LIST', 'WEIGHT_LIST',]
     expected_lists_to_loop_items = ['FCST_VALID_HOUR_LIST', 'MODEL_LIST']
     config_dict = {}
     config_dict['LOOP_ORDER'] = 'times'

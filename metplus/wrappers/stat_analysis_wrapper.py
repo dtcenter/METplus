@@ -64,8 +64,13 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         'METPLUS_LINE_TYPE',
         'METPLUS_JOBS',
         'METPLUS_HSS_EC_VALUE',
+        'METPLUS_COLUMN',
+        'METPLUS_WEIGHT',
+        'METPLUS_SS_INDEX_NAME',
+        'METPLUS_SS_INDEX_VLD_THRESH',
     ]
 
+    # lists that contain field (variable) information
     FIELD_LISTS = [
         'FCST_VAR_LIST',
         'OBS_VAR_LIST',
@@ -77,6 +82,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         'OBS_LEVEL_LIST',
     ]
 
+    # lists that contain time offset information that needs to be formatted
     FORMAT_LISTS = [
         'FCST_VALID_HOUR_LIST',
         'FCST_INIT_HOUR_LIST',
@@ -86,6 +92,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         'OBS_LEAD_LIST',
     ]
 
+    # all lists that can be grouped/looped over and set in the MET config file
     EXPECTED_CONFIG_LISTS = [
         'MODEL_LIST',
         'DESC_LIST',
@@ -95,6 +102,8 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         'COV_THRESH_LIST',
         'ALPHA_LIST',
         'LINE_TYPE_LIST',
+        'COLUMN_LIST',
+        'WEIGHT_LIST',
     ] + FORMAT_LISTS + FIELD_LISTS
 
     LIST_CATEGORIES = ['GROUP_LIST_ITEMS', 'LOOP_LIST_ITEMS']
@@ -127,7 +136,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
 
     def get_command(self):
         """! Build command to run. It is assumed that any errors preventing a
-        successfully run will have preventing this function from being called.
+        successful run will have prevented this function from being called.
 
         @returns string with command to run
         """
@@ -201,9 +210,9 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         c_dict = self._set_lists_loop_or_group(c_dict)
 
         # read MET config settings that will apply to every run
-        self.add_met_config(name='hss_ec_value',
-                            data_type='float',
-                            metplus_configs=['STAT_ANALYSIS_HSS_EC_VALUE'])
+        self.add_met_config(name='hss_ec_value', data_type='float')
+        self.add_met_config(name='ss_index_name', data_type='string')
+        self.add_met_config(name='ss_index_vld_thresh', data_type='float')
 
         # force error if inputs are missing
         c_dict['ALLOW_MISSING_INPUTS'] = False
@@ -534,7 +543,9 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         formatted_items = []
         for item in items:
             # do not format items in format list now
-            if conf_list not in self.FORMAT_LISTS:
+            # also do not format weights because they are numeric
+            # and don't include quotation marks
+            if conf_list not in self.FORMAT_LISTS + ['WEIGHT_LIST']:
                 sub_items = item.split(',')
                 sub_item_str = '", "'.join(sub_items)
                 formatted_items.append(f'"{sub_item_str}"')
