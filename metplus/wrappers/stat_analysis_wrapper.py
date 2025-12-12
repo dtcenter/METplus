@@ -1072,7 +1072,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
             if not model_dir:
                 self.log_error(f"MODEL{m}_STAT_ANALYSIS_LOOKIN_DIR must be "
                                f"set if MODEL{m} is set.")
-                return None, None
+                return []
 
             model_obtype = self.config.getraw('config', f'MODEL{m}_OBTYPE')
             model_obtype = f'"{model_obtype}"' if model_obtype else ''
