@@ -241,10 +241,9 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         super().validate_runtime_freq(c_dict)
 
     def run_at_time_once(self, time_input):
-        """! Function called when processing all times.
+        """!Process and build command for the requested time.
 
-         @param time_input currently only used to set custom, now and today
-         since only RUN_ONCE runtime frequency is supported
+         @param time_input dictionary containing time information
          @returns list of tuples containing all commands that were run and the
          environment variables that were set for each
         """
@@ -1125,14 +1124,9 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         @returns job string with values substituted for [dump_row_file] or
          [out_stat_file]
         """
-        output_template = (
-            model_info[f'{job_type}_filename_template']
-        )
-
+        output_template = model_info[f'{job_type}_filename_template']
         output_filename = (
-            self._get_output_filename(job_type,
-                                      output_template,
-                                      stringsub_dict)
+            self._get_output_filename(job_type, output_template, stringsub_dict)
         )
         output_file = os.path.join(self.c_dict['OUTPUT_DIR'], output_filename)
 
