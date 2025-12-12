@@ -1322,7 +1322,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         model_info = None
 
         # get list of models to process
-        models_to_run = runtime_settings_dict['MODEL'].split(',')
+        models_to_run = [item.strip() for item in runtime_settings_dict['MODEL'].split(',')]
         for model_info in self.c_dict['MODEL_INFO_LIST']:
             # skip model if not in list of models to process
             if model_info['name'] not in models_to_run:

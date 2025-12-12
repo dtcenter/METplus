@@ -121,6 +121,20 @@ def set_minimum_config_settings(config):
 
 @pytest.mark.parametrize(
     'config_overrides, expected_env_vars', [
+        ({'MODEL1': 'gfs',
+          'MODEL2': 'cfs',
+          'MODEL1_OBTYPE': 'gfs_anl',
+          'MODEL2_OBTYPE': 'gfs_anl',
+          'MODEL1_REFERENCE_NAME': '{MODEL1}',
+          'MODEL2_REFERENCE_NAME': '{MODEL2}',
+          'MODEL_LIST': '{MODEL1}, {MODEL2}',
+          'GROUP_LIST_ITEMS': 'MODEL_LIST, LINE_TYPE_LIST',
+          'LOOP_LIST_ITEMS': '',
+          'MODEL1_STAT_ANALYSIS_LOOKIN_DIR': '{INPUT_BASE}/gfs.DATE/evs.stats.gfs.atmos.grid2grid.vDATE.stat',
+          'MODEL2_STAT_ANALYSIS_LOOKIN_DIR': '{INPUT_BASE}/{MODEL2}.DATE/evs.stats.cfs.atmos.grid2grid.vDATE.stat',
+          },
+         {'METPLUS_MODEL': 'model = ["gfs", "cfs"];',
+          'METPLUS_OBTYPE': 'obtype = ["gfs_anl", "gfs_anl"];'}),
         # 0
         ({}, {}),
         # 1 - fcst valid beg
@@ -247,7 +261,9 @@ def test_valid_init_env_vars(metplus_config, config_overrides,
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
     config_file = wrapper.c_dict.get('CONFIG_FILE')
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
-    lookin_dir = config.get('config', 'MODEL1_STAT_ANALYSIS_LOOKIN_DIR')
+    lookin_dir = config.get('config', 'MODEL1_STAT_ANALYSIS_LOOKIN_DIR').replace(',',' ')
+    lookin_dir += ' ' + config.get('config', 'MODEL2_STAT_ANALYSIS_LOOKIN_DIR', '').replace(',',' ')
+    lookin_dir = lookin_dir.strip()
     expected_cmds = [
         f"{app_path} {verbosity} -lookin {lookin_dir} -config {config_file} -out {out_dir}/",
     ]
