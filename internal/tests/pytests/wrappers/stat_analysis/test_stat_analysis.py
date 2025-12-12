@@ -92,7 +92,7 @@ def _set_config_dict_values():
     return config_dict
 
 
-def set_minimum_config_settings(config):
+def set_minimum_config_settings(config, set_config_file=True):
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
     config.set('config', 'DO_NOT_RUN_EXE', True)
@@ -117,8 +117,9 @@ def set_minimum_config_settings(config):
                '{METPLUS_BASE}/internal/tests/data/stat_data')
 
     # not required, can be unset for certain tests
-    config.set('config', 'STAT_ANALYSIS_CONFIG_FILE',
-               '{PARM_BASE}/met_config/STATAnalysisConfig_wrapped')
+    if set_config_file:
+        config.set('config', 'STAT_ANALYSIS_CONFIG_FILE',
+                   '{PARM_BASE}/met_config/STATAnalysisConfig_wrapped')
 
 
 @pytest.mark.parametrize(
@@ -257,15 +258,7 @@ def test_valid_init_env_vars(metplus_config, config_overrides,
     wrapper = StatAnalysisWrapper(config)
     assert wrapper.is_ok
 
-    time_input = {
-        'custom': config_overrides.get('STAT_ANALYSIS_CUSTOM_LOOP_LIST', '')
-    }
-    runtime_settings_dict_list = wrapper._get_all_runtime_settings(time_input)
-    assert runtime_settings_dict_list
-
-    first_runtime_only = runtime_settings_dict_list[0]
-    wrapper._run_stat_analysis_job(first_runtime_only)
-    all_cmds = wrapper.all_commands
+    all_cmds = wrapper.run_all_times()
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -275,7 +268,7 @@ def test_valid_init_env_vars(metplus_config, config_overrides,
     lookin_dir += ' ' + config.get('config', 'MODEL2_STAT_ANALYSIS_LOOKIN_DIR', '').replace(',',' ')
     lookin_dir = lookin_dir.strip()
     expected_cmds = [
-        f"{app_path} {verbosity} -lookin {lookin_dir} -config {config_file} -out {out_dir}/",
+        f"{app_path} {verbosity} -lookin {lookin_dir} -config {config_file} -out {out_dir}/ALL",
     ]
 
     compare_command_and_env_vars(all_cmds, expected_cmds, expected_env_vars, wrapper)
@@ -303,6 +296,12 @@ def test_valid_init_env_vars(metplus_config, config_overrides,
           'MODEL1_STAT_ANALYSIS_DUMP_ROW_TEMPLATE': 'some/template',
           'MODEL1_STAT_ANALYSIS_OUT_STAT_TEMPLATE': 'some/template'},
          True),
+        ({'STAT_ANALYSIS_JOB1': '-job filter -dump_row [dump_row_file]',
+          'STAT_ANALYSIS_JOB2': '-job filter -out_stat [out_stat_file]',
+          'MODEL1_STAT_ANALYSIS_DUMP_ROW_TEMPLATE': 'some/template',
+          'MODEL1_STAT_ANALYSIS_OUT_STAT_TEMPLATE': 'some/template',
+          'MODEL1_STAT_ANALYSIS_LOOKIN_DIR': ''},
+         False),
     ]
 )
 @pytest.mark.wrapper_d
@@ -316,6 +315,27 @@ def test_check_required_job_template(metplus_config, config_overrides,
     wrapper = StatAnalysisWrapper(config)
     print(wrapper.c_dict['JOBS'])
     print(wrapper.c_dict['MODEL_INFO_LIST'])
+    assert wrapper.is_ok == expected_result
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_result', [
+        ({'STAT_ANALYSIS_JOB1': '-job filter -dump_row [dump_row_file]',
+          'MODEL1_STAT_ANALYSIS_DUMP_ROW_TEMPLATE': 'some/template'},
+         True),
+        ({'STAT_ANALYSIS_JOB1': '-job filter -dump_row [dump_row_file]',
+          'STAT_ANALYSIS_JOB2': '-job filter -out_stat [out_stat_file]',
+          'MODEL1_STAT_ANALYSIS_DUMP_ROW_TEMPLATE': 'some/template',
+          'MODEL1_STAT_ANALYSIS_OUT_STAT_TEMPLATE': 'some/template',},
+         False),
+    ]
+)
+@pytest.mark.wrapper_d
+def test_error_check_no_config_required_single_job(metplus_config, config_overrides, expected_result):
+    config = metplus_config
+    set_minimum_config_settings(config, set_config_file=False)
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+    wrapper = StatAnalysisWrapper(config)
     assert wrapper.is_ok == expected_result
 
 
@@ -505,7 +525,8 @@ def test_set_lists_as_loop_or_group(metplus_config):
         'CONFIG_FILE': 'PARM_BASE/grid_to_grid/met_config/STATAnalysisConfig',
         'OUTPUT_DIR': 'OUTPUT_BASE/stat_analysis',
         'GROUP_LIST_ITEMS': ['FCST_INIT_HOUR_LIST'],
-        'LOOP_LIST_ITEMS': ['FCST_VALID_HOUR_LIST', 'MODEL_LIST'],
+        # add FCST_VAR_LIST to loop list even though it is empty to test that it is moved to group list
+        'LOOP_LIST_ITEMS': ['FCST_VALID_HOUR_LIST', 'MODEL_LIST', 'FCST_VAR_LIST'],
         'FCST_VAR_LIST': [],
         'OBS_VAR_LIST': [],
         'FCST_LEVEL_LIST': [],
