@@ -63,30 +63,32 @@ def stat_analysis_wrapper(metplus_config):
 
 
 def _set_config_dict_values():
-    config_dict = {}
-    config_dict['FCST_VALID_HOUR'] = ''
-    config_dict['FCST_VAR'] = ''
-    config_dict['FCST_LEVEL'] = ''
-    config_dict['INTERP_MTHD'] = ''
-    config_dict['MODEL'] = f'"{MODEL_TEST}"'
-    config_dict['VX_MASK'] = ''
-    config_dict['OBS_INIT_HOUR'] = ''
-    config_dict['COV_THRESH'] = ''
-    config_dict['OBS_UNITS'] = ''
-    config_dict['FCST_THRESH'] = ''
-    config_dict['OBS_VAR'] = ''
-    config_dict['FCST_INIT_HOUR'] = ''
-    config_dict['INTERP_PNTS'] = ''
-    config_dict['FCST_LEAD'] = ''
-    config_dict['LINE_TYPE'] = ''
-    config_dict['FCST_UNITS'] = ''
-    config_dict['DESC'] = ''
-    config_dict['OBS_LEAD'] = ''
-    config_dict['OBS_THRESH'] = ''
-    config_dict['OBTYPE'] = f'"{MODEL_TEST_ANL}"'
-    config_dict['OBS_VALID_HOUR'] = ''
-    config_dict['ALPHA'] = ''
-    config_dict['OBS_LEVEL'] = ''
+    config_dict = {
+        'FCST_VALID_HOUR': '',
+        'FCST_VAR': '',
+        'FCST_LEVEL': '',
+        'INTERP_MTHD': '',
+        'MODEL': f'"{MODEL_TEST}"',
+        'VX_MASK': '',
+        'OBS_INIT_HOUR': '',
+        'COV_THRESH': '',
+        'OBS_UNITS': '',
+        'FCST_THRESH': '',
+        'OBS_VAR': '',
+        'FCST_INIT_HOUR': '',
+        'INTERP_PNTS': '',
+        'FCST_LEAD': '',
+        'LINE_TYPE': '',
+        'FCST_UNITS': '',
+        'DESC': '',
+        'OBS_LEAD': '',
+        'OBS_THRESH': '',
+        'OBTYPE': f'"{MODEL_TEST_ANL}"',
+        'OBS_VALID_HOUR': '',
+        'ALPHA': '',
+        'OBS_LEVEL': '',
+    }
+
     return config_dict
 
 
@@ -488,58 +490,52 @@ def test_set_lists_as_loop_or_group(metplus_config):
     # and those not set are set to GROUP_LIST_ITEMS
     st = stat_analysis_wrapper(metplus_config)
     # Test 1
-    expected_lists_to_group_items = ['FCST_INIT_HOUR_LIST', 'DESC_LIST',
-                                     'FCST_LEAD_LIST', 'OBS_LEAD_LIST',
-                                     'OBS_VALID_HOUR_LIST',
-                                     'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST',
-                                     'OBS_VAR_LIST', 'FCST_UNITS_LIST',
-                                     'OBS_UNITS_LIST', 'FCST_LEVEL_LIST',
-                                     'OBS_LEVEL_LIST', 'VX_MASK_LIST',
-                                     'INTERP_MTHD_LIST', 'INTERP_PNTS_LIST',
-                                     'FCST_THRESH_LIST', 'OBS_THRESH_LIST',
-                                     'COV_THRESH_LIST', 'ALPHA_LIST',
-                                     'LINE_TYPE_LIST',
-                                     'COLUMN_LIST', 'WEIGHT_LIST',]
-    expected_lists_to_loop_items = ['FCST_VALID_HOUR_LIST', 'MODEL_LIST']
-    config_dict = {}
-    config_dict['LOOP_ORDER'] = 'times'
-    config_dict['PROCESS_LIST'] = 'StatAnalysis'
-    config_dict['CONFIG_FILE'] = (
-        'PARM_BASE/grid_to_grid/met_config/STATAnalysisConfig'
-    )
-    config_dict['OUTPUT_DIR'] = 'OUTPUT_BASE/stat_analysis'
-    config_dict['GROUP_LIST_ITEMS'] = ['FCST_INIT_HOUR_LIST']
-    config_dict['LOOP_LIST_ITEMS'] = ['FCST_VALID_HOUR_LIST', 'MODEL_LIST']
-    config_dict['FCST_VAR_LIST'] = []
-    config_dict['OBS_VAR_LIST'] = []
-    config_dict['FCST_LEVEL_LIST'] = []
-    config_dict['OBS_LEVEL_LIST'] = []
-    config_dict['FCST_UNITS_LIST'] = []
-    config_dict['OBS_UNITS_LIST'] = []
-    config_dict['FCST_THRESH_LIST'] = []
-    config_dict['OBS_THRESH_LIST'] = []
-    config_dict['MODEL_LIST'] = [MODEL_TEST]
-    config_dict['DESC_LIST'] = []
-    config_dict['FCST_LEAD_LIST'] = []
-    config_dict['OBS_LEAD_LIST'] = []
-    config_dict['FCST_VALID_HOUR_LIST'] = ['00', '06', '12', '18']
-    config_dict['FCST_INIT_HOUR_LIST'] = ['00', '06', '12', '18']
-    config_dict['OBS_VALID_HOUR_LIST'] = []
-    config_dict['OBS_INIT_HOUR_LIST'] = []
-    config_dict['VX_MASK_LIST'] = []
-    config_dict['INTERP_MTHD_LIST'] = []
-    config_dict['INTERP_PNTS_LIST'] = []
-    config_dict['COV_THRESH_LIST'] = []
-    config_dict['ALPHA_LIST'] = []
-    config_dict['LINE_TYPE_LIST'] = []
-    config_dict = st._set_lists_loop_or_group(config_dict)
-    test_lists_to_loop_items = config_dict['LOOP_LIST_ITEMS']
-    test_lists_to_group_items = config_dict['GROUP_LIST_ITEMS']
+    expected_lists_to_group = [
+        'FCST_INIT_HOUR_LIST', 'DESC_LIST', 'FCST_LEAD_LIST', 'OBS_LEAD_LIST',
+        'OBS_VALID_HOUR_LIST', 'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST',
+        'OBS_VAR_LIST', 'FCST_UNITS_LIST', 'OBS_UNITS_LIST', 'FCST_LEVEL_LIST',
+        'OBS_LEVEL_LIST', 'VX_MASK_LIST', 'INTERP_MTHD_LIST', 'INTERP_PNTS_LIST',
+        'FCST_THRESH_LIST', 'OBS_THRESH_LIST', 'COV_THRESH_LIST', 'ALPHA_LIST',
+        'LINE_TYPE_LIST', 'COLUMN_LIST', 'WEIGHT_LIST',
+    ]
+    expected_lists_to_loop = ['FCST_VALID_HOUR_LIST', 'MODEL_LIST']
+    config_dict = {
+        'LOOP_ORDER': 'times',
+        'PROCESS_LIST': 'StatAnalysis',
+        'CONFIG_FILE': 'PARM_BASE/grid_to_grid/met_config/STATAnalysisConfig',
+        'OUTPUT_DIR': 'OUTPUT_BASE/stat_analysis',
+        'GROUP_LIST_ITEMS': ['FCST_INIT_HOUR_LIST'],
+        'LOOP_LIST_ITEMS': ['FCST_VALID_HOUR_LIST', 'MODEL_LIST'],
+        'FCST_VAR_LIST': [],
+        'OBS_VAR_LIST': [],
+        'FCST_LEVEL_LIST': [],
+        'OBS_LEVEL_LIST': [],
+        'FCST_UNITS_LIST': [],
+        'OBS_UNITS_LIST': [],
+        'FCST_THRESH_LIST': [],
+        'OBS_THRESH_LIST': [],
+        'MODEL_LIST': [MODEL_TEST],
+        'DESC_LIST': [],
+        'FCST_LEAD_LIST': [],
+        'OBS_LEAD_LIST': [],
+        'FCST_VALID_HOUR_LIST': ['00', '06', '12', '18'],
+        'FCST_INIT_HOUR_LIST': ['00', '06', '12', '18'],
+        'OBS_VALID_HOUR_LIST': [],
+        'OBS_INIT_HOUR_LIST': [],
+        'VX_MASK_LIST': [],
+        'INTERP_MTHD_LIST': [],
+        'INTERP_PNTS_LIST': [],
+        'COV_THRESH_LIST': [],
+        'ALPHA_LIST': [],
+        'LINE_TYPE_LIST': [],
+    }
 
-    assert(all(elem in expected_lists_to_group_items
-               for elem in test_lists_to_group_items))
-    assert(all(elem in expected_lists_to_loop_items 
-               for elem in test_lists_to_loop_items))
+    config_dict = st._set_lists_loop_or_group(config_dict)
+    test_lists_to_loop = config_dict['LOOP_LIST_ITEMS']
+    test_lists_to_group = config_dict['GROUP_LIST_ITEMS']
+
+    assert(all(elem in expected_lists_to_group for elem in test_lists_to_group))
+    assert(all(elem in expected_lists_to_loop for elem in test_lists_to_loop))
 
 
 @pytest.mark.parametrize(
@@ -747,30 +743,10 @@ def test_get_lookin_dir(metplus_config):
     # and test the value is
     # as expected
     st = stat_analysis_wrapper(metplus_config)
-    config_dict = {}
+    config_dict = _set_config_dict_values()
     config_dict['FCST_VALID_HOUR'] = '0'
-    config_dict['FCST_VAR'] = ''
-    config_dict['FCST_LEVEL'] = ''
-    config_dict['INTERP_MTHD'] = ''
-    config_dict['MODEL'] = f'"{MODEL_TEST}"'
-    config_dict['VX_MASK'] = ''
-    config_dict['OBS_INIT_HOUR'] = ''
-    config_dict['COV_THRESH'] = ''
-    config_dict['OBS_UNITS'] = ''
-    config_dict['FCST_THRESH'] = ''
-    config_dict['OBS_VAR'] = ''
     config_dict['FCST_INIT_HOUR'] = '0, 6, 12, 18'
-    config_dict['INTERP_PNTS'] = ''
-    config_dict['FCST_LEAD'] = ''
-    config_dict['LINE_TYPE'] = ''
-    config_dict['FCST_UNITS'] = ''
-    config_dict['DESC'] = ''
-    config_dict['OBS_LEAD'] = ''
-    config_dict['OBS_THRESH'] = ''
-    config_dict['OBTYPE'] = f'"{MODEL_TEST_ANL}"'
-    config_dict['OBS_VALID_HOUR'] = ''
-    config_dict['ALPHA'] = ''
-    config_dict['OBS_LEVEL'] = ''
+
     st.c_dict['DATE_BEG'] = datetime.datetime.strptime('20180201', '%Y%m%d')
     st.c_dict['DATE_END'] = datetime.datetime.strptime('20180201', '%Y%m%d')
     st.c_dict['DATE_TYPE'] = 'VALID'
