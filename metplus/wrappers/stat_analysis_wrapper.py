@@ -17,7 +17,7 @@ from ..util import parse_var_list, remove_quotes, list_to_str
 from ..util import get_start_and_end_times, get_time_prefix
 from ..util import ti_get_seconds_from_relativedelta
 from ..util import get_met_time_list, get_delta_list
-from ..util import YMD, YMD_HMS
+from ..util import YMD
 from . import RuntimeFreqWrapper
 
 
@@ -64,8 +64,13 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         'METPLUS_LINE_TYPE',
         'METPLUS_JOBS',
         'METPLUS_HSS_EC_VALUE',
+        'METPLUS_COLUMN',
+        'METPLUS_WEIGHT',
+        'METPLUS_SS_INDEX_NAME',
+        'METPLUS_SS_INDEX_VLD_THRESH',
     ]
 
+    # lists that contain field (variable) information
     FIELD_LISTS = [
         'FCST_VAR_LIST',
         'OBS_VAR_LIST',
@@ -77,6 +82,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         'OBS_LEVEL_LIST',
     ]
 
+    # lists that contain time offset information that needs to be formatted
     FORMAT_LISTS = [
         'FCST_VALID_HOUR_LIST',
         'FCST_INIT_HOUR_LIST',
@@ -86,6 +92,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         'OBS_LEAD_LIST',
     ]
 
+    # all lists that can be grouped/looped over and set in the MET config file
     EXPECTED_CONFIG_LISTS = [
         'MODEL_LIST',
         'DESC_LIST',
@@ -95,6 +102,8 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         'COV_THRESH_LIST',
         'ALPHA_LIST',
         'LINE_TYPE_LIST',
+        'COLUMN_LIST',
+        'WEIGHT_LIST',
     ] + FORMAT_LISTS + FIELD_LISTS
 
     LIST_CATEGORIES = ['GROUP_LIST_ITEMS', 'LOOP_LIST_ITEMS']
@@ -127,7 +136,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
 
     def get_command(self):
         """! Build command to run. It is assumed that any errors preventing a
-        successfully run will have preventing this function from being called.
+        successful run will have prevented this function from being called.
 
         @returns string with command to run
         """
@@ -201,9 +210,9 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         c_dict = self._set_lists_loop_or_group(c_dict)
 
         # read MET config settings that will apply to every run
-        self.add_met_config(name='hss_ec_value',
-                            data_type='float',
-                            metplus_configs=['STAT_ANALYSIS_HSS_EC_VALUE'])
+        self.add_met_config(name='hss_ec_value', data_type='float')
+        self.add_met_config(name='ss_index_name', data_type='string')
+        self.add_met_config(name='ss_index_vld_thresh', data_type='float')
 
         # force error if inputs are missing
         c_dict['ALLOW_MISSING_INPUTS'] = False
@@ -232,10 +241,9 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         super().validate_runtime_freq(c_dict)
 
     def run_at_time_once(self, time_input):
-        """! Function called when processing all times.
+        """!Process and build command for the requested time.
 
-         @param time_input currently only used to set custom, now and today
-         since only RUN_ONCE runtime frequency is supported
+         @param time_input dictionary containing time information
          @returns list of tuples containing all commands that were run and the
          environment variables that were set for each
         """
@@ -404,35 +412,34 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         @param all_field_lists_empty True if no field lists were parsed
         """
         if not c_dict.get('CONFIG_FILE'):
+            self.logger.info("STAT_ANALYSIS_CONFIG_FILE not set. Passing "
+                             "job arguments to stat_analysis directly on "
+                             "the command line. This will bypass "
+                             "any filtering done unless you add the "
+                             "arguments to STAT_ANALYSIS_JOBS<n>")
+
             if len(c_dict['JOBS']) > 1:
                 self.log_error(
                     'Only 1 job can be set with STAT_ANALYSIS_JOB<n> if '
                     'STAT_ANALYSIS_CONFIG_FILE is not set.'
                 )
-            else:
-                self.logger.info("STAT_ANALYSIS_CONFIG_FILE not set. Passing "
-                                 "job arguments to stat_analysis directly on "
-                                 "the command line. This will bypass "
-                                 "any filtering done unless you add the "
-                                 "arguments to STAT_ANALYSIS_JOBS<n>")
+
 
         if not c_dict['JOBS']:
             self.log_error(
                 "Must set at least one job with STAT_ANALYSIS_JOB<n>"
             )
-        else:
-            # check if [dump_row_file] or [out_stat_file] are in any job
-            for job in c_dict['JOBS']:
-                for check in ('dump_row_file', 'out_stat_file'):
-                    if f'[{check}]' not in job:
-                        continue
-                    for model in c_dict['MODEL_INFO_LIST']:
-                        if model[f'{check}name_template']:
-                            continue
-                        conf = check.replace('_file', '').upper()
-                        conf = f"STAT_ANALYSIS_{conf}_TEMPLATE"
-                        self.log_error(f'Must set {conf} if [{check}] is used'
-                                       ' in a job')
+
+        # check if [dump_row_file] or [out_stat_file] are in any job
+        checks = ('dump_row_file', 'out_stat_file')
+        for job in c_dict['JOBS']:
+            matched_checks = (check for check in checks if f"[{check}]" in job)
+            for check in matched_checks:
+                models = [model for model in c_dict['MODEL_INFO_LIST'] if not model[f'{check}name_template']]
+                if models:
+                    conf = check.replace('_file', '').upper()
+                    conf = f"STAT_ANALYSIS_{conf}_TEMPLATE"
+                    self.log_error(f'Must set {conf} if [{check}] is used in a job')
 
         # if var list is set and field lists are not all empty, error
         if c_dict['VAR_LIST'] and not all_field_lists_empty:
@@ -502,9 +509,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
          @param conf_list name of METplus config variable to process
          @returns list of items parsed from configuration
         """
-        items = getlist(
-            self.config.getraw('config', conf_list, '')
-        )
+        items = getlist(self.config.getraw('config', conf_list, ''))
 
         # if list is empty or unset, check for {LIST_NAME}<n>
         if not items:
@@ -534,12 +539,15 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         formatted_items = []
         for item in items:
             # do not format items in format list now
-            if conf_list not in self.FORMAT_LISTS:
+            # also do not format weights because they are numeric
+            # and don't include quotation marks
+            if conf_list not in self.FORMAT_LISTS + ['WEIGHT_LIST']:
                 sub_items = item.split(',')
                 sub_item_str = '", "'.join(sub_items)
                 formatted_items.append(f'"{sub_item_str}"')
-            else:
-                formatted_items.append(item)
+                continue
+
+            formatted_items.append(item)
 
         return formatted_items
 
@@ -658,7 +666,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         @param stringsub_dict dictionary to set values
         """
         sub_name = list_name.lower()
-        delta_list = get_delta_list(config_dict[list_name])
+        delta_list = get_delta_list(config_dict[list_name], sort_list=True)
         if not delta_list:
             list_name_value = self._get_list_name_value(list_name, config_dict)
             stringsub_dict[sub_name] = list_name_value
@@ -672,7 +680,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
             stringsub_dict[sub_name] = delta_list[0]
         else:
             stringsub_dict[sub_name] = (
-                '_'.join(get_met_time_list(config_dict[list_name]))
+                '_'.join(get_met_time_list(config_dict[list_name], sort_list=False))
             )
 
         stringsub_dict[sub_name + '_beg'] = delta_list[0]
@@ -715,7 +723,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         @param stringsub_dict dictionary to set values
         """
         sub_name = list_name.lower()
-        lead_list = get_met_time_list(config_dict.get(list_name))
+        lead_list = get_met_time_list(config_dict.get(list_name), sort_list=False)
 
         if not lead_list:
             return
@@ -728,7 +736,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
 
         stringsub_dict[sub_name] = lead_list[0]
 
-        lead_rd = get_delta_list(config_dict[list_name])[0]
+        lead_rd = get_delta_list(config_dict[list_name], sort_list=True)[0]
         total_sec = ti_get_seconds_from_relativedelta(lead_rd)
         stringsub_dict[sub_name + '_totalsec'] = str(total_sec)
 
@@ -781,12 +789,12 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         @param obs_hour_str string with list of observation hours to process
         """
         if fcst_hour_str:
-            fcst_hour_list = get_delta_list(fcst_hour_str)
+            fcst_hour_list = get_delta_list(fcst_hour_str, sort_list=True)
         else:
             fcst_hour_list = None
 
         if obs_hour_str:
-            obs_hour_list = get_delta_list(obs_hour_str)
+            obs_hour_list = get_delta_list(obs_hour_str, sort_list=True)
         else:
             obs_hour_list = None
 
@@ -881,12 +889,12 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         @param obs_lead_str string to parse list of observation leads
         """
         if fcst_lead_str:
-            fcst_lead_list = get_delta_list(fcst_lead_str)
+            fcst_lead_list = get_delta_list(fcst_lead_str, sort_list=True)
         else:
             fcst_lead_list = None
 
         if obs_lead_str:
-            obs_lead_list = get_delta_list(obs_lead_str)
+            obs_lead_list = get_delta_list(obs_lead_str, sort_list=True)
         else:
             obs_lead_list = None
 
@@ -999,7 +1007,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         # set all of the HOUR and LEAD lists to include the MET time format
         for list_name in self.FORMAT_LISTS:
             list_name = list_name.replace('_LIST', '')
-            values = get_met_time_list(config_dict.get(list_name, ''))
+            values = get_met_time_list(config_dict.get(list_name, ''), sort_list=False)
             values = [f'"{item}"' for item in values]
             output_dict[list_name] = ', '.join(values)
 
@@ -1063,30 +1071,13 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
             if not model_dir:
                 self.log_error(f"MODEL{m}_STAT_ANALYSIS_LOOKIN_DIR must be "
                                f"set if MODEL{m} is set.")
-                return None, None
+                return []
 
             model_obtype = self.config.getraw('config', f'MODEL{m}_OBTYPE')
             model_obtype = f'"{model_obtype}"' if model_obtype else ''
 
-            model_dump_row_filename_template = None
-            model_out_stat_filename_template = None
-            for output_type in ['DUMP_ROW', 'OUT_STAT']:
-                var_name = f'STAT_ANALYSIS_{output_type}_TEMPLATE'
-                # use MODEL<n>_STAT_ANALYSIS_<output_type>_TEMPLATE if set
-                model_filename_template = (
-                    self.config.getraw('config', f'MODEL{m}_{var_name}')
-                )
-
-                # if not set, use STAT_ANALYSIS_<output_type>_TEMPLATE
-                if not model_filename_template:
-                    model_filename_template = (
-                        self.config.getraw('config', var_name)
-                    )
-
-                if output_type == 'DUMP_ROW':
-                    model_dump_row_filename_template = model_filename_template
-                elif output_type == 'OUT_STAT':
-                    model_out_stat_filename_template = model_filename_template
+            model_dump_row_filename_template = self._get_model_output_template('DUMP_ROW', m)
+            model_out_stat_filename_template = self._get_model_output_template('OUT_STAT', m)
 
             mod = {
                 'name': model_name,
@@ -1104,6 +1095,19 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
 
         return model_info_list
 
+    def _get_model_output_template(self, output_type, model_index):
+        var_name = f'STAT_ANALYSIS_{output_type}_TEMPLATE'
+
+        # use MODEL<n>_STAT_ANALYSIS_<output_type>_TEMPLATE if set
+        config_name = f'MODEL{model_index}_{var_name}'
+        model_filename_template = self.config.getraw('config', config_name)
+
+        # if not set, use STAT_ANALYSIS_<output_type>_TEMPLATE
+        if not model_filename_template:
+            model_filename_template = self.config.getraw('config', var_name)
+
+        return model_filename_template
+
     def _process_job_args(self, job_type, job, model_info,
                          runtime_settings_dict, stringsub_dict):
         """! Get dump_row or out_stat file paths and replace [dump_row_file]
@@ -1120,14 +1124,9 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         @returns job string with values substituted for [dump_row_file] or
          [out_stat_file]
         """
-        output_template = (
-            model_info[f'{job_type}_filename_template']
-        )
-
+        output_template = model_info[f'{job_type}_filename_template']
         output_filename = (
-            self._get_output_filename(job_type,
-                                      output_template,
-                                      stringsub_dict)
+            self._get_output_filename(job_type, output_template, stringsub_dict)
         )
         output_file = os.path.join(self.c_dict['OUTPUT_DIR'], output_filename)
 
@@ -1179,13 +1178,8 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
 
             # if no thresholds were specified, use a list
             # containing an empty string to loop one iteration
-            fcst_thresholds = var_info['fcst_thresh']
-            if not fcst_thresholds:
-                fcst_thresholds = ['']
-
-            obs_thresholds = var_info['obs_thresh']
-            if not obs_thresholds:
-                obs_thresholds = ['']
+            fcst_thresholds = self._get_c_dict_thresh_loop_list(var_info, 'fcst')
+            obs_thresholds = self._get_c_dict_thresh_loop_list(var_info, 'obs')
 
             for fcst_thresh, obs_thresh in zip(fcst_thresholds, obs_thresholds):
                 for pair in fourier_wave_num_pairs:
@@ -1195,33 +1189,33 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
                         'OBS_VAR_LIST': [f'"{var_info["obs_name"]}"'],
                         'FCST_LEVEL_LIST': [f'"{var_info["fcst_level"]}"'],
                         'OBS_LEVEL_LIST': [f'"{var_info["obs_level"]}"'],
-                        'FCST_THRESH_LIST': [], 'OBS_THRESH_LIST': [],
-                        'FCST_UNITS_LIST': [], 'OBS_UNITS_LIST': [],
-                        'INTERP_MTHD_LIST': [],
+                        'FCST_THRESH_LIST': self._get_c_dict_thresh(fcst_thresh),
+                        'OBS_THRESH_LIST': self._get_c_dict_thresh(obs_thresh),
+                        'FCST_UNITS_LIST': fcst_units,
+                        'OBS_UNITS_LIST': obs_units,
+                        'INTERP_MTHD_LIST': [f'WV1_{pair}'] if pair else [],
+                        'run_fourier': run_fourier
                     }
-
-                    if fcst_thresh:
-                        thresh_formatted = format_thresh(fcst_thresh)
-                        c_dict['FCST_THRESH_LIST'].append(thresh_formatted)
-
-                    if obs_thresh:
-                        thresh_formatted = format_thresh(obs_thresh)
-                        c_dict['OBS_THRESH_LIST'].append(thresh_formatted)
-
-                    if fcst_units:
-                        c_dict['FCST_UNITS_LIST'].append(f'"{fcst_units}"')
-                    if obs_units:
-                        c_dict['OBS_UNITS_LIST'].append(f'"{obs_units}"')
-
-                    c_dict['run_fourier'] = run_fourier
-                    if pair:
-                        c_dict['INTERP_MTHD_LIST'] = ['WV1_' + pair]
 
                     self._add_other_lists_to_c_dict(c_dict)
 
                     c_dict_list.append(c_dict)
 
         return c_dict_list
+
+    @staticmethod
+    def _get_c_dict_thresh_loop_list(var_info, data_type):
+        thresholds = var_info[f'{data_type}_thresh']
+        if not thresholds:
+            thresholds = ['']
+        return thresholds
+
+    @staticmethod
+    def _get_c_dict_thresh(thresh):
+        if not thresh:
+            return []
+
+        return format_thresh(thresh)
 
     @staticmethod
     def _get_runtime_settings(c_dict):
@@ -1282,7 +1276,9 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         """! Get units of fcst and obs fields if set based on VAR<n> index
 
          @param index VAR<n> index corresponding to other [FCST/OBS] info
-         @returns tuple containing forecast and observation units respectively
+         @returns tuple containing forecast and observation units respectively.
+         Values are formatted as a single item list with quotation marks around
+         them if they are set, otherwise an empty list is returned.
         """
         fcst_units = self.config.getraw('config', f'FCST_VAR{index}_UNITS')
         obs_units = self.config.getraw('config', f'OBS_VAR{index}_UNITS')
@@ -1290,6 +1286,9 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
             obs_units = fcst_units
         elif not fcst_units and obs_units:
             fcst_units = obs_units
+
+        fcst_units = [f'"{fcst_units}"'] if fcst_units else []
+        obs_units = [f'"{obs_units}"'] if obs_units else []
 
         return fcst_units, obs_units
 
@@ -1322,7 +1321,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
         model_info = None
 
         # get list of models to process
-        models_to_run = runtime_settings_dict['MODEL'].split(',')
+        models_to_run = [item.strip() for item in runtime_settings_dict['MODEL'].split(',')]
         for model_info in self.c_dict['MODEL_INFO_LIST']:
             # skip model if not in list of models to process
             if model_info['name'] not in models_to_run:
