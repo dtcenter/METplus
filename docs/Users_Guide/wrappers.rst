@@ -10288,6 +10288,10 @@ The following values are optional in the METplus configuration file:
 | :term:`COV_THRESH_LIST`
 | :term:`ALPHA_LIST`
 | :term:`LINE_TYPE_LIST`
+| :term:`COLUMN_LIST`
+| :term:`WEIGHT_LIST`
+| :term:`STAT_ANALYSIS_SS_INDEX_NAME`
+| :term:`STAT_ANALYSIS_SS_INDEX_VLD_THRESH`
 | :term:`STAT_ANALYSIS_HSS_EC_VALUE`
 | :term:`STAT_ANALYSIS_OUTPUT_TEMPLATE`
 | :term:`MODEL<n>_STAT_ANALYSIS_DUMP_ROW_TEMPLATE`
@@ -10743,6 +10747,30 @@ ${METPLUS_LINE_TYPE}
    * - :term:`LINE_TYPE_LIST`
      - line_type
 
+${METPLUS_COLUMN}
+"""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`COLUMN_LIST`
+     - column
+
+${METPLUS_WEIGHT}
+"""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`WEIGHT_LIST`
+     - weight
+
 ${METPLUS_JOBS}
 """""""""""""""
 
@@ -10754,6 +10782,30 @@ ${METPLUS_JOBS}
      - MET Config File
    * - :term:`STAT_ANALYSIS_JOB\<n\>`
      - jobs
+
+${METPLUS_SS_INDEX_NAME}
+""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`STAT_ANALYSIS_SS_INDEX_NAME`
+     - ss_index_name
+
+${METPLUS_SS_INDEX_VLD_THRESH}
+""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`STAT_ANALYSIS_SS_INDEX_VLD_THRESH`
+     - ss_index_vld_thresh
 
 ${METPLUS_HSS_EC_VALUE}
 """""""""""""""""""""""
