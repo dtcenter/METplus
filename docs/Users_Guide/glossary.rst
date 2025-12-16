@@ -2281,6 +2281,24 @@ METplus Configuration Glossary
 
      | *Used by:*  StatAnalysis
 
+   COLUMN_LIST
+     Specify the value for 'column' in the MET configuration file for StatAnalysis.
+
+     Groups of values can be looped over by setting LINE_TYPE_LIST<n> and
+     adding LINE_TYPE_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
+
+     | *Used by:* StatAnalysis
+
+   WEIGHT_LIST
+     Specify the value for 'weight' in the MET configuration file for StatAnalysis.
+
+     Groups of values can be looped over by setting LINE_TYPE_LIST<n> and
+     adding LINE_TYPE_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
+
+     | *Used by:* StatAnalysis
+
    LOG_DIR
      Specify the directory where log files from MET and METplus should be written.
 
