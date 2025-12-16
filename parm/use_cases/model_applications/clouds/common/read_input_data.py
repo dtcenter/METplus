@@ -9,7 +9,6 @@ from datetime import datetime, timezone
 from netCDF4 import Dataset  # http://code.google.com/p/netcdf4-python/
 from scipy.interpolate import NearestNDInterpolator, LinearNDInterpolator
 #### for Plotting
-import fnmatch
 import pygrib
 #####
 
@@ -255,6 +254,33 @@ def get_cloud_ceiling(source, data):
 
 ###########
 
+def get_raw_data(variable, source, data):
+   if variable == 'binaryCloud':
+       return get_binary_cloud(source, data)
+   if variable == 'totalCloudFrac':
+       return get_total_cloud_frac(source, data)
+   if variable == 'lowCloudFrac':
+       return get_layer_cloud_frac(source, data, 'low')
+   if variable == 'midCloudFrac':
+       return get_layer_cloud_frac(source, data, 'mid')
+   if variable == 'highCloudFrac':
+       return get_layer_cloud_frac(source, data, 'high')
+   if variable == 'cloudTopTemp':
+       return get_cloud_top_temp(source, data)
+   if variable == 'cloudTopPres':
+       return get_cloud_top_pres(source, data)
+   if variable == 'cloudTopHeight':
+       return get_cloud_top_height(source, data)
+   if variable == 'cloudBaseHeight':
+       return get_cloud_base_height(source, data)
+   if variable == 'cloudCeiling':
+       return get_cloud_ceiling(source, data)
+
+   print(f'ERROR: Invalid variable: {variable}. '
+         'Should be binaryCloud, totalCloudFrac, lowCloudFrac, midCloudFrac, highCloudFrac, cloudTopTemp, '
+         'cloudTopPres, cloudTopHeight, cloudBaseHeight, cloudCeiling')
+   return None
+
 def get_data_array(input_file, source, variable, data_source):
    # 1) input_file:  File name--either observations or forecast
    # 2) source:     Obsevation source (e.g., MERRA, SATCORP, etc.)
@@ -290,21 +316,9 @@ def get_data_array(input_file, source, variable, data_source):
 
    # Call a function to get the variable of interest.
    # Add a new function for each variable
-   if variable == 'binaryCloud':     raw_data = get_binary_cloud(source, data)
-   elif variable == 'totalCloudFrac':  raw_data = get_total_cloud_frac(source, data)
-   elif variable == 'lowCloudFrac':    raw_data = get_layer_cloud_frac(source, data, 'low')
-   elif variable == 'midCloudFrac':    raw_data = get_layer_cloud_frac(source, data, 'mid')
-   elif variable == 'highCloudFrac':   raw_data = get_layer_cloud_frac(source, data, 'high')
-   elif variable == 'cloudTopTemp':    raw_data = get_cloud_top_temp(source, data)
-   elif variable == 'cloudTopPres':    raw_data = get_cloud_top_pres(source, data)
-   elif variable == 'cloudTopHeight':  raw_data = get_cloud_top_height(source, data)
-   elif variable == 'cloudBaseHeight': raw_data = get_cloud_base_height(source, data)
-   elif variable == 'cloudCeiling':    raw_data = get_cloud_ceiling(source, data)
-   else:
-      print(f'ERROR: Invalid variable: {variable}. '
-            'Should be binaryCloud, totalCloudFrac, lowCloudFrac, midCloudFrac, highCloudFrac, cloudTopTemp, '
-            'cloudTopPres, cloudTopHeight, cloudBaseHeight, cloudCeiling')
-      sys.exit(1)
+   raw_data = get_raw_data(variable, source, data)
+   if raw_data is None:
+       sys.exit(1)
 
    raw_data = np.where(np.isnan(raw_data), missing_values, raw_data) # replace np.nan to missing_values (for MET)
 
@@ -322,7 +336,7 @@ def get_nc_data(input_file, vars_to_read):
    data = []
    nc_fid = Dataset(input_file, "r", format="NETCDF4")
    for v in vars_to_read:
-      print('Reading ', v)
+      print(f'Reading {v}')
       read_var = nc_fid.variables[v]  # extract/copy the data
       try:
          read_missing = read_var.missing_value  # get variable attributes. Each dataset has own missing values.
@@ -343,25 +357,12 @@ def get_grib_data(input_file, vars_to_read, source, variable):
    else:
       idx = pygrib.index(input_file, 'parameterCategory', 'parameterNumber', 'typeOfFirstFixedSurface')
 
-   for v in vars_to_read:
-      print('Reading ', v)
-      if source == 'WWMCA':
-         x = idx(parameterName=v['parameterName'], typeOfLevel=v['typeOfLevel'], level=v['level'])[0]  # by getting element 0, you get a pygrib message
-      else:
-         # e.g., idx(parameterCategory=6,parameterNumber=1,typeOfFirstFixedSurface=234)
-         if (variable == 'cloudTopHeight' or variable == 'cloudBaseHeight') and source == 'GALWEM17':
-            element_idx = 1
-         else:
-            element_idx = 0
+   for var_to_read in vars_to_read:
+      print(f'Reading {var_to_read}')
+      message = _get_pygrib_message(source, idx, variable, var_to_read)
 
-         x = idx(parameterCategory=v['parameterCategory'], parameterNumber=v['parameterNumber'], typeOfFirstFixedSurface=v['typeOfFirstFixedSurface'])[element_idx]
-         if x.shortName != v['shortName']: print('Name mismatch!')
-         # ADDED BY JOHN O
-         print(x)
-         print('Reading ', x.shortName, 'at level ', x.typeOfFirstFixedSurface)
-
-      read_var = x.values  # same x.data()[0]
-      read_missing = x.missingValue
+      read_var = message.values  # same x.data()[0]
+      read_missing = message.missingValue
       print('missing value = ', read_missing)
 
       # The missing value (read_missing) for GALWEM17 and GALWEM cloud base/height is 9999, which is not the best choice because
@@ -371,7 +372,7 @@ def get_grib_data(input_file, vars_to_read, source, variable):
       # the bitmap will get all messed up, because it will be based on 9999 instead of $missing_values
       if variable == 'cloudTopHeight' or variable == 'cloudBaseHeight':
          read_missing = -9999.
-         x['missingValue'] = read_missing
+         message['missingValue'] = read_missing
          if source == 'GALWEM17':
             # These are masked numpy arrays, with mask = True where there is a missing value (no cloud)
             # Use np.ma.filled to create an ndarray where mask = True values are set to np.nan
@@ -383,6 +384,28 @@ def get_grib_data(input_file, vars_to_read, source, variable):
 
    idx.close()  # Close the input GRIB file
    return data
+
+def _get_pygrib_message(source, idx, variable, var_to_read):
+    if source == 'WWMCA':
+        message = idx(parameterName=var_to_read['parameterName'], typeOfLevel=var_to_read['typeOfLevel'],
+                      level=var_to_read['level'])[0]  # by getting element 0, you get a pygrib message
+        return message
+
+    # e.g., idx(parameterCategory=6,parameterNumber=1,typeOfFirstFixedSurface=234)
+    if (variable == 'cloudTopHeight' or variable == 'cloudBaseHeight') and source == 'GALWEM17':
+        element_idx = 1
+    else:
+        element_idx = 0
+
+    message = \
+    idx(parameterCategory=var_to_read['parameterCategory'], parameterNumber=var_to_read['parameterNumber'],
+        typeOfFirstFixedSurface=var_to_read['typeOfFirstFixedSurface'])[element_idx]
+    if message.shortName != var_to_read['shortName']: print('Name mismatch!')
+    # ADDED BY JOHN O
+    print(message)
+    print(f'Reading {message.shortName} at level {message.typeOfFirstFixedSurface}')
+
+    return message
 
 def get_fcst_cloud_frac(cfr, pmid, psfc, layer_definitions): # cfr is cloud fraction(%), pmid is 3D pressure(Pa), psfc is surface pressure (Pa) code from UPP ./INITPOST.F
 
