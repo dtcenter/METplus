@@ -347,6 +347,23 @@ def test_get_file_type_extensions():
             False,
             ["Variable Temp contains NaN. Comparing each value"],
         ),
+        # Contains difference in masked count
+        (
+            [
+                DEFAULT_NC[0],
+                DEFAULT_NC[1],
+                DEFAULT_NC[2],
+                [
+                    [[1, 2], [3, 4], [5, 6]],
+                    [[2, 3], [4, 5], [6, 7]],
+                    [[30, 31], [33, 32], [34, -9999]],
+                ],
+                DEFAULT_NC[4],
+            ],
+            None,
+            False,
+            ["Field Temp has differing number of missing data values"],
+        ),
         # Field doesn't exist
         (
             [
