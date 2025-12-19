@@ -48,6 +48,9 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.py
 # for the appropriate release: https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will 
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
+#
+# Note that the data for the pre-processing steps that are turned off is not currently
+# included in the sample data tarball.
 
 ##############################################################################
 # METplus Components
@@ -173,7 +176,7 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.py
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output 
-# for this use case will be found in {OUTPUT_BASE}/model_applications/s2s_mid_lat/WeatherRegime
+# for this use case will be found in {OUTPUT_BASE}/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime
 # and will contain output for the steps requested.  The output includes 4 plots in the plots directory::
 #
 # * obs_elbow.png

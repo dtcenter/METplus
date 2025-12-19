@@ -237,9 +237,11 @@ docker push dtcenter/metplus-envs:metplotpy.${METPLUS_ENV_VERSION}
 ```
 export METPLUS_ENV_VERSION=v6.1
 ./scripts/metplotpy_env.sh ${METPLUS_ENV_VERSION}
-/home/met_test/miniforge3/envs/metplotpy.${METPLUS_ENV_VERSION}/bin/pip install kaleido==1.0.0
-/home/met_test/miniforge3/envs/metplotpy.${METPLUS_ENV_VERSION}/bin/plotly_get_chrome -y
-/home/met_test/miniforge3/envs/metplotpy.${METPLUS_ENV_VERSION}/bin/python3 -m cartopy.feature.download cultural physical
+
+LOCAL_CONDA_LOC=/home/met_test/miniforge3
+${LOCAL_CONDA_LOC}/envs/metplotpy.${METPLUS_ENV_VERSION}/bin/pip install kaleido==1.0.0
+${LOCAL_CONDA_LOC}/envs/metplotpy.${METPLUS_ENV_VERSION}/bin/plotly_get_chrome -y
+${LOCAL_CONDA_LOC}/envs/metplotpy.${METPLUS_ENV_VERSION}/bin/python3 -m cartopy.feature.download cultural physical
 ```
 
 #### To install METplus Analysis tools in environment
@@ -267,7 +269,9 @@ docker push dtcenter/metplus-envs:weatherregime.${METPLUS_ENV_VERSION}
 ```
 export METPLUS_ENV_VERSION=v6.1
 ./scripts/weatherregime_env.sh ${METPLUS_ENV_VERSION}
-/home/met_test/miniforge3/envs/weatherregime.${METPLUS_ENV_VERSION}/bin/python3 -m cartopy.feature.download cultural physical
+
+LOCAL_CONDA_LOC=/home/met_test/miniforge3
+${LOCAL_CONDA_LOC}/envs/weatherregime.${METPLUS_ENV_VERSION}/bin/python3 -m cartopy.feature.download cultural physical
 ```
 
 #### To install METplus Analysis tools in environment
@@ -294,7 +298,9 @@ docker push dtcenter/metplus-envs:cycloneplotter.${METPLUS_ENV_VERSION}
 ```
 export METPLUS_ENV_VERSION=v6.1
 ./scripts/cycloneplotter_env.sh ${METPLUS_ENV_VERSION}
-/home/met_test/miniforge3/envs/cycloneplotter.${METPLUS_ENV_VERSION}/bin/python3 -m cartopy.feature.download cultural physical
+
+LOCAL_CONDA_LOC=/home/met_test/miniforge3
+${LOCAL_CONDA_LOC}/envs/cycloneplotter.${METPLUS_ENV_VERSION}/bin/python3 -m cartopy.feature.download cultural physical
 ```
 
 
@@ -540,6 +546,7 @@ export METPLUS_ENV_VERSION=v6.1
 runas met_test
 
 export METPLUS_ENV_VERSION=v6.1
+LOCAL_CONDA_LOC=/home/met_test/miniforge3
 
 repo_names=(METdataio METplotpy METcalcpy)
 env_names=(metplotpy mp_analysis weatherregime pandac wrf_plot)
@@ -550,7 +557,7 @@ for repo in "${repo_names[@]}"; do
   git checkout develop
   git pull
   for env_name in "${env_names[@]}"; do
-    /home/met_test/miniforge3/envs/${env_name}.${METPLUS_ENV_VERSION}/bin/pip3 install --no-deps -e .
+    ${LOCAL_CONDA_LOC}/envs/${env_name}.${METPLUS_ENV_VERSION}/bin/pip3 install --no-deps -e .
   done
 done
 

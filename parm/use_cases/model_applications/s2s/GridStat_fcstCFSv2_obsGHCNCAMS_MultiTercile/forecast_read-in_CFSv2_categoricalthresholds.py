@@ -65,6 +65,10 @@ print('Model: ' + model + ' Init: ' + str(init) + ' lead: ' + str(lead) + ' Memb
 # But it works!  Basically just a bunch of if statements like if the filename is 198201 then its index 0 of the array and so on to the last index
 # I also swap the fcst lats to be -90 to 90 instead of 90 to -90 and match up the longitudes (theres a cyclic point in the fcst so its actually 361 pts)
 fcst_cat_thresh  = dominant_tercile_fcst(path, model, init, variable, clim_per, lead)
+if fcst_cat_thresh is None:
+    print("ERROR: Failure in dominant_tercile_fcst function")
+    sys.exit(1)
+
 idx = get_init_year(year)
 fcst_cat_thresh_1year = fcst_cat_thresh[idx,::-1,0:360]
 
