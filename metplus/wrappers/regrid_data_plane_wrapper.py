@@ -14,7 +14,7 @@ import os
 
 from ..util import get_seconds_from_string, do_string_sub
 from ..util import parse_var_list, get_process_list
-from ..util import add_field_info_to_time_info, sub_var_list
+from ..util import add_field_info_to_time_info
 from ..util import remove_quotes, split_level, format_level
 from . import ReformatGriddedWrapper
 
@@ -119,7 +119,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             grid = do_string_sub(self.c_dict['VERIFICATION_GRID'], **time_info)
 
             # put quotes around verification grid in case it is a grid description
-            self.infiles.append(f'"{grid}"')
+            self.infiles.append(f'"{remove_quotes(grid)}"')
 
             # if no field info or input field configs are set, error and return
             if not file_dict.get('var_list'):

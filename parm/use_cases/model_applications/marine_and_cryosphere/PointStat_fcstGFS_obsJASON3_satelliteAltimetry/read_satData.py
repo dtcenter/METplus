@@ -30,13 +30,11 @@ if len(sys.argv[1].split(':')) == 3:
     
     if file_type == 'JASON' or file_type == 'SENTINEL':
         #need to check if the variable is in the data_01 group or data_01/ku group
+        du = xr.open_dataset(input_file, group=DATA_GROUP)
         try:
-            ds = xr.open_dataset(input_file, group=DATA_KU_GROUP)
-            du = xr.open_dataset(input_file, group=DATA_GROUP)
-            obs_hold = ds[field_name]
+            obs_hold = du[field_name]
         except KeyError:
-            ds = xr.open_dataset(input_file, group=DATA_GROUP)
-            du = xr.open_dataset(input_file, group=DATA_GROUP)
+            ds = xr.open_dataset(input_file, group=DATA_KU_GROUP)
             obs_hold = ds[field_name]
         obs = obs_hold.values
         latitude = np.array(du.latitude.values)

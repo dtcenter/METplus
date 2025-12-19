@@ -5,26 +5,26 @@ Update the DOI for this official release.
 
 .. dropdown:: Instructions
 
-Official MET releases are published through `Zenodo <https://zenodo.org/>`_ and members of the `DTCenter Zenodo Community <https://zenodo.org/communities/dtcenter/members>`_ have permission to upload new software versions.
+  Official MET releases are published through `Zenodo <https://zenodo.org/>`_ and members of the `DTCenter Zenodo Community <https://zenodo.org/communities/dtcenter/members>`_ have permission to upload new software versions.
 
-  - Download the zip file of the new release from the `MET GitHub release page <https://github.com/dtcenter/MET/releases>`_.
+    - Download the zip file of the new release from the `MET GitHub release page <https://github.com/dtcenter/MET/releases>`_.
 
-  - Log into Zenodo
+    - Log into Zenodo
 
-  - Navigate to the MET Zenodo software release page. This can be found on the
-    `MET GitHub repository <https://github.com/dtcenter/MET>`_.
-    Scroll down to the README file and click on the
-    `MET Digital Object Identifier (DOI) <https://doi.org/10.5281/zenodo.5565322>`_.
+    - Navigate to the MET Zenodo software release page. This can be found on the
+      `MET GitHub repository <https://github.com/dtcenter/MET>`_.
+      Scroll down to the README file and click on the
+      `MET Digital Object Identifier (DOI) <https://doi.org/10.5281/zenodo.5565322>`_.
 
-  - Click the green **New version** button on the top right.
+    - Click the green **New version** button on the top right.
 
-  - Drag/drop the zip file containing the release from GitHub or
-    click on the **Upload files** button and select the zip file.
+    - Drag/drop the zip file containing the release from GitHub or
+      click on the **Upload files** button and select the zip file.
 
-  - Enter the publication date in YYYY-MM-DD format.
+    - Enter the publication date in YYYY-MM-DD format.
 
-  - Update the Creators list as necessary
+    - Update the Creators list as necessary.
 
-  - Enter the version number in vX.Y.Z format
+    - Enter the version number in vX.Y.Z format.
 
-  - Click the **Publish** button on the top right.
+    - Click the **Publish** button on the top right.

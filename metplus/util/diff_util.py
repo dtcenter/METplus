@@ -10,6 +10,7 @@ from math import log10, isclose
 from PIL import Image, ImageChops
 from pandas import isnull
 from numpy.ma import is_masked
+from numpy.ma import count_masked
 
 # file extensions for supported image file types
 IMAGE_EXTENSIONS = [
@@ -59,6 +60,7 @@ SKIP_KEYWORDS = [
     'CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC/cyclone/20201007',
     'plots/MAKE_MAKI_timeseries',
     'UserScript_fcstGFS_obsERA_WeatherRegime',
+    'PointStat_fcstWRF_obsMADIS_hurricane_matthew/wrf_plot',
 ]
 
 
@@ -783,6 +785,13 @@ def _nc_fields_are_equal(field, nc_a, nc_b, debug=False):
 
     values_a = var_a[:]
     values_b = var_b[:]
+
+    # check for same amount of masked data
+    if count_masked(values_a) != count_masked(values_b):
+        print(f"ERROR: Field {field} has differing number of missing data values")
+        return False
+
+    # compute diffs
     try:
         values_diff = values_a - values_b
     except TypeError:

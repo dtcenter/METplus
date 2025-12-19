@@ -931,7 +931,10 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_VLD_THRESH` instead.
 
    ENSEMBLE_STAT_VLD_THRESH
-     Threshold for the ratio of the number of valid data values to the total number of expected ensemble members. This value is passed into the ensemble_stat config file to make sure the percentage of files that are valid meets the expectation.
+     Threshold for the ratio of the number of valid data values to the total
+     number of expected ensemble members. This value is passed into the
+     ensemble_stat config file to make sure the percentage of files that are
+     valid meets the expectation.
 
      | *Used by:*  EnsembleStat
 
@@ -2281,6 +2284,24 @@ METplus Configuration Glossary
 
      | *Used by:*  StatAnalysis
 
+   COLUMN_LIST
+     Specify the value for 'column' in the MET configuration file for StatAnalysis.
+
+     Groups of values can be looped over by setting LINE_TYPE_LIST<n> and
+     adding LINE_TYPE_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
+
+     | *Used by:* StatAnalysis
+
+   WEIGHT_LIST
+     Specify the value for 'weight' in the MET configuration file for StatAnalysis.
+
+     Groups of values can be looped over by setting LINE_TYPE_LIST<n> and
+     adding LINE_TYPE_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
+
+     | *Used by:* StatAnalysis
+
    LOG_DIR
      Specify the directory where log files from MET and METplus should be written.
 
@@ -3513,7 +3534,9 @@ METplus Configuration Glossary
      | *Used by:*  RegridDataPlane
 
    REGRID_DATA_PLANE_VERIF_GRID
-     Specify the absolute path to a file containing information about the desired output grid from the MET regrid_data_plane tool.
+     Defines the output grid to regrid the input data.
+     This can be a named grid, the path to a gridded data file,
+     or an explicit grid specification string.
 
      | *Used by:*  RegridDataPlane
 
@@ -8159,6 +8182,11 @@ METplus Configuration Glossary
    GEN_ENS_PROD_CTRL_INPUT_TEMPLATE
      Template used to specify an optional control filename for the
      MET tool gen_ens_prod.
+     The control member will be removed from the list of input ensembles
+     specified with :term:`GEN_ENS_PROD_INPUT_TEMPLATE`.
+     This may require adjusting the value for
+     :term:`GEN_ENS_PROD_N_MEMBERS` and/or
+     :term:`GEN_ENS_PROD_VLD_THRESH`.
 
      | *Used by:*  GenEnsProd
 
@@ -8985,7 +9013,8 @@ METplus Configuration Glossary
 
    ENSEMBLE_STAT_CTRL_INPUT_TEMPLATE
      Template used to specify an optional control filename for EnsembleStat.
-     Note that if a control member file is found in the ensemble file list,
+     Note that if a control member file is found in the ensemble file list
+     specified with :term:`FCST_ENSEMBLE_STAT_INPUT_TEMPLATE`,
      it will automatically be removed by the wrapper to prevent an error in the
      MET tool. This may require adjusting the value for
      :term:`ENSEMBLE_STAT_N_MEMBERS` and/or
@@ -14920,3 +14949,33 @@ METplus Configuration Glossary
      Specify the value for the -inputrx command line argument for ASCII2NC.
 
      | *Used by:* ASCII2NC
+
+   GEN_ENS_PROD_N_MEMBERS
+     Expected number of ensemble members found.
+     This should correspond to the number of items in
+     :term:`GEN_ENS_PROD_INPUT_TEMPLATE`.
+     This number should not include the control member is specified with
+     :term:`GEN_ENS_PROD_CTRL_INPUT_TEMPLATE`.
+     If this number differs from the number of files found for a given run,
+     then gen_ens_prod will not run for that time.
+
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_VLD_THRESH
+     Threshold for the ratio of the number of valid data values to the total
+     number of expected ensemble members. This value is passed into the
+     gen_ens_prod config file to make sure the percentage of files that are
+     valid meets the expectation.
+
+     | *Used by:*  GenEnsProd
+
+   STAT_ANALYSIS_SS_INDEX_NAME
+     Specify the value for 'ss_index_name' in the MET configuration file for StatAnalysis.
+
+     | *Used by:* StatAnalysis
+
+   STAT_ANALYSIS_SS_INDEX_VLD_THRESH
+     Specify the value for 'ss_index_vld_thresh' in the MET configuration file for StatAnalysis.
+
+     | *Used by:* StatAnalysis

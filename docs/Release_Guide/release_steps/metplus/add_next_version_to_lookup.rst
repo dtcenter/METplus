@@ -1,12 +1,22 @@
 Add Next Version to Lookup Table
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+
+Update the latest official release variable.
+
+.. dropdown:: Instructions
+
+  In the develop branch, modify the **metplus/component_versions.py** file to
+  update the value for **LATEST_OFFICIAL_RELEASE** to reflect this X.Y release.
+
+  If the 6.1.0 release was just created, set the value to *6.1*.
+
 Add version information for the next coordinated release.
 
 .. dropdown:: Instructions
 
   In the develop branch, modify the **metplus/component_versions.py** file to
-  add an entry for the next coordinated release.
+  add an entry for the next coordinated release if it has not already been added.
 
   If the X.0 release was just created, add an entry for the X.1 release.
 
@@ -27,6 +37,7 @@ Add version information for the next coordinated release.
           'metdataio': '3.1.0',
           'metviewer': '6.1.0',
           'metexpress': None,
+          'metbaseimage': '3.4.5',
       },
 
   For example, if the coordinated 6.1 release was just created, add::
@@ -39,4 +50,5 @@ Add version information for the next coordinated release.
           'metdataio': '4.0.0',
           'metviewer': '7.0.0',
           'metexpress': None,
+          'metbaseimage': '3.5.0',
       },

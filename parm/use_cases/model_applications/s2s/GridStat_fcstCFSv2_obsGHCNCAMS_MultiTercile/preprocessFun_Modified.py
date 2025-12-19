@@ -10,7 +10,8 @@ def preprocess(path, model, init, variable, lead, clim_per, member):
     elif clim_per == '1991_2020':
         years = np.arange(1991,2020,1)
     else:
-        print('Check your climatology period') 
+        print('ERROR: Check your climatology period')
+        return None, None, None, None
 
     # Get the directory
     dir_name = path
@@ -60,6 +61,8 @@ def dominant_tercile_fcst(path, model, init, variable, clim_per, lead):
  
     # Make climos, std anoms, etc. from function for 1 member (to get shapes for empty variables)
     _, _, _, std_anom = preprocess(path, model, init, variable, lead, clim_per, member)
+    if std_anom is None:
+        return None
 
     # Empty variables
     std_anom_all = np.zeros((std_anom.shape[0], std_anom.shape[1], std_anom.shape[2], n_ens))

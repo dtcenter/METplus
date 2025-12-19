@@ -22,6 +22,7 @@
 {"name": "priority: medium","color": "f8de7e","description": "Medium Priority"}
 {"name": "priority: bold for release notes","color": "ededed","description": "Issue should be bolded in release notes"}
 {"name": "reporting: DTC AF METplus","color": "fbca04","description": "Air Force METplus Project"}
+{"name": "reporting: DTC Benchmarking","color": "fbca04","description": "DTC Benchmarking T&E Project"}
 {"name": "reporting: DTC NCAR Base","color": "fbca04","description": "NCAR Base DTC Project"}
 {"name": "reporting: DTC NOAA BASE","color": "fbca04","description": "NOAA Office of Atmospheric Research DTC Project"}
 {"name": "reporting: DTC NOAA Base RRFS","color": "fbca04","description": "NOAA Base RRFS DTC Project"}
