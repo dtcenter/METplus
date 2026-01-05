@@ -44,7 +44,7 @@ Variables available
 
 METplus Use Cases
   Link to
-  `METplus Use Cases <https://metplus.readthedocs.io/en/develop/search.html?q=VxData%26%26UseCase&check_keywords=yes&area=default>`_
+  `METplus Use Cases <https://metplus.readthedocs.io/en/develop/search.html?q=VxDataGDASPREP&check_keywords=yes&area=default>`_
   for this dataset.
 
 Keywords
