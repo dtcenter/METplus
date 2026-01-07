@@ -1,4 +1,3 @@
-
 Existing Builds
 ===============
 
@@ -30,8 +29,8 @@ in the
 
        | **NCAR MACHINE CASPER** (see 
           `Casper Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/casper/>`_)
-       | *Last Updated: *
-       | *Compiler and version: *
+       | *Last Updated:*
+       | *Compiler and version:*
 
        * METplus-X.Y.0-beta1
 
@@ -106,14 +105,14 @@ in the
 
        | **NCAR MACHINE DERECHO** See `Derecho Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/derecho/>`_
        | *Last Updated:*
-       | *Compiler and version: *
+       | *Compiler and version:*
        
 
     .. dropdown:: NCAR/RAL Common Installation - Coming Soon!
 
        | **NCAR RAL MACHINES (STANDARD LOCATION)**
        | *Last Updated:*
-       | *Compiler and version: *
+       | *Compiler and version:*
 
        * **METvX.Y.0**
 
@@ -128,14 +127,14 @@ in the
        | **NCAR RAL MACHINES SENECA**
        | **MET-X.Y.0-beta1**
        | *Last Updated:*
-       | *Compiler and version: *
+       | *Compiler and version:*
 
          * MET BUILD: 
 
        | **NCAR RAL MACHINES MOHAWK**
        | **METviewer-X.Y.0-beta1**
        | *Last Updated:*
-       | *Compiler and version: *
+       | *Compiler and version:*
 
          * LOCATION: 
          * URL: 
@@ -145,8 +144,8 @@ in the
      .. dropdown:: WCOSS2 - Coming Soon!
 
         | **NOAA machines Dogwood and Cactus (WCOSS2 - Cray)**
-        | *Last updated: *
-	| *Compiler and version: *
+        | *Last updated:*
+	| *Compiler and version:*
 
           * **MET vX.Y.0-beta1 / METplus vX.Y.0-beta1 / METplus Analysis Tools vX.Y.0-beta1**
 
@@ -159,8 +158,8 @@ in the
      .. dropdown:: URSA
 
         | **NOAA MACHINE URSA**
-        | *Last updated: *
-        | *Compiler and version: *
+        | *Last updated:*
+        | *Compiler and version:*
 
           * **METplus-X.Y.Z-beta1**
 
@@ -220,8 +219,8 @@ in the
      .. dropdown:: HERA - Coming Soon!
 
         | **NOAA MACHINE HERA**
-        | *Last updated: *
-        | *Compiler and version: *
+        | *Last updated:*
+        | *Compiler and version:*
 
           * **METplus-X.Y.0-beta1**
 
@@ -280,7 +279,7 @@ in the
      .. dropdown:: HERCULES - Coming Soon!
 
         | **NOAA MACHINE HERCULES (MANAGED BY MSU)**
-        | *Last updated: *
+        | *Last updated:*
 	| *Compiler and version: intel-oneapi-compilers/2022.2.1*
 	|
 	| **Before loading any of the modules below, it is necessary to load the following modules:**
@@ -346,7 +345,7 @@ in the
 
         | **NOAA MACHINE ORION (MANAGED BY MSU)**
         | *Last updated:*
-	| *Compiler and version: *
+	| *Compiler and version:*
 
           * **METplus-X.Y.0-beta1**
 
@@ -410,7 +409,7 @@ in the
 
         | **NOAA MACHINE JET**
         | *Last updated:*
-        | *Compiler and version: *
+        | *Compiler and version:*
 
           * **METplus-X.Y.0-beta1**
 
@@ -473,8 +472,8 @@ in the
      .. dropdown:: GAEA - Coming Soon!
 
         | **NOAA MACHINE GAEA**
-        | *Last Updated: *
-	| *Compiler and version: *
+        | *Last Updated:*
+	| *Compiler and version:*
 
           * **METplus-X.Y.0-beta1**
 
@@ -538,8 +537,8 @@ in the
      .. dropdown:: FRONTERA - Coming Soon!
 
         | **TEXAS ADVANCED COMPUTING CENTER (TACC) FRONTERA**
-        | *Last Updated: *
-	| *Compiler and version: *
+        | *Last Updated:*
+	| *Compiler and version:*
 
           * **METplus-X.Y.Z-beta1**
 
