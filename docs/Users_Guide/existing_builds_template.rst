@@ -155,7 +155,7 @@ in the
 
                 module reset
 
-     .. dropdown:: URSA
+     .. dropdown:: URSA - Coming Soon!
 
         | **NOAA MACHINE URSA**
         | *Last updated:*
