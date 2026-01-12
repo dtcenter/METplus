@@ -101,7 +101,7 @@ model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.py
 # humidity less than 10% and calculates statistics for wind speed and wind gusts.
 #
 # Stat-Analysis is called once for the entire time period for each of the 3 calls.  Each of the 
-# 3 runs aggregates statistics for the different runs of Point-Stat above.  Addiationally, both
+# 3 runs aggregates statistics for the different runs of Point-Stat above.  Additionally, both
 # of the 2 User-Scripts are also called once.  The first User-Script reformats data, while the 
 # second creates the performance diagrams.
 
@@ -213,9 +213,9 @@ model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.py
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
 # Output for this use case will be found in 
 # {OUTPUT_BASE}/model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.  There will be
-# 6 of directories output, data_ingest, VxMasks, PointStat, StatAnalysis, reformatted, and plots.  
-# The The data_ingest directory contains the observation data that has been downloaded and will 
-# contain one subdirectory, MADIS/metar. That directory will contain # of files::
+# 6 directories of output, data_ingest, VxMasks, PointStat, StatAnalysis, reformatted, and plots.  
+# The data_ingest directory contains the observation data that has been downloaded and will 
+# contain one subdirectory, MADIS/metar. That directory will contain a number of files::
 #
 #  * 20250528_1800.nc
 #  * 20250529_0000.nc

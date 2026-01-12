@@ -16,7 +16,7 @@ model_applications/fire/MTD_fcstWRF_obsMMA_416Fire.conf
 # --------------------
 #
 # This case uses MODE-Time-Domain to create objects using fire area and 
-# Multimission Aircraft fire perimiters for the 416 Fire.  MTD is used specifically 
+# Multimission Aircraft fire perimeters for the 416 Fire.  MTD is used specifically 
 # to create objects over time that provide information on fire area and spread over 
 # time. 
 
@@ -32,7 +32,7 @@ model_applications/fire/MTD_fcstWRF_obsMMA_416Fire.conf
 #
 # **Forecast:** WRF Fire
 #
-# **Observation:** Multimission Aircraft Fire Perimiter
+# **Observation:** Multimission Aircraft Fire Perimeter
 #
 # **Climatology:** None
 #
@@ -54,7 +54,6 @@ model_applications/fire/MTD_fcstWRF_obsMMA_416Fire.conf
 ##############################################################################
 # METplus Workflow
 # ----------------
-# [UPDATE_SECTION_CONTENT]
 #
 # **Beginning time (INIT_BEG):** 2018-06-01 16 UTC
 #
@@ -66,7 +65,7 @@ model_applications/fire/MTD_fcstWRF_obsMMA_416Fire.conf
 #
 # With an increment of 1 hour, one forecast initialization time is processed to result in 32
 # runs of Gen-Vx-Mask, once for each lead time.  The runs of Gen-Vx-Mask create netCDF files 
-# from the interpolated fire perimiters that are used as input observations to Mode-Time-Domain.
+# from the interpolated fire perimeters that are used as input observations to Mode-Time-Domain.
 # Then, Mode-Time-Domain is run once which uses all model and observation times as input.
 
 ##############################################################################
