@@ -52,3 +52,4 @@
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3133 - #3133 introduced image diffs in the tc_and_extra_tc:6 (I-WRF Hurricane Matthew) use case. These differences are not noticeable visually
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3181 - #3181 changed the output directories of the weather regime use cases
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] dtcenter/MET#3302 - Increased precision in PB2NC causes minor numeric differences.
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3164 - Adding truth data for 3 new fire use cases, updating medium range use cases due to inconsistent location

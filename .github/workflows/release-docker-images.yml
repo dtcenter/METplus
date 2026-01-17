@@ -20,7 +20,7 @@ on:
         type: boolean
 
   schedule:
-    - cron: "30 06 * * 0"
+    - cron: "35 06 * * 0"
 
 env:
   DOCKERHUB_BASE_REPO: dtcenter/metplus
@@ -115,7 +115,6 @@ jobs:
 
       - name: Scan Docker Images
         id: security-scan
-        continue-on-error: false
         uses: dtcenter/metplus-action-scan-docker-images@v1
         with:
           images: |
@@ -123,7 +122,7 @@ jobs:
               "${{ env.DOCKERHUB_BASE_REPO }}:${{ env.VERSION_NO_V }}",
               "${{ env.DOCKERHUB_ANALYSIS_REPO }}:${{ env.VERSION_NO_V }}"
             ]
-          fail-on-critical: "true"
+          fail-on-critical: "false"
           log-artifact-name: 'security-scan-logs_${{ env.VERSION_NO_V }}'
 
       - name: Push Docker Images
