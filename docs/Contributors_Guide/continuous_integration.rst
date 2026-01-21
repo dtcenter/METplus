@@ -269,6 +269,9 @@ The value in the branch pull-down under the text that says
 If the branch name exists in the dtcenter/METplus repository, leave the
 branch name text box blank and select the branch name from the pull-down menu.
 
+If you uploaded data for more than 1 new use case you will have to run this 
+for each new use case, changing the METPLUS_USE_CASE_NAME each time.
+
 Verify that the workflow ran successfully and properly obtained the new data
 by reviewing the log output from the workflow run.
 
