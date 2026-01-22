@@ -67,9 +67,8 @@ for var in var_list:
     else:
         # No support for selected variable
         # Error with message
-        raise NameError('Variable '+ var+' not currently supported')
-        print('Use WIND or RH in the input variable list')
-        sys.exit(1)
+        raise NameError(f'Variable {var} not currently supported.'
+                        ' Use WIND or RH in the input variable list')
 
 
     # Create the point_data object MET expects
