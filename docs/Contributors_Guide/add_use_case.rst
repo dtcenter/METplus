@@ -1243,6 +1243,10 @@ After verifying the directories are correct, copy the files::
 
     cp -r $from_directory $to_directory/
 
+.. note::
+    If data for multiple use cases are included, change the value of
+    **METPLUS_USE_CASE_NAME** and rerun these steps for each.
+
 Remove old data (if applicable)
 """""""""""""""""""""""""""""""
 
