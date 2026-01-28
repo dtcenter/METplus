@@ -336,7 +336,20 @@ def test_get_config_file(metplus_config):
              ),
          ]
          }),
+        ({'GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_1D': 'true', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {histogram_1d = TRUE;}'}),
 
+        ({'GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_2D': 'false', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {histogram_2d = FALSE;}'}),
+
+        ({'GRID_DIAG_OUTPUT_FLAG_INFO_THEORY': 'True', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {info_theory = TRUE;}'}),
+
+        ({'GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_1D': 'true',
+          'GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_2D': 'false',
+          'GRID_DIAG_OUTPUT_FLAG_INFO_THEORY': 'True',
+         },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {histogram_1d = TRUE;histogram_2d = FALSE;info_theory = TRUE;}'}),
     ]
 )
 @pytest.mark.wrapper

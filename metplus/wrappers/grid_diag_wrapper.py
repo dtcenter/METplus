@@ -33,6 +33,7 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         'METPLUS_CENSOR_VAL',
         'METPLUS_DATA_DICT',
         'METPLUS_MASK_DICT',
+        'METPLUS_OUTPUT_FLAG_DICT',
     ]
 
     # deprecated env vars that are no longer supported in the wrapped MET conf
@@ -41,6 +42,12 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         'DATA_FIELD',
         'DATA_FILE_TYPE',
         'VERIF_MASK',
+    ]
+
+    OUTPUT_FLAGS = [
+        'histogram_1d',
+        'histogram_2d',
+        'info_theory',
     ]
 
     def __init__(self, config, instance=None):
@@ -87,6 +94,8 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         self.handle_mask(single_value=False)
 
         self.handle_censor_val_and_thresh()
+
+        self.handle_flags('OUTPUT')
 
         c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
                                                  data_type='FCST',
