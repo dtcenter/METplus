@@ -96,7 +96,8 @@ class IODA2NCWrapper(LoopTimesWrapper):
                             extra_args={'remove_quotes': True})
         self.add_met_config(name='missing_thresh', data_type='list',
                             extra_args={'remove_quotes': True})
-        self.add_met_config(name='quality_mark_thresh', data_type='int')
+        self.add_met_config(name='quality_mark_thresh', data_type='string',
+                            extra_args={'remove_quotes': True})
         self.handle_time_summary_dict()
 
         return c_dict
