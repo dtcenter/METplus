@@ -268,15 +268,20 @@ def test_get_config_file(metplus_config):
          {'METPLUS_CENSOR_VAL': 'censor_val = [12000, 5000];'}),
 
         ({'GRID_DIAG_MASK_GRID': 'FULL', },
-         {'METPLUS_MASK_DICT': 'mask = {grid = "FULL";}'}),
+         {'METPLUS_MASK_DICT': 'mask = {grid = ["FULL"];}'}),
 
         ({'GRID_DIAG_MASK_POLY': 'MET_BASE/poly/EAST.poly', },
-         {'METPLUS_MASK_DICT': 'mask = {poly = "MET_BASE/poly/EAST.poly";}'}),
+         {'METPLUS_MASK_DICT': 'mask = {poly = ["MET_BASE/poly/EAST.poly"];}'}),
 
         ({'GRID_DIAG_MASK_GRID': 'FULL',
-          'GRID_DIAG_MASK_POLY': 'MET_BASE/poly/EAST.poly',},
-         {'METPLUS_MASK_DICT': ('mask = {grid = "FULL";'
-                                'poly = "MET_BASE/poly/EAST.poly";}')}),
+          'GRID_DIAG_MASK_POLY': 'MET_BASE/poly/EAST.poly', },
+         {'METPLUS_MASK_DICT': ('mask = {grid = ["FULL"];'
+                                'poly = ["MET_BASE/poly/EAST.poly"];}')}),
+
+        ({'GRID_DIAG_MASK_GRID': 'FULL,DTC165',
+          'GRID_DIAG_MASK_POLY': 'MET_BASE/poly/EAST.poly,  MET_BASE/poly/WEST.poly', },
+         {'METPLUS_MASK_DICT': ('mask = {grid = ["FULL", "DTC165"];'
+                                'poly = ["MET_BASE/poly/EAST.poly", "MET_BASE/poly/WEST.poly"];}')}),
 
         ({'GRID_DIAG_REGRID_TO_GRID': 'FCST',},
          {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}'}),

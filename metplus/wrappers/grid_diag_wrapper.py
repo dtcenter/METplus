@@ -84,7 +84,7 @@ class GridDiagWrapper(RuntimeFreqWrapper):
 
         self.handle_description()
 
-        self.handle_mask(single_value=True)
+        self.handle_mask(single_value=False)
 
         self.handle_censor_val_and_thresh()
 
