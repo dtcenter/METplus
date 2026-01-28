@@ -5,7 +5,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build" />
       <excludeFolder url="file://$MODULE_DIR$/metplus/scripts" />
     </content>
-    <orderEntry type="jdk" jdkName="metplus_dev.v6.1" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.12 (METplus)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">
