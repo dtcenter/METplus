@@ -908,6 +908,10 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
           'ENSEMBLE_STAT_MSL_AGL_CONVERSION_MSL_TO_AGL': 'false',
          },
          {'METPLUS_MSL_AGL_CONVERSION_DICT': 'msl_agl_conversion = {apply_to = FCST;apply_from = OBS;thresh = ne99999;msl_to_agl = FALSE;}'}),
+        ({'ENSEMBLE_STAT_FCST_FILE_TYPE': 'NETCDF_NCCF', },
+         {'METPLUS_FCST_FILE_TYPE': 'file_type = NETCDF_NCCF;'}),
+        ({'ENSEMBLE_STAT_OBS_FILE_TYPE': 'NETCDF_NCCF', },
+         {'METPLUS_OBS_FILE_TYPE': 'file_type = NETCDF_NCCF;'}),
 
     ]
 )

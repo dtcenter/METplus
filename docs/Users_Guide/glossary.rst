@@ -14979,3 +14979,38 @@ METplus Configuration Glossary
      Specify the value for 'ss_index_vld_thresh' in the MET configuration file for StatAnalysis.
 
      | *Used by:* StatAnalysis
+
+   ENSEMBLE_STAT_FCST_FILE_TYPE
+     Specify the value for 'fcst.file_type' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_FILE_TYPE
+     Specify the value for 'obs.file_type' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   MTD_FCST_FILE_TYPE
+     Specify the value for 'fcst.file_type' in the MET configuration file for MTD.
+
+     | *Used by:* MTD
+
+   MTD_OBS_FILE_TYPE
+     Specify the value for 'obs.file_type' in the MET configuration file for MTD.
+
+     | *Used by:* MTD
+
+   SERIES_ANALYSIS_FCST_FILE_TYPE
+     Specify the value for 'fcst.file_type' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_FILE_TYPE
+     Specify the value for 'obs.file_type' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   GRID_STAT_OBS_FILE_TYPE
+     Specify the value for 'obs.file_type' in the MET configuration file for GridStat.
+
+     | *Used by:*  GridStat
