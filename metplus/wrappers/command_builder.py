@@ -1730,3 +1730,24 @@ class CommandBuilder:
         if not self.instance:
             return wrapper_name
         return f'{wrapper_name}({self.instance})'
+
+    def handle_file_type(self, type_list=('FCST', 'OBS'), env_var_override=None):
+        if isinstance(type_list, str):
+            type_list = [type_list]
+
+        for type_name in type_list:
+            if env_var_override is None:
+                env_var_name = f'{type_name}_FILE_TYPE'
+            else:
+                env_var_name = env_var_override
+
+            metplus_configs = [
+                f'{self.app_name}_{type_name}_FILE_TYPE'.upper(),
+                f'{type_name}_{self.app_name}_FILE_TYPE'.upper(),
+                f'{self.app_name}_FILE_TYPE'.upper(),
+                f'{type_name}_FILE_TYPE'.upper(),
+            ]
+            self.add_met_config(name='file_type', data_type='string',
+                                env_var_name=env_var_name,
+                                metplus_configs=metplus_configs,
+                                extra_args={'constant': True})

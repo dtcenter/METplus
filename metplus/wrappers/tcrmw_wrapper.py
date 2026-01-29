@@ -84,10 +84,7 @@ class TCRMWWrapper(RuntimeFreqWrapper):
                                'TC_RMW_DECK_TEMPLATE')
         )
 
-        self.add_met_config(name='file_type', data_type='string',
-                            env_var_name='METPLUS_DATA_FILE_TYPE',
-                            metplus_configs=['TC_RMW_INPUT_DATATYPE',
-                                             'TC_RMW_FILE_TYPE'])
+        self.handle_file_type(type_list=['DATA'])
 
         self.add_met_config(name='model', data_type='string',
                             metplus_configs=['MODEL'])
