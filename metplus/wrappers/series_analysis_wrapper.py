@@ -652,8 +652,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
               key will match the format "NoLabel_<n>" and if no lead groups
               are defined, the dictionary should be replaced with None
         """
-        if not self._check_python_embedding():
-            return None, None
+        self._check_python_embedding()
 
         time_info['storm_id'] = storm_id
 
@@ -728,15 +727,10 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         """
         for var_info in self.c_dict['VAR_LIST']:
             if self.c_dict['USING_BOTH']:
-                if not self.check_for_python_embedding('BOTH', var_info):
-                    return False
+                self.check_for_python_embedding('BOTH', var_info)
             else:
-                if not self.check_for_python_embedding('FCST', var_info):
-                    return False
-                if not self.check_for_python_embedding('OBS', var_info):
-                    return False
-
-        return True
+                self.check_for_python_embedding('FCST', var_info)
+                self.check_for_python_embedding('OBS', var_info)
 
     def get_output_dir(self, time_info, storm_id, label):
         """! Determine directory that will contain output data from the
