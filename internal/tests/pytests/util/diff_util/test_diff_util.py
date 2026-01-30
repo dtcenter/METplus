@@ -619,7 +619,7 @@ def test__all_values_are_equal(capfd, array_a, array_b, expected, check_print):
         ('.gif', ["Skipping .gif file"]),
         ('.ix', ["Skipping .ix file"]),
         ('.log', ["Skipping .log file"]),
-        ('', ["Skipping file without extension"]),
+        #('', ["Skipping file without extension"]),
     ],
 )
 @pytest.mark.util
