@@ -12,6 +12,36 @@ from pandas import isnull
 from numpy.ma import is_masked
 from numpy.ma import count_masked
 
+###
+# Settings that are commonly overridden
+###
+
+# keywords (strings) to search and skip diff tests if found in file path
+# override this to skip files that match any of the keywords
+SKIP_KEYWORDS = [
+]
+
+# dictionary where key is a keyword to search (e.g. use case name)
+# and the value is the rounding precision to use for files that
+# match the keyword
+# override this to change the rounding precision for files that match the keyword
+ROUNDING_OVERRIDES = {
+}
+
+# file extensions to skip
+# these will be reported as a successful diff test
+# override this to skip files that have any of the extensions
+SKIP_EXTENSIONS = [
+    '.zip',
+    '.gif',
+    '.ix',
+    '.log',
+]
+
+###
+# Settings common to all uses of this script
+###
+
 # file extensions for supported image file types
 IMAGE_EXTENSIONS = [
     '.jpg',
@@ -24,16 +54,6 @@ NETCDF_EXTENSIONS = [
     '.nc',
     '.cdf',
     '.nc4',
-]
-
-# file extensions to skip
-# these will be reported as a successful diff test
-SKIP_EXTENSIONS = [
-    '.zip',
-    '.gif',
-    '.ix',
-    '.log',
-    '',
 ]
 
 # file extensions used to determine if a file is a PDF file
@@ -52,16 +72,6 @@ CSV_EXTENSIONS = [
 UNSUPPORTED_EXTENSIONS = [
 ]
 
-# keywords to search and skip diff tests if found in file path
-SKIP_KEYWORDS = [
-    'CyclonePlotter/cyclone/20150301.png',
-    'plots/obs_elbow.png',
-    'plots/fcst_elbow.png',
-    'CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC/cyclone/20201007',
-    'plots/MAKE_MAKI_timeseries',
-    'UserScript_fcstGFS_obsERA_WeatherRegime',
-    'PointStat_fcstWRF_obsMADIS_hurricane_matthew/wrf_plot',
-]
 
 
 ###
@@ -70,14 +80,6 @@ SKIP_KEYWORDS = [
 
 # number of decimal places to use for comparing floats by default
 DEFAULT_ROUNDING_PRECISION = 6
-
-# dictionary where key is a keyword to search (e.g. use case name)
-# and the value is the rounding precision to use for files that
-# match the keyword
-ROUNDING_OVERRIDES = {
-    'UserScript_obsCFSR_obsOnly_MJO_ENSO': 5,
-    'UserScript_fcstS2S_obsERAI_CrossSpectra': 4,
-}
 
 # number of decision places to accept float differences
 # Note: Completing METplus issue #1873 could allow this to be set to 6
