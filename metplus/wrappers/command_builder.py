@@ -1159,37 +1159,32 @@ class CommandBuilder:
                                 field_info[name] if name in field_info else '')
 
     def check_for_python_embedding(self, input_type, var_info):
-        """!Check if field name of given input type is a python script.
-        If it is not, return the field name. If it is, return 'python_embedding'
-        and set file_type in the MET config to a PYTHON keyword if it is not
-        already set.
-        @param input_type type of field input, e.g. FCST, OBS, ENS, POINT_OBS,
-         GRID_OBS, or BOTH
-        @param var_info dictionary item containing field information for the
-         current *_VAR<n>_* configs being handled
-        @returns field name if not a python script, 'python_embedding' if it is
+        """!Sets the file_type for a python embedding input if it has not been specified and needs to be set.
+        If the input variable is a python embedding script and the app supports multiple inputs,
+         ensure that the file_type is set to a PYTHON keyword, e.g. PYTHON_NUMPY.
+        If the file type is not set using {input_type}_FILE_TYPE or {input_type}_INPUT_DATATYPE,
+        then set it to PYTHON_NUMPY to prevent the MET command from failing.
+        Warn if an invalid PYTHON keyword was provided for a python embedding input.
+
+        @param input_type type of field input, e.g. FCST, OBS, ENS, POINT_OBS, GRID_OBS, or BOTH
+        @param var_info dictionary item containing field information for the current *_VAR<n>_* configs being handled
+        @returns None
         """
         var_input_type = input_type.lower() if input_type != 'BOTH' else 'fcst'
-        if not is_python_script(var_info[f"{var_input_type}_name"]):
-            # if not a python script, return var name
-            return var_info[f"{var_input_type}_name"]
-
-        # if it is a python script, set file extension to show that and
-        # make sure *_INPUT_DATATYPE is a valid PYTHON_* string
-        file_ext = 'python_embedding'
-
-        # skip check of _INPUT_DATATYPE if _FILE_TYPE is already set
+        # skip check if var name is not a python embedding script,
+        # or {input_type}_FILE_TYPE is already set,
         # or if wrapper does not support multiple inputs
-        if (self.env_var_dict.get(f'METPLUS_{input_type}_FILE_TYPE')
+        if (not is_python_script(var_info[f"{var_input_type}_name"])
+                or self.env_var_dict.get(f'METPLUS_{input_type}_FILE_TYPE')
                 or get_wrapper_name(self.app_name) not in MULTIPLE_INPUT_WRAPPERS):
-            return file_ext
+            return
 
         data_type = self.c_dict.get(f'{input_type}_INPUT_DATATYPE', '')
-        # error and return None if wrapper takes multiple inputs for Python
-        # Embedding but file_type has not been specified to note that
+        # warn if wrapper takes multiple inputs for Python Embedding but
+        # file_type has not been specified to note that
         if data_type not in PYTHON_EMBEDDING_TYPES:
             self.logger.warning(
-                f"{input_type}_{self.app_name.upper()}_FILE_TYPE must be set "
+                f"{self.app_name.upper()}_{input_type}_FILE_TYPE must be set "
                 "when passing a Python Embedding script to a tool that takes "
                 "multiple inputs. Using PYTHON_NUMPY"
             )
@@ -1199,7 +1194,6 @@ class CommandBuilder:
         # Python Embedding is being used for this dataset
         file_type = f"file_type = {data_type};"
         self.env_var_dict[f'METPLUS_{input_type}_FILE_TYPE'] = file_type
-        return file_ext
 
     def get_field_info(self, d_type='', v_name='', v_level='', v_thresh=None,
                        v_extra='', add_curly_braces=True):
