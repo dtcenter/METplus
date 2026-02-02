@@ -12,7 +12,7 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import get_lead_sequence, ti_calculate, do_string_sub, parse_var_list
+from ..util import get_lead_sequence, ti_calculate, do_string_sub, parse_var_list, is_python_script
 from . import CompareGriddedWrapper
 
 
@@ -226,15 +226,29 @@ class MTDWrapper(CompareGriddedWrapper):
                 inputs[data_type] = file_list[0]
                 continue
 
-            file_ext = self.check_for_python_embedding(data_type, var_info)
-            if not file_ext:
-                continue
+            self.check_for_python_embedding(data_type, var_info)
 
             dt = 'single' if self.c_dict['SINGLE_RUN'] else data_type
-            outfile = f"{time_fmt}_mtd_{dt.lower()}_{file_ext}.txt"
+            var_name = self._get_var_name(data_type, var_info)
+            outfile = f"{time_fmt}_mtd_{dt.lower()}_{var_name}.txt"
             inputs[data_type] = self.write_list_file(outfile, file_list)
 
         return var_info, inputs
+
+    @staticmethod
+    def _get_var_name(input_type, var_info):
+        """!Get the variable name to use for file list file name.
+
+        @param input_type (str): The input type, e.g., 'FCST' or 'OBS'.
+        @param var_info (dict): Dictionary containing variable information.
+        @returns string "python_embedding" if the variable is a python script, otherwise the variable name.
+        """
+        var_input_type = input_type.lower()
+        if is_python_script(var_info[f"{var_input_type}_name"]):
+            return 'python_embedding'
+
+        # if not a python script, return var name
+        return var_info[f"{var_input_type}_name"]
 
     def _validate_inputs(self, inputs):
         """!Validate if sufficient input files are available.

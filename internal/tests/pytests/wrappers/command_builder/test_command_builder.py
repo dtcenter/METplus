@@ -1205,18 +1205,26 @@ def test_errors_and_defaults(metplus_config):
     assert _in_last_err('Could not generate command', cb.logger)
 
     # test python embedding check
+    cb.env_var_dict['METPLUS_FCST_FILE_TYPE'] = ""
+    cb.c_dict['FCST_INPUT_DATATYPE'] = ""
     with mock.patch.object(cb_wrapper, 'is_python_script', return_value=True):
-        actual = cb.check_for_python_embedding('FCST',{'fcst_name':'pyEmbed'})
-    assert actual == 'python_embedding'
+        with mock.patch.object(cb_wrapper, 'get_wrapper_name', return_value='MTD'):
+            cb.check_for_python_embedding('FCST',{'fcst_name':'pyEmbed'})
+    warn_msg = cb.logger.warning.call_args_list[-1][0][0]
+    assert 'Using PYTHON_NUMPY' in warn_msg
+    assert cb.env_var_dict['METPLUS_FCST_FILE_TYPE'] == "file_type = PYTHON_NUMPY;"
 
-    cb.env_var_dict['METPLUS_FCST_FILE_TYPE'] = "PYTHON_NUMPY"
+    cb.env_var_dict['METPLUS_FCST_FILE_TYPE'] = ""
+    cb.c_dict['FCST_INPUT_DATATYPE'] = "PYTHON_XARRAY"
     with mock.patch.object(cb_wrapper, 'is_python_script', return_value=True):
-        actual = cb.check_for_python_embedding('FCST',{'fcst_name':'pyEmbed'})
-    assert actual == 'python_embedding'
+        with mock.patch.object(cb_wrapper, 'get_wrapper_name', return_value='MTD'):
+            cb.check_for_python_embedding('FCST',{'fcst_name':'pyEmbed'})
+    assert cb.env_var_dict['METPLUS_FCST_FILE_TYPE'] == "file_type = PYTHON_XARRAY;"
 
+    cb.env_var_dict['METPLUS_FCST_FILE_TYPE'] = "file_type = SOMETHING_ELSE;"
     with mock.patch.object(cb_wrapper, 'is_python_script', return_value=False):
-        actual = cb.check_for_python_embedding('FCST',{'fcst_name':'pyEmbed'})
-    assert actual == 'pyEmbed'
+        cb.check_for_python_embedding('FCST',{'fcst_name':'pyEmbed'})
+    assert cb.env_var_dict['METPLUS_FCST_FILE_TYPE'] == "file_type = SOMETHING_ELSE;"
 
     # test field_info not set
     cb.c_dict['CURRENT_VAR_INFO'] = None
