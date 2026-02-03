@@ -232,13 +232,18 @@ def _get_files(search_dir):
 
 
 def _print_dir_summary(diff_files):
-    print("\n\n**************************************************\nSummary:\n")
+    print("\n\n**************************************************\nERROR SUMMARY:\n")
     for filepath_a, filepath_b, reason, diff_file, details in diff_files:
         print(f"{reason}\n  A: {filepath_a}\n  B: {filepath_b}")
         if diff_file:
             print(f"Difference file: {diff_file}")
         if details:
             print(details)
+        print()
+
+    print("\n\n**************************************************\nDiff Summary:\n")
+    for filepath_a, filepath_b, reason, diff_file, details in diff_files:
+        print(f"{reason}\n  A: {filepath_a}\n  B: {filepath_b}")
         print()
 
     print("\nFinished comparing directories\n"
