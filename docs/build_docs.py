@@ -65,11 +65,11 @@ def main():
         sys.exit(1)
 
     # regex expressions to remove from HTML output
-    regex_compiles = [re.compile('<p><a class=\"reference download internal\".*?</p>'),
-                      re.compile('<div class=\"sphx-glr-download-link-note[\s\S]*?</div>',
+    regex_compiles = [re.compile(r'<p><a class=\"reference download internal\".*?</p>'),
+                      re.compile(r'<div class=\"sphx-glr-download-link-note[\s\S]*?</div>',
                                  re.MULTILINE),
-                      re.compile('<p class=\"sphx-glr-timing.*?</p>'),
-                      re.compile('<p>sphinx_gallery_thumbnail_path.*?</p>'),
+                      re.compile(r'<p class=\"sphx-glr-timing.*?</p>'),
+                      re.compile(r'<p>sphinx_gallery_thumbnail_path.*?</p>'),
                      ]
 
     # docs directory

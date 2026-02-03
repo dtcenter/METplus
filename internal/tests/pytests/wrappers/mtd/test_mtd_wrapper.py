@@ -205,6 +205,11 @@ def test_mtd_missing_inputs(metplus_config, get_test_data_dir, run_all_and_check
         ({'MTD_OUTPUT_PREFIX': 'my_output_prefix'},
          {'METPLUS_OUTPUT_PREFIX': 'output_prefix = "my_output_prefix";'}),
 
+        ({'MTD_FCST_FILE_TYPE': 'NETCDF_NCCF', },
+         {'METPLUS_FCST_FILE_TYPE': 'file_type = NETCDF_NCCF;'}),
+        ({'MTD_OBS_FILE_TYPE': 'NETCDF_NCCF', },
+         {'METPLUS_OBS_FILE_TYPE': 'file_type = NETCDF_NCCF;'}),
+
     ]
 )
 @pytest.mark.wrapper

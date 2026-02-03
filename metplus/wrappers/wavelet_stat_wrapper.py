@@ -129,19 +129,7 @@ class WaveletStatWrapper(CompareGriddedWrapper):
         self.handle_flags('output')
         self.handle_flags('nc_pairs')
 
-        self.add_met_config(name='file_type', data_type='string',
-                            env_var_name='FCST_FILE_TYPE',
-                            metplus_configs=[f'{app}_FCST_FILE_TYPE',
-                                             f'FCST_{app}_FILE_TYPE',
-                                             f'{app}_FILE_TYPE'],
-                            extra_args={'constant': True})
-
-        self.add_met_config(name='file_type', data_type='string',
-                            env_var_name='OBS_FILE_TYPE',
-                            metplus_configs=[f'{app}_OBS_FILE_TYPE',
-                                             f'OBS_{app}_FILE_TYPE',
-                                             f'{app}_FILE_TYPE'],
-                            extra_args={'constant': True})
+        self.handle_file_type(type_list=('FCST', 'OBS'))
 
         self.add_met_config_dict('tile', {
             'width': 'int',

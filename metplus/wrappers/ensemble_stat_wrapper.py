@@ -135,6 +135,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                                  'LOG_ENSEMBLE_STAT_VERBOSITY',
                                                  c_dict['VERBOSITY'])
 
+        self.handle_file_type(type_list=('FCST', 'OBS'))
+
         c_dict['FCST_INPUT_DATATYPE'] = (
           self.config.getraw('config', 'FCST_ENSEMBLE_STAT_INPUT_DATATYPE')
         )

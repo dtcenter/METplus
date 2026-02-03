@@ -176,13 +176,7 @@ class GenEnsProdWrapper(LoopTimesWrapper):
             var_options=self.var_options
         )
 
-        self.add_met_config(name='file_type',
-                            data_type='string',
-                            env_var_name='ENS_FILE_TYPE',
-                            metplus_configs=['GEN_ENS_PROD_ENS_FILE_TYPE',
-                                             'GEN_ENS_PROD_FILE_TYPE',
-                                             'ENS_FILE_TYPE'],
-                            extra_args={'constant': True})
+        self.handle_file_type(type_list=['ENS'])
 
         self.add_met_config_dict('nbrhd_prob', {
             'width': ('list', 'remove_quotes'),
