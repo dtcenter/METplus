@@ -268,15 +268,20 @@ def test_get_config_file(metplus_config):
          {'METPLUS_CENSOR_VAL': 'censor_val = [12000, 5000];'}),
 
         ({'GRID_DIAG_MASK_GRID': 'FULL', },
-         {'METPLUS_MASK_DICT': 'mask = {grid = "FULL";}'}),
+         {'METPLUS_MASK_DICT': 'mask = {grid = ["FULL"];}'}),
 
         ({'GRID_DIAG_MASK_POLY': 'MET_BASE/poly/EAST.poly', },
-         {'METPLUS_MASK_DICT': 'mask = {poly = "MET_BASE/poly/EAST.poly";}'}),
+         {'METPLUS_MASK_DICT': 'mask = {poly = ["MET_BASE/poly/EAST.poly"];}'}),
 
         ({'GRID_DIAG_MASK_GRID': 'FULL',
-          'GRID_DIAG_MASK_POLY': 'MET_BASE/poly/EAST.poly',},
-         {'METPLUS_MASK_DICT': ('mask = {grid = "FULL";'
-                                'poly = "MET_BASE/poly/EAST.poly";}')}),
+          'GRID_DIAG_MASK_POLY': 'MET_BASE/poly/EAST.poly', },
+         {'METPLUS_MASK_DICT': ('mask = {grid = ["FULL"];'
+                                'poly = ["MET_BASE/poly/EAST.poly"];}')}),
+
+        ({'GRID_DIAG_MASK_GRID': 'FULL,DTC165',
+          'GRID_DIAG_MASK_POLY': 'MET_BASE/poly/EAST.poly,  MET_BASE/poly/WEST.poly', },
+         {'METPLUS_MASK_DICT': ('mask = {grid = ["FULL", "DTC165"];'
+                                'poly = ["MET_BASE/poly/EAST.poly", "MET_BASE/poly/WEST.poly"];}')}),
 
         ({'GRID_DIAG_REGRID_TO_GRID': 'FCST',},
          {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}'}),
@@ -331,7 +336,20 @@ def test_get_config_file(metplus_config):
              ),
          ]
          }),
+        ({'GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_1D': 'true', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {histogram_1d = TRUE;}'}),
 
+        ({'GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_2D': 'false', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {histogram_2d = FALSE;}'}),
+
+        ({'GRID_DIAG_OUTPUT_FLAG_INFO_THEORY': 'True', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {info_theory = TRUE;}'}),
+
+        ({'GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_1D': 'true',
+          'GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_2D': 'false',
+          'GRID_DIAG_OUTPUT_FLAG_INFO_THEORY': 'True',
+         },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {histogram_1d = TRUE;histogram_2d = FALSE;info_theory = TRUE;}'}),
     ]
 )
 @pytest.mark.wrapper

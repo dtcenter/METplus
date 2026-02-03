@@ -15022,3 +15022,18 @@ METplus Configuration Glossary
      Specify the value for 'data.file_type' in the MET configuration file for GridDiag.
 
      | *Used by:*  GridDiag
+
+   GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_1D
+     Specify the value for 'output_flag.histogram_1d' in the MET configuration file for GridDiag.
+
+     | *Used by:* GridDiag
+
+   GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_2D
+     Specify the value for 'output_flag.histogram_2d' in the MET configuration file for GridDiag.
+
+     | *Used by:* GridDiag
+
+   GRID_DIAG_OUTPUT_FLAG_INFO_THEORY
+     Specify the value for 'output_flag.info_theory' in the MET configuration file for GridDiag.
+
+     | *Used by:* GridDiag
