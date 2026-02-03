@@ -6171,11 +6171,6 @@ METplus Configuration Glossary
    GEN_ENS_PROD_INPUT_DATATYPE
      .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_ENS_FILE_TYPE` instead.
 
-   GEN_ENS_PROD_ENS_FILE_TYPE
-     Set the file_type entry of the ens dictionary in the MET config file for GenEnsProd.
-
-     | *Used by:*  GenEnsProd
-
    FCST_SERIES_ANALYSIS_INPUT_DATATYPE
      .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_FCST_FILE_TYPE` instead.
 
@@ -7213,9 +7208,6 @@ METplus Configuration Glossary
 
    FCST_GRID_STAT_FILE_TYPE
      .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_FCST_FILE_TYPE` instead.
-
-   GRID_STAT_OBS_FILE_TYPE
-     .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_OBS_FILE_TYPE` instead.
 
    GRID_STAT_FCST_FILE_TYPE
      Specify the value for 'fcst.file_type' in the MET configuration file for GridStat.
