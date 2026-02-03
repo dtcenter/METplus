@@ -408,15 +408,22 @@ def compare_images(image_a, image_b):
     return None
 
 
-def _is_zero_pixel(pixel):
+def _is_zero_pixel(pixel, total_threshold=10, pixel_threshold=5):
     """!Check if difference pixel is 0, which means no differences.
 
     @param pixel pixel value or tuple if multi-layer image
+    @param total_threshold change in total of all the pixels that can still be considered not a difference
+    @param pixel_threshold change in a single pixel that can still be considered not a difference
     @returns True if all values are 0 or False if any value is non-zero
     """
     if isinstance(pixel, tuple):
-        return all(val == 0 for val in pixel)
-    return pixel == 0
+        #return all(val == 0 for val in pixel)
+        if sum(pixel) > total_threshold:
+            return False
+        return not any(val > pixel_threshold for val in pixel)
+
+    #return pixel == 0
+    return pixel <= total_threshold
 
 
 def save_diff_file(image_diff, filepath_b):
