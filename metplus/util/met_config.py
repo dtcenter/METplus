@@ -4,6 +4,7 @@ Contact(s): George McCabe
 """
 
 import os
+from typing import Any
 
 from .constants import PYTHON_EMBEDDING_TYPES, CLIMO_TYPES, MISSING_DATA_VALUE
 from .string_manip import getlist, get_threshold_via_regex
@@ -267,30 +268,7 @@ def add_met_config_item(config, item, output_dict, depth=0):
 
     # handle dictionary or dictionary list item
     if 'dict' in item.data_type:
-        tmp_dict = {}
-        # handle list of dictionaries (dictlist)
-        if isinstance(item.children, dict):
-            dict_string = format_met_config_dict_list(config, item.name, item.children)
-            if dict_string is None:
-                return False
-        # handle dictionary with list of children
-        else:
-            for child in item.children:
-                if not add_met_config_item(config, child, tmp_dict,
-                                           depth=depth+1):
-                    return False
-
-            dict_string = format_met_config(item.data_type,
-                                            tmp_dict,
-                                            item.name,
-                                            keys=None)
-
-        # if handling dict MET config that is not nested inside another
-        if not depth and item.data_type == 'dict':
-            env_var_name = f'{env_var_name}_DICT'
-
-        output_dict[env_var_name] = dict_string
-        return True
+        return _handle_met_config_item_dict(config, depth, env_var_name, item, output_dict)
 
     # handle non-dictionary item
     set_met_config = set_met_config_function(item.data_type)
@@ -306,6 +284,33 @@ def add_met_config_item(config, item, output_dict, depth=0):
                           item.name,
                           c_dict_key=env_var_name,
                           **item.extra_args)
+
+
+def _handle_met_config_item_dict(config, depth: int, env_var_name: str | Any, item, output_dict) -> bool:
+    tmp_dict = {}
+    # handle list of dictionaries (dictlist)
+    if isinstance(item.children, dict):
+        dict_string = format_met_config_dict_list(config, item.name, item.children)
+        if dict_string is None:
+            return False
+    # handle dictionary with list of children
+    else:
+        for child in item.children:
+            if not add_met_config_item(config, child, tmp_dict,
+                                       depth=depth + 1):
+                return False
+
+        dict_string = format_met_config(item.data_type,
+                                        tmp_dict,
+                                        item.name,
+                                        keys=None)
+
+    # if handling dict MET config that is not nested inside another
+    if not depth and item.data_type == 'dict':
+        env_var_name = f'{env_var_name}_DICT'
+
+    output_dict[env_var_name] = dict_string
+    return True
 
 
 def get_met_config_dict_list(config, app_name, dict_name, dict_items, parent=None):
