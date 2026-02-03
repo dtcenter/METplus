@@ -284,6 +284,15 @@ class PointStatWrapper(CompareGriddedWrapper):
     def populate_var_options(self):
         var_options = super().populate_var_options()
 
+        # add options that are supported for obs fields
+        obs_options = {
+            'duplicate_flag': {'data_type': 'constant'},
+            'obs_summary': {'data_type': 'constant'},
+            'obs_perc_value': {'data_type': 'int'},
+        }
+        for key, value in obs_options.items():
+            var_options['obs'][key] = value
+
         self.handle_land_mask_var_options(var_options)
         self.handle_topo_mask_var_options(var_options)
         self.handle_lapse_rate_correction_var_options(var_options)

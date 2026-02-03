@@ -297,11 +297,11 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_MSL_AGL_CONVERSION_THRESH`
 | :term:`ENSEMBLE_STAT_MSL_AGL_CONVERSION_MSL_TO_AGL`
 | :term:`ENSEMBLE_STAT_DUPLICATE_FLAG`
+| :term:`ENSEMBLE_STAT_OBS_SUMMARY`
+| :term:`ENSEMBLE_STAT_OBS_PERC_VALUE`
 | :term:`ENSEMBLE_STAT_SKIP_CONST`
 | :term:`ENSEMBLE_STAT_CENSOR_THRESH`
 | :term:`ENSEMBLE_STAT_CENSOR_VAL`
-| :term:`ENSEMBLE_STAT_DUPLICATE_FLAG`
-| :term:`ENSEMBLE_STAT_SKIP_CONST`
 | :term:`ENSEMBLE_STAT_OBS_ERROR_FLAG`
 | :term:`ENSEMBLE_STAT_CLIMO_MEAN_FILE_NAME`
 | :term:`ENSEMBLE_STAT_CLIMO_MEAN_FILE_TYPE`
@@ -448,6 +448,9 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_FROM`
 | :term:`ENSEMBLE_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_THRESH`
 | :term:`ENSEMBLE_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_MSL_TO_AGL`
+| :term:`ENSEMBLE_STAT_OBS_VAR<n>_DUPLICATE_FLAG`
+| :term:`ENSEMBLE_STAT_OBS_VAR<n>_OBS_SUMMARY`
+| :term:`ENSEMBLE_STAT_OBS_VAR<n>_OBS_PERC_VALUE`
 | :term:`OBS_VAR<n>_LAND_MASK_FLAG`
 | :term:`OBS_VAR<n>_TOPO_MASK_FLAG`
 | :term:`OBS_VAR<n>_TOPO_MASK_USE_OBS_THRESH`
@@ -458,6 +461,9 @@ METplus Configuration
 | :term:`OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_FROM`
 | :term:`OBS_VAR<n>_MSL_AGL_CONVERSION_THRESH`
 | :term:`OBS_VAR<n>_MSL_AGL_CONVERSION_MSL_TO_AGL`
+| :term:`OBS_VAR<n>_DUPLICATE_FLAG`
+| :term:`OBS_VAR<n>_OBS_SUMMARY`
+| :term:`OBS_VAR<n>_OBS_PERC_VALUE`
 | :term:`ENSEMBLE_STAT_SKIP_VALID_TIMES`
 | :term:`ENSEMBLE_STAT_INC_VALID_TIMES`
 | :term:`ENSEMBLE_STAT_SKIP_INIT_TIMES`
@@ -813,6 +819,12 @@ ${METPLUS_OBS_FIELD}
      - obs.field.topo_mask.msl_agl_conversion.thresh
    * - :term:`OBS_VAR<n>_MSL_AGL_CONVERSION_MSL_TO_AGL`
      - obs.field.topo_mask.msl_agl_conversion.msl_to_agl
+   * - :term:`OBS_VAR<n>_DUPLICATE_FLAG`
+     - obs.field.duplicate_flag
+   * - :term:`OBS_VAR<n>_OBS_SUMMARY`
+     - obs.field.obs_summary
+   * - :term:`OBS_VAR<n>_OBS_PERC_VALUE`
+     - obs.field.obs_perc_value
 
 .. note:: For more information on controlling the observation field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
@@ -937,6 +949,30 @@ ${METPLUS_DUPLICATE_FLAG}
      - MET Config File
    * - :term:`ENSEMBLE_STAT_DUPLICATE_FLAG`
      - duplicate_flag
+
+${METPLUS_OBS_SUMMARY}
+""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_OBS_SUMMARY`
+     - obs_summary
+
+${METPLUS_OBS_PERC_VALUE}
+"""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_OBS_PERC_VALUE`
+     - obs_perc_value
 
 ${METPLUS_SKIP_CONST}
 """""""""""""""""""""
@@ -8495,6 +8531,9 @@ Configuration
 | :term:`POINT_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_FROM`
 | :term:`POINT_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_THRESH`
 | :term:`POINT_STAT_OBS_VAR<n>_MSL_AGL_CONVERSION_MSL_TO_AGL`
+| :term:`POINT_STAT_OBS_VAR<n>_DUPLICATE_FLAG`
+| :term:`POINT_STAT_OBS_VAR<n>_OBS_SUMMARY`
+| :term:`POINT_STAT_OBS_VAR<n>_OBS_PERC_VALUE`
 | :term:`OBS_VAR<n>_LAND_MASK_FLAG`
 | :term:`OBS_VAR<n>_TOPO_MASK_FLAG`
 | :term:`OBS_VAR<n>_TOPO_MASK_USE_OBS_THRESH`
@@ -8505,6 +8544,9 @@ Configuration
 | :term:`OBS_VAR<n>_MSL_AGL_CONVERSION_APPLY_FROM`
 | :term:`OBS_VAR<n>_MSL_AGL_CONVERSION_THRESH`
 | :term:`OBS_VAR<n>_MSL_AGL_CONVERSION_MSL_TO_AGL`
+| :term:`OBS_VAR<n>_DUPLICATE_FLAG`
+| :term:`OBS_VAR<n>_OBS_SUMMARY`
+| :term:`OBS_VAR<n>_OBS_PERC_VALUE`
 | :term:`POINT_STAT_OBS_VALID_BEG`
 | :term:`POINT_STAT_OBS_VALID_END`
 | :term:`POINT_STAT_SEEPS_P1_THRESH`
@@ -8775,6 +8817,12 @@ ${METPLUS_OBS_FIELD}
      - obs.field.topo_mask.msl_agl_conversion.thresh
    * - :term:`OBS_VAR<n>_MSL_AGL_CONVERSION_MSL_TO_AGL`
      - obs.field.topo_mask.msl_agl_conversion.msl_to_agl
+   * - :term:`OBS_VAR<n>_DUPLICATE_FLAG`
+     - obs.field.duplicate_flag
+   * - :term:`OBS_VAR<n>_OBS_SUMMARY`
+     - obs.field.obs_summary
+   * - :term:`OBS_VAR<n>_OBS_PERC_VALUE`
+     - obs.field.obs_perc_value
 
 .. note:: For more information on controlling the observation field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 

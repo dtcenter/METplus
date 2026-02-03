@@ -912,7 +912,12 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
          {'METPLUS_FCST_FILE_TYPE': 'file_type = NETCDF_NCCF;'}),
         ({'ENSEMBLE_STAT_OBS_FILE_TYPE': 'NETCDF_NCCF', },
          {'METPLUS_OBS_FILE_TYPE': 'file_type = NETCDF_NCCF;'}),
-
+        ({'ENSEMBLE_STAT_DUPLICATE_FLAG': 'NONE', },
+         {'METPLUS_DUPLICATE_FLAG': 'duplicate_flag = NONE;'}),
+        ({'ENSEMBLE_STAT_OBS_SUMMARY': 'NONE', },
+         {'METPLUS_OBS_SUMMARY': 'obs_summary = NONE;'}),
+        ({'ENSEMBLE_STAT_OBS_PERC_VALUE': '50', },
+         {'METPLUS_OBS_PERC_VALUE': 'obs_perc_value = 50;'}),
     ]
 )
 @pytest.mark.wrapper_c
