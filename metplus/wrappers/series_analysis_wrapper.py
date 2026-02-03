@@ -290,16 +290,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             if data_type == 'BOTH':
                 continue
 
-            self.add_met_config(
-                name='file_type',
-                data_type='string',
-                env_var_name=f'{data_type}_FILE_TYPE',
-                metplus_configs=[f'{data_type}_SERIES_ANALYSIS_FILE_TYPE',
-                                 f'SERIES_ANALYSIS_{data_type}_FILE_TYPE',
-                                 f'{data_type}_FILE_TYPE',
-                                 f'{data_type}_SERIES_ANALYSIS_INPUT_DATATYPE',
-                                 'SERIES_ANALYSIS_FILE_TYPE'],
-                extra_args={'constant': True})
+            self.handle_file_type(type_list=[data_type])
 
             self.add_met_config(
                 name='cat_thresh',

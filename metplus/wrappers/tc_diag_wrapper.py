@@ -186,12 +186,7 @@ class TCDiagWrapper(RuntimeFreqWrapper):
                             env_var_name='METPLUS_DATA_LEVEL',
                             metplus_configs=['TC_DIAG_DATA_LEVEL'])
 
-        self.add_met_config(name='file_type',
-                            data_type='string',
-                            env_var_name='METPLUS_DATA_FILE_TYPE',
-                            metplus_configs=['TC_DIAG_INPUT_DATATYPE',
-                                             'TC_DIAG_DATA_FILE_TYPE',
-                                             'TC_DIAG_FILE_TYPE',])
+        self.handle_file_type(type_list=['DATA'])
 
         self.handle_regrid(c_dict, set_to_grid=False)
 

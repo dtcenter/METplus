@@ -172,19 +172,7 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         self.add_met_config(name='message_type', data_type='list')
 
-        self.add_met_config(name='file_type', data_type='string',
-                            env_var_name='FCST_FILE_TYPE',
-                            metplus_configs=['POINT_STAT_FCST_FILE_TYPE',
-                                             'FCST_POINT_STAT_FILE_TYPE',
-                                             'POINT_STAT_FILE_TYPE'],
-                            extra_args={'constant': True})
-
-        self.add_met_config(name='file_type', data_type='string',
-                            env_var_name='OBS_FILE_TYPE',
-                            metplus_configs=['POINT_STAT_OBS_FILE_TYPE',
-                                             'OBS_POINT_STAT_FILE_TYPE',
-                                             'POINT_STAT_FILE_TYPE'],
-                            extra_args={'constant': True})
+        self.handle_file_type(type_list=('FCST', 'OBS'))
 
         self.handle_climo_cdf_dict()
 
