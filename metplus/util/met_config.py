@@ -297,6 +297,9 @@ def add_met_config_item(config, item, output_dict, depth=0):
     if not set_met_config:
         return False
 
+    if item.data_type == 'constant':
+        item.extra_args['constant'] = True
+
     return set_met_config(config,
                           output_dict,
                           item.metplus_configs,
@@ -445,7 +448,7 @@ def set_met_config_function(item_type):
     """
     if item_type == 'int':
         return set_met_config_int
-    elif item_type == 'string':
+    elif item_type == 'string' or item_type == 'constant':
         return set_met_config_string
     elif item_type == 'list':
         return set_met_config_list
