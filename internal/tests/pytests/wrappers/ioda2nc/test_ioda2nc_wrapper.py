@@ -210,7 +210,9 @@ def test_ioda2nc_missing_inputs(metplus_config, get_test_data_dir, run_all_and_c
           'IODA2NC_NMSG': '10',
           },
          {}, ' -iodafile *INPUT_DIR*/other/file.nc -valid_beg 20200309_12 -valid_end 20200310_12 -nmsg 10'),
-
+        # 40 quality_mark_thresh threshold value
+        ({'IODA2NC_QUALITY_MARK_THRESH': '<=2||==9', },
+         {'METPLUS_QUALITY_MARK_THRESH': 'quality_mark_thresh = <=2||==9;'}, ''),
     ]
 )
 @pytest.mark.wrapper

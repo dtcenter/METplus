@@ -3272,7 +3272,10 @@ METplus Configuration
 | :term:`GRID_DIAG_INC_INIT_TIMES`
 | :term:`GRID_DIAG_ALLOW_MISSING_INPUTS`
 | :term:`GRID_DIAG_INPUT_THRESH`
-|
+| :term:`GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_1D`
+| :term:`GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_2D`
+| :term:`GRID_DIAG_OUTPUT_FLAG_INFO_THEORY`
+
 
 .. _grid-diag-met-conf:
 
@@ -3395,6 +3398,22 @@ ${METPLUS_MASK_DICT}
      - mask.poly
 
 .. note:: Since the default value in the MET config file for 'grid' is grid = [ "FULL" ];, setting GRID_DIAG_MASK_GRID to an empty string will result in a value of grid = []; in the MET config file.
+
+${METPLUS_OUTPUT_FLAG_DICT}
+"""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_1D`
+     - output_flag.histogram_1d
+   * - :term:`GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_2D`
+     - output_flag.histogram_2d
+   * - :term:`GRID_DIAG_OUTPUT_FLAG_INFO_THEORY`
+     - output_flag.info_theory
 
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""

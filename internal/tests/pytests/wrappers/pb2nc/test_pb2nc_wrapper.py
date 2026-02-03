@@ -171,6 +171,9 @@ def test_find_input_files(metplus_config, offsets, offset_to_find):
         ({'PB2NC_QUALITY_MARK_THRESH': '3', },
          {'METPLUS_QUALITY_MARK_THRESH': 'quality_mark_thresh = 3;'}),
 
+        ({'PB2NC_QUALITY_MARK_THRESH': '<=2||==9', },
+         {'METPLUS_QUALITY_MARK_THRESH': 'quality_mark_thresh = <=2||==9;'}),
+
         ({'PB2NC_TIME_SUMMARY_FLAG': 'True', },
          {'METPLUS_TIME_SUMMARY_DICT': 'time_summary = {flag = TRUE;}'}),
 
