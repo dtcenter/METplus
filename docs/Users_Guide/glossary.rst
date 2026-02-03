@@ -6166,22 +6166,21 @@ METplus Configuration Glossary
      | *Used by:*  TCpairs
 
    ENS_ENSEMBLE_STAT_INPUT_DATATYPE
-          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_INPUT_DATATYPE` in :ref:`gen_ens_prod_wrapper` instead.
+     .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_INPUT_DATATYPE` in :ref:`gen_ens_prod_wrapper` instead.
 
    GEN_ENS_PROD_INPUT_DATATYPE
+     .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_ENS_FILE_TYPE` instead.
+
+   GEN_ENS_PROD_ENS_FILE_TYPE
      Set the file_type entry of the ens dictionary in the MET config file for GenEnsProd.
 
      | *Used by:*  GenEnsProd
 
    FCST_SERIES_ANALYSIS_INPUT_DATATYPE
-     Set the file_type entry of the fcst dictionary in the MET config file for SeriesAnalysis.
-
-     | *Used by:*  SeriesAnalysis
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_FCST_FILE_TYPE` instead.
 
    OBS_SERIES_ANALYSIS_INPUT_DATATYPE
-     Set the file_type entry of the obs dictionary in the MET config file for SeriesAnalysis.
-
-     | *Used by:*  SeriesAnalysis
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_OBS_FILE_TYPE` instead.
 
    MET_DATA_DB_DIR
      Set this the location of the dtcenter/METdataio repository.
@@ -7213,6 +7212,12 @@ METplus Configuration Glossary
      | *Used by:* GridStat
 
    FCST_GRID_STAT_FILE_TYPE
+     .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_FCST_FILE_TYPE` instead.
+
+   GRID_STAT_OBS_FILE_TYPE
+     .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_OBS_FILE_TYPE` instead.
+
+   GRID_STAT_FCST_FILE_TYPE
      Specify the value for 'fcst.file_type' in the MET configuration file for GridStat.
 
      | *Used by:* GridStat
@@ -11390,11 +11395,17 @@ METplus Configuration Glossary
      | *Used by:*  WaveletStat
 
    FCST_WAVELET_STAT_FILE_TYPE
+     .. warning:: **DEPRECATED:** Please use :term:`WAVELET_STAT_FCST_FILE_TYPE` instead.
+
+   OBS_WAVELET_STAT_FILE_TYPE
+     .. warning:: **DEPRECATED:** Please use :term:`WAVELET_STAT_OBS_FILE_TYPE` instead.
+
+   WAVELET_STAT_FCST_FILE_TYPE
      Specify the value for 'fcst.file_type' in the MET configuration file for WaveletStat.
 
      | *Used by:* WaveletStat
 
-   OBS_WAVELET_STAT_FILE_TYPE
+   WAVELET_STAT_OBS_FILE_TYPE
      Specify the value for 'obs.file_type' in the MET configuration file for WaveletStat.
 
      | *Used by:* WaveletStat
@@ -15014,3 +15025,8 @@ METplus Configuration Glossary
      Specify the value for 'obs.file_type' in the MET configuration file for GridStat.
 
      | *Used by:*  GridStat
+
+   GRID_DIAG_FILE_TYPE
+     Specify the value for 'data.file_type' in the MET configuration file for GridDiag.
+
+     | *Used by:*  GridDiag
