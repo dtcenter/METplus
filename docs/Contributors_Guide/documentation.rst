@@ -1071,13 +1071,6 @@ looks like:
     |                   |                                |                              |
     | Support           |                                |                              |
     +-------------------+--------------------------------+------------------------------+
-    | *Optional*        | :code:`--enable-all` or        | MET_CAIRO,                   |
-    |                   |                                |                              |
-    | MODE Graphics     | :code:`--enable-mode_graphics` | MET_FREETYPE                 |
-    |                   |                                |                              |
-    | Support           |                                |                              |
-    +-------------------+--------------------------------+------------------------------+
-
 
 
 PrettyTable
