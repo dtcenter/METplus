@@ -55,3 +55,4 @@
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3164 - Adding truth data for 3 new fire use cases, updating medium range use cases due to inconsistent location
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] 8aecb0e1 - hotfix 8aecb0e1 combined the 4 fire weather use cases into 1 use case group
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] dtcenter/MET#3321 - Remove FULL from the default list of masking regions.
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3212 and #3143 - #3212 added FULL output back and #3143 renamed land_surface use case category to land

@@ -380,21 +380,7 @@ class MODEWrapper(CompareGriddedWrapper):
         self.add_met_config(name='ps_plot_flag', data_type='bool')
         self.add_met_config(name='ct_stats_flag', data_type='bool')
 
-        self.add_met_config(name='file_type',
-                            data_type='string',
-                            env_var_name='FCST_FILE_TYPE',
-                            metplus_configs=[f'{tool}_FCST_FILE_TYPE',
-                                             f'FCST_{tool}_FILE_TYPE',
-                                             f'{tool}_FILE_TYPE'],
-                            extra_args={'constant': True})
-
-        self.add_met_config(name='file_type',
-                            data_type='string',
-                            env_var_name='OBS_FILE_TYPE',
-                            metplus_configs=[f'{tool}_OBS_FILE_TYPE',
-                                             f'OBS_{tool}_FILE_TYPE',
-                                             f'{tool}_FILE_TYPE'],
-                            extra_args={'constant': True})
+        self.handle_file_type(type_list=('FCST', 'OBS'))
 
         self.add_met_config(name='multivar_name', data_type='string',
                             env_var_name='FCST_MULTIVAR_NAME',

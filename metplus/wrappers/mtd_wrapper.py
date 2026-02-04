@@ -157,6 +157,8 @@ class MTDWrapper(CompareGriddedWrapper):
             self.config.getstr('config', f'{read_type}_MTD_INPUT_DATATYPE', '')
         )
 
+        self.handle_file_type(type_list=[read_type], env_var_override=f"{write_type}_FILE_TYPE")
+
         self.add_met_config(name='conv_radius',
                             data_type='string',
                             env_var_name=f'METPLUS_{write_type}_CONV_RADIUS',

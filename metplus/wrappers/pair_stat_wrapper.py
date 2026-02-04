@@ -209,19 +209,7 @@ class PairStatWrapper(CompareGriddedWrapper):
         self.add_met_config(name='seeps_p1_thresh', data_type='string',
                             extra_args={'remove_quotes': True})
 
-        self.add_met_config(name='file_type', data_type='string',
-                            env_var_name='FCST_FILE_TYPE',
-                            metplus_configs=['PAIR_STAT_FCST_FILE_TYPE',
-                                             'FCST_PAIR_STAT_FILE_TYPE',
-                                             'PAIR_STAT_FILE_TYPE'],
-                            extra_args={'constant': True})
-
-        self.add_met_config(name='file_type', data_type='string',
-                            env_var_name='OBS_FILE_TYPE',
-                            metplus_configs=['PAIR_STAT_OBS_FILE_TYPE',
-                                             'OBS_PAIR_STAT_FILE_TYPE',
-                                             'PAIR_STAT_FILE_TYPE'],
-                            extra_args={'constant': True})
+        self.handle_file_type(type_list=('FCST', 'OBS'))
 
         c_dict['FCST_PROB_THRESH'] = (
             self.config.getstr('config', 'FCST_PAIR_STAT_PROB_THRESH', '==0.1')

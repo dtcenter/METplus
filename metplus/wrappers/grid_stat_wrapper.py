@@ -233,19 +233,7 @@ class GridStatWrapper(CompareGriddedWrapper):
                             metplus_configs=['GRID_STAT_GRID_WEIGHT_FLAG'],
                             extra_args={'constant': True})
 
-        self.add_met_config(name='file_type', data_type='string',
-                            env_var_name='FCST_FILE_TYPE',
-                            metplus_configs=['GRID_STAT_FCST_FILE_TYPE',
-                                             'FCST_GRID_STAT_FILE_TYPE',
-                                             'GRID_STAT_FILE_TYPE'],
-                            extra_args={'constant': True})
-
-        self.add_met_config(name='file_type', data_type='string',
-                            env_var_name='OBS_FILE_TYPE',
-                            metplus_configs=['GRID_STAT_OBS_FILE_TYPE',
-                                             'OBS_GRID_STAT_FILE_TYPE',
-                                             'GRID_STAT_FILE_TYPE'],
-                            extra_args={'constant': True})
+        self.handle_file_type(type_list=('FCST', 'OBS'))
 
         self.add_met_config(name='hss_ec_value', data_type='float',
                             metplus_configs=['GRID_STAT_HSS_EC_VALUE'])

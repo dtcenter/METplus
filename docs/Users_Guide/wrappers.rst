@@ -432,10 +432,12 @@ METplus Configuration
 | :term:`FCST_ENSEMBLE_STAT_VAR<n>_LEVELS`
 | :term:`FCST_ENSEMBLE_STAT_VAR<n>_THRESH`
 | :term:`FCST_ENSEMBLE_STAT_VAR<n>_OPTIONS`
+| :term:`ENSEMBLE_STAT_FCST_FILE_TYPE`
 | :term:`OBS_ENSEMBLE_STAT_VAR<n>_NAME`
 | :term:`OBS_ENSEMBLE_STAT_VAR<n>_LEVELS`
 | :term:`OBS_ENSEMBLE_STAT_VAR<n>_THRESH`
 | :term:`OBS_ENSEMBLE_STAT_VAR<n>_OPTIONS`
+| :term:`ENSEMBLE_STAT_OBS_FILE_TYPE`
 | :term:`ENSEMBLE_STAT_OBS_VAR<n>_LAND_MASK_FLAG`
 | :term:`ENSEMBLE_STAT_OBS_VAR<n>_TOPO_MASK_FLAG`
 | :term:`ENSEMBLE_STAT_OBS_VAR<n>_TOPO_MASK_USE_OBS_THRESH`
@@ -646,18 +648,6 @@ ${METPLUS_ECLV_POINTS}
    * - :term:`ENSEMBLE_STAT_ECLV_POINTS`
      - eclv_points
 
-${METPLUS_FCST_FILE_TYPE}
-"""""""""""""""""""""""""
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 1
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`FCST_ENSEMBLE_STAT_INPUT_DATATYPE`
-     - fcst.file_type
-
 ${METPLUS_ENS_THRESH}
 """""""""""""""""""""
 
@@ -701,6 +691,18 @@ ${METPLUS_FCST_FIELD}
      - n/a
 
 .. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+
+${METPLUS_FCST_FILE_TYPE}
+"""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_FCST_FILE_TYPE`
+     - fcst.file_type
 
 ${METPLUS_FCST_CLIMO_MEAN_DICT}
 """""""""""""""""""""""""""""""
@@ -762,7 +764,6 @@ ${METPLUS_FCST_CLIMO_STDEV_DICT}
    * - :term:`ENSEMBLE_STAT_FCST_CLIMO_STDEV_HOUR_INTERVAL`
      - fcst.climo_stdev.hour_interval
 
-
 ${METPLUS_OBS_FILE_TYPE}
 """"""""""""""""""""""""
 
@@ -772,7 +773,7 @@ ${METPLUS_OBS_FILE_TYPE}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE` -or- :term:`OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE`
+   * - :term:`ENSEMBLE_STAT_OBS_FILE_TYPE`
      - obs.file_type
 
 ${METPLUS_OBS_FIELD}
@@ -3272,7 +3273,10 @@ METplus Configuration
 | :term:`GRID_DIAG_INC_INIT_TIMES`
 | :term:`GRID_DIAG_ALLOW_MISSING_INPUTS`
 | :term:`GRID_DIAG_INPUT_THRESH`
-|
+| :term:`GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_1D`
+| :term:`GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_2D`
+| :term:`GRID_DIAG_OUTPUT_FLAG_INFO_THEORY`
+
 
 .. _grid-diag-met-conf:
 
@@ -3395,6 +3399,22 @@ ${METPLUS_MASK_DICT}
      - mask.poly
 
 .. note:: Since the default value in the MET config file for 'grid' is grid = [ "FULL" ];, setting GRID_DIAG_MASK_GRID to an empty string will result in a value of grid = []; in the MET config file.
+
+${METPLUS_OUTPUT_FLAG_DICT}
+"""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_1D`
+     - output_flag.histogram_1d
+   * - :term:`GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_2D`
+     - output_flag.histogram_2d
+   * - :term:`GRID_DIAG_OUTPUT_FLAG_INFO_THEORY`
+     - output_flag.info_theory
 
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""
@@ -3890,7 +3910,7 @@ ${METPLUS_OBS_FILE_TYPE}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`OBS_GRID_STAT_FILE_TYPE`
+   * - :term:`GRID_STAT_OBS_FILE_TYPE`
      - obs.file_type
 
 ${METPLUS_OBS_FIELD}
@@ -5999,7 +6019,7 @@ ${METPLUS_FCST_FILE_TYPE}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`FCST_MTD_INPUT_DATATYPE`
+   * - :term:`MTD_FCST_FILE_TYPE`
      - fcst.file_type
 
 ${METPLUS_FCST_FIELD}
@@ -6055,7 +6075,7 @@ ${METPLUS_OBS_FILE_TYPE}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`OBS_MTD_INPUT_DATATYPE`
+   * - :term:`MTD_OBS_FILE_TYPE`
      - obs.file_type
 
 ${METPLUS_OBS_FIELD}
@@ -10058,7 +10078,7 @@ ${METPLUS_FCST_FILE_TYPE}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`FCST_SERIES_ANALYSIS_INPUT_DATATYPE`
+   * - :term:`SERIES_ANALYSIS_FCST_FILE_TYPE`
      - fcst.file_type
 
 ${METPLUS_FCST_CAT_THRESH}
@@ -10165,7 +10185,7 @@ ${METPLUS_OBS_FILE_TYPE}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`OBS_SERIES_ANALYSIS_INPUT_DATATYPE`
+   * - :term:`SERIES_ANALYSIS_OBS_FILE_TYPE`
      - obs.file_type
 
 ${METPLUS_OBS_CAT_THRESH}

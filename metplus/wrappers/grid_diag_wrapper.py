@@ -33,6 +33,7 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         'METPLUS_CENSOR_VAL',
         'METPLUS_DATA_DICT',
         'METPLUS_MASK_DICT',
+        'METPLUS_OUTPUT_FLAG_DICT',
     ]
 
     # deprecated env vars that are no longer supported in the wrapped MET conf
@@ -41,6 +42,12 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         'DATA_FIELD',
         'DATA_FILE_TYPE',
         'VERIF_MASK',
+    ]
+
+    OUTPUT_FLAGS = [
+        'histogram_1d',
+        'histogram_2d',
+        'info_theory',
     ]
 
     def __init__(self, config, instance=None):
@@ -66,14 +73,12 @@ class GridDiagWrapper(RuntimeFreqWrapper):
             self.log_error('Must set GRID_DIAG_INPUT_TEMPLATE to run')
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('GRID_DIAG_OUTPUT_DIR', '')
-        c_dict['OUTPUT_TEMPLATE'] = (
-            self.config.getraw('config',
-                               'GRID_DIAG_OUTPUT_TEMPLATE')
-        )
+        c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('config', 'GRID_DIAG_OUTPUT_TEMPLATE')
 
-        data_type = self.config.getstr('config',
-                                       'GRID_DIAG_INPUT_DATATYPE',
-                                       '')
+        data_type = self.config.getraw('config', 'GRID_DIAG_FILE_TYPE')
+        if not data_type:
+            data_type = self.config.getraw('config', 'GRID_DIAG_INPUT_DATATYPE')
+
         if data_type:
             c_dict['DATA_FILE_TYPE'] = f"file_type = {data_type};"
 
@@ -84,9 +89,11 @@ class GridDiagWrapper(RuntimeFreqWrapper):
 
         self.handle_description()
 
-        self.handle_mask(single_value=True)
+        self.handle_mask(single_value=False)
 
         self.handle_censor_val_and_thresh()
+
+        self.handle_flags('OUTPUT')
 
         c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
                                                  data_type='FCST',

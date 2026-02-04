@@ -75,17 +75,17 @@
     "run": false
   },
   {
-    "category": "land_surface",
+    "category": "land",
     "index_list": "0",
     "run": false
   },
   {
-    "category": "land_surface",
+    "category": "land",
     "index_list": "1",
     "run": false
   },
   {
-    "category": "land_surface",
+    "category": "land",
     "index_list": "2",
     "run": false
   },
