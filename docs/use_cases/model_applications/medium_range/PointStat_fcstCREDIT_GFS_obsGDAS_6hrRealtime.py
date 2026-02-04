@@ -202,7 +202,7 @@ model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.con
 # Output for this use case will be found in 
 # {OUTPUT_BASE}/model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.  There will
 # be 6 directories, data_ingest, GDAS, plots, point_stat, reformatted, and StatAnalaysis.  The 
-# data_ingest directory contains the observation dat that has been downloaded
+# data_ingest directory contains the observation data that has been downloaded
 # and contains 2 subdirectories, GDAS and GFS.  The GDAS directory contains 1 subdirectory, 20250924, 
 # with 2 files:
 #
@@ -272,7 +272,7 @@ model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.con
 #
 # .. note::
 #
-#   * DataIngestToolUseCase
+#   * DataIngestUseCase
 #   * PB2NCToolUseCase
 #   * PointStatToolUseCase
 #   * StatAnalysisToolUseCase
@@ -284,6 +284,7 @@ model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.con
 #   * METdbLoadUseCase
 #   * METcalcpyUseCase
 #   * METplotpyUseCase
+#   * AIWPUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

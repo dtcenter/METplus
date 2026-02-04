@@ -354,11 +354,12 @@ def _get_output_item(dict_items, met_config_name):
     if not dict_items:
         return 'VALUE'
 
-    item_name, child_name, *_ = met_config_name.split('.')[1:]
-    value = 'VALUE;'
-    if child_name:
-        value = f"{{{child_name} = VALUE;}}"
-    return f"{item_name} = {value}"
+    item_name, *rest = met_config_name.split('.')[1:]
+    child_name = rest[0] if rest else None
+    if not child_name:
+        return f"{item_name} = VALUE;"
+
+    return f"{item_name} = {{{child_name} = VALUE;}}"
 
 
 def doc_util_usage():

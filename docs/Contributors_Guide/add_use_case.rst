@@ -680,11 +680,19 @@ Create new data tarfile
 
 Create a tarfile on the development machine with the new dataset. Make sure
 the tarfile contains directories, i.e.
-*model_applications/${METPLUS_USE_CASE_CATEGORY}*::
+*model_applications/${METPLUS_USE_CASE_CATEGORY}*.  
+**ONLY RUN THE COMMAND THAT IS APPROPRIATE TO YOUR CASE. READ CAREFULLY!**
+
+**CONDITION 1:** You are adding data for a single new use case::
 
     tar czf ${METPLUS_NEW_DATA_TARFILE} model_applications/${METPLUS_USE_CASE_CATEGORY}/${METPLUS_USE_CASE_NAME}
 
-OR for a met_tool_wrapper use case, run::
+**CONDITION 2:** You have more than one use case in the same category, and want to add data for all of those use
+cases at the same time:: 
+
+    tar czf ${METPLUS_NEW_DATA_TARFILE} model_applications/${METPLUS_USE_CASE_CATEGORY}/*
+
+**CONDITION 3:** For a met_tool_wrapper use case, run::
 
     tar czf ${METPLUS_NEW_DATA_TARFILE} met_test/new
 
@@ -1234,6 +1242,10 @@ Note: If the use case is being added to a new use case category, the above comma
 After verifying the directories are correct, copy the files::
 
     cp -r $from_directory $to_directory/
+
+.. note::
+    If data for multiple use cases are included, change the value of
+    **METPLUS_USE_CASE_NAME** and rerun these steps for each.
 
 Remove old data (if applicable)
 """""""""""""""""""""""""""""""

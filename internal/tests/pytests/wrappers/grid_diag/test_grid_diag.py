@@ -25,7 +25,7 @@ data_fmt = ('data = {field = [ '
             ' ];}')
 
 
-def set_minimum_config_settings(config):
+def set_minimum_config_settings(config, set_fields=True):
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
     config.set('config', 'DO_NOT_RUN_EXE', True)
@@ -51,12 +51,13 @@ def set_minimum_config_settings(config):
                '{OUTPUT_BASE}/grid_diag/output')
     config.set('config', 'GRID_DIAG_OUTPUT_TEMPLATE',
                'grid_diag.{valid?fmt=%Y%m%d%H}.nc')
-    config.set('config', 'BOTH_VAR1_NAME', data_name_1)
-    config.set('config', 'BOTH_VAR1_LEVELS', data_level)
-    config.set('config', 'BOTH_VAR1_OPTIONS', data_options_1)
-    config.set('config', 'BOTH_VAR2_NAME', data_name_2)
-    config.set('config', 'BOTH_VAR2_LEVELS', data_level)
-    config.set('config', 'BOTH_VAR2_OPTIONS', data_options_2)
+    if set_fields:
+        config.set('config', 'BOTH_VAR1_NAME', data_name_1)
+        config.set('config', 'BOTH_VAR1_LEVELS', data_level)
+        config.set('config', 'BOTH_VAR1_OPTIONS', data_options_1)
+        config.set('config', 'BOTH_VAR2_NAME', data_name_2)
+        config.set('config', 'BOTH_VAR2_LEVELS', data_level)
+        config.set('config', 'BOTH_VAR2_OPTIONS', data_options_2)
 
 
 @pytest.mark.parametrize(
@@ -267,15 +268,20 @@ def test_get_config_file(metplus_config):
          {'METPLUS_CENSOR_VAL': 'censor_val = [12000, 5000];'}),
 
         ({'GRID_DIAG_MASK_GRID': 'FULL', },
-         {'METPLUS_MASK_DICT': 'mask = {grid = "FULL";}'}),
+         {'METPLUS_MASK_DICT': 'mask = {grid = ["FULL"];}'}),
 
         ({'GRID_DIAG_MASK_POLY': 'MET_BASE/poly/EAST.poly', },
-         {'METPLUS_MASK_DICT': 'mask = {poly = "MET_BASE/poly/EAST.poly";}'}),
+         {'METPLUS_MASK_DICT': 'mask = {poly = ["MET_BASE/poly/EAST.poly"];}'}),
 
         ({'GRID_DIAG_MASK_GRID': 'FULL',
-          'GRID_DIAG_MASK_POLY': 'MET_BASE/poly/EAST.poly',},
-         {'METPLUS_MASK_DICT': ('mask = {grid = "FULL";'
-                                'poly = "MET_BASE/poly/EAST.poly";}')}),
+          'GRID_DIAG_MASK_POLY': 'MET_BASE/poly/EAST.poly', },
+         {'METPLUS_MASK_DICT': ('mask = {grid = ["FULL"];'
+                                'poly = ["MET_BASE/poly/EAST.poly"];}')}),
+
+        ({'GRID_DIAG_MASK_GRID': 'FULL,DTC165',
+          'GRID_DIAG_MASK_POLY': 'MET_BASE/poly/EAST.poly,  MET_BASE/poly/WEST.poly', },
+         {'METPLUS_MASK_DICT': ('mask = {grid = ["FULL", "DTC165"];'
+                                'poly = ["MET_BASE/poly/EAST.poly", "MET_BASE/poly/WEST.poly"];}')}),
 
         ({'GRID_DIAG_REGRID_TO_GRID': 'FCST',},
          {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}'}),
@@ -316,14 +322,41 @@ def test_get_config_file(metplus_config):
                                   'censor_thresh = [>12000, <5000];'
                                   'censor_val = [12000, 5000];}'
                                   )}),
+        ({'BOTH_VAR1_NAME': 'WRF_precip',
+          'BOTH_VAR1_LEVELS': '(@{valid?fmt=%Y%m%d%H},*,*)',
+          },
+         {'METPLUS_DATA_DICT': [
+             ('data = {field = [ { name="WRF_precip"; level="(@2016100421,*,*)"; },'
+              '{ name="WRF_precip"; level="(@2016100500,*,*)"; },'
+              '{ name="WRF_precip"; level="(@2016100503,*,*)"; } ];}'
+             ),
+             ('data = {field = [ { name="WRF_precip"; level="(@2016100503,*,*)"; },'
+              '{ name="WRF_precip"; level="(@2016100506,*,*)"; },'
+              '{ name="WRF_precip"; level="(@2016100509,*,*)"; } ];}'
+             ),
+         ]
+         }),
+        ({'GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_1D': 'true', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {histogram_1d = TRUE;}'}),
 
+        ({'GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_2D': 'false', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {histogram_2d = FALSE;}'}),
+
+        ({'GRID_DIAG_OUTPUT_FLAG_INFO_THEORY': 'True', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {info_theory = TRUE;}'}),
+
+        ({'GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_1D': 'true',
+          'GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_2D': 'false',
+          'GRID_DIAG_OUTPUT_FLAG_INFO_THEORY': 'True',
+         },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {histogram_1d = TRUE;histogram_2d = FALSE;info_theory = TRUE;}'}),
     ]
 )
 @pytest.mark.wrapper
 def test_grid_diag(metplus_config, config_overrides, env_var_values,
                    compare_command_and_env_vars):
     config = metplus_config
-    set_minimum_config_settings(config)
+    set_minimum_config_settings(config, 'BOTH_VAR1_NAME' not in config_overrides)
 
     # set config variable overrides
     for key, value in config_overrides.items():
@@ -348,8 +381,32 @@ def test_grid_diag(metplus_config, config_overrides, env_var_values,
     ]
 
     all_cmds = wrapper.run_all_times()
-    special_values = {
-        'METPLUS_DATA_DICT': data_fmt,
-    }
-    compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values,
-                                 wrapper, special_values)
+    if 'METPLUS_DATA_DICT' in env_var_values:
+        # for testing time info in data field, loop over commands to compare because the data field info differs for each run
+        for actual_cmd, expected_cmd, data_dict in zip(all_cmds, expected_cmds, env_var_values['METPLUS_DATA_DICT']):
+            compare_command_and_env_vars([actual_cmd], [expected_cmd], env_var_values,
+                                         wrapper, {'METPLUS_DATA_DICT': data_dict})
+    else:
+        compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values,
+                                     wrapper, {'METPLUS_DATA_DICT': data_fmt})
+
+
+@pytest.mark.wrapper
+def test_check_var_lists(metplus_config, tmp_path_factory, make_dummy_empty):
+    """!Recreate failure outlined in #3100 to prove that it has been fixed."""
+    fake_data_dir = tmp_path_factory.mktemp("data_dir")
+    make_dummy_empty(fake_data_dir, 'step12_2020010100Z_create_date_20250715.nc')
+
+    config = metplus_config
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
+    config.set('config', 'INIT_BEG', '2020010100')
+    config.set('config', 'LEAD_SEQ', 'begin_end_incr(1,48,1)')
+    config.set('config', 'GRID_DIAG_RUNTIME_FREQ', 'RUN_ONCE_PER_INIT_OR_VALID')
+    config.set('config', 'GRID_DIAG_INPUT_DIR', str(fake_data_dir))
+    config.set('config', 'GRID_DIAG_INPUT_TEMPLATE', 'step12_{init?fmt=%Y%m%d%H}Z_create_date_20250715.nc')
+    config.set('config', 'BOTH_VAR1_NAME', 'WRF_precip')
+    config.set('config', 'BOTH_VAR1_LEVELS', '(@{valid?fmt=%Y%m%d%H},*,*)')
+
+    wrapper = GridDiagWrapper(config)
+    wrapper.run_all_times()

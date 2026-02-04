@@ -484,6 +484,7 @@ create the *METplus-X.Y_sample_data* directory, otherwise, navigate into that di
    mv dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/vX.Y/met_test .
    mv dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/vX.Y/model_applications .
    rm -rf dtcenter.ucar.edu
+   find . -name "*index.html*" -type f -delete
 
 .. note::
 

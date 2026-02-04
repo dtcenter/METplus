@@ -52,6 +52,9 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.py
 # for the appropriate release: https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will 
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
+#
+# Note that the data for the pre-processing steps that are turned off is not currently
+# included in the sample data tarball.
 
 ##############################################################################
 # METplus Components
@@ -192,7 +195,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.py
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output 
-# for this use case will be found in {OUTPUT_BASE}/model_applications/s2s_mid_lat/WeatherRegime
+# for this use case will be found in {OUTPUT_BASE}/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime
 # and will contain output for the steps requested.  The output includes 8 plots in the plots directory::
 #
 # * fcst_elbow.png
@@ -213,14 +216,17 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.py
 # There are numerous matched pair files output in two subdirectories of the mpr directory.  These contain
 # output classified weather regimes and also the frequency for each weather regime.  For the classified 
 # weather regimes, one file is written for each day to the WeatherRegime subdirectory (1513 files total)
-# in the format below for 12-02-2000::
+# in the format below where HHMMSSL is the lead time in hours, mintues and seconds, YYYYMMDD is the valid 
+# year, month, and day, and HHMMSSV is the hours, minutes and seconds of the valid time::
 #
-# * weather_regime_stat_GFS_240000L_20001202_000000V.stat
+# * weather_regime_stat_GFS_HHMMSSL_YYYYMMDD_HHMMSSV.stat
 #
 # for the frequency matched pair files, one file is written for each day and each weather regime (8466 files 
-# total) to the freq subdirectory in the format below for 12-02-2000, weather regime 1::
+# total) to the freq subdirectory in the format below where HHMMSSL is the lead time in hours, mintues and 
+# seconds, YYYYMMDD is the valid year, month, and day, HHMMSSV is the hours, minutes and seconds of the 
+# valid time, and NN is the weather regime number::
 #
-# * weather_regime01_freq_stat_GFS_240000L_20001202_000000V.stat
+# * weather_regimeNN_freq_stat_GFS_HHMMSSL_YYYYMMDD_HHMMSSV.stat
 #
 # Stat-Analysis Output::
 #

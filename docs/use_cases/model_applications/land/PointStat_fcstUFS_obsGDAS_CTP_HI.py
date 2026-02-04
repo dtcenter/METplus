@@ -228,6 +228,7 @@ model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 #   * METcalcpyUseCase
 #   * LandAppUseCase
 #   * UserScriptUseCase
+#   * VxDataGDASPREP
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

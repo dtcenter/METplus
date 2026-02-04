@@ -142,12 +142,13 @@ Use Cases by Organization:
    | **NOAA Hazardous Weather Testbed (HWT)**: *NOAAHWTOrgUseCase*
    | **State University of New York-Stony Brook University (SUNY-SBU)**: *SBUOrgUseCase*
 
-Use Cases by METplus Feature:
-=============================
+Use Cases by Feature:
+=====================
 
 .. only:: html
 
    | `Introductory Example <../search.html?q=ExampleToolUseCase&check_keywords=yes&area=default>`_
+   | `AI Weather Prediction <../search.html?q=AIWPUseCase&check_keywords=yes&area=default>`_
    | `Climatology <../search.html?q=ClimatologyUseCase&check_keywords=yes&area=default>`_
    | `Custom String Looping <../search.html?q=CustomStringLoopingUseCase&check_keywords=yes&area=default>`_
    | `DataIngest <../search.html?q=DataIngestUseCase&check_keywords=yes&area=default>`_
@@ -182,6 +183,7 @@ Use Cases by METplus Feature:
 .. only:: latex
 
    | **Introductory Example**: *ExampleToolUseCase*
+   | `AI Weather Prediction <../search.html?q=AIWPUseCase&check_keywords=yes&area=default>`_
    | **Climatology**: *ClimatologyUseCase*
    | **Custom String Looping**: *CustomStringLoopingUseCase*
    | **DataIngest**: *DataIngestUseCase*

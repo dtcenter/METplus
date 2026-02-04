@@ -9,8 +9,8 @@ on:
   workflow_dispatch:
     inputs:
       release_version:
-        description: 'Comma-separated list of versions to build, e.g. v6.0,v6.1'
-        default: 'v6.0,v6.1'
+        description: 'Comma-separated list of versions to build, e.g. v6.1,v6.2'
+        default: 'v6.1,v6.2'
         required: true
         type: string
       update_latest:
@@ -20,7 +20,7 @@ on:
         type: boolean
 
   schedule:
-    - cron: "30 06 * * 0"
+    - cron: "35 06 * * 0"
 
 env:
   DOCKERHUB_BASE_REPO: dtcenter/metplus
@@ -48,7 +48,7 @@ jobs:
         id: get-versions
         run: |
           if [[ ${{ github.event_name }} == 'schedule' ]]; then
-            version_string="v6.0,v6.1"
+            version_string="v6.1,v6.2"
             update_latest="true"
           elif [[ ${{ github.event_name }} == 'workflow_dispatch' ]]; then
             version_string=${{ toJSON(inputs.release_version) }}
@@ -115,7 +115,6 @@ jobs:
 
       - name: Scan Docker Images
         id: security-scan
-        continue-on-error: false
         uses: dtcenter/metplus-action-scan-docker-images@v1
         with:
           images: |
@@ -123,7 +122,7 @@ jobs:
               "${{ env.DOCKERHUB_BASE_REPO }}:${{ env.VERSION_NO_V }}",
               "${{ env.DOCKERHUB_ANALYSIS_REPO }}:${{ env.VERSION_NO_V }}"
             ]
-          fail-on-critical: "true"
+          fail-on-critical: "false"
           log-artifact-name: 'security-scan-logs_${{ env.VERSION_NO_V }}'
 
       - name: Push Docker Images

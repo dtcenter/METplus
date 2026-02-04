@@ -290,16 +290,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             if data_type == 'BOTH':
                 continue
 
-            self.add_met_config(
-                name='file_type',
-                data_type='string',
-                env_var_name=f'{data_type}_FILE_TYPE',
-                metplus_configs=[f'{data_type}_SERIES_ANALYSIS_FILE_TYPE',
-                                 f'SERIES_ANALYSIS_{data_type}_FILE_TYPE',
-                                 f'{data_type}_FILE_TYPE',
-                                 f'{data_type}_SERIES_ANALYSIS_INPUT_DATATYPE',
-                                 'SERIES_ANALYSIS_FILE_TYPE'],
-                extra_args={'constant': True})
+            self.handle_file_type(type_list=[data_type])
 
             self.add_met_config(
                 name='cat_thresh',
@@ -652,8 +643,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
               key will match the format "NoLabel_<n>" and if no lead groups
               are defined, the dictionary should be replaced with None
         """
-        if not self._check_python_embedding():
-            return None, None
+        self._check_python_embedding()
 
         time_info['storm_id'] = storm_id
 
@@ -728,15 +718,10 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         """
         for var_info in self.c_dict['VAR_LIST']:
             if self.c_dict['USING_BOTH']:
-                if not self.check_for_python_embedding('BOTH', var_info):
-                    return False
+                self.check_for_python_embedding('BOTH', var_info)
             else:
-                if not self.check_for_python_embedding('FCST', var_info):
-                    return False
-                if not self.check_for_python_embedding('OBS', var_info):
-                    return False
-
-        return True
+                self.check_for_python_embedding('FCST', var_info)
+                self.check_for_python_embedding('OBS', var_info)
 
     def get_output_dir(self, time_info, storm_id, label):
         """! Determine directory that will contain output data from the
@@ -1061,10 +1046,10 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             observation information or (None, None) if something went wrong
         """
         fcst_field_list = (
-            self._get_field_list('fcst', var_info, time_info)
+            self.get_field_list('fcst', var_info, time_info)
         )
         obs_field_list = (
-            self._get_field_list('obs', var_info, time_info)
+            self.get_field_list('obs', var_info, time_info)
         )
 
         if not fcst_field_list or not obs_field_list:
@@ -1075,67 +1060,3 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         obs_fields = ','.join(obs_field_list)
 
         return fcst_fields, obs_fields
-
-    def _get_field_list(self, data_type, var_info, time_info):
-        """!Get formatted field information in a list.
-        If no time (init/valid/lead) filename template tags were found in the
-        level value or if the time info contains all init/valid/lead values
-        (none are wildcards), then return a single formatted field item.
-        Otherwise, loop through the file list files and use the input template
-        to extract time information to use for each field entry.
-        The latter is done when processing one data type that has individual
-        files for each time and one data type has a single file with all times.
-
-        @param data_type type of data to process, e.g. fcst or obs
-        @param var_info dictionary containing info to format
-        @param time_info dictionary containing time information
-        @returns list containing formatted field info to pass to MET config
-        """
-        # if there are no time tags (init/valid/lead) in the field level
-        # or if init, valid, and lead have values in time_info,
-        # get field info for a single field to pass to the MET config file
-        if (not self._has_time_tag(var_info[f'{data_type}_level']) and
-                not self._has_time_tag(var_info[f'{data_type}_name'])):
-            return self._get_field_sub_level(data_type, var_info, time_info)
-
-        field_list = []
-
-        # loop through fcst/obs files to read time info
-        # for each file apply time info to field info and add to list
-        for file_time_info in self.c_dict['ALL_FILES'][0].get('input_time_info', []):
-            field = self._get_field_sub_level(data_type, var_info, file_time_info)
-            if field:
-                field_list.extend(field)
-
-        return field_list
-
-    @staticmethod
-    def _has_time_tag(string_to_parse):
-        """!Get all filename template tags from raw string and check if any of
-        the time info tags (init/valid/lead) were found.
-
-        @param string_to_parse string to search for filename template tags
-        @returns True if init, valid, or lead tags, e.g. {lead?fmt=%H},
-         were found in string. False if none of them were found.
-        """
-        return any(item in ['init', 'valid', 'lead']
-                   for item in get_tags(string_to_parse))
-
-    def _get_field_sub_level(self, data_type, var_info, time_dict):
-        """!Get formatted field information for data type, substituting time
-        information into level value.
-
-        @param data_type type of data to find, e.g. fcst or obs
-        @param var_info dictionary containing info to format
-        @param time_dict dictionary containing time information
-        @returns string with formatted field info or None
-        """
-        name = do_string_sub(var_info[f'{data_type}_name'], **time_dict)
-        level = do_string_sub(var_info[f'{data_type}_level'], **time_dict)
-        return self.get_field_info(
-            v_level=level,
-            v_thresh=var_info[f'{data_type}_thresh'],
-            v_name=name,
-            v_extra=var_info[f'{data_type}_extra'],
-            d_type=data_type.upper()
-        )

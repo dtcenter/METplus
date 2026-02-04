@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
 import pytest
+from unittest import mock
 
 import os
 
+import metplus.wrappers.mtd_wrapper as mtd_wrapper_file
 from metplus.wrappers.mtd_wrapper import MTDWrapper
 
 fcst_dir = '/some/path/fcst'
@@ -202,6 +204,11 @@ def test_mtd_missing_inputs(metplus_config, get_test_data_dir, run_all_and_check
 
         ({'MTD_OUTPUT_PREFIX': 'my_output_prefix'},
          {'METPLUS_OUTPUT_PREFIX': 'output_prefix = "my_output_prefix";'}),
+
+        ({'MTD_FCST_FILE_TYPE': 'NETCDF_NCCF', },
+         {'METPLUS_FCST_FILE_TYPE': 'file_type = NETCDF_NCCF;'}),
+        ({'MTD_OBS_FILE_TYPE': 'NETCDF_NCCF', },
+         {'METPLUS_OBS_FILE_TYPE': 'file_type = NETCDF_NCCF;'}),
 
     ]
 )
@@ -437,3 +444,23 @@ def test_get_config_file(metplus_config):
     config.set('config', 'MTD_CONFIG_FILE', fake_config_name)
     wrapper = MTDWrapper(config)
     assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
+
+
+@pytest.mark.wrapper
+def test_get_var_name(metplus_config):
+    config = metplus_config
+    wrapper = MTDWrapper(config)
+
+    # test python embedding check
+    with mock.patch.object(mtd_wrapper_file, 'is_python_script', return_value=True):
+        actual = wrapper._get_var_name('FCST',{'fcst_name':'pyEmbed'})
+    assert actual == 'python_embedding'
+
+    wrapper.env_var_dict['METPLUS_FCST_FILE_TYPE'] = "PYTHON_NUMPY"
+    with mock.patch.object(mtd_wrapper_file, 'is_python_script', return_value=True):
+        actual = wrapper._get_var_name('FCST',{'fcst_name':'pyEmbed'})
+    assert actual == 'python_embedding'
+
+    with mock.patch.object(mtd_wrapper_file, 'is_python_script', return_value=False):
+        actual = wrapper._get_var_name('FCST',{'fcst_name':'pyEmbed'})
+    assert actual == 'pyEmbed'

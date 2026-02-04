@@ -110,20 +110,17 @@ class PB2NCWrapper(ReformatPointWrapper):
         c_dict['ALLOW_MULTIPLE_FILES'] = True
         c_dict['SUPPORTS_FILE_LIST'] = False
 
-        self.add_met_config(name='pb_report_type',
-                            data_type='list',
-                            metplus_configs=['PB2NC_PB_REPORT_TYPE'],
+        self.add_met_config(name='pb_report_type', data_type='list',
                             extra_args={'remove_quotes': True})
 
         # get level_range beg and end
         self.add_met_config_window('level_range')
 
         self.add_met_config(name='level_category', data_type='list',
-                            metplus_configs=['PB2NC_LEVEL_CATEGORY'],
                             extra_args={'remove_quotes': True})
 
-        self.add_met_config(name='quality_mark_thresh', data_type='int',
-                            metplus_configs=['PB2NC_QUALITY_MARK_THRESH'])
+        self.add_met_config(name='quality_mark_thresh', data_type='string',
+                            extra_args={'remove_quotes': True})
 
         self.add_met_config(name='obs_bufr_map', data_type='list',
                             extra_args={'remove_quotes': True})

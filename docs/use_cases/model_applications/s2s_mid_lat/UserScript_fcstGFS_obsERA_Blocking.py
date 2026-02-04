@@ -60,6 +60,9 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py
 # for the appropriate release: https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will 
 # set the value of INPUT_BASE. See :ref:`running-metplus` section for more information.
+#
+# Note that the data for the pre-processing steps that are turned off is not currently
+# included in the sample data tarball.
 
 ##############################################################################
 # METplus Components
@@ -212,9 +215,9 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py
 # and 02/28 of each year the calculation runs.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use 
-# case will be found in {OUTPUT_BASE}/model_applications/s2s_mid_lat/Blocking.  There should be 4 different 
-# graphics output to the plot directory in the location above, but each will have png and pdf version to make 
-# for 8 output plots:: 
+# case will be found in {OUTPUT_BASE}/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.  There 
+# should be 4 different graphics output to the plot directory in the location above, but each will have png and 
+# pdf version to make for 8 output plots:: 
 #
 #  * ERA_CBL_avg.png
 #  * ERA_CBL_avg.pdf
@@ -226,15 +229,18 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py
 #  * fcst_Block_Freq.pdf
 # 
 # There are numerous matched pair files output in two subdirectories of the mpr directory.  These contain
-# output computed IBLs and blocks.  For the IBLs, one file is written for each day to the IBL subdirectory
-# in the format below for 12-02-2000::
+# output computed IBLs and blocks.  For the IBLs, one file is written for each day to the IBL subdirectory.
+# The files will be labeled by date and time where HHMMSSL is the lead time in hours, mintues and seconds, 
+# YYYYMMDD is the valid year, month, and day, and HHMMSSV is the hours, minutes and seconds of the valid 
+# time::
 #
-# * IBL_stat_GFS_240000L_20001202_000000V.stat
+# * IBL_stat_GFS_HHMMSSL_YYYYMMDD_HHMMSSV.stat
 #
 # For the blocks .stat files, one file is also written for each day to the Blocks subdirectory in the format
-# below for 12-02-2000::
+# below, where HHMMSSL is the lead time in hours, mintues and seconds, YYYYMMDD is the valid year, month, and 
+# day, and HHMMSSV is the hours, minutes and seconds of the valid time::
 #
-# * blocking_stat_GFS_240000L_20001202_000000V.stat
+# * blocking_stat_GFS_HHMMSSL_YYYYMMDD_HHMMSSV.stat
 #
 # There are also 2 files output from the StatAnalysis runs containing contingency table statistics:: 
 #

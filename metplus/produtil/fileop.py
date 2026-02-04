@@ -474,7 +474,7 @@ def deliver_file(infile,outfile,keep=True,verify=False,blocksize=1048576,
     # the origin is in the same file as the target, and the origin is
     # not a link, and moveok=True, we can deliver the file by an
     # os.rename
-    samefs = (istat.st_dev == odstat.st_dev)
+    samefs = (odstat is not None and istat.st_dev == odstat.st_dev)
     if samefs and not keep and moveok:
         if stat.S_ISLNK(ilstat.st_mode):
             if logger is not None:

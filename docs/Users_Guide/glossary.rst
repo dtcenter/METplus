@@ -2284,6 +2284,24 @@ METplus Configuration Glossary
 
      | *Used by:*  StatAnalysis
 
+   COLUMN_LIST
+     Specify the value for 'column' in the MET configuration file for StatAnalysis.
+
+     Groups of values can be looped over by setting LINE_TYPE_LIST<n> and
+     adding LINE_TYPE_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
+
+     | *Used by:* StatAnalysis
+
+   WEIGHT_LIST
+     Specify the value for 'weight' in the MET configuration file for StatAnalysis.
+
+     Groups of values can be looped over by setting LINE_TYPE_LIST<n> and
+     adding LINE_TYPE_LIST to :term:`LOOP_LIST_ITEMS`.
+     See :ref:`stat-analysis-looping-groups` for more information.
+
+     | *Used by:* StatAnalysis
+
    LOG_DIR
      Specify the directory where log files from MET and METplus should be written.
 
@@ -3516,7 +3534,9 @@ METplus Configuration Glossary
      | *Used by:*  RegridDataPlane
 
    REGRID_DATA_PLANE_VERIF_GRID
-     Specify the absolute path to a file containing information about the desired output grid from the MET regrid_data_plane tool.
+     Defines the output grid to regrid the input data.
+     This can be a named grid, the path to a gridded data file,
+     or an explicit grid specification string.
 
      | *Used by:*  RegridDataPlane
 
@@ -6146,22 +6166,16 @@ METplus Configuration Glossary
      | *Used by:*  TCpairs
 
    ENS_ENSEMBLE_STAT_INPUT_DATATYPE
-          .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_INPUT_DATATYPE` in :ref:`gen_ens_prod_wrapper` instead.
+     .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_INPUT_DATATYPE` in :ref:`gen_ens_prod_wrapper` instead.
 
    GEN_ENS_PROD_INPUT_DATATYPE
-     Set the file_type entry of the ens dictionary in the MET config file for GenEnsProd.
-
-     | *Used by:*  GenEnsProd
+     .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_ENS_FILE_TYPE` instead.
 
    FCST_SERIES_ANALYSIS_INPUT_DATATYPE
-     Set the file_type entry of the fcst dictionary in the MET config file for SeriesAnalysis.
-
-     | *Used by:*  SeriesAnalysis
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_FCST_FILE_TYPE` instead.
 
    OBS_SERIES_ANALYSIS_INPUT_DATATYPE
-     Set the file_type entry of the obs dictionary in the MET config file for SeriesAnalysis.
-
-     | *Used by:*  SeriesAnalysis
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_OBS_FILE_TYPE` instead.
 
    MET_DATA_DB_DIR
      Set this the location of the dtcenter/METdataio repository.
@@ -7193,6 +7207,9 @@ METplus Configuration Glossary
      | *Used by:* GridStat
 
    FCST_GRID_STAT_FILE_TYPE
+     .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_FCST_FILE_TYPE` instead.
+
+   GRID_STAT_FCST_FILE_TYPE
      Specify the value for 'fcst.file_type' in the MET configuration file for GridStat.
 
      | *Used by:* GridStat
@@ -11370,11 +11387,17 @@ METplus Configuration Glossary
      | *Used by:*  WaveletStat
 
    FCST_WAVELET_STAT_FILE_TYPE
+     .. warning:: **DEPRECATED:** Please use :term:`WAVELET_STAT_FCST_FILE_TYPE` instead.
+
+   OBS_WAVELET_STAT_FILE_TYPE
+     .. warning:: **DEPRECATED:** Please use :term:`WAVELET_STAT_OBS_FILE_TYPE` instead.
+
+   WAVELET_STAT_FCST_FILE_TYPE
      Specify the value for 'fcst.file_type' in the MET configuration file for WaveletStat.
 
      | *Used by:* WaveletStat
 
-   OBS_WAVELET_STAT_FILE_TYPE
+   WAVELET_STAT_OBS_FILE_TYPE
      Specify the value for 'obs.file_type' in the MET configuration file for WaveletStat.
 
      | *Used by:* WaveletStat
@@ -14949,3 +14972,68 @@ METplus Configuration Glossary
      valid meets the expectation.
 
      | *Used by:*  GenEnsProd
+
+   STAT_ANALYSIS_SS_INDEX_NAME
+     Specify the value for 'ss_index_name' in the MET configuration file for StatAnalysis.
+
+     | *Used by:* StatAnalysis
+
+   STAT_ANALYSIS_SS_INDEX_VLD_THRESH
+     Specify the value for 'ss_index_vld_thresh' in the MET configuration file for StatAnalysis.
+
+     | *Used by:* StatAnalysis
+
+   ENSEMBLE_STAT_FCST_FILE_TYPE
+     Specify the value for 'fcst.file_type' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_FILE_TYPE
+     Specify the value for 'obs.file_type' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   MTD_FCST_FILE_TYPE
+     Specify the value for 'fcst.file_type' in the MET configuration file for MTD.
+
+     | *Used by:* MTD
+
+   MTD_OBS_FILE_TYPE
+     Specify the value for 'obs.file_type' in the MET configuration file for MTD.
+
+     | *Used by:* MTD
+
+   SERIES_ANALYSIS_FCST_FILE_TYPE
+     Specify the value for 'fcst.file_type' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_OBS_FILE_TYPE
+     Specify the value for 'obs.file_type' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   GRID_STAT_OBS_FILE_TYPE
+     Specify the value for 'obs.file_type' in the MET configuration file for GridStat.
+
+     | *Used by:*  GridStat
+
+   GRID_DIAG_FILE_TYPE
+     Specify the value for 'data.file_type' in the MET configuration file for GridDiag.
+
+     | *Used by:*  GridDiag
+
+   GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_1D
+     Specify the value for 'output_flag.histogram_1d' in the MET configuration file for GridDiag.
+
+     | *Used by:* GridDiag
+
+   GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_2D
+     Specify the value for 'output_flag.histogram_2d' in the MET configuration file for GridDiag.
+
+     | *Used by:* GridDiag
+
+   GRID_DIAG_OUTPUT_FLAG_INFO_THEORY
+     Specify the value for 'output_flag.info_theory' in the MET configuration file for GridDiag.
+
+     | *Used by:* GridDiag
