@@ -313,13 +313,9 @@ class TCPairsWrapper(RuntimeFreqWrapper):
               self.config.getstr_nocheck('config', 'LOOP_ORDER') == 'times' and
               not (self.config.has_option('config', 'TC_PAIRS_RUN_ONCE') or
                    self.config.has_option('config', 'TC_PAIRS_RUNTIME_FREQ'))):
-            self.logger.warning(
-                'LOOP_ORDER has been deprecated. LOOP_ORDER has been set to '
-                '"times" and TC_PAIRS_RUNTIME_FREQ is not set. '
-                'Forcing TC_PAIRS_RUNTIME_FREQ=RUN_ONCE_FOR_EACH to '
-                'preserve behavior prior to v5.0.0. Please remove LOOP_ORDER '
-                'and set TC_PAIRS_RUNTIME_FREQ=RUN_ONCE_FOR_EACH to preserve '
-                'previous behavior and remove this warning message.'
+            self.log_error(
+                'LOOP_ORDER has been deprecated. To preserve previous behavior, '
+                'please remove LOOP_ORDER and set TC_PAIRS_RUNTIME_FREQ=RUN_ONCE_FOR_EACH'
             )
             c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_FOR_EACH'
 
