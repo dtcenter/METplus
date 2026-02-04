@@ -2,7 +2,7 @@
 PointStat: CESM and FLUXNET2015 Terrestrial Coupling Index (TCI) 
 ================================================================
 
-model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
+model_applications/land/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 
 """
 ##############################################################################
@@ -125,10 +125,10 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# i.e. parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
+# i.e. parm/use_cases/model_applications/land/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/land/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 
 ##############################################################################
 # MET Configuration
@@ -163,10 +163,10 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # which is the diagnostic that is being verified by MET using PointStat.
 # The forecast data (CESM in this case) is read using:
 #
-# .. dropdown:: parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/tci_fcst.py
+# .. dropdown:: parm/use_cases/model_applications/land/PointStat_fcstCESM_obsFLUXNET2015_TCI/tci_fcst.py
 #
 #    .. highlight:: python
-#    .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/tci_fcst.py
+#    .. literalinclude:: ../../../../parm/use_cases/model_applications/land/PointStat_fcstCESM_obsFLUXNET2015_TCI/tci_fcst.py
 #
 # The user can control all arguments to this script via the METplus use case configuration file using the following config entries:
 #
@@ -190,10 +190,10 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 # The raw FLUXNET2015 SUBSET data are read using:
 #
-# .. dropdown:: parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/fluxnet2015_tci.py
+# .. dropdown:: parm/use_cases/model_applications/land/PointStat_fcstCESM_obsFLUXNET2015_TCI/fluxnet2015_tci.py
 # 
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI/fluxnet2015_tci.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/land/PointStat_fcstCESM_obsFLUXNET2015_TCI/fluxnet2015_tci.py
 #
 # The user can control all command line arguments to this script via METplus config entries:
 #
@@ -270,7 +270,7 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # Pass the use case configuration file to the run_metplus.py script
 # along with any user-specific system configuration files if desired::
 #
-#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/land/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 
@@ -337,11 +337,11 @@ model_applications/land_surface/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #   * PlotPointObsToolUseCase
 #   * PythonEmbeddingFileUseCase
 #   * NETCDFFileUseCase
-#   * LandSurfaceAppUseCase
+#   * LandAppUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/land_surface-PointStat_fcstCESM_obsFLUXNET2015_TCI.png'
+# sphinx_gallery_thumbnail_path = '_static/land-PointStat_fcstCESM_obsFLUXNET2015_TCI.png'
 
