@@ -21,6 +21,10 @@ from numpy.ma import count_masked
 SKIP_KEYWORDS = [
 ]
 
+if os.environ.get('METPLUS_DIFF_SKIP_KEYWORDS'):
+    skip_keywords = [item.strip() for item in os.environ['METPLUS_DIFF_SKIP_KEYWORDS'].split(',')]
+    SKIP_KEYWORDS.extend(skip_keywords)
+
 # dictionary where key is a keyword to search (e.g. use case name)
 # and the value is the rounding precision to use for files that
 # match the keyword
