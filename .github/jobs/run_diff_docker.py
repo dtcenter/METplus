@@ -18,7 +18,22 @@ diff_util_dir = os.path.join(GITHUB_WORKSPACE,
                              'metplus',
                              'util')
 sys.path.insert(0, diff_util_dir)
-from diff_util import compare_dir
+import diff_util
+
+diff_util.SKIP_KEYWORDS = [
+    'CyclonePlotter/cyclone/20150301.png',
+    'plots/obs_elbow.png',
+    'plots/fcst_elbow.png',
+    'CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC/cyclone/20201007',
+    'plots/MAKE_MAKI_timeseries',
+    'UserScript_fcstGFS_obsERA_WeatherRegime',
+    'PointStat_fcstWRF_obsMADIS_hurricane_matthew/wrf_plot',
+]
+
+diff_util.ROUNDING_OVERRIDES = {
+    'UserScript_obsCFSR_obsOnly_MJO_ENSO': 5,
+    'UserScript_fcstS2S_obsERAI_CrossSpectra': 4,
+}
 
 TRUTH_DIR = '/data/truth'
 OUTPUT_DIR = '/data/output'
@@ -91,9 +106,8 @@ def copy_to_diff_dir(file_path, data_type):
 def main():
     print('******************************')
     print("Comparing output to truth data")
-    diff_files = compare_dir(TRUTH_DIR, OUTPUT_DIR,
-                             debug=True,
-                             save_diff=True)
+    diff_files = diff_util.compare_dir(TRUTH_DIR, OUTPUT_DIR,
+                                       debug=True, save_diff=True)
 
     # copy difference files into directory
     # so it can be easily downloaded and compared
