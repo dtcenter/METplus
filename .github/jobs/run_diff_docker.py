@@ -50,7 +50,7 @@ def copy_diff_output(diff_files):
      and file path of output that was just generated. Either tuple
      value may be an empty string if the file was not found.
     """
-    for truth_file, out_file, _, diff_file in diff_files:
+    for truth_file, out_file, _, diff_file, _ in diff_files:
         if truth_file:
             copy_to_diff_dir(truth_file,
                              'truth')
