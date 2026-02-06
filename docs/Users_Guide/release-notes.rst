@@ -52,6 +52,8 @@ METplus Version 7.0.0 Beta 1 Release Notes (2026-02-05)
 
   .. dropdown:: Enhancements
 
+     * Enhancement: Add support for missing PointStat and EnsembleStat config options
+       (`#2306 <https://github.com/dtcenter/METplus/issues/2306>`_)
      * Add support for setting file_type in the fcst and obs dictionaries for all wrappers that support it
        (`#2570 <https://github.com/dtcenter/METplus/issues/2570>`_)
      * Error when deprecated `LOOP_ORDER` config settings are set
