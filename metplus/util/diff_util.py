@@ -2,6 +2,8 @@
 
 import sys
 import os
+from typing import Any
+
 import netCDF4
 import filecmp
 import csv
@@ -146,19 +148,16 @@ def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
 
         return [result]
 
-    if debug:
-        print('::group::Full diff results:')
+    _print_if_debug("::group::Full diff results:", debug)
 
     diff_files = []
     n_files_compared = 0
     print(f"Comparing files under\n  {dir_a}\n  {dir_b}")
     for filepath_a in _get_files(dir_a):
         filepath_b = filepath_a.replace(dir_a, dir_b)
-        if debug:
-            print("\n# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n")
-            rel_path = filepath_a.replace(f'{dir_a}/', '')
-            print(f"COMPARING {rel_path}")
-        else:
+        rel_path = filepath_a.replace(f'{dir_a}/', '')
+        _print_if_debug(f"\n# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\nCOMPARING {rel_path}", debug)
+        if not debug:
             # when debug output is off, print a dot for every file processed to show progress
             print('.', end='', flush=True)
 
@@ -168,36 +167,23 @@ def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
             n_files_compared += 1
         except Exception as err:
             msg = f"ERROR: Exception occurred in diff logic: {err}"
-            if debug:
-                print(msg)
+            _print_if_debug(msg, debug)
             result = filepath_a, filepath_b, 'Exception in diff logic', '', msg
 
         # no differences or skipped
-        if result is None or result is True:
-            if result is None:
-                n_files_skipped += 1
+        if result is None:
+            n_files_skipped += 1
+            continue
+
+        if result is True:
             continue
 
         diff_files.append(result)
 
     # loop through dir_b and report if any files are not found in dir_a
-    for filepath_b in _get_files(dir_b):
-        filepath_a = filepath_b.replace(dir_b, dir_a)
-        if os.path.exists(filepath_a):
-            continue
-        # check if missing file is actually diff file that was generated
-        diff_list = [item[3] for item in diff_files]
-        if filepath_b in diff_list:
-            continue
-        msg = f"ERROR: File does not exist: {filepath_a}"
-        if debug:
-            print(msg)
-        diff_files.append(('', filepath_b, 'file not found (new output)', '', msg))
-        n_files_compared += 1
+    n_files_compared += _check_for_new_output(debug, diff_files, dir_a, dir_b)
 
-    if debug:
-        print('::endgroup::')
-
+    _print_if_debug("::endgroup::", debug)
     _print_dir_summary(diff_files)
 
     print(f"\n\nNumber of files compared = {n_files_compared}")
@@ -208,6 +194,23 @@ def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
         print("SUCCESS: No differences found in any files")
 
     return diff_files
+
+
+def _check_for_new_output(debug: bool, diff_files: list[Any], dir_a, dir_b) -> int:
+    new_files_compared = 0
+    for filepath_b in _get_files(dir_b):
+        filepath_a = filepath_b.replace(dir_b, dir_a)
+        if os.path.exists(filepath_a):
+            continue
+        # check if missing file is actually diff file that was generated
+        diff_list = [item[3] for item in diff_files]
+        if filepath_b in diff_list:
+            continue
+        msg = f"ERROR: File does not exist: {filepath_a}"
+        _print_if_debug(msg, debug)
+        diff_files.append(('', filepath_b, 'file not found (new output)', '', msg))
+        new_files_compared += 1
+    return new_files_compared
 
 
 def _get_files(search_dir):
@@ -237,6 +240,12 @@ def _get_files(search_dir):
 
 def _print_dir_summary(diff_files):
     print("\n\n**************************************************\nERROR SUMMARY:\n")
+
+    if diff_files:
+        print(f"::error::{len(diff_files)} files with differences were found")
+    else:
+        print("No differences found in any files")
+
     for filepath_a, filepath_b, reason, diff_file, details in diff_files:
         print(f"{reason}\n  A: {filepath_a}\n  B: {filepath_b}")
         if diff_file:
@@ -259,37 +268,29 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
     # dir_a and dir_b are only needed if comparing file lists that need those
     # directories to substitute when comparing because files in the list will
     # have different paths
-    if debug:
-        print(f"file_A: {filepath_a}\nfile_B: {filepath_b}\n")
+    _print_if_debug(f"file_A: {filepath_a}\nfile_B: {filepath_b}\n", debug)
 
-    for skip in SKIP_KEYWORDS:
-        if skip in filepath_a or skip in filepath_b:
-            if debug:
-                print(f'WARNING: Skipping diff that contains keyword: {skip}')
-            return None
+    if _should_skip_file(filepath_a, filepath_b, debug):
+        return None
 
     msg = set_rounding_precision(filepath_a)
-    if debug:
-        print(msg)
+    _print_if_debug(msg, debug)
 
     # if file does not exist in dir_b, report difference
     if not os.path.exists(filepath_b):
         msg = f"ERROR: File does not exist: {filepath_b}"
-        if debug:
-            print(msg)
+        _print_if_debug(msg, debug)
         return filepath_a, '', 'file not found (in truth but missing now)', '', msg
 
     file_type = get_file_type(filepath_a)
     if file_type.startswith('skip'):
         file_ext = file_type.split(' ')[1]
-        if debug:
-            print(f"Skipping {file_ext} file" if file_ext else "Skipping file without extension")
+        _print_if_debug(f"Skipping {file_ext} file" if file_ext else "Skipping file without extension", debug)
         return None
 
     if file_type.startswith('unsupported'):
         msg = f"Unsupported file type encountered: {file_type.split(' ')[1]}"
-        if debug:
-            print(msg)
+        _print_if_debug(msg, debug)
         return filepath_a, filepath_b, file_type, '', msg
 
     if file_type == 'csv':
@@ -307,6 +308,17 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
     # if not any of the above types, use diff to compare
     return _handle_text_files(filepath_a, filepath_b, dir_a, dir_b, debug)
 
+def _print_if_debug(msg, debug_on=True):
+    if debug_on:
+        print(msg)
+
+def _should_skip_file(filepath_a, filepath_b, debug=False):
+    for skip in SKIP_KEYWORDS:
+        if skip in filepath_a or skip in filepath_b:
+            if debug:
+                print(f'WARNING: Skipping diff that contains keyword: {skip}')
+            return True
+    return False
 
 def set_rounding_precision(filepath):
     global rounding_precision
@@ -483,12 +495,10 @@ def _is_zero_pixel(pixel, total_threshold=10, pixel_threshold=5):
     @returns True if all values are 0 or False if any value is non-zero
     """
     if isinstance(pixel, tuple):
-        #return all(val == 0 for val in pixel)
         if sum(pixel) > total_threshold:
             return False
         return not any(val > pixel_threshold for val in pixel)
 
-    #return pixel == 0
     return pixel <= total_threshold
 
 
