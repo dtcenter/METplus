@@ -2,6 +2,7 @@
 
 import sys
 import os
+import traceback
 from typing import Any
 
 import netCDF4
@@ -166,7 +167,7 @@ def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
                                    dir_a=dir_a, dir_b=dir_b, save_diff=save_diff)
             n_files_compared += 1
         except Exception as err:
-            msg = f"ERROR: Exception occurred in diff logic: {err}"
+            msg = f"ERROR: Exception occurred in diff logic: {err}\n{traceback.format_exc()}"
             _print_if_debug(msg, debug)
             result = filepath_a, filepath_b, 'Exception in diff logic', '', msg
 
