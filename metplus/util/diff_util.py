@@ -867,8 +867,6 @@ def _nc_fields_are_equal(field, nc_a, nc_b):
         return False, f"ERROR: Field {field} not found"
 
     msg = f"Field: {field}\nVar_A:{var_a}\nVar_B:{var_b}"
-    if len(var_a) > 0:
-      msg += f"\nInstance type: {type(var_a[0])}"
 
     values_a = var_a[:]
     values_b = var_b[:]
