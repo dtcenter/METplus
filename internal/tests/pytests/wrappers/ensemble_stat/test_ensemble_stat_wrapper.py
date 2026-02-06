@@ -918,6 +918,12 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
          {'METPLUS_OBS_SUMMARY': 'obs_summary = NONE;'}),
         ({'ENSEMBLE_STAT_OBS_PERC_VALUE': '50', },
          {'METPLUS_OBS_PERC_VALUE': 'obs_perc_value = 50;'}),
+        ({'ENSEMBLE_STAT_OBS_VAR1_DUPLICATE_FLAG': 'unique;', },
+         {'METPLUS_OBS_FIELD': f'{obs_fmt[0: -3]}duplicate_flag = UNIQUE; }}];'}),
+        ({'ENSEMBLE_STAT_OBS_VAR1_OBS_SUMMARY': 'PERC;', },
+         {'METPLUS_OBS_FIELD': f'{obs_fmt[0: -3]}obs_summary = PERC; }}];'}),
+        ({'ENSEMBLE_STAT_OBS_VAR1_OBS_PERC_VALUE': '50;', },
+         {'METPLUS_OBS_FIELD': f'{obs_fmt[0: -3]}obs_perc_value = 50; }}];'}),
     ]
 )
 @pytest.mark.wrapper_c
@@ -965,6 +971,10 @@ def test_ensemble_stat_single_field(metplus_config, config_overrides,
         'METPLUS_FCST_FIELD': fcst_fmt,
         'METPLUS_OBS_FIELD': obs_fmt,
     }
+    for field_type in ('METPLUS_FCST_FIELD', 'METPLUS_OBS_FIELD'):
+        if field_type in env_var_values:
+            special_values[field_type] = env_var_values[field_type]
+
     compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values,
                                  wrapper, special_values)
 

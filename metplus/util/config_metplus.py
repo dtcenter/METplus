@@ -797,8 +797,17 @@ class METplusConfig(ProdConfig):
         # if invalid value
         except ValueError:
             # check if it was an empty string and return MISSING_DATA_VALUE
-            if super().getstr(sec, name) == '':
+            value = super().getstr(sec, name)
+            if value == '':
                 return MISSING_DATA_VALUE
+
+            # if the value ends with a semicolon, remove it and check if it is an int again
+            if value.endswith(';'):
+                value = value.rstrip(';')
+                try:
+                    return int(value)
+                except ValueError:
+                    pass
 
             # if value is not correct type, log error and return None
             self.logger.error(f"[{sec}] {name} must be an integer.")
