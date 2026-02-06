@@ -807,16 +807,30 @@ def test_get_config_file(metplus_config):
     assert 'Must set TC_PAIRS_REFORMAT_DIR if TC_PAIRS_REFORMAT_DECK is True' in last_err
 
 
+
+@pytest.mark.parametrize(
+    'set_loop_order, expected_is_ok',
+       [
+         (True, False),
+         (False, True),
+       ]
+)
 @pytest.mark.wrapper
-def test_validate_runtime_freq_loop_order(metplus_config):
+def test_validate_runtime_freq_loop_order(metplus_config, set_loop_order, expected_is_ok):
     config = metplus_config
-    config.set('config','LOOP_ORDER','times')
+    # set output dir because is_ok will always be False without it
+    config.set('config', 'TC_PAIRS_OUTPUT_DIR', '{OUTPUT_BASE}/TCPairs/output')
+    if set_loop_order:
+        config.set('config', 'LOOP_ORDER', 'times')
     wrapper = TCPairsWrapper(config)
-    
-    # Check warning message when LOOP_ORDER set
-    warn_msg = wrapper.logger.warning.call_args_list[-1][0][0]
-    assert 'LOOP_ORDER has been deprecated.' in warn_msg
-    assert wrapper.c_dict['RUNTIME_FREQ'] == 'RUN_ONCE_FOR_EACH'
+
+    assert wrapper.is_ok == expected_is_ok
+
+    # Check error message when LOOP_ORDER set
+    if not expected_is_ok:
+        err_msg = wrapper.logger.error.call_args_list[0][0][0]
+        assert 'LOOP_ORDER has been deprecated.' in err_msg
+
 
 
 @pytest.mark.parametrize(

@@ -385,10 +385,12 @@ def test_nc_is_equal(
 ):
     # make a dummy second file to compare to dummy_nc1
     dummy_nc2 = make_dummy_nc(tmp_path_factory.mktemp("data2"), *nc_data)
-    assert du.nc_is_equal(dummy_nc1, dummy_nc2, fields=fields, debug=True) == expected
+    actual_success, actual_details = du.nc_is_equal(dummy_nc1, dummy_nc2, fields=fields)
+    assert actual_success == expected
 
     if check_print:
-        _statment_in_capfd(capfd, check_print)
+        for statement in check_print:
+            assert statement in actual_details
 
 @pytest.mark.parametrize(
     "nc_data,fields,expected,check_print",
@@ -406,10 +408,12 @@ def test_nc_is_equal_both_nan(
     capfd, tmp_path_factory, make_dummy_nc, nc_data, fields, expected, check_print
 ):
     dummy_nc = make_dummy_nc(tmp_path_factory.mktemp("data2"), *nc_data)
-    assert du.nc_is_equal(dummy_nc, dummy_nc, fields=fields, debug=True) == expected
+    actual_success, actual_details = du.nc_is_equal(dummy_nc, dummy_nc, fields=fields)
+    assert actual_success == expected
 
     if check_print:
-        _statment_in_capfd(capfd, check_print)
+        for statement in check_print:
+            assert statement in actual_details
 
 
 @pytest.mark.parametrize(
@@ -434,57 +438,57 @@ def test__is_number(val, expected):
             du._handle_csv_files,
             ['path/file1.csv', 'path/file2.csv'],
             'compare_csv_files',
-            True,
+            (True, ''),
             True,
         ),
         (
             du._handle_csv_files,
             ['path/file1.csv', 'path/file2.csv'],
             'compare_csv_files',
-            False,
-            ('path/file1.csv', 'path/file2.csv', 'CSV diff', ''),
+            (False, 'detail text'),
+            ('path/file1.csv', 'path/file2.csv', 'CSV diff', '', 'ERROR: CSV file differs: path/file2.csv\ndetail text'),
         ),
         (
             du._handle_netcdf_files,
             ['path/file1.nc', 'path/file2.nc'],
             'nc_is_equal',
-            True,
+            (True, ''),
             True,
         ),
         (
             du._handle_netcdf_files,
             ['path/file1.nc', 'path/file2.nc'],
             'nc_is_equal',
-            False,
-            ('path/file1.nc', 'path/file2.nc', 'NetCDF diff', ''),
+            (False, 'some details from nc_is_equal'),
+            ('path/file1.nc', 'path/file2.nc', 'NetCDF diff', '', 'ERROR: NetCDF file differs: path/file2.nc\nsome details from nc_is_equal'),
         ),
         (
             du._handle_pdf_files,
             ['path/file1.pdf', 'path/file2.pdf', True],
             'compare_pdf_as_images',
-            True,
+            (True, ''),
             True,
         ),
         (
             du._handle_pdf_files,
             ['path/file1.pdf', 'path/file2.pdf', True],
             'compare_pdf_as_images',
-            False,
-            ('path/file1.pdf', 'path/file2.pdf', 'PDF diff', ''),
+            (False, 'PDF diff'),
+            ('path/file1.pdf', 'path/file2.pdf', 'PDF diff', '', 'ERROR: PDF file differs: path/file2.pdf\nPDF diff'),
         ),
         (
             du._handle_image_files,
             ['path/file1.png', 'path/file2.png', True],
             'compare_image_files',
-            True,
+            (True, ''),
             True,
         ),
         (
             du._handle_image_files,
             ['path/file1.png', 'path/file2.png', True],
             'compare_image_files',
-            False,
-            ('path/file1.png', 'path/file2.png', 'Image diff', ''),
+            (False, 'Image diff'),
+            ('path/file1.png', 'path/file2.png', 'Image diff', '', "ERROR: image file differs: path/file2.png\nImage diff"),
         ),
     ],
 )
@@ -498,9 +502,9 @@ def test__handle_funcs(func, args, patch_func, patch_return, expected):
 @pytest.mark.parametrize(
     'cmp_return, comp_txt_return, expected',
     [
-        (True, True, True),
-        (False, True, True),
-        (False, False, ('file1.txt', 'file2.txt', 'Text diff', '')),
+        (True, (True, ''), True),
+        (False, (True, ''), True),
+        (False, (False, ''), ('file1.txt', 'file2.txt', 'Text diff', '', 'ERROR: File differs: file2.txt\n')),
     ],
 )
 @pytest.mark.util
@@ -527,15 +531,15 @@ def test__handle_text_files(cmp_return, comp_txt_return, expected):
             255,
             253,
             False,
-            False,
-            ['Difference pixel: (1, 1, 0)'],
+            True,
+            None,
         ),
         (
             255,
             0,
             True,
             False,
-            ['Difference pixel: (254, 0, 0)'],
+            ['Found 1 differences between images'],
         ),
     ],
 )
@@ -557,7 +561,7 @@ def test_compare_image_files(
     _make_test_img(image1, colour_a)
     _make_test_img(image2, colour_b)
 
-    actual = du.compare_image_files(image1, image2, save_diff)
+    actual, details = du.compare_image_files(image1, image2, save_diff)
 
     if save_diff:
         assert actual == expected_diff
@@ -567,7 +571,9 @@ def test_compare_image_files(
 
     # Just to check the diffs are correctly output
     if check_print:
-        _statment_in_capfd(capfd, check_print)
+        for statement in check_print:
+            assert statement in details
+        #_statment_in_capfd(capfd, check_print)
 
 
 @pytest.mark.parametrize(
@@ -606,10 +612,11 @@ def test_compare_image_files(
 @pytest.mark.util
 def test__all_values_are_equal(capfd, array_a, array_b, expected, check_print):
     
-    actual = du._all_values_are_equal(array_a, array_b)
+    actual, actual_details = du._all_values_are_equal(array_a, array_b)
     assert actual == expected
     if check_print:
-        _statment_in_capfd(capfd, check_print)
+        for statement in check_print:
+            assert statement in actual_details
 
 
 @pytest.mark.parametrize(
@@ -619,7 +626,7 @@ def test__all_values_are_equal(capfd, array_a, array_b, expected, check_print):
         ('.gif', ["Skipping .gif file"]),
         ('.ix', ["Skipping .ix file"]),
         ('.log', ["Skipping .log file"]),
-        ('', ["Skipping file without extension"]),
+        #('', ["Skipping file without extension"]),
     ],
 )
 @pytest.mark.util

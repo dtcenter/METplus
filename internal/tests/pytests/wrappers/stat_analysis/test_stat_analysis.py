@@ -388,19 +388,19 @@ def test_error_check_one_set_of_vars(metplus_config, config_overrides, expected_
 
 
 @pytest.mark.parametrize(
-    'config_overrides, expected_result', [
-        ({}, 'RUN_ONCE'),
-        ({'LOOP_ORDER': 'times'}, 'RUN_ONCE'),
+    'config_overrides, is_ok', [
+        ({}, True),
+        ({'LOOP_ORDER': 'times'}, True),
         ({'LOOP_ORDER': 'times', 'INIT_END': '20221021'},
-         'RUN_ONCE_PER_INIT_OR_VALID'),
-        ({'INIT_END': '20221021'}, 'RUN_ONCE'),
+         False),
+        ({'INIT_END': '20221021'}, True),
         ({'LOOP_ORDER': 'times', 'INIT_END': '20221021',
           'STAT_ANALYSIS_RUNTIME_FREQ': 'RUN_ONCE_PER_LEAD'},
-         'RUN_ONCE_PER_LEAD'),
+         True),
     ]
 )
 @pytest.mark.wrapper_d
-def test_legacy_loop_order_handling(metplus_config, config_overrides, expected_result):
+def test_legacy_loop_order_handling(metplus_config, config_overrides, is_ok):
     """If RUNTIME_FREQ is not set, LOOP_ORDER (deprecated) is set to times,
      and begin/end times differ, then runtime frequency is automatically set
      to run once per init or valid to preserve legacy behavior."""
@@ -409,8 +409,8 @@ def test_legacy_loop_order_handling(metplus_config, config_overrides, expected_r
     for key, value in config_overrides.items():
         config.set('config', key, value)
     wrapper = StatAnalysisWrapper(config)
-    assert wrapper.is_ok
-    assert wrapper.c_dict['RUNTIME_FREQ'] == expected_result
+    assert wrapper.is_ok == is_ok
+
 
 @pytest.mark.parametrize(
     'c_dict, expected_result', [

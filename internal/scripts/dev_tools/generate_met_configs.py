@@ -14,7 +14,7 @@ def parse_metplus_log(lines):
 
     # regex to find a file path ending in Config_wrapped
     # \S matches any non-whitespace character
-    config_pattern = re.compile(r'(\S+Config_wrapped)')
+    config_pattern = re.compile(r'(\S{3,20}Config_wrapped)')
 
     results = []
 

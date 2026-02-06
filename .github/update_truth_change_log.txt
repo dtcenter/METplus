@@ -56,3 +56,4 @@
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] 8aecb0e1 - hotfix 8aecb0e1 combined the 4 fire weather use cases into 1 use case group
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] dtcenter/MET#3321 - Remove FULL from the default list of masking regions.
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3212 and #3143 - #3212 added FULL output back and #3143 renamed land_surface use case category to land
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] dtcenter/MET#3330 - dtcenter/MET#3330 changed multi-variate MODE PS output to only list the merge thresh if merge_flag != NONE
