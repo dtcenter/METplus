@@ -739,8 +739,8 @@ def _handle_file_list_files(filename_a, filename_b, lines_a, lines_b):
     # replace "MET-*/" with "MET/" to ignore path differences
     if is_file_list:
         print("Comparing file list file")
-        lines_a = [re.sub("MET-[a-zA-Z-]*/", "MET/", item) for item in lines_a]
-        lines_b = [re.sub("MET-[a-zA-Z-]*/", "MET/", item) for item in lines_b]
+        lines_a = [re.sub(r"/MET-[^/]*/", r"/MET/", item) for item in lines_a]
+        lines_b = [re.sub(r"/MET-[^/]*/", r"/MET/", item) for item in lines_b]
 
     return lines_a, lines_b
 
