@@ -671,9 +671,10 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
     elif not len(lines_a):
         return False, f"Empty file: {filepath_a}\nNot empty: {filepath_b}"
 
-    # check if the files are "file list" files
-    # remove file_list first line for comparison
-    _handle_file_list_files(lines_a, lines_b)
+    # handle "file list" files
+    lines_a, lines_b = _handle_file_list_files(os.path.basename(filepath_a),
+                                               os.path.basename(filepath_b),
+                                               lines_a, lines_b)
 
     # check if file is a METplus data file
     # - MET stat header lines starting with 'VERSION'
@@ -718,11 +719,12 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
                            is_stat_file=is_stat_file, header=header_a)
 
 
-def _handle_file_list_files(lines_a, lines_b):
-    """!Check if the files are "file list" files.
-    Remove the first line that contains the string "file_list" for comparison.
+def _handle_file_list_files(filename_a, filename_b, lines_a, lines_b):
+    """!Check the file names and contents for "file_list".
     """
     is_file_list = False
+
+    # remove "file_list" from the first line for comparison
     if lines_a[0] == 'file_list':
         is_file_list = True
         lines_a.pop(0)
@@ -730,10 +732,17 @@ def _handle_file_list_files(lines_a, lines_b):
         is_file_list = True
         lines_b.pop(0)
 
+    # check for "file_list" in the filename
+    if filename_a.find('file_list') or filename_b.find('file_list'):
+       is_file_list = True
+
+    # replace "MET-*/" with "MET/" to ignore path differences
     if is_file_list:
         print("Comparing file list file")
+        lines_a = [re.sub(r"/MET-[^/]*/", r"/MET/", item) for item in lines_a]
+        lines_b = [re.sub(r"/MET-[^/]*/", r"/MET/", item) for item in lines_b]
 
-    return is_file_list
+    return lines_a, lines_b
 
 
 def diff_text_lines(lines_a, lines_b, dir_a=None, dir_b=None,
@@ -866,7 +875,7 @@ def _nc_fields_are_equal(field, nc_a, nc_b):
     except KeyError:
         return False, f"ERROR: Field {field} not found"
 
-    msg = f"Field: {field}\nVar_A:{var_a}\nVar_B:{var_b}\nInstance type: {type(var_a[0])}"
+    msg = f"Field: {field}\nVar_A:{var_a}\nVar_B:{var_b}"
 
     values_a = var_a[:]
     values_b = var_b[:]
