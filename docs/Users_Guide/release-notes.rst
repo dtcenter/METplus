@@ -16,7 +16,7 @@ Note that the target dates listed below are tentative and may change in the futu
 The **development timeline** for the METplus 7.0.0 Coordinated Release
 is broken down into the following development cycles for each component:
 
-1. **Beta1** releases for the METplus components are tentatively scheduled for 2026-02-04.
+1. **Beta1** releases for the METplus components occurred around 2026-02-05.
 2. **Beta2** releases for the METplus components are tentatively scheduled for 2026-04-29.
 3. **Any additional Beta** releases for the METplus components are TBD.
 4. **Release Candidate 1** for the METplus components are TBD.
@@ -47,60 +47,58 @@ describes the bugfix, enhancement, or new feature.
 Important issues are listed **in bold** for emphasis.
 
 
-METplus Version 6.2.0 RC 1 Release Notes (2025-09-30)
------------------------------------------------------
+METplus Version 7.0.0 Beta 1 Release Notes (2026-02-05)
+-------------------------------------------------------
 
   .. dropdown:: Enhancements
 
-     * Support months and years in lead filename template tags
-       (`#3008 <https://github.com/dtcenter/METplus/issues/3008>`_)
-     * RMWAnalysis - add new configs from dtcenter/MET#3185
-       (`#3028 <https://github.com/dtcenter/METplus/issues/3028>`_)
-     * Enhance the ASCII2NC Wrapper to support the new `-inputrx` command line option
-       (`#3033 <https://github.com/dtcenter/METplus/issues/3033>`_)
-     * Data discovery utility defining time information based on existing files
-       (`#3069 <https://github.com/dtcenter/METplus/issues/3069>`_)
-     * Refine support for MESSAGE_TYPE_GROUP_MAP configuration options
-       (`#3087 <https://github.com/dtcenter/METplus/issues/3087>`_)
-     * Enhance the PointStat and EnsembleStat wrappers to support new orography configuration options
-       (`#3110 <https://github.com/dtcenter/METplus/issues/3110>`_)
+     * Enhancement: Add support for missing PointStat and EnsembleStat config options
+       (`#2306 <https://github.com/dtcenter/METplus/issues/2306>`_)
+     * Add support for setting file_type in the fcst and obs dictionaries for all wrappers that support it
+       (`#2570 <https://github.com/dtcenter/METplus/issues/2570>`_)
+     * Error when deprecated `LOOP_ORDER` config settings are set
+       (`#3109 <https://github.com/dtcenter/METplus/issues/3109>`_)
+     * Resolve 10 SonarQube Reliability issues in METplus's develop branch
+       (`#3129 <https://github.com/dtcenter/METplus/issues/3129>`_)
+     * Resolve findings from SonarQube for 7.0.0-beta1
+       (`#3146 <https://github.com/dtcenter/METplus/issues/3146>`_)
+     * RegridDataPlane - improve handling of verification grid input
+       (`#3157 <https://github.com/dtcenter/METplus/issues/3157>`_)
+     * Support setting `PB2NC_QUALITY_MARK_THRESH` as a threshold
+       (`#3189 <https://github.com/dtcenter/METplus/issues/3189>`_)
+     * Update Grid-Diag configuration options
+       (`#3194 <https://github.com/dtcenter/METplus/issues/3194>`_)
 
   .. dropdown:: Bugfix
 
-     * PCP Combine not working for 3 year averaging
-       (`#2980 <https://github.com/dtcenter/METplus/issues/2980>`_)
-     * Conda Forge: error while loading shared libraries: libatlas
-       (`conda-forge/metplus-feedstock#4 <https://github.com/conda-forge/metplus-feedstock/issues/4>`_)
+     * StatAnalysis hour and lead lists should not be sorted in MET config
+       (`#2983 <https://github.com/dtcenter/METplus/issues/2983>`_)
+     * Fix crash in GridDiag when time info is set in field level
+       (`#3100 <https://github.com/dtcenter/METplus/issues/3100>`_)
+     * INIT_SEQ returns 0 forecast lead when no leads within min/max are found
+       (`#3141 <https://github.com/dtcenter/METplus/issues/3141>`_)
+     * Remove quotes from field name
+       (`#3169 <https://github.com/dtcenter/METplus/issues/3169>`_)
 
   .. dropdown:: New Wrappers
 
-     * DataIngest
-       (`#3068 <https://github.com/dtcenter/METplus/issues/3068>`_)
+     None
 
   .. dropdown:: New Use Cases
 
-     * Convective Triggering Potential - Humidity Index
-       (`#2390 <https://github.com/dtcenter/METplus/issues/2390>`_)
-     * International Soil Moisture Network (ISMN)
-       (`#2533 <https://github.com/dtcenter/METplus/issues/2533>`_)
-     * GridStat: CREDIT and GFS
-       (`#3112 <https://github.com/dtcenter/METplus/issues/3112>`_)
-     * PointStat: CREDIT and GFS
-       (`#3112 <https://github.com/dtcenter/METplus/issues/3112>`_)
+     None
 
   .. dropdown:: Documentation
 
-     * Update the Release Notes to include updating Appendix A
-       (`#3041 <https://github.com/dtcenter/METplus/issues/3041>`_)
+     * Modify Release Guide for METplotpy version
+       (`#3125 <https://github.com/dtcenter/METplus/issues/3125>`_)
+     * Add info about conda installation
+       (`#3171 <https://github.com/dtcenter/METplus/issues/3171>`_)
 
   .. dropdown:: Build, repository, and test
 
-     * Improve differencing logic so that it does not falsely flag differences when used for MET unit test output
-       (`#2999 <https://github.com/dtcenter/METplus/issues/2999>`_)
-     * Add CVE scanning to the `release-docker-images.yml` workflow
-       (`#3054 <https://github.com/dtcenter/METplus/issues/3054>`_)
-     * Address Critical CVEs
-     * Enhance the logic and functionality of the METplus CVE scanning workflows
+     * Create script to generate MET config files from METplus runs
+       (`#3187 <https://github.com/dtcenter/METplus/issues/3187>`_)
 
 
 .. _upgrade-instructions:
@@ -108,4 +106,30 @@ METplus Version 6.2.0 RC 1 Release Notes (2025-09-30)
 METplus Wrappers Upgrade Instructions
 =====================================
 
-No upgrade instructions for METplus Version 6.2.0.
+MET pull request `#3321 <https://github.com/dtcenter/MET/pull/3321>`_
+changed the default behavior for masking for
+Point-Stat, Grid-Stat, Pair-Stat, and Ensemble-Stat.
+Previously, the mask.grid value was set to *FULL* by default,
+even if a masking region is defined using **mask.poly**, **mask.sid**, or **mask.llpnt**.
+In the METplus Coordinated 7.0 release, the new default behavior is to set
+mask.grid = "FULL" only if no other masking configuration settings are defined.
+This means that existing use cases that previously generated output for the *FULL*
+grid domain may no longer generate these results without modification to the METplus configuration.
+
+If **{TOOL_NAME}_MASK_POLY**, **{TOOL_NAME}_MASK_SID**, or **{TOOL_NAME}_MASK_LLPNT**
+is set in the METplus configuration, but **{TOOL_NAME}_MASK_GRID** is not set,
+then *FULL* grid output will no longer be generated unless
+**{TOOL_NAME}_MASK_GRID = FULL** is added.
+
+Example::
+
+   [config]
+   GRID_STAT_MASK_POLY = {MET_INSTALL_DIR}/share/met/poly/CONUS.poly
+
+Prior to METplus 7.0.0, this configuration would generate output for the
+*CONUS* and *FULL* domains. Starting in METplus 7.0.0, *FULL* output will not
+be generated unless the following is added::
+
+   GRID_STAT_MASK_GRID = FULL
+
+If neither **GRID_STAT_MASK_GRID** nor **GRID_STAT_MASK_POLY** are set, then *FULL* output will be generated.

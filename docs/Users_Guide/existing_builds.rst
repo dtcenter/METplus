@@ -570,10 +570,10 @@ in the
                module load met/7.0.0-beta1
 
 
-.. dropdown:: DockerHub - Coming Soon!
+.. dropdown:: DockerHub
 
    | **MET**
-   | *Last Updated:*
+   | *Last Updated:* February 5, 2026
 
       .. code-block:: ini
 
@@ -582,7 +582,7 @@ in the
      `dtcenter/met DockerHub <https://hub.docker.com/r/dtcenter/met>`_
 
    | **METplus**
-   | *Last Updated:*
+   | *Last Updated:* February 5, 2026
 
       .. code-block:: ini
 
@@ -591,7 +591,7 @@ in the
      `dtcenter/metplus DockerHub <https://hub.docker.com/r/dtcenter/metplus>`_
 
    | **METplus Analysis**
-   | *Last Updated:*
+   | *Last Updated:* February 5, 2026
 
       .. code-block:: ini
 

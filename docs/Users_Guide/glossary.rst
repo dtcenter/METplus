@@ -15037,3 +15037,58 @@ METplus Configuration Glossary
      Specify the value for 'output_flag.info_theory' in the MET configuration file for GridDiag.
 
      | *Used by:* GridDiag
+
+   ENSEMBLE_STAT_OBS_SUMMARY
+     Specify the value for 'obs_summary' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_PERC_VALUE
+     Specify the value for 'obs_perc_value' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   OBS_VAR<n>_DUPLICATE_FLAG
+     Sets duplicate_flag for the nth obs.field in the MET configuration file for PointStat and EnsembleStat.
+
+     | *Used by:* PointStat, EnsembleStat
+
+   OBS_VAR<n>_OBS_SUMMARY
+     Sets obs_summary for the nth obs.field in the MET configuration file for PointStat and EnsembleStat.
+
+     | *Used by:* PointStat, EnsembleStat
+
+   OBS_VAR<n>_OBS_PERC_VALUE
+     Sets obs_perc_value for the nth obs.field in the MET configuration file for PointStat and EnsembleStat.
+
+     | *Used by:* PointStat, EnsembleStat
+
+   POINT_STAT_OBS_VAR<n>_DUPLICATE_FLAG
+     Sets duplicate_flag for the nth obs.field in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_VAR<n>_OBS_SUMMARY
+     Sets obs_summary for the nth obs.field in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_VAR<n>_OBS_PERC_VALUE
+     Sets obs_perc_value for the nth obs.field in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   ENSEMBLE_STAT_OBS_VAR<n>_DUPLICATE_FLAG
+     Sets duplicate_flag for the nth obs.field in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_VAR<n>_OBS_SUMMARY
+     Sets obs_summary for the nth obs.field in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_VAR<n>_OBS_PERC_VALUE
+     Sets obs_perc_value for the nth obs.field in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat

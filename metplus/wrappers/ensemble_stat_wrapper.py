@@ -47,6 +47,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_MESSAGE_TYPE',
         'METPLUS_OBS_THRESH',
         'METPLUS_DUPLICATE_FLAG',
+        'METPLUS_OBS_SUMMARY',
+        'METPLUS_OBS_PERC_VALUE',
         'METPLUS_SKIP_CONST',
         'METPLUS_OBS_ERROR_FLAG',
         'METPLUS_ENS_SSVAR_BIN_SIZE',
@@ -245,6 +247,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.add_met_config(name='duplicate_flag',
                             data_type='string',
                             extra_args={'remove_quotes': True})
+        self.add_met_config(name='obs_summary', data_type='string',
+                            extra_args={'constant': True})
+        self.add_met_config(name='obs_perc_value', data_type='int')
 
         self.add_met_config(name='skip_const', data_type='bool')
 
@@ -359,6 +364,15 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         }
         for key, value in both_options.items():
             var_options['fcst'][key] = value
+            var_options['obs'][key] = value
+
+        # add options that are supported for obs fields
+        obs_options = {
+            'duplicate_flag': {'data_type': 'constant'},
+            'obs_summary': {'data_type': 'constant'},
+            'obs_perc_value': {'data_type': 'int'},
+        }
+        for key, value in obs_options.items():
             var_options['obs'][key] = value
 
         self.handle_land_mask_var_options(var_options)
