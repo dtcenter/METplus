@@ -733,7 +733,7 @@ def _handle_file_list_files(filename_a, filename_b, lines_a, lines_b):
         lines_b.pop(0)
 
     # check for "file_list" in the filename
-    if filename_a.find('file_list') or filename_b.find('file_list'):
+    if 'file_list' in filename_a or 'file_list' in filename_b:
        is_file_list = True
 
     # replace "MET-*/" with "MET/" to ignore path differences
