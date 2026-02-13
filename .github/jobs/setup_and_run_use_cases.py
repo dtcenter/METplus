@@ -83,9 +83,13 @@ def main():
         # pull METplus branch image and METplus environment image before building
         # the combined image to avoid disk space issues
         command_list = [
+            "df -h",
             f"docker pull dtcenter/metplus-dev:{branch_name}",
+            "df -h",
             f"docker pull dtcenter/metplus-envs:{env_tag}",
+            "df -h",
             docker_build_cmd,
+            "df -h",
         ]
 
         print('Building Docker environment/branch image...')
