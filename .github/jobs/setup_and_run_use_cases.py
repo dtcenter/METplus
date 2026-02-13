@@ -98,7 +98,7 @@ def main():
         run_commands([
             'docker images',
             f'docker image rm dtcenter/metplus-dev:{branch_name} -f',
-            'docker image prune -af',
+            'docker image prune -f',
         ])
 
         # list docker images again after removal,
