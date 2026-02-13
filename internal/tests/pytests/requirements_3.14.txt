@@ -1,0 +1,7 @@
+netCDF4
+pandas
+pdf2image
+pillow
+pytest
+pytest-cov
+python-dateutil
