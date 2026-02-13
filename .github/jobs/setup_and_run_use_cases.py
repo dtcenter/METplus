@@ -80,8 +80,16 @@ def main():
             f"-f {DOCKERFILE_DIR}/{dockerfile_name} ."
         )
 
+        # pull METplus branch image and METplus environment image before building
+        # the combined image to avoid disk space issues
+        command_list = [
+            f"docker pull dtcenter/metplus-dev:{branch_name}",
+            f"docker pull dtcenter/metplus-envs:{env_tag}",
+            docker_build_cmd,
+        ]
+
         print('Building Docker environment/branch image...')
-        if not run_commands(docker_build_cmd):
+        if not run_commands(command_list):
             is_ok = False
             continue
 
@@ -90,7 +98,7 @@ def main():
         run_commands([
             'docker images',
             f'docker image rm dtcenter/metplus-dev:{branch_name} -f',
-            'docker image prune -f',
+            'docker image prune -af',
         ])
 
         # list docker images again after removal,
