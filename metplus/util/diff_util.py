@@ -426,7 +426,7 @@ def _handle_text_files(filepath_a, filepath_b, dir_a, dir_b, debug=False):
         return filepath_a, filepath_b, 'Text diff', '', msg
 
     if debug:
-        print("No differences found from compare_txt_files")
+        print(f"{details}\nNo differences found from compare_txt_files")
     return True
 
 
@@ -664,8 +664,7 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
     if not len(lines_b):
         # filepath_a is also empty
         if not len(lines_a):
-            print("Both text files are empty, so they are equal")
-            return True, ''
+            return True, "Both text files are empty, so they are equal"
         return False, f"Empty file: {filepath_b}\nNot empty: {filepath_a}"
     # filepath_b is not empty but filepath_a is empty
     elif not len(lines_a):
@@ -686,23 +685,24 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
 
     # process data files
     header_a = None
+    details = ''
     if is_stat_file:
-        print("Comparing stat files")
+        details += "Comparing stat files"
         # check header lines
         if has_header:
             header_a = lines_a.pop(0).split()
             header_b = lines_b.pop(0).split()
             if len(header_a) != len(header_b):
-                return False, f'ERROR: Different number of header columns\n A: {header_a}\n B: {header_b}'
+                return False, f'{details}\nERROR: Different number of header columns\n A: {header_a}\n B: {header_b}'
 
     if len(lines_a) != len(lines_b):
-        return False, (f"ERROR: Different number of lines in {filepath_b}\n"
+        return False, (f"{details}\nERROR: Different number of lines in {filepath_b}\n"
                        f" File_A: {len(lines_a)}\n File_B: {len(lines_b)}")
 
     success, _ = diff_text_lines(lines_a, lines_b, dir_a=dir_a, dir_b=dir_b,
                                  is_stat_file=is_stat_file, header=header_a)
     if success:
-        return True, ''
+        return True, details
 
     # if differences found in text file, sort and try again
     orig_lines_a = lines_a.copy()
@@ -712,7 +712,7 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
     success, _ = diff_text_lines(lines_a, lines_b, dir_a=dir_a, dir_b=dir_b,
                                  is_stat_file=is_stat_file, header=header_a)
     if success:
-        return True, ''
+        return True, details
 
     # if differences persist, print the original, unsorted differences
     return diff_text_lines(orig_lines_a, orig_lines_b, dir_a=dir_a, dir_b=dir_b,
@@ -774,6 +774,7 @@ def diff_text_lines(lines_a, lines_b, dir_a=None, dir_b=None,
 
         # if the diff is in a stat file, ignore the version number
         if is_stat_file:
+            details += '\nComparing stat files'
             success, message = _diff_stat_line(compare_a, compare_b, header=header)
             if not success:
                 all_good = False
