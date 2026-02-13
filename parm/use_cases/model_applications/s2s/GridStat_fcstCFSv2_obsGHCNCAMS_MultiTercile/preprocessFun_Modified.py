@@ -44,7 +44,9 @@ def preprocess(path, model, init, variable, lead, clim_per, member):
     # Define anomalies and standardized anomalies (perhaps unnecessary)
     for y in range(len(years)):
         anom[y,:,:] = full_fcst_array[y,:,:] - clim
-        std_anom[y,:,:] = anom[y,:,:]/stddev
+        with np.errstate(divide='ignore', invalid='ignore'):
+            std_anom[y,:,:] = anom[y,:,:]/stddev
+        std_anom[y, np.isinf(std_anom[y,:,:])] = np.nan
 
     return clim, stddev, anom, std_anom
 # --------------------------------------------------------------------------------------------------
@@ -135,7 +137,9 @@ def dominant_tercile_obs(path_obs):
     obs_std_anom = np.zeros((obs_jan.shape[0], obs_jan.shape[1], obs_jan.shape[2]))
 
     for t in range(0,obs_jan.shape[0]):
-        obs_std_anom[t,:,:] = (obs_jan[t,:,:] - obs_clim) / obs_stddev
+        with np.errstate(divide='ignore', invalid='ignore'):
+            obs_std_anom[t,:,:] = (obs_jan[t,:,:] - obs_clim) / obs_stddev
+        obs_std_anom[t, np.isinf(obs_std_anom[t,:,:])] = np.nan
 
     ut_obs_ones = np.where(obs_std_anom[:,:,:] > 0.43,3,0)
     lt_obs_ones = np.where(obs_std_anom[:,:,:] < -0.43,1,0)
