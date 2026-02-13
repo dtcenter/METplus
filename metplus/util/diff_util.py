@@ -974,8 +974,9 @@ def _print_nc_field_diff_summary(values_diff):
     values_list = values_diff.flatten().tolist()
     idx = -1
     for idx, val in enumerate(values_list):
-        if not isclose(val, 0.0, rel_tol=1e-09, abs_tol=1e-09):
-            diff_values += f"{idx}: {val}\n"
+        if val is not None and not isclose(val, 0.0, rel_tol=1e-09, abs_tol=1e-09):
+            if os.environ.get('METPLUS_DIFF_VERBOSE'):
+                diff_values += f"{idx}: {val}\n"
             count += 1
     return f"{diff_values}{count} / {idx + 1} points differ"
 
