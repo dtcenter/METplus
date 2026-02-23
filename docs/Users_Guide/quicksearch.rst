@@ -93,6 +93,7 @@ Use Cases by Application:
    | `Subseasonal to Seasonal <../search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_
    | `Subseasonal to Seasonal: Madden-Julian Oscillation <../search.html?q=S2SMJOAppUseCase&check_keywords=yes&area=default>`_
    | `Subseasonal to Seasonal: Mid-Latitude <../search.html?q=S2SMidLatAppUseCase&check_keywords=yes&area=default>`_
+   | `Subseasonal to Seasonal: Multi-Model Ensemble <../search.html?q=S2SMMEAppUseCase&check_keywords=yes&area=default>`_
    | `Tropical Cyclone and Extra-Tropical Cyclone <../search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_
 
 .. only:: latex
@@ -113,6 +114,7 @@ Use Cases by Application:
    | **Subseasonal to Seasonal**: *S2SAppUseCase*
    | **Subseasonal to Seasonal: Madden-Julian Oscillation**: *S2SMJOAppUseCase*
    | **Subseasonal to Seasonal: Mid-Latitude**: *S2SMidLatAppUseCase*
+   | **Subseasonal to Seasonal: Multi-Model Ensemble**: *S2SMMEAppUseCase*
    | **Tropical Cyclone and Extra-Tropical Cyclone**: *TCandExtraTCAppUseCase*
 
 Use Cases by Organization:
