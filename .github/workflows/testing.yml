@@ -213,6 +213,19 @@ jobs:
         if: ${{ always() && steps.run_tests.conclusion == 'failure' }}
         run: .github/jobs/save_error_logs.sh
 
+      # checkout METplus diff_util.py from develop branch if running diff tests
+      - name: Checkout METplus diff util from develop branch
+        if: ${{ needs.job_control.outputs.run_diff == 'true' && steps.run_tests.conclusion == 'success' }}
+        uses: actions/checkout@v4
+        with:
+          repository: 'dtcenter/metplus'
+          ref: 'develop'
+          path: METplus.develop
+          sparse-checkout: |
+            metplus/util/diff_util.py
+            .github/jobs/run_diff_docker.py
+          sparse-checkout-cone-mode: false
+
       # run difference testing
       - name: Run difference tests
         id: run-diff

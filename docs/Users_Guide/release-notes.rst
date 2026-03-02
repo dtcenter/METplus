@@ -43,6 +43,16 @@ When applicable, release notes are followed by the
 describes the bugfix, enhancement, or new feature.
 Important issues are listed **in bold** for emphasis.
 
+
+METplus Version 6.1.1 Release Notes (2026-03-02)
+------------------------------------------------
+
+  .. dropdown:: Bugfix
+
+     * Update dateutil comparisons and s2s use case to support Python 3.14
+       (`#3228 <https://github.com/dtcenter/METplus/issues/3228>`_)
+
+
 METplus Version 6.1.0 Release Notes (2025-07-30)
 ------------------------------------------------
 
