@@ -19,7 +19,7 @@ CI_JOBS_DIR = '.github/jobs'
 RUNNER_WORKSPACE = os.environ.get('RUNNER_WORKSPACE')
 GITHUB_WORKSPACE = os.environ.get('GITHUB_WORKSPACE')
 REPO_NAME = os.path.basename(RUNNER_WORKSPACE)
-WS_PATH = os.path.join(RUNNER_WORKSPACE, REPO_NAME)
+WS_PATH = os.path.join(RUNNER_WORKSPACE, f"{REPO_NAME}.develop")
 print(f"WS_PATH is {WS_PATH}")
 print(f"GITHUB_WORKSPACE is {GITHUB_WORKSPACE}")
 
