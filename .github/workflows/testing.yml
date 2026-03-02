@@ -221,7 +221,9 @@ jobs:
           repository: 'dtcenter/metplus'
           ref: 'develop'
           path: METplus.develop
-          sparse-checkout: metplus/util/diff_util.py
+          sparse-checkout: |
+            metplus/util/diff_util.py
+            .github/jobs/run_diff_docker.py
           sparse-checkout-cone-mode: false
 
       # run difference testing
