@@ -480,8 +480,8 @@ def compare_images(image_a, image_b):
         for y in range(0, int(ny)):
             diff_pixel = image_diff.getpixel((x, y))
             if not _is_zero_pixel(diff_pixel):
-                # TODO: consider adding verbose mode to print difference pixels
-                #details += f"Difference pixel: {diff_pixel}: {x},{y}\n"
+                if os.environ.get('METPLUS_DIFF_VERBOSE'):
+                    details += f"Difference pixel: {diff_pixel}: {x},{y}\n"
                 diff_count += 1
     if diff_count:
         return image_diff, f"ERROR: Found {diff_count} differences between images\n{details.rstrip()}"
