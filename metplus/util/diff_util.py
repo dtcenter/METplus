@@ -1004,6 +1004,61 @@ def _all_values_are_equal(var_a, var_b):
     return True, ''
 
 
+def copy_diff_output(diff_files, truth_data_dir, output_data_dir, diff_output_dir):
+    """!Loop through difference output and copy files to directory so it can
+     be made available for comparison. Files will be put into the same
+      directory with _truth or _output added before their file extension.
+
+    @param diff_files list of tuples containing truth file path
+     and file path of output that was just generated. Either tuple
+     value may be an empty string if the file was not found.
+    @param truth_data_dir directory containing truth data
+    @param output_data_dir directory containing output data
+    @param diff_output_dir directory to copy files to
+    """
+    for truth_file, out_file, _, diff_file, _ in diff_files:
+        if truth_file:
+            copy_to_diff_dir(truth_file, 'truth', truth_data_dir, diff_output_dir)
+        if out_file:
+            copy_to_diff_dir(out_file, 'output', output_data_dir, diff_output_dir)
+        if diff_file:
+            copy_to_diff_dir(diff_file, 'diff', output_data_dir, diff_output_dir)
+
+
+def _copy_to_diff_dir(file_path, data_type, input_dir, output_dir):
+    """!Generate output path based on input file path, adding text based on
+     data_type to the filename, then copy input file to that output path.
+
+    @param file_path full path of file to copy
+    @param data_type data identifier, should be 'truth' or 'output'
+    @param input_dir directory containing input file
+    @param output_dir directory to copy file to
+    @returns True if success, False if there was a problem copying the file
+    """
+    # replace data dir with diff directory
+    diff_out = file_path.replace(input_dir, output_dir)
+
+    # add data type identifier to filename before extension
+    # if data is not difference output
+    if data_type == 'diff':
+        output_path = diff_out
+    else:
+        output_path, extension = os.path.splitext(diff_out)
+        output_path = f'{output_path}_{data_type}{extension}'
+
+    # create output directory if it doesn't exist
+    if not os.path.exists(os.path.dirname(output_path)):
+        os.makedirs(os.path.dirname(output_path))
+
+    try:
+        shutil.copyfile(file_path, output_path)
+    except OSError as err:
+        print(f'Could not copy file to {output_path}. {err}')
+        return False
+
+    return True
+
+
 if __name__ == '__main__':
     if len(sys.argv) < 3:
         print('ERROR: Must supply 2 directories to compare as arguments')
