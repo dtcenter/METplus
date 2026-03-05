@@ -4,6 +4,8 @@ import sys
 import os
 import traceback
 from typing import Any
+import argparse
+import shutil
 
 import netCDF4
 import filecmp
@@ -480,8 +482,8 @@ def compare_images(image_a, image_b):
         for y in range(0, int(ny)):
             diff_pixel = image_diff.getpixel((x, y))
             if not _is_zero_pixel(diff_pixel):
-                # TODO: consider adding verbose mode to print difference pixels
-                #details += f"Difference pixel: {diff_pixel}: {x},{y}\n"
+                if os.environ.get('METPLUS_DIFF_VERBOSE'):
+                    details += f"Difference pixel: {diff_pixel}: {x},{y}\n"
                 diff_count += 1
     if diff_count:
         return image_diff, f"ERROR: Found {diff_count} differences between images\n{details.rstrip()}"
@@ -1004,26 +1006,96 @@ def _all_values_are_equal(var_a, var_b):
     return True, ''
 
 
+def copy_diff_output(diff_files, truth_data_dir, output_data_dir, diff_output_dir, scrub_diff=True):
+    """!Loop through difference output and copy files to directory so it can
+     be made available for comparison. Files will be put into the same
+      directory with _truth or _output added before their file extension.
+
+    @param diff_files list of tuples containing truth file path
+     and file path of output that was just generated. Either tuple
+     value may be an empty string if the file was not found.
+    @param truth_data_dir directory containing truth data
+    @param output_data_dir directory containing output data
+    @param diff_output_dir directory to copy files to
+    @param scrub_diff (Optional) if True, remove the diff file from "output" directory
+     after copying to diff_output_dir
+    """
+    print(f"Copying files with differences into {diff_output_dir}")
+    for truth_file, out_file, _, diff_file, _ in diff_files:
+        if truth_file:
+            _copy_to_diff_dir(truth_file, 'truth', truth_data_dir, diff_output_dir)
+        if out_file:
+            _copy_to_diff_dir(out_file, 'output', output_data_dir, diff_output_dir)
+        if diff_file:
+            _copy_to_diff_dir(diff_file, 'diff', output_data_dir, diff_output_dir)
+            if scrub_diff:
+                os.remove(diff_file)
+
+
+def _copy_to_diff_dir(file_path, data_type, input_dir, output_dir):
+    """!Generate output path based on input file path, adding text based on
+     data_type to the filename, then copy input file to that output path.
+
+    @param file_path full path of file to copy
+    @param data_type data identifier, should be 'truth' or 'output'
+    @param input_dir directory containing input file
+    @param output_dir directory to copy file to
+    @returns True if success, False if there was a problem copying the file
+    """
+    # replace data dir with diff directory
+    diff_out = file_path.replace(input_dir, output_dir)
+
+    # add data type identifier to filename before extension
+    # if data is not difference output
+    if data_type == 'diff':
+        output_path = diff_out
+    else:
+        output_path, extension = os.path.splitext(diff_out)
+        output_path = f'{output_path}_{data_type}{extension}'
+
+    # create output directory if it doesn't exist
+    if not os.path.exists(os.path.dirname(output_path)):
+        os.makedirs(os.path.dirname(output_path))
+
+    try:
+        shutil.copyfile(file_path, output_path)
+    except OSError as err:
+        print(f'Could not copy file to {output_path}. {err}')
+        return False
+
+    return True
+
+
 if __name__ == '__main__':
-    if len(sys.argv) < 3:
-        print('ERROR: Must supply 2 directories to compare as arguments')
-        sys.exit(1)
+    parser = argparse.ArgumentParser(description='Compare two directories and report differences')
+    parser.add_argument('dir_a', help='First directory to compare')
+    parser.add_argument('dir_b', help='Second directory to compare')
+    parser.add_argument('--debug', action='store_true',
+                        help='Enable debug output to view details of comparisons')
+    parser.add_argument('--save_diff', action='store_true',
+                        help='Save diff files for files with differences')
+    parser.add_argument('--diff_dir', metavar='PATH',
+                        help='Directory to copy difference files into')
+    parser.add_argument('--no_scrub_diff', action='store_true',
+                        help='Keep diff files in output directory after copying to diff_dir')
 
-    dir_a = sys.argv[1]
-    dir_b = sys.argv[2]
-    debug = any('debug' in arg for arg in sys.argv[1:])
-    save_diff = any('save_diff' in arg for arg in sys.argv[1:])
+    args = parser.parse_args()
 
-    if debug:
+    if args.debug:
         print("Debugging is turned on with --debug argument")
     else:
         print("Debugging is turned off. Add --debug argument to view details of comparisons with no differences")
 
-    if save_diff:
+    if args.save_diff:
         print("Saving diff files with --save_diff argument")
     else:
         print("Not saving diff files. Add --save_diff argument to save diff files for files with differences")
 
     # if any files were flagged, exit non-zero
-    if compare_dir(dir_a, dir_b, debug=debug, save_diff=save_diff):
+    diff_files = compare_dir(args.dir_a, args.dir_b, debug=args.debug, save_diff=args.save_diff)
+
+    if args.diff_dir and diff_files:
+        copy_diff_output(diff_files, args.dir_a, args.dir_b, args.diff_dir, scrub_diff=not args.no_scrub_diff)
+
+    if diff_files:
         sys.exit(2)
