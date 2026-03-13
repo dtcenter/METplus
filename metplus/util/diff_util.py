@@ -543,16 +543,8 @@ def _compare_csv_lengths(lines_a, lines_b):
     keys_a = lines_a[0].keys()
     keys_b = lines_b[0].keys()
     # compare header columns and report error if they differ
-    if len(keys_a) != len(keys_b):
-        details += (f'ERROR: Different number of columns in TRUTH ({len(keys_a)}) '
-                    f'than in OUTPUT ({len(keys_b)})')
-        only_a = [item for item in keys_a if item not in keys_b]
-        if only_a:
-            details += f'\nColumns only in TRUTH: {",".join(only_a)}'
-
-        only_b = [item for item in keys_b if item not in keys_a]
-        if only_b:
-            details += f'\nColumns only in OUTPUT: {",".join(only_b)}'
+    details = _find_keys_only_in_one(keys_a, keys_b, 'columns')
+    if details:
         return False, details
 
     # compare number of lines and error if they differ
@@ -563,6 +555,44 @@ def _compare_csv_lengths(lines_a, lines_b):
 
     return True, details
 
+def _find_keys_only_in_one(keys_truth, keys_output, key_name):
+    """!Find keys that are only in one of the two dictionaries.
+    @param keys_truth list of keys in truth dictionary
+    @param keys_output list of keys in output dictionary
+    @param key_name name of the key, e.g., 'columns' or 'attributes'
+    @returns details about differences or empty string if no differences are found.
+    """
+    if len(keys_truth) == len(keys_output):
+        return ''
+
+    details = (
+        f'ERROR: Different number of {key_name} in truth ({len(keys_truth)}) '
+        f'than in output ({len(keys_output)})'
+    )
+
+    only_truth = [item for item in keys_truth if item not in keys_output]
+    if only_truth:
+        details += f'\n  {key_name.capitalize()} only in truth: {", ".join(only_truth)}'
+
+    only_output = [item for item in keys_output if item not in keys_truth]
+    if only_output:
+        details += f'\n  {key_name.capitalize()} only in output: {", ".join(only_output)}'
+
+    return details
+
+def _find_diffs_in_dicts(truth, output, key_name):
+    details = ''
+    common_keys = list(truth.keys() & output.keys())
+
+    for key in common_keys:
+        if truth[key] != output[key]:
+            details += (
+                f"  Difference in {key} {key_name.rstrip('s')}:\n    Truth: {truth[key]}\n    Output: {output[key]}\n"
+            )
+
+    if details:
+        details = f"ERROR: Found differences in {key_name}:\n{details}"
+    return details.rstrip()
 
 def _compare_csv_columns(lines_a, lines_b):
     """!Compare length of CSV columns and lines.
@@ -885,12 +915,20 @@ def _nc_fields_are_equal(field, nc_a, nc_b):
     values_b = var_b[:]
 
     # check for the same variable attributes
+    attrs_are_equal = True
     atts_a = var_a.__dict__
     atts_b = var_b.__dict__
+
     if atts_a != atts_b:
-        msg += (f"\nERROR: Field ({field}) attributes differ\n"
-                f" File_A: {atts_a}\n File_B: {atts_b}")
-        return False, msg
+        attrs_are_equal = False
+        msg += f"\nERROR: Field ({field}) attributes differ"
+        details = _find_keys_only_in_one(atts_a, atts_b, 'attributes')
+        if details:
+            msg += f"\n{details}"
+
+        details = _find_diffs_in_dicts(atts_a, atts_b, 'attributes')
+        if details:
+            msg += f"\n{details}"
 
     # check for same amount of masked data
     if count_masked(values_a) != count_masked(values_b):
@@ -908,7 +946,7 @@ def _nc_fields_are_equal(field, nc_a, nc_b):
                         f" File_A: {var_a[:]}\n File_B: {var_b[:]}")
             msg += f"\n{details}"
             return False, msg
-        return True, msg
+        return attrs_are_equal, msg
     except ValueError:
         # check if shapes are not equal
         if values_a.shape != values_b.shape:
@@ -920,13 +958,14 @@ def _nc_fields_are_equal(field, nc_a, nc_b):
     diff_result = _check_values_diff(values_diff, field, var_a, var_b)
     msg += f"\n{diff_result[1]}"
     if diff_result[0] is not None:
-        return diff_result[0], msg
+        return diff_result[0] and attrs_are_equal, msg
 
     # if this fails, compare all values, applying the same rounding logic
     # used for other file types
     success, details = _all_values_are_equal(var_a, var_b)
     if success:
-        return True, msg
+        # result is True unless attributes differ
+        return attrs_are_equal, msg
 
     details += (f"\nERROR: Field ({field}) values differ\n"
                 f"Min diff: {values_diff.min()}, "
