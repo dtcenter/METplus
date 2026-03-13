@@ -884,6 +884,14 @@ def _nc_fields_are_equal(field, nc_a, nc_b):
     values_a = var_a[:]
     values_b = var_b[:]
 
+    # check for the same variable attributes
+    atts_a = var_a.__dict__
+    atts_b = var_b.__dict__
+    if atts_a != atts_b:
+        msg += (f"\nERROR: Field ({field}) attributes differ\n"
+                f" File_A: {atts_a}\n File_B: {atts_b}")
+        return False, msg
+
     # check for same amount of masked data
     if count_masked(values_a) != count_masked(values_b):
         msg += f"\nERROR: Field {field} has differing number of missing data values"
