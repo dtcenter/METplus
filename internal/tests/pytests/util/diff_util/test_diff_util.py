@@ -61,7 +61,8 @@ def dummy_nc1(tmp_path_factory, make_dummy_nc):
         # Note: "nc5" is not included in NETCDF_EXTENSIONS, hence
         # we use it here to specifically trigger the call to
         # netCDF.Dataset in get_file_type.
-        file_name= "fake.nc5"
+        file_name= "fake.nc5",
+        attributes={'units': 'K', 'long_name': 'Temperature'},
     )
 
 
@@ -272,7 +273,7 @@ def test_get_file_type_extensions():
 
 
 @pytest.mark.parametrize(
-    "nc_data,fields,expected,check_print",
+    "nc_data,attributes,fields,expected,check_print",
     [
         (
             # Compare exact same data
@@ -283,6 +284,7 @@ def test_get_file_type_extensions():
                 DEFAULT_NC[3],
                 DEFAULT_NC[4],
             ],
+            {'units': 'K', 'long_name': 'Temperature'},
             None,
             True,
             None,
@@ -296,6 +298,7 @@ def test_get_file_type_extensions():
                 DEFAULT_NC[3],
                 "Foo",
             ],
+            {'units': 'K', 'long_name': 'Temperature'},
             None,
             False,
             [
@@ -317,6 +320,7 @@ def test_get_file_type_extensions():
                 ],
                 DEFAULT_NC[4],
             ],
+            {'units': 'K', 'long_name': 'Temperature'},
             None,
             False,
             [
@@ -336,6 +340,7 @@ def test_get_file_type_extensions():
                 ],
                 DEFAULT_NC[4],
             ],
+            {'units': 'K', 'long_name': 'Temperature'},
             ["Longitude", "Latitude", "Levels"],
             True,
             None,
@@ -343,6 +348,7 @@ def test_get_file_type_extensions():
         # Contains nan difference
         (
             DEFAULT_NC_WITH_NAN,
+            {'units': 'K', 'long_name': 'Temperature'},
             None,
             False,
             ["Variable Temp contains NaN. Comparing each value"],
@@ -360,6 +366,7 @@ def test_get_file_type_extensions():
                 ],
                 DEFAULT_NC[4],
             ],
+            {'units': 'K', 'long_name': 'Temperature'},
             None,
             False,
             ["Field Temp has differing number of missing data values"],
@@ -373,18 +380,75 @@ def test_get_file_type_extensions():
                 DEFAULT_NC[3],
                 DEFAULT_NC[4],
             ],
+            {'units': 'K', 'long_name': 'Temperature'},
             "Bar",
             False,
             ["ERROR: Field Bar not found"],
+        ),
+        # Attribute value differs
+        (
+            [
+                DEFAULT_NC[0],
+                DEFAULT_NC[1],
+                DEFAULT_NC[2],
+                DEFAULT_NC[3],
+                DEFAULT_NC[4],
+            ],
+            {'units': 'C'},
+            None,
+            False,
+            ["attribute", "units"],
+        ),
+        # Missing attribute in second file
+        (
+            [
+                DEFAULT_NC[0],
+                DEFAULT_NC[1],
+                DEFAULT_NC[2],
+                DEFAULT_NC[3],
+                DEFAULT_NC[4],
+            ],
+            {},
+            None,
+            False,
+            ["attribute"],
+        ),
+        # Extra attribute in second file
+        (
+            [
+                DEFAULT_NC[0],
+                DEFAULT_NC[1],
+                DEFAULT_NC[2],
+                DEFAULT_NC[3],
+                DEFAULT_NC[4],
+            ],
+            {'units': 'K', 'long_name': 'Temperature', 'standard_name': 'air_temperature'},
+            None,
+            False,
+            ["attribute"],
+        ),
+        # Same multiple attributes
+        (
+            [
+                DEFAULT_NC[0],
+                DEFAULT_NC[1],
+                DEFAULT_NC[2],
+                DEFAULT_NC[3],
+                DEFAULT_NC[4],
+            ],
+            {'units': 'K', 'long_name': 'Temperature'},
+            None,
+            True,
+            None,
         ),
     ],
 )
 @pytest.mark.util
 def test_nc_is_equal(
-    capfd, tmp_path_factory, make_dummy_nc, dummy_nc1, nc_data, fields, expected, check_print
+    capfd, tmp_path_factory, make_dummy_nc, dummy_nc1, nc_data, attributes, fields, expected, check_print
 ):
     # make a dummy second file to compare to dummy_nc1
-    dummy_nc2 = make_dummy_nc(tmp_path_factory.mktemp("data2"), *nc_data)
+    dummy_nc2 = make_dummy_nc(tmp_path_factory.mktemp("data2"), *nc_data, attributes=attributes)
     actual_success, actual_details = du.nc_is_equal(dummy_nc1, dummy_nc2, fields=fields)
     assert actual_success == expected
 
