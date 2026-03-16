@@ -923,12 +923,10 @@ def _nc_fields_are_equal(field, nc_a, nc_b):
         attrs_are_equal = False
         msg += f"\nERROR: Field ({field}) attributes differ"
         details = _find_keys_only_in_one(atts_a, atts_b, 'attributes')
-        if details:
-            msg += f"\n{details}"
+        msg += f"\n{details}"
 
         details = _find_diffs_in_dicts(atts_a, atts_b, 'attributes')
-        if details:
-            msg += f"\n{details}"
+        msg += f"\n{details}".rstrip()
 
     # check for same amount of masked data
     if count_masked(values_a) != count_masked(values_b):
