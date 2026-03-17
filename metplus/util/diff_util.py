@@ -991,7 +991,6 @@ def _nc_fields_are_equal(field, nc_a, nc_b):
     return False, msg
 
 def _nc_attrs_are_equal(var_a, var_b):
-    attrs_are_equal = True
     atts_a = var_a.__dict__
     atts_b = var_b.__dict__
     try:
