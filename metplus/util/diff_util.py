@@ -589,16 +589,22 @@ def _find_diffs_in_dicts(truth, output, key_name):
         val_truth = truth[key]
         val_output = output[key]
 
-        # Use np.array_equal to handle arrays and NaN values safely
-        if isinstance(val_truth, np.ndarray) or isinstance(val_output, np.ndarray):
-            # equal_nan=True ensures [nan] == [nan]
-            is_different = not np.array_equal(val_truth, val_output, equal_nan=True)
+        # Convert to arrays to handle scalars and arrays identically
+        array_truth, array_output = np.atleast_1d(val_truth), np.atleast_1d(val_output)
+
+        if array_truth.shape != array_output.shape:
+            is_different = True
         else:
-            # Handle standalone float NaNs for non-array values
-            if isinstance(val_truth, float) and isinstance(val_output, float):
-                is_different = not (np.isnan(val_truth) and np.isnan(val_output)) and (val_truth != val_output)
-            else:
-                is_different = val_truth != val_output
+            try:
+                # Only use equal_nan if the data is numeric (float/complex)
+                np_array_equal_args = {}
+                if np.issubdtype(array_truth.dtype, np.floating) or np.issubdtype(array_output.dtype, np.floating):
+                    np_array_equal_args['equal_nan'] = True
+
+                is_different = not np.array_equal(array_truth, array_output, **np_array_equal_args)
+            except TypeError:
+                # Fallback for incompatible types (e.g., comparing a string to a float)
+                is_different = True
 
         if is_different:
             details += (
