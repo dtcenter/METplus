@@ -220,7 +220,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: 'dtcenter/metplus'
-          ref: 'develop'
+          ref: 'bugfix_MET_3362_diff_nc_var_att'
           path: METplus.develop
           sparse-checkout: |
             metplus/util/diff_util.py
