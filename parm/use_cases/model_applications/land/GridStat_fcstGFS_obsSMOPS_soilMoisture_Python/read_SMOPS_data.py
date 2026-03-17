@@ -6,9 +6,7 @@ filename, vari_name = sys.argv[1:]
 
 f_in = Dataset(filename, 'r')
 
-#field = f_in[vari_name][:]
 met_data = f_in[vari_name][:]
-#met_data = field[:]
 date_info = f_in.Date_Start
 
 
