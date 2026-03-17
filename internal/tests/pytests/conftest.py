@@ -199,7 +199,6 @@ def metplus_config_files():
 def make_dummy_nc():
     return make_nc
 
-
 def make_nc(tmp_path, lon, lat, z, data, variable='Temp', file_name='fake.nc', attributes=None, fill_value=-9999):
     """! Make a dummy netCDF file for use in tests. Populates a generic single
     variable netcdf is dimension, lat, lon, z.
