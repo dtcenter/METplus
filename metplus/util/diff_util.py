@@ -16,6 +16,7 @@ from PIL import Image, ImageChops
 from pandas import isnull
 from numpy.ma import is_masked
 from numpy.ma import count_masked
+import numpy as np
 
 ###
 # Settings that are commonly overridden
@@ -585,7 +586,27 @@ def _find_diffs_in_dicts(truth, output, key_name):
     common_keys = list(truth.keys() & output.keys())
 
     for key in common_keys:
-        if truth[key] != output[key]:
+        val_truth = truth[key]
+        val_output = output[key]
+
+        # Convert to arrays to handle scalars and arrays identically
+        array_truth, array_output = np.atleast_1d(val_truth), np.atleast_1d(val_output)
+
+        if array_truth.shape != array_output.shape:
+            is_different = True
+        else:
+            try:
+                # Only use equal_nan if the data is numeric (float/complex)
+                np_array_equal_args = {}
+                if np.issubdtype(array_truth.dtype, np.floating) or np.issubdtype(array_output.dtype, np.floating):
+                    np_array_equal_args['equal_nan'] = True
+
+                is_different = not np.array_equal(array_truth, array_output, **np_array_equal_args)
+            except TypeError:
+                # Fallback for incompatible types (e.g., comparing a string to a float)
+                is_different = True
+
+        if is_different:
             details += (
                 f"  Difference in {key} {key_name.rstrip('s')}:\n    Truth: {truth[key]}\n    Output: {output[key]}\n"
             )
@@ -889,7 +910,9 @@ def nc_is_equal(file_a, file_b, fields=None):
         success, more_details = _nc_fields_are_equal(field, nc_a, nc_b)
         if not success:
             is_equal = False
-        details += f"\n{more_details}"
+            details += f"\n{more_details}"
+        elif os.environ.get('METPLUS_DIFF_VERBOSE'):
+            details += f"\n{more_details}"
 
     return is_equal, details
 
@@ -915,18 +938,10 @@ def _nc_fields_are_equal(field, nc_a, nc_b):
     values_b = var_b[:]
 
     # check for the same variable attributes
-    attrs_are_equal = True
-    atts_a = var_a.__dict__
-    atts_b = var_b.__dict__
-
-    if atts_a != atts_b:
-        attrs_are_equal = False
-        msg += f"\nERROR: Field ({field}) attributes differ"
-        details = _find_keys_only_in_one(atts_a, atts_b, 'attributes')
-        msg += f"\n{details}"
-
-        details = _find_diffs_in_dicts(atts_a, atts_b, 'attributes')
-        msg += f"\n{details}".rstrip()
+    attrs_are_equal, details = _nc_attrs_are_equal( var_a, var_b)
+    if not attrs_are_equal:
+        # if attrs differ, add diff details but continue checking for other diffs
+        msg += f"\nERROR: Field ({field}) attributes differ\n{details}"
 
     # check for same amount of masked data
     if count_masked(values_a) != count_masked(values_b):
@@ -975,6 +990,25 @@ def _nc_fields_are_equal(field, nc_a, nc_b):
     msg += f"\n{details}"
     return False, msg
 
+def _nc_attrs_are_equal(var_a, var_b):
+    attrs_are_equal = True
+    atts_a = var_a.__dict__
+    atts_b = var_b.__dict__
+    try:
+        if atts_a == atts_b:
+            return True, ''
+    except ValueError:
+        pass
+
+    msg = ''
+    details = _find_keys_only_in_one(atts_a, atts_b, 'attributes')
+    if details:
+        msg += f"\n{details}"
+
+    details = _find_diffs_in_dicts(atts_a, atts_b, 'attributes')
+    if details:
+        msg += f"\n{details}"
+    return not msg, msg.lstrip()
 
 def _check_values_diff(values_diff, field, var_a, var_b):
     """Check for NaN values and empty arrays in NetCDF field comparison.
