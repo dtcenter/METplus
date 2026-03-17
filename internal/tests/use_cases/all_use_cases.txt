@@ -107,7 +107,7 @@ Category: land
 0::PointStat_fcstCESM_obsFLUXNET2015_TCI:: model_applications/land/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf:: metplotpy_env, py_embed
 1::PointStat_fcstUFS_obsGDAS_CTP_HI:: model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI.conf:: metcalcpy, metplotpy_env, py_embed
 2::PointStat_fcstUFS_obsISMN_SoilMoistureTemp:: model_applications/land/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf:: metplotpy_env
-3::GridStat_fcstGFS_obsSMOPS_soilMoisture_Python:: model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf:: py_embed
+3::GridStat_fcstGFS_obsSMOPS_soilMoisture_Python:: model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf:: netcdf4_env
 
 Category: marine_and_cryosphere
 0::GridStat_MODE_fcstIMS_obsNCEP_sea_ice::model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf
