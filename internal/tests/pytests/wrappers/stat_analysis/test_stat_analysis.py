@@ -63,34 +63,36 @@ def stat_analysis_wrapper(metplus_config):
 
 
 def _set_config_dict_values():
-    config_dict = {}
-    config_dict['FCST_VALID_HOUR'] = ''
-    config_dict['FCST_VAR'] = ''
-    config_dict['FCST_LEVEL'] = ''
-    config_dict['INTERP_MTHD'] = ''
-    config_dict['MODEL'] = f'"{MODEL_TEST}"'
-    config_dict['VX_MASK'] = ''
-    config_dict['OBS_INIT_HOUR'] = ''
-    config_dict['COV_THRESH'] = ''
-    config_dict['OBS_UNITS'] = ''
-    config_dict['FCST_THRESH'] = ''
-    config_dict['OBS_VAR'] = ''
-    config_dict['FCST_INIT_HOUR'] = ''
-    config_dict['INTERP_PNTS'] = ''
-    config_dict['FCST_LEAD'] = ''
-    config_dict['LINE_TYPE'] = ''
-    config_dict['FCST_UNITS'] = ''
-    config_dict['DESC'] = ''
-    config_dict['OBS_LEAD'] = ''
-    config_dict['OBS_THRESH'] = ''
-    config_dict['OBTYPE'] = f'"{MODEL_TEST_ANL}"'
-    config_dict['OBS_VALID_HOUR'] = ''
-    config_dict['ALPHA'] = ''
-    config_dict['OBS_LEVEL'] = ''
+    config_dict = {
+        'FCST_VALID_HOUR': '',
+        'FCST_VAR': '',
+        'FCST_LEVEL': '',
+        'INTERP_MTHD': '',
+        'MODEL': f'"{MODEL_TEST}"',
+        'VX_MASK': '',
+        'OBS_INIT_HOUR': '',
+        'COV_THRESH': '',
+        'OBS_UNITS': '',
+        'FCST_THRESH': '',
+        'OBS_VAR': '',
+        'FCST_INIT_HOUR': '',
+        'INTERP_PNTS': '',
+        'FCST_LEAD': '',
+        'LINE_TYPE': '',
+        'FCST_UNITS': '',
+        'DESC': '',
+        'OBS_LEAD': '',
+        'OBS_THRESH': '',
+        'OBTYPE': f'"{MODEL_TEST_ANL}"',
+        'OBS_VALID_HOUR': '',
+        'ALPHA': '',
+        'OBS_LEVEL': '',
+    }
+
     return config_dict
 
 
-def set_minimum_config_settings(config):
+def set_minimum_config_settings(config, set_config_file=True):
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
     config.set('config', 'DO_NOT_RUN_EXE', True)
@@ -115,12 +117,40 @@ def set_minimum_config_settings(config):
                '{METPLUS_BASE}/internal/tests/data/stat_data')
 
     # not required, can be unset for certain tests
-    config.set('config', 'STAT_ANALYSIS_CONFIG_FILE',
-               '{PARM_BASE}/met_config/STATAnalysisConfig_wrapped')
+    if set_config_file:
+        config.set('config', 'STAT_ANALYSIS_CONFIG_FILE',
+                   '{PARM_BASE}/met_config/STATAnalysisConfig_wrapped')
 
 
 @pytest.mark.parametrize(
     'config_overrides, expected_env_vars', [
+        ({'BOTH_VAR1_NAME': 'HGT', 'BOTH_VAR1_LEVELS': 'P500'},
+         {'METPLUS_FCST_VAR': 'fcst_var = ["HGT"];',
+          'METPLUS_OBS_VAR': 'obs_var = ["HGT"];',
+          'METPLUS_FCST_LEVEL': 'fcst_lev = ["P500"];',
+          'METPLUS_OBS_LEVEL': 'obs_lev = ["P500"];'}),
+        ({'MODEL1': 'gfs',
+          'MODEL2': 'cfs',
+          'MODEL1_OBTYPE': 'gfs_anl',
+          'MODEL2_OBTYPE': 'gfs_anl',
+          'MODEL1_REFERENCE_NAME': '{MODEL1}',
+          'MODEL2_REFERENCE_NAME': '{MODEL2}',
+          'MODEL_LIST': '{MODEL1}, {MODEL2}',
+          'GROUP_LIST_ITEMS': 'MODEL_LIST, LINE_TYPE_LIST',
+          'LOOP_LIST_ITEMS': '',
+          'MODEL1_STAT_ANALYSIS_LOOKIN_DIR': '{INPUT_BASE}/gfs.DATE/evs.stats.gfs.atmos.grid2grid.vDATE.stat',
+          'MODEL2_STAT_ANALYSIS_LOOKIN_DIR': '{INPUT_BASE}/{MODEL2}.DATE/evs.stats.cfs.atmos.grid2grid.vDATE.stat',
+          },
+         {'METPLUS_MODEL': 'model = ["gfs", "cfs"];',
+          'METPLUS_OBTYPE': 'obtype = ["gfs_anl", "gfs_anl"];'}),
+        ({'COLUMN_LIST': 'RMSE,   CNT:RMSE'},
+         {'METPLUS_COLUMN': 'column = ["RMSE", "CNT:RMSE"];'}),
+        ({'WEIGHT_LIST': '6.0,4.0,2.0,0.0, 0.0,  10.0, 8.0, 6.0, 4.0, 4.0, 3.0, 2.0, 1.0, 0.0, 0.0, 5.0, 4.0, 3.0, 2.0, 2.0'},
+         {'METPLUS_WEIGHT': 'weight = [6.0, 4.0, 2.0, 0.0, 0.0, 10.0, 8.0, 6.0, 4.0, 4.0, 3.0, 2.0, 1.0, 0.0, 0.0, 5.0, 4.0, 3.0, 2.0, 2.0];'}),
+        ({'STAT_ANALYSIS_HSS_EC_VALUE': '0.25'}, {'METPLUS_HSS_EC_VALUE': 'hss_ec_value = 0.25;'}),
+        ({'STAT_ANALYSIS_SS_INDEX_NAME': 'NWP_INDEX'}, {'METPLUS_SS_INDEX_NAME': 'ss_index_name = "NWP_INDEX";'}),
+        ({'STAT_ANALYSIS_SS_INDEX_VLD_THRESH': '1.0'}, {'METPLUS_SS_INDEX_VLD_THRESH': 'ss_index_vld_thresh = 1.0;'}),
+
         # 0
         ({}, {}),
         # 1 - fcst valid beg
@@ -183,12 +213,46 @@ def set_minimum_config_settings(config):
         # 17 - obs_lev
         ({'OBS_LEVEL_LIST': 'R7'},
          {'METPLUS_OBS_LEVEL': 'obs_lev = ["R7"];'}),
-
+        # fcst lead list
+        ({'FCST_LEAD_LIST': '24, 48, 72, 96, 120, 24, 48, 72, 96, 120, 24, 48, 72, 96, 120, 24, 48, 72, 96, 120',},
+         {'METPLUS_FCST_LEAD': ('fcst_lead = ["240000", "480000", "720000", "960000", "1200000", "240000", "480000", '
+                                '"720000", "960000", "1200000", "240000", "480000", "720000", "960000", "1200000", '
+                                '"240000", "480000", "720000", "960000", "1200000"];'), }),
+        # fcst var list
+        ({'FCST_VAR_LIST': 'HGT, HGT, HGT, HGT, HGT, PRMSL, PRMSL, PRMSL, PRMSL, PRMSL, HGT, HGT, HGT, HGT, HGT, PRMSL, PRMSL, PRMSL, PRMSL, PRMSL'},
+         {'METPLUS_FCST_VAR': ('fcst_var = ["HGT", "HGT", "HGT", "HGT", "HGT", "PRMSL", "PRMSL", "PRMSL", "PRMSL", '
+                               '"PRMSL", "HGT", "HGT", "HGT", "HGT", "HGT", "PRMSL", "PRMSL", "PRMSL", "PRMSL", "PRMSL"];')}),
+        # fcst lev list
+        ({'FCST_LEVEL_LIST': 'P500, P500, P500, P500, P500, Z0, Z0, Z0, Z0, Z0, P500, P500, P500, P500, P500, Z0, Z0, Z0, Z0, Z0'},
+         {'METPLUS_FCST_LEVEL': ('fcst_lev = ["P500", "P500", "P500", "P500", "P500", "Z0", "Z0", "Z0", "Z0", "Z0", '
+                               '"P500", "P500", "P500", "P500", "P500", "Z0", "Z0", "Z0", "Z0", "Z0"];')}),
+        # obs lead list
+        ({'OBS_LEAD_LIST': '24, 48, 72, 96, 120, 24, 48, 72, 96, 120, 24, 48, 72, 96, 120, 24, 48, 72, 96, 120', },
+         {'METPLUS_OBS_LEAD': ('obs_lead = ["240000", "480000", "720000", "960000", "1200000", "240000", "480000", '
+                                '"720000", "960000", "1200000", "240000", "480000", "720000", "960000", "1200000", '
+                                '"240000", "480000", "720000", "960000", "1200000"];'), }),
+        # obs var list
+        ({'OBS_VAR_LIST': 'HGT, HGT, HGT, HGT, HGT, PRMSL, PRMSL, PRMSL, PRMSL, PRMSL, HGT, HGT, HGT, HGT, HGT, PRMSL, PRMSL, PRMSL, PRMSL, PRMSL'},
+         {'METPLUS_OBS_VAR': ('obs_var = ["HGT", "HGT", "HGT", "HGT", "HGT", "PRMSL", "PRMSL", "PRMSL", "PRMSL", '
+                               '"PRMSL", "HGT", "HGT", "HGT", "HGT", "HGT", "PRMSL", "PRMSL", "PRMSL", "PRMSL", "PRMSL"];')}),
+        # obs lev list
+        ({'OBS_LEVEL_LIST': 'P500, P500, P500, P500, P500, Z0, Z0, Z0, Z0, Z0, P500, P500, P500, P500, P500, Z0, Z0, Z0, Z0, Z0'},
+         {'METPLUS_OBS_LEVEL': ('obs_lev = ["P500", "P500", "P500", "P500", "P500", "Z0", "Z0", "Z0", "Z0", "Z0", '
+                                 '"P500", "P500", "P500", "P500", "P500", "Z0", "Z0", "Z0", "Z0", "Z0"];')}),
+        # vx mask list
+        ({'VX_MASK_LIST': 'NHEM, NHEM, NHEM, NHEM, NHEM, NHEM, NHEM, NHEM, NHEM, NHEM, SHEM, SHEM, SHEM, SHEM, SHEM, SHEM, SHEM, SHEM, SHEM, SHEM'},
+         {'METPLUS_VX_MASK': ('vx_mask = ["NHEM", "NHEM", "NHEM", "NHEM", "NHEM", "NHEM", "NHEM", "NHEM", "NHEM", '
+                              '"NHEM", "SHEM", "SHEM", "SHEM", "SHEM", "SHEM", "SHEM", "SHEM", "SHEM", "SHEM", "SHEM"];')}),
+        # test that running once per init time with same init time produces the same command
+        ({'STAT_ANALYSIS_RUNTIME_FREQ': 'RUN_ONCE_PER_INIT_OR_VALID', 'INIT_END': '20221014'}, {}),
+        ({'STAT_ANALYSIS_JOB1': '-job filter -dump_row [dump_row_file]',
+          'MODEL1_STAT_ANALYSIS_DUMP_ROW_TEMPLATE': 'some/template'},
+         {'METPLUS_JOBS': 'jobs = ["-job filter -dump_row <OUTPUT_BASE>/some/template"];'}),
     ]
 )
 @pytest.mark.wrapper_d
 def test_valid_init_env_vars(metplus_config, config_overrides,
-                             expected_env_vars):
+                             expected_env_vars, compare_command_and_env_vars):
     config = metplus_config
     set_minimum_config_settings(config)
     config.set('config', 'INIT_END', '20221015')
@@ -204,30 +268,23 @@ def test_valid_init_env_vars(metplus_config, config_overrides,
     wrapper = StatAnalysisWrapper(config)
     assert wrapper.isOK
 
-    time_input = {
-        'custom': config_overrides.get('STAT_ANALYSIS_CUSTOM_LOOP_LIST', '')
-    }
-    runtime_settings_dict_list = wrapper._get_all_runtime_settings(time_input)
-    assert runtime_settings_dict_list
+    all_cmds = wrapper.run_all_times()
 
-    first_runtime_only = runtime_settings_dict_list[0]
-    wrapper._run_stat_analysis_job(first_runtime_only)
-    all_cmds = wrapper.all_commands
+    app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
+    verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
+    config_file = wrapper.c_dict.get('CONFIG_FILE')
+    out_dir = wrapper.c_dict.get('OUTPUT_DIR')
+    lookin_dir = config.get('config', 'MODEL1_STAT_ANALYSIS_LOOKIN_DIR').replace(',',' ')
+    lookin_dir += ' ' + config.get('config', 'MODEL2_STAT_ANALYSIS_LOOKIN_DIR', '').replace(',',' ')
+    lookin_dir = lookin_dir.strip()
+    expected_cmds = [
+        f"{app_path} {verbosity} -lookin {lookin_dir} -config {config_file} -out {out_dir}/ALL",
+    ]
 
-    print(f"ALL COMMANDS: {all_cmds}")
-    _, actual_env_vars = all_cmds[0]
+    if 'METPLUS_JOBS' in expected_env_vars:
+        expected_env_vars['METPLUS_JOBS'] = expected_env_vars['METPLUS_JOBS'].replace('<OUTPUT_BASE>', out_dir)
 
-    missing_env = [item for item in expected_env_vars
-                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
-    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
-
-    for env_var_key in env_var_keys:
-        match = next((item for item in actual_env_vars if
-                      item.startswith(env_var_key)), None)
-        assert match is not None
-        actual_value = match.split('=', 1)[1]
-        print(f"ENV VAR: {env_var_key}")
-        assert expected_env_vars.get(env_var_key, '') == actual_value
+    compare_command_and_env_vars(all_cmds, expected_cmds, expected_env_vars, wrapper)
 
 
 @pytest.mark.parametrize(
@@ -252,6 +309,12 @@ def test_valid_init_env_vars(metplus_config, config_overrides,
           'MODEL1_STAT_ANALYSIS_DUMP_ROW_TEMPLATE': 'some/template',
           'MODEL1_STAT_ANALYSIS_OUT_STAT_TEMPLATE': 'some/template'},
          True),
+        ({'STAT_ANALYSIS_JOB1': '-job filter -dump_row [dump_row_file]',
+          'STAT_ANALYSIS_JOB2': '-job filter -out_stat [out_stat_file]',
+          'MODEL1_STAT_ANALYSIS_DUMP_ROW_TEMPLATE': 'some/template',
+          'MODEL1_STAT_ANALYSIS_OUT_STAT_TEMPLATE': 'some/template',
+          'MODEL1_STAT_ANALYSIS_LOOKIN_DIR': ''},
+         False),
     ]
 )
 @pytest.mark.wrapper_d
@@ -267,6 +330,87 @@ def test_check_required_job_template(metplus_config, config_overrides,
     print(wrapper.c_dict['MODEL_INFO_LIST'])
     assert wrapper.isOK == expected_result
 
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_result', [
+        ({'STAT_ANALYSIS_JOB1': '-job filter -dump_row [dump_row_file]',
+          'MODEL1_STAT_ANALYSIS_DUMP_ROW_TEMPLATE': 'some/template'},
+         True),
+        ({'STAT_ANALYSIS_JOB1': '-job filter -dump_row [dump_row_file]',
+          'STAT_ANALYSIS_JOB2': '-job filter -out_stat [out_stat_file]',
+          'MODEL1_STAT_ANALYSIS_DUMP_ROW_TEMPLATE': 'some/template',
+          'MODEL1_STAT_ANALYSIS_OUT_STAT_TEMPLATE': 'some/template',},
+         False),
+    ]
+)
+@pytest.mark.wrapper_d
+def test_error_check_no_config_required_single_job(metplus_config, config_overrides, expected_result):
+    config = metplus_config
+    set_minimum_config_settings(config, set_config_file=False)
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+    wrapper = StatAnalysisWrapper(config)
+    assert wrapper.isOK == expected_result
+
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_result', [
+        # defining vars in FCST_VAR_LIST and VAR<n> is not allowed
+        ({'FCST_VAR_LIST': 'HGT, PRMSL',
+          'FCST_LEVEL_LIST': 'P500, ZO',
+          'BOTH_VAR1_NAME': 'HGT',
+          'BOTH_VAR1_LEVELS': 'P500',
+          'BOTH_VAR2_NAME': 'PRMSL',
+          'BOTH_VAR2_LEVELS': 'Z0',},
+         False),
+        # define vars in FCST_VAR_LIST only is OK
+        ({'FCST_VAR_LIST': 'HGT, PRMSL',
+          'FCST_LEVEL_LIST': 'P500, ZO',},
+         True),
+        # define vars in VAR<n> variables only is OK
+        ({'BOTH_VAR1_NAME': 'HGT',
+          'BOTH_VAR1_LEVELS': 'P500',
+          'BOTH_VAR2_NAME': 'PRMSL',
+          'BOTH_VAR2_LEVELS': 'Z0',},
+         True),
+        # excluding MODEL_LIST is OK, but warning should be displayed
+        ({'MODEL_LIST': '',}, True),
+    ]
+)
+@pytest.mark.wrapper_d
+def test_error_check_one_set_of_vars(metplus_config, config_overrides, expected_result):
+    config = metplus_config
+    set_minimum_config_settings(config)
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+    wrapper = StatAnalysisWrapper(config)
+    assert wrapper.isOK == expected_result
+
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_result', [
+        ({}, 'RUN_ONCE'),
+        ({'LOOP_ORDER': 'times'}, 'RUN_ONCE'),
+        ({'LOOP_ORDER': 'times', 'INIT_END': '20221021'},
+         'RUN_ONCE_PER_INIT_OR_VALID'),
+        ({'INIT_END': '20221021'}, 'RUN_ONCE'),
+        ({'LOOP_ORDER': 'times', 'INIT_END': '20221021',
+          'STAT_ANALYSIS_RUNTIME_FREQ': 'RUN_ONCE_PER_LEAD'},
+         'RUN_ONCE_PER_LEAD'),
+    ]
+)
+@pytest.mark.wrapper_d
+def test_legacy_loop_order_handling(metplus_config, config_overrides, expected_result):
+    """If RUNTIME_FREQ is not set, LOOP_ORDER (deprecated) is set to times,
+     and begin/end times differ, then runtime frequency is automatically set
+     to run once per init or valid to preserve legacy behavior."""
+    config = metplus_config
+    set_minimum_config_settings(config)
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+    wrapper = StatAnalysisWrapper(config)
+    assert wrapper.isOK
+    assert wrapper.c_dict['RUNTIME_FREQ'] == expected_result
 
 @pytest.mark.parametrize(
     'c_dict, expected_result', [
@@ -439,57 +583,53 @@ def test_set_lists_as_loop_or_group(metplus_config):
     # and those not set are set to GROUP_LIST_ITEMS
     st = stat_analysis_wrapper(metplus_config)
     # Test 1
-    expected_lists_to_group_items = ['FCST_INIT_HOUR_LIST', 'DESC_LIST',
-                                     'FCST_LEAD_LIST', 'OBS_LEAD_LIST',
-                                     'OBS_VALID_HOUR_LIST',
-                                     'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST',
-                                     'OBS_VAR_LIST', 'FCST_UNITS_LIST',
-                                     'OBS_UNITS_LIST', 'FCST_LEVEL_LIST',
-                                     'OBS_LEVEL_LIST', 'VX_MASK_LIST',
-                                     'INTERP_MTHD_LIST', 'INTERP_PNTS_LIST',
-                                     'FCST_THRESH_LIST', 'OBS_THRESH_LIST',
-                                     'COV_THRESH_LIST', 'ALPHA_LIST',
-                                     'LINE_TYPE_LIST']
-    expected_lists_to_loop_items = ['FCST_VALID_HOUR_LIST', 'MODEL_LIST']
-    config_dict = {}
-    config_dict['LOOP_ORDER'] = 'times'
-    config_dict['PROCESS_LIST'] = 'StatAnalysis'
-    config_dict['CONFIG_FILE'] = (
-        'PARM_BASE/grid_to_grid/met_config/STATAnalysisConfig'
-    )
-    config_dict['OUTPUT_DIR'] = 'OUTPUT_BASE/stat_analysis'
-    config_dict['GROUP_LIST_ITEMS'] = ['FCST_INIT_HOUR_LIST']
-    config_dict['LOOP_LIST_ITEMS'] = ['FCST_VALID_HOUR_LIST', 'MODEL_LIST']
-    config_dict['FCST_VAR_LIST'] = []
-    config_dict['OBS_VAR_LIST'] = []
-    config_dict['FCST_LEVEL_LIST'] = []
-    config_dict['OBS_LEVEL_LIST'] = []
-    config_dict['FCST_UNITS_LIST'] = []
-    config_dict['OBS_UNITS_LIST'] = []
-    config_dict['FCST_THRESH_LIST'] = []
-    config_dict['OBS_THRESH_LIST'] = []
-    config_dict['MODEL_LIST'] = [MODEL_TEST]
-    config_dict['DESC_LIST'] = []
-    config_dict['FCST_LEAD_LIST'] = []
-    config_dict['OBS_LEAD_LIST'] = []
-    config_dict['FCST_VALID_HOUR_LIST'] = ['00', '06', '12', '18']
-    config_dict['FCST_INIT_HOUR_LIST'] = ['00', '06', '12', '18']
-    config_dict['OBS_VALID_HOUR_LIST'] = []
-    config_dict['OBS_INIT_HOUR_LIST'] = []
-    config_dict['VX_MASK_LIST'] = []
-    config_dict['INTERP_MTHD_LIST'] = []
-    config_dict['INTERP_PNTS_LIST'] = []
-    config_dict['COV_THRESH_LIST'] = []
-    config_dict['ALPHA_LIST'] = []
-    config_dict['LINE_TYPE_LIST'] = []
-    config_dict = st._set_lists_loop_or_group(config_dict)
-    test_lists_to_loop_items = config_dict['LOOP_LIST_ITEMS']
-    test_lists_to_group_items = config_dict['GROUP_LIST_ITEMS']
+    expected_lists_to_group = [
+        'FCST_INIT_HOUR_LIST', 'DESC_LIST', 'FCST_LEAD_LIST', 'OBS_LEAD_LIST',
+        'OBS_VALID_HOUR_LIST', 'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST',
+        'OBS_VAR_LIST', 'FCST_UNITS_LIST', 'OBS_UNITS_LIST', 'FCST_LEVEL_LIST',
+        'OBS_LEVEL_LIST', 'VX_MASK_LIST', 'INTERP_MTHD_LIST', 'INTERP_PNTS_LIST',
+        'FCST_THRESH_LIST', 'OBS_THRESH_LIST', 'COV_THRESH_LIST', 'ALPHA_LIST',
+        'LINE_TYPE_LIST', 'COLUMN_LIST', 'WEIGHT_LIST',
+    ]
+    expected_lists_to_loop = ['FCST_VALID_HOUR_LIST', 'MODEL_LIST']
+    config_dict = {
+        'LOOP_ORDER': 'times',
+        'PROCESS_LIST': 'StatAnalysis',
+        'CONFIG_FILE': 'PARM_BASE/grid_to_grid/met_config/STATAnalysisConfig',
+        'OUTPUT_DIR': 'OUTPUT_BASE/stat_analysis',
+        'GROUP_LIST_ITEMS': ['FCST_INIT_HOUR_LIST'],
+        # add FCST_VAR_LIST to loop list even though it is empty to test that it is moved to group list
+        'LOOP_LIST_ITEMS': ['FCST_VALID_HOUR_LIST', 'MODEL_LIST', 'FCST_VAR_LIST'],
+        'FCST_VAR_LIST': [],
+        'OBS_VAR_LIST': [],
+        'FCST_LEVEL_LIST': [],
+        'OBS_LEVEL_LIST': [],
+        'FCST_UNITS_LIST': [],
+        'OBS_UNITS_LIST': [],
+        'FCST_THRESH_LIST': [],
+        'OBS_THRESH_LIST': [],
+        'MODEL_LIST': [MODEL_TEST],
+        'DESC_LIST': [],
+        'FCST_LEAD_LIST': [],
+        'OBS_LEAD_LIST': [],
+        'FCST_VALID_HOUR_LIST': ['00', '06', '12', '18'],
+        'FCST_INIT_HOUR_LIST': ['00', '06', '12', '18'],
+        'OBS_VALID_HOUR_LIST': [],
+        'OBS_INIT_HOUR_LIST': [],
+        'VX_MASK_LIST': [],
+        'INTERP_MTHD_LIST': [],
+        'INTERP_PNTS_LIST': [],
+        'COV_THRESH_LIST': [],
+        'ALPHA_LIST': [],
+        'LINE_TYPE_LIST': [],
+    }
 
-    assert(all(elem in expected_lists_to_group_items
-               for elem in test_lists_to_group_items))
-    assert(all(elem in expected_lists_to_loop_items 
-               for elem in test_lists_to_loop_items))
+    config_dict = st._set_lists_loop_or_group(config_dict)
+    test_lists_to_loop = config_dict['LOOP_LIST_ITEMS']
+    test_lists_to_group = config_dict['GROUP_LIST_ITEMS']
+
+    assert(all(elem in expected_lists_to_group for elem in test_lists_to_group))
+    assert(all(elem in expected_lists_to_loop for elem in test_lists_to_loop))
 
 
 @pytest.mark.parametrize(
@@ -497,7 +637,7 @@ def test_set_lists_as_loop_or_group(metplus_config):
         # Test 0
         (['FCST_VALID_HOUR_LIST', 'MODEL_LIST'],
          {'DATE_BEG': '20190101', 'DATE_END': '20190105', 'DATE_TYPE': 'VALID'},
-         {'FCST_VALID_HOUR': '0', 'FCST_INIT_HOUR': '0, 6, 12, 18'},
+         {'FCST_VALID_HOUR': '0', 'FCST_INIT_HOUR': '0, 12, 6, 18'},
          {'valid_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
           'valid_end': datetime.datetime(2019, 1, 5, 0, 0, 0),
           'fcst_valid_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
@@ -510,7 +650,7 @@ def test_set_lists_as_loop_or_group(metplus_config):
           'valid_hour_end': relativedelta(),
           'model': MODEL_TEST,
           'obtype': MODEL_TEST_ANL,
-          'fcst_init_hour': '000000_060000_120000_180000',
+          'fcst_init_hour': '000000_120000_060000_180000',
           'fcst_init_hour_beg': relativedelta(),
           'fcst_init_hour_end': relativedelta(hours=18),
           'init_hour_beg': relativedelta(),
@@ -605,7 +745,7 @@ def test_set_lists_as_loop_or_group(metplus_config):
         (['FCST_LEAD_LIST'],
          {'DATE_BEG': '20190101', 'DATE_END': '20190105',
           'DATE_TYPE': 'INIT'},
-         {'FCST_INIT_HOUR': '0', 'FCST_LEAD': '12,24'},
+         {'FCST_INIT_HOUR': '0', 'FCST_LEAD': '24,12'},
          {'init_beg': datetime.datetime(2019, 1, 1, 0, 0, 0),
           'init_end': datetime.datetime(2019, 1, 5, 0, 0, 0),
           'valid_beg': datetime.datetime(2019, 1, 1, 12, 0, 0),
@@ -660,7 +800,7 @@ def test_build_stringsub_dict(metplus_config, lists_to_loop, c_dict_overrides,
         (('{model?fmt=%s}_{obtype?fmt=%s}_valid{valid?fmt=%Y%m%d}'
           '{valid_hour?fmt=%H}_init{fcst_init_hour?fmt=%s}.stat'),
          'out_stat', ('MODEL_TEST_MODEL_TEST_ANL_valid2019010100'
-                      '_init000000_060000_120000_180000.stat')
+                      '_init000000_120000_060000_180000.stat')
          ),
     ]
 )
@@ -675,7 +815,7 @@ def test_get_output_filename(metplus_config, filename_template, output_type,
     st = stat_analysis_wrapper(metplus_config)
     config_dict = _set_config_dict_values()
     config_dict['FCST_VALID_HOUR'] = '0'
-    config_dict['FCST_INIT_HOUR'] = '0, 6, 12, 18'
+    config_dict['FCST_INIT_HOUR'] = '0, 12, 6, 18'
 
     st.c_dict['DATE_BEG'] = datetime.datetime.strptime('20190101', '%Y%m%d')
     st.c_dict['DATE_END'] = datetime.datetime.strptime('20190101', '%Y%m%d')
@@ -697,30 +837,10 @@ def test_get_lookin_dir(metplus_config):
     # and test the value is
     # as expected
     st = stat_analysis_wrapper(metplus_config)
-    config_dict = {}
+    config_dict = _set_config_dict_values()
     config_dict['FCST_VALID_HOUR'] = '0'
-    config_dict['FCST_VAR'] = ''
-    config_dict['FCST_LEVEL'] = ''
-    config_dict['INTERP_MTHD'] = ''
-    config_dict['MODEL'] = f'"{MODEL_TEST}"'
-    config_dict['VX_MASK'] = ''
-    config_dict['OBS_INIT_HOUR'] = ''
-    config_dict['COV_THRESH'] = ''
-    config_dict['OBS_UNITS'] = ''
-    config_dict['FCST_THRESH'] = ''
-    config_dict['OBS_VAR'] = ''
     config_dict['FCST_INIT_HOUR'] = '0, 6, 12, 18'
-    config_dict['INTERP_PNTS'] = ''
-    config_dict['FCST_LEAD'] = ''
-    config_dict['LINE_TYPE'] = ''
-    config_dict['FCST_UNITS'] = ''
-    config_dict['DESC'] = ''
-    config_dict['OBS_LEAD'] = ''
-    config_dict['OBS_THRESH'] = ''
-    config_dict['OBTYPE'] = f'"{MODEL_TEST_ANL}"'
-    config_dict['OBS_VALID_HOUR'] = ''
-    config_dict['ALPHA'] = ''
-    config_dict['OBS_LEVEL'] = ''
+
     st.c_dict['DATE_BEG'] = datetime.datetime.strptime('20180201', '%Y%m%d')
     st.c_dict['DATE_END'] = datetime.datetime.strptime('20180201', '%Y%m%d')
     st.c_dict['DATE_TYPE'] = 'VALID'
@@ -813,11 +933,11 @@ def test_get_lookin_dir(metplus_config):
         # Test 3
         ({'DATE_BEG': '20190101', 'DATE_END': '20190101', 'DATE_TYPE': 'INIT'},
          {'FCST_VALID_HOUR': '', 'FCST_INIT_HOUR': '',
-          'OBS_VALID_HOUR': '000000', 'OBS_INIT_HOUR': '0, 12'},
+          'OBS_VALID_HOUR': '000000', 'OBS_INIT_HOUR': '12, 0'},
          {'OBS_INIT_BEG': '20190101_000000',
           'OBS_INIT_END': '20190101_120000',
           'OBS_VALID_HOUR': '"000000"',
-          'OBS_INIT_HOUR': '"000000", "120000"',
+          'OBS_INIT_HOUR': '"120000", "000000"',
           'FCST_INIT_BEG': '20190101_000000',
           'FCST_INIT_END': '20190101_235959',
           },
