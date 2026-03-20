@@ -14476,6 +14476,16 @@ METplus Configuration Glossary
 
      | *Used by:* SeriesAnalysis
 
+   STAT_ANALYSIS_SS_INDEX_NAME
+     Specify the value for 'ss_index_name' in the MET configuration file for StatAnalysis.
+
+     | *Used by:* StatAnalysis
+
+   STAT_ANALYSIS_SS_INDEX_VLD_THRESH
+     Specify the value for 'ss_index_vld_thresh' in the MET configuration file for StatAnalysis.
+
+     | *Used by:* StatAnalysis
+
    TIME_GENERATOR_INPUT_TEMPLATE
      Build list of runtimes to process using directory and template to extract
      time information. If set, INIT/VALID_BEG/END/INCREMENT time looping
