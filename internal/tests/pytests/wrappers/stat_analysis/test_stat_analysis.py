@@ -350,7 +350,7 @@ def test_error_check_no_config_required_single_job(metplus_config, config_overri
     for key, value in config_overrides.items():
         config.set('config', key, value)
     wrapper = StatAnalysisWrapper(config)
-    assert wrapper.is_ok == expected_result
+    assert wrapper.isOK == expected_result
 
 
 @pytest.mark.parametrize(
@@ -384,7 +384,7 @@ def test_error_check_one_set_of_vars(metplus_config, config_overrides, expected_
     for key, value in config_overrides.items():
         config.set('config', key, value)
     wrapper = StatAnalysisWrapper(config)
-    assert wrapper.is_ok == expected_result
+    assert wrapper.isOK == expected_result
 
 
 @pytest.mark.parametrize(
@@ -409,7 +409,7 @@ def test_legacy_loop_order_handling(metplus_config, config_overrides, expected_r
     for key, value in config_overrides.items():
         config.set('config', key, value)
     wrapper = StatAnalysisWrapper(config)
-    assert wrapper.is_ok
+    assert wrapper.isOK
     assert wrapper.c_dict['RUNTIME_FREQ'] == expected_result
 
 @pytest.mark.parametrize(
