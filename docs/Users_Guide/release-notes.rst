@@ -43,6 +43,14 @@ When applicable, release notes are followed by the
 describes the bugfix, enhancement, or new feature.
 Important issues are listed **in bold** for emphasis.
 
+METplus Version 6.1.2 Release Notes (2026-03-23)
+------------------------------------------------
+
+  .. dropdown:: Bugfix
+
+     * StatAnalysis hour and lead lists should not be sorted in MET config
+       (`#2983 <https://github.com/dtcenter/METplus/issues/2983>`_)
+
 
 METplus Version 6.1.1 Release Notes (2026-03-02)
 ------------------------------------------------

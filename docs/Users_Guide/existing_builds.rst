@@ -594,20 +594,20 @@ in the
      `dtcenter/met DockerHub <https://hub.docker.com/r/dtcenter/met>`_
 
    | **METplus**
-   | *Last Updated: March 2, 2026*
+   | *Last Updated: March 23, 2026*
 
       .. code-block:: ini
 
-          docker pull dtcenter/metplus:6.1.1
+          docker pull dtcenter/metplus:6.1.2
 
      `dtcenter/metplus DockerHub <https://hub.docker.com/r/dtcenter/metplus>`_
 
    | **METplus Analysis**
-   | *Last Updated: March 2, 2026*
+   | *Last Updated: March 23, 2026*
 
       .. code-block:: ini
 
-          docker pull dtcenter/metplus-analysis:6.1.1
+          docker pull dtcenter/metplus-analysis:6.1.2
 
      `dtcenter/metplus-analysis DockerHub <https://hub.docker.com/r/dtcenter/metplus-analysis>`_
 
