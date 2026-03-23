@@ -35,7 +35,7 @@ VERSION_LOOKUP = {
         'metbaseimage': '3.4.9',
     },
     '6.1': {
-        'metplus': '6.1.1',
+        'metplus': '6.1.2',
         'met': '12.1.2',
         'metplotpy': '3.1.0',
         'metcalcpy': '3.1.0',
