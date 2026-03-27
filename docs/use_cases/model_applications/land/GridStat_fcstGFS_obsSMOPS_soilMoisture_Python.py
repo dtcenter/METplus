@@ -73,7 +73,9 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 # much of SeriesAnalysis' settings reference GridStat's settings, which is the first
 # tool used. The forecast and observation grid resolutions differ, so regridding is
 # used to interpolate the higher resolution forecast data to the lower resolution 
-# observation data for verification, using a bilinear method. A poly masking
+# observation data for verification, using a bilinear method. Note that for rigorous
+# comparisons of water budgets users may want to use conservative regridding rather
+# than bilinear as bilinear regridding does not conserve total water mass. A poly masking
 # for CONUS is used, with the mask being available from the MET installation.
 
 ##############################################################################
