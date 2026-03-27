@@ -20,9 +20,7 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 # downsides or degradation in verification statistics. This use case compares
 # a GFS HR run to SMOPS, a combination dataset of satellite measurements concerning
 # soil characteristics. By completing temporal and spatial verification measurements,
-# this use case serves as an excellent baseline for previous and existing
-# model runs to compare against, showing a snapshot of model accuracy specifically in
-# soil moisture.
+# this use case serves as an excellent baseline for evaluating near surface model soil moisture
 
 ##############################################################################
 # Version Added
@@ -33,7 +31,7 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 ##############################################################################
 # Datasets
 # --------
-# **Forecast:** Global Forecast System (GFS) v17 12km resolution, 0-0.1 meter soil temperature
+# **Forecast:** Global Forecast System (GFS) v17 prototype version (tag HR1) 12km resolution, 0-0.1 meter soil temperature
 #
 # **Observation:** NOAA Soil Moisture Products System (SMOPS) 0.25 degree resolution, blended soil temperature
 # **NOTE:** Retrieving observation data from CLASS requires user account
