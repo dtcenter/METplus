@@ -199,8 +199,7 @@ def metplus_config_files():
 def make_dummy_nc():
     return make_nc
 
-
-def make_nc(tmp_path, lon, lat, z, data, variable='Temp', file_name='fake.nc'):
+def make_nc(tmp_path, lon, lat, z, data, variable='Temp', file_name='fake.nc', attributes=None, fill_value=-9999):
     """! Make a dummy netCDF file for use in tests. Populates a generic single
     variable netcdf is dimension, lat, lon, z.
 
@@ -227,7 +226,11 @@ def make_nc(tmp_path, lon, lat, z, data, variable='Temp', file_name='fake.nc'):
         longitude = rootgrp.createVariable("Longitude", "f4", "lon")
         latitude = rootgrp.createVariable("Latitude", "f4", "lat")
         levels = rootgrp.createVariable("Levels", "i4", "z")
-        temp = rootgrp.createVariable(variable, "f4", ("time", "lon", "lat", "z"), fill_value=-9999)
+        temp = rootgrp.createVariable(variable, "f4", ("time", "lon", "lat", "z"), fill_value=fill_value)
+        if attributes:
+            for key, value in attributes.items():
+                temp.setncattr(key, value)
+
         rootgrp.createVariable("Time", "i4", "time")
 
         longitude[:] = lon

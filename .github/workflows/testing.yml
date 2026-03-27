@@ -76,7 +76,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set job controls
         id: job_status
         run: .github/jobs/set_job_controls.sh
@@ -99,8 +99,8 @@ jobs:
     needs: job_control
     if: ${{ needs.job_control.outputs.run_get_image == 'true' && needs.job_control.outputs.run_some_tests == 'true' }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       - name: Free disk space
@@ -143,8 +143,8 @@ jobs:
       matrix:
         python_version: ["3.10", "3.12"]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python_version }}
           cache: 'pip'
@@ -181,7 +181,7 @@ jobs:
       matrix: ${{fromJson(needs.job_control.outputs.matrix)}}
     steps:
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Free disk space
         uses: dtcenter/metplus-action-free-disk-space@v1
@@ -217,7 +217,7 @@ jobs:
       # checkout METplus diff_util.py from develop branch if running diff tests
       - name: Checkout METplus diff util from develop branch
         if: ${{ needs.job_control.outputs.run_diff == 'true' && steps.run_tests.conclusion == 'success' }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: 'dtcenter/metplus'
           ref: 'develop'
@@ -234,14 +234,14 @@ jobs:
         run: .github/jobs/run_difference_tests.sh ${{ matrix.categories }} ${{ steps.get-artifact-name.outputs.artifact_name }}
 
       - name: Upload output data artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
         with:
           name: ${{ steps.get-artifact-name.outputs.artifact_name }}
           path: ${{ runner.workspace }}/output
 
       - name: Upload error logs artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: ${{ always() && steps.save-errors.outputs.upload_error_logs }}
         with:
           name: error_logs-${{ steps.get-artifact-name.outputs.artifact_name }}
@@ -249,7 +249,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Upload difference data artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: ${{ always() && steps.run-diff.outputs.upload_diff == 'true' }}
         with:
           name: diff-${{ steps.get-artifact-name.outputs.artifact_name }}
@@ -276,7 +276,7 @@ jobs:
           fi
       - name: Merge Artifacts
         if: ${{ always() && steps.check-for-error-logs.outputs.has_error_logs == 'true' }}
-        uses: actions/upload-artifact/merge@v4
+        uses: actions/upload-artifact/merge@v7
         with:
           name: error_logs
           pattern: error_logs-*

@@ -46,7 +46,7 @@ jobs:
       ENV_NAME: ${{ github.job }}
       DOCKERFILE: Dockerfile.conda
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
@@ -60,7 +60,7 @@ jobs:
       ENV_NAME: ${{ github.job }}
       DOCKERFILE: Dockerfile.metplus_base
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
@@ -74,7 +74,7 @@ jobs:
       ENV_NAME: ${{ github.job }}
       DOCKERFILE: Dockerfile.py_embed_base
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
@@ -88,7 +88,7 @@ jobs:
       ENV_NAME: ${{ github.job }}
       BASE_ENV: py_embed_base
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
@@ -101,7 +101,7 @@ jobs:
     env:
       ENV_NAME: ${{ github.job }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
@@ -115,7 +115,7 @@ jobs:
       ENV_NAME: ${{ github.job }}
       BASE_ENV: py_embed_base
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
@@ -128,7 +128,7 @@ jobs:
     env:
       ENV_NAME: ${{ github.job }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
@@ -141,7 +141,7 @@ jobs:
     env:
       ENV_NAME: ${{ github.job }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
@@ -154,7 +154,7 @@ jobs:
     env:
       ENV_NAME: ${{ github.job }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
@@ -167,7 +167,7 @@ jobs:
     env:
       ENV_NAME: ${{ github.job }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
@@ -181,7 +181,7 @@ jobs:
       ENV_NAME: ${{ github.job }}
       DOCKERFILE: Dockerfile.cartopy
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
@@ -196,7 +196,7 @@ jobs:
       BASE_ENV: metplotpy
       DOCKERFILE: Dockerfile.cartopy
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
@@ -210,7 +210,7 @@ jobs:
       ENV_NAME: ${{ github.job }}
       DOCKERFILE: Dockerfile.cartopy
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
@@ -224,7 +224,7 @@ jobs:
       ENV_NAME: ${{ github.job }}
       BASE_ENV: py_embed_base
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
@@ -238,7 +238,7 @@ jobs:
       ENV_NAME: ${{ github.job }}
       DOCKERFILE: Dockerfile.gempak_env
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
@@ -252,7 +252,7 @@ jobs:
       ENV_NAME: ${{ github.job }}
       DOCKERFILE: Dockerfile.gfdl-tracker
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
@@ -265,7 +265,7 @@ jobs:
     env:
       ENV_NAME: ${{ github.job }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
@@ -279,7 +279,7 @@ jobs:
       ENV_NAME: ${{ github.job }}
       BASE_ENV: metplotpy
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
@@ -293,7 +293,7 @@ jobs:
       ENV_NAME: ${{ github.job }}
       BASE_ENV: metplotpy
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
@@ -307,7 +307,7 @@ jobs:
       ENV_NAME: ${{ github.job }}
       BASE_ENV: py_embed_base
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
@@ -320,7 +320,7 @@ jobs:
     env:
       ENV_NAME: ${{ github.job }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
@@ -334,7 +334,7 @@ jobs:
       ENV_NAME: ${{ github.job }}
       BASE_ENV: mp_analysis
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
@@ -347,7 +347,7 @@ jobs:
     env:
       ENV_NAME: ${{ github.job }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
@@ -361,7 +361,7 @@ jobs:
       ENV_NAME: ${{ github.job }}
       BASE_ENV: netcdf4
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
 
@@ -375,6 +375,6 @@ jobs:
       ENV_NAME: ${{ github.job }}
       BASE_ENV: diff
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
       - run: .github/jobs/push_conda_image.sh
