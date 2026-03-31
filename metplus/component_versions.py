@@ -14,6 +14,17 @@
 import sys
 
 VERSION_LOOKUP = {
+    '13.0': {
+        'metplus': '13.0.0',
+        'met': '13.0.0',
+        'metplotpy': '13.0.0',
+        'metcalcpy': '13.0.0',
+        'metdataio': '13.0.0',
+        'metviewer': '13.0.0',
+        'metexpress': None,
+        'metbaseimage': '3.5.3',
+    },
+    # NOTE: 7.0 will be removed once 13.0 has been tested with the next beta release
     '7.0': {
         'metplus': '7.0.0',
         'met': '13.0.0',
