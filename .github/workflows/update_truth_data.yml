@@ -193,7 +193,10 @@ jobs:
     needs: [use_case_tests]
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/download-artifact@v8
+      - name: Download artifacts
+        run: gh run download --repo "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID"
+        env:
+          GH_TOKEN: ${{ github.token }}
       - name: Free disk space before creating Docker volumes
         uses: dtcenter/metplus-action-free-disk-space@v1
       - name: Create and upload output data volumes
