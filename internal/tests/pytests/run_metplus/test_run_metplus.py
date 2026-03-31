@@ -3,6 +3,7 @@
 import pytest
 
 from pathlib import Path
+import sys
 import os
 import shutil
 from subprocess import run
@@ -49,7 +50,11 @@ def test_run_metplus_check_return_code(command, expected_return_code):
     expected value is returned by the script. A successful run should return
     0 and a failed run should return a non-zero return code, typically 2.
     """
-    process = run(command)
+    env = os.environ.copy()
+    python_dir = os.path.dirname(sys.executable)
+    env['PATH'] = f"{python_dir}{os.pathsep}{env.get('PATH', '')}"
+
+    process = run(command, env=env)
     assert process.returncode == expected_return_code
 
     if os.path.exists(NEW_OUTPUT_BASE):

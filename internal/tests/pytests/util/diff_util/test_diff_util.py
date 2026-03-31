@@ -22,6 +22,13 @@ CVS_HEADER = 'Last Name, First Name, Progress'
 CSV_VAL_1 = 'Mackenzie, Stu, 0.9999'
 CSV_VAL_2 = 'Kenny-Smith, Ambrose, 0.8977'
 
+TEST_ATTRIBUTES = {
+    'units': 'K',
+    'long_name': 'Temperature',
+    'valid_range': np.array([1, 89999]),
+    'nan_value': np.nan,
+}
+
 
 DEFAULT_NC = [
     [359, 0, 1],  # lon
@@ -61,7 +68,8 @@ def dummy_nc1(tmp_path_factory, make_dummy_nc):
         # Note: "nc5" is not included in NETCDF_EXTENSIONS, hence
         # we use it here to specifically trigger the call to
         # netCDF.Dataset in get_file_type.
-        file_name= "fake.nc5"
+        file_name= "fake.nc5",
+        attributes=TEST_ATTRIBUTES,
     )
 
 
@@ -272,7 +280,7 @@ def test_get_file_type_extensions():
 
 
 @pytest.mark.parametrize(
-    "nc_data,fields,expected,check_print",
+    "nc_data,attributes,fields,expected,check_print",
     [
         (
             # Compare exact same data
@@ -283,6 +291,7 @@ def test_get_file_type_extensions():
                 DEFAULT_NC[3],
                 DEFAULT_NC[4],
             ],
+            TEST_ATTRIBUTES,
             None,
             True,
             None,
@@ -296,6 +305,7 @@ def test_get_file_type_extensions():
                 DEFAULT_NC[3],
                 "Foo",
             ],
+            TEST_ATTRIBUTES,
             None,
             False,
             [
@@ -317,6 +327,7 @@ def test_get_file_type_extensions():
                 ],
                 DEFAULT_NC[4],
             ],
+            TEST_ATTRIBUTES,
             None,
             False,
             [
@@ -336,6 +347,7 @@ def test_get_file_type_extensions():
                 ],
                 DEFAULT_NC[4],
             ],
+            TEST_ATTRIBUTES,
             ["Longitude", "Latitude", "Levels"],
             True,
             None,
@@ -343,6 +355,7 @@ def test_get_file_type_extensions():
         # Contains nan difference
         (
             DEFAULT_NC_WITH_NAN,
+            TEST_ATTRIBUTES,
             None,
             False,
             ["Variable Temp contains NaN. Comparing each value"],
@@ -360,6 +373,7 @@ def test_get_file_type_extensions():
                 ],
                 DEFAULT_NC[4],
             ],
+            TEST_ATTRIBUTES,
             None,
             False,
             ["Field Temp has differing number of missing data values"],
@@ -373,18 +387,108 @@ def test_get_file_type_extensions():
                 DEFAULT_NC[3],
                 DEFAULT_NC[4],
             ],
+            TEST_ATTRIBUTES,
             "Bar",
             False,
             ["ERROR: Field Bar not found"],
+        ),
+        # Attribute value differs
+        (
+            [
+                DEFAULT_NC[0],
+                DEFAULT_NC[1],
+                DEFAULT_NC[2],
+                DEFAULT_NC[3],
+                DEFAULT_NC[4],
+            ],
+            {**TEST_ATTRIBUTES, 'units': 'C'},
+            None,
+            False,
+            ["ERROR: Found differences in attributes",
+             "Difference in units attribute"],
+        ),
+        # Attribute value array differs
+        (
+            [
+                DEFAULT_NC[0],
+                DEFAULT_NC[1],
+                DEFAULT_NC[2],
+                DEFAULT_NC[3],
+                DEFAULT_NC[4],
+            ],
+            {**TEST_ATTRIBUTES, 'valid_range': np.array([1, 123456])},
+            None,
+            False,
+            ["ERROR: Found differences in attributes",
+             "Difference in valid_range attribute"],
+        ),
+        # Attribute value differs nan vs not nan
+        (
+            [
+                DEFAULT_NC[0],
+                DEFAULT_NC[1],
+                DEFAULT_NC[2],
+                DEFAULT_NC[3],
+                DEFAULT_NC[4],
+            ],
+            {**TEST_ATTRIBUTES, 'nan_value': 7.0},
+            None,
+            False,
+            ["ERROR: Found differences in attributes",
+             "Difference in nan_value attribute"],
+        ),
+        # Missing attribute in second file
+        (
+            [
+                DEFAULT_NC[0],
+                DEFAULT_NC[1],
+                DEFAULT_NC[2],
+                DEFAULT_NC[3],
+                DEFAULT_NC[4],
+            ],
+            {},
+            None,
+            False,
+            [f"ERROR: Different number of attributes in truth ({len(TEST_ATTRIBUTES)+1}) than in output (1)",
+             "Attributes only in truth: units, long_name, valid_range"],
+        ),
+        # Extra attribute in second file
+        (
+            [
+                DEFAULT_NC[0],
+                DEFAULT_NC[1],
+                DEFAULT_NC[2],
+                DEFAULT_NC[3],
+                DEFAULT_NC[4],
+            ],
+            {**TEST_ATTRIBUTES, 'standard_name': 'air_temperature'},
+            None,
+            False,
+            [f"ERROR: Different number of attributes in truth ({len(TEST_ATTRIBUTES)+1}) than in output ({len(TEST_ATTRIBUTES)+2})",
+             "Attributes only in output: standard_name"],
+        ),
+        # Same multiple attributes
+        (
+            [
+                DEFAULT_NC[0],
+                DEFAULT_NC[1],
+                DEFAULT_NC[2],
+                DEFAULT_NC[3],
+                DEFAULT_NC[4],
+            ],
+            TEST_ATTRIBUTES,
+            None,
+            True,
+            None,
         ),
     ],
 )
 @pytest.mark.util
 def test_nc_is_equal(
-    capfd, tmp_path_factory, make_dummy_nc, dummy_nc1, nc_data, fields, expected, check_print
+    capfd, tmp_path_factory, make_dummy_nc, dummy_nc1, nc_data, attributes, fields, expected, check_print
 ):
     # make a dummy second file to compare to dummy_nc1
-    dummy_nc2 = make_dummy_nc(tmp_path_factory.mktemp("data2"), *nc_data)
+    dummy_nc2 = make_dummy_nc(tmp_path_factory.mktemp("data2"), *nc_data, attributes=attributes)
     actual_success, actual_details = du.nc_is_equal(dummy_nc1, dummy_nc2, fields=fields)
     assert actual_success == expected
 
@@ -393,20 +497,34 @@ def test_nc_is_equal(
             assert statement in actual_details
 
 @pytest.mark.parametrize(
-    "nc_data,fields,expected,check_print",
+    "nc_data,fields,expected,check_print,env_val",
     [
         (
             DEFAULT_NC_WITH_NAN,
             None,
             True,
             ["Variable Temp contains NaN. Comparing each value"],
+            'yes'
+        ),
+        (
+            DEFAULT_NC_WITH_NAN,
+            None,
+            True,
+            None,
+            None
         ),
     ]
 )
 @pytest.mark.util
 def test_nc_is_equal_both_nan(
-    capfd, tmp_path_factory, make_dummy_nc, nc_data, fields, expected, check_print
+    capfd, tmp_path_factory, make_dummy_nc, monkeypatch, nc_data, fields, expected, check_print, env_val
 ):
+    # Set or del the environment variable based on parametrization
+    if env_val:
+        monkeypatch.setenv("METPLUS_DIFF_VERBOSE", env_val)
+    else:
+        monkeypatch.delenv("METPLUS_DIFF_VERBOSE", raising=False)
+
     dummy_nc = make_dummy_nc(tmp_path_factory.mktemp("data2"), *nc_data)
     actual_success, actual_details = du.nc_is_equal(dummy_nc, dummy_nc, fields=fields)
     assert actual_success == expected

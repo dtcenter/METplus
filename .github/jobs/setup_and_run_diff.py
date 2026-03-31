@@ -18,9 +18,9 @@ CI_JOBS_DIR = '.github/jobs'
 
 RUNNER_WORKSPACE = os.environ.get('RUNNER_WORKSPACE')
 GITHUB_WORKSPACE = os.environ.get('GITHUB_WORKSPACE')
-REPO_NAME = os.path.basename(RUNNER_WORKSPACE)
-WS_PATH = os.path.join(RUNNER_WORKSPACE, REPO_NAME)
-print(f"WS_PATH is {WS_PATH}")
+REPO_NAME = os.path.basename(GITHUB_WORKSPACE)
+METPLUS_DEVELOP_PATH = os.path.join(GITHUB_WORKSPACE, f"{REPO_NAME}.develop")
+print(f"METPLUS_DEVELOP_PATH is {METPLUS_DEVELOP_PATH}")
 print(f"GITHUB_WORKSPACE is {GITHUB_WORKSPACE}")
 
 INPUT_CATEGORIES = sys.argv[1]
@@ -52,7 +52,7 @@ if VOLUMES_FROM is None:
 print(f"Output Volumes: {VOLUMES_FROM}")
 
 VOLUME_MOUNTS = [
-    f'-v {WS_PATH}:{GITHUB_WORKSPACE}',
+    f'-v {METPLUS_DEVELOP_PATH}:{GITHUB_WORKSPACE}',
     f'-v {RUNNER_WORKSPACE}/output:/data/output',
     f'-v {RUNNER_WORKSPACE}/diff:/data/diff',
 ]

@@ -824,7 +824,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
 
     wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = time_info['storm_id'] != '*'
 
-    if time_info.get('lead') != '*':
+    if not isinstance(time_info.get('lead'), str) or time_info.get('lead') != '*':
         wrapper.c_dict['ALL_FILES'] = (
             wrapper.get_all_files_for_leads(time_info, [time_info['lead']])
         )

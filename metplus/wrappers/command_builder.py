@@ -1084,7 +1084,7 @@ class CommandBuilder:
 
         if time_info['valid'] != '*':
             valid = time_info['valid'].strftime('%Y%m%d_%H%M%S')
-        if time_info['lead'] != '*':
+        if not isinstance(time_info.get('lead'), str) or time_info.get('lead') != '*':
             lead = seconds_to_met_time(time_info['lead_seconds'], force_hms=True)
         return valid, lead
 
