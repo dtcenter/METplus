@@ -897,3 +897,11 @@ def test_parse_var_list_double_digit(metplus_config):
     for n, var_item in enumerate(var_list, start=1):
         assert var_item['fcst_name'] == f'fcst_name{n}'
         assert var_item['obs_name'] == f'obs_name{n}'
+
+@pytest.mark.util
+def test_get_raw_keep_double_slash(metplus_config):
+    config = metplus_config
+    TEST_URL = 'https://nomads.ncep.noaa.gov/pub/data/nccf/com/urma/prod/urma2p5.{valid?fmt=%Y%m%d}/urma2p5.t{valid?fmt=%H}z.2dvaranl_ndfd.grb2_wexp'
+    config.set('config', 'URMA_ANLY_URL', TEST_URL)
+    config.set('config', 'DATA_INGEST_1_INPUT_TEMPLATE', '{URMA_ANLY_URL}')
+    assert config.getraw('config', 'DATA_INGEST_1_INPUT_TEMPLATE', keep_double_slash=True) == TEST_URL
