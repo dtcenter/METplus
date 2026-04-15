@@ -15092,3 +15092,43 @@ METplus Configuration Glossary
      Sets obs_perc_value for the nth obs.field in the MET configuration file for EnsembleStat.
 
      | *Used by:* EnsembleStat
+
+   GEN_ENS_PROD_EAS_PROB_WIDTH
+     Specify the value for 'eas_prob.width' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_EAS_PROB_SHAPE
+     Specify the value for 'eas_prob.shape' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_EAS_PROB_VLD_THRESH
+     Specify the value for 'eas_prob.vld_thresh' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_EAS_PROB_ALPHA
+     Specify the value for 'eas_prob.alpha' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_EAS_PROB_GAUSSIAN_DX
+     Specify the value for 'eas_prob.gaussian_dx' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_EAS_PROB_GAUSSIAN_RADIUS
+     Specify the value for 'eas_prob.gaussian_radius' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_ENSEMBLE_FLAG_EAS
+     Specify the value for 'ensemble_flag.eas' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_ENSEMBLE_FLAG_EAS_WIDTH
+     Specify the value for 'ensemble_flag.eas_width' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd

@@ -90,6 +90,12 @@ ${METPLUS_NBRHD_PROB_DICT}
 //nmep_smooth = {
 ${METPLUS_NMEP_SMOOTH_DICT}
 
+//
+// Ensemble agreement scale probability method
+//
+//eas_prob = {
+${METPLUS_EAS_PROB_DICT}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 //

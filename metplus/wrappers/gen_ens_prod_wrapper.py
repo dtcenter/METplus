@@ -29,6 +29,7 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         'METPLUS_ENS_FIELD',
         'METPLUS_NBRHD_PROB_DICT',
         'METPLUS_NMEP_SMOOTH_DICT',
+        'METPLUS_EAS_PROB_DICT',
         'METPLUS_CLIMO_MEAN_DICT',
         'METPLUS_CLIMO_STDEV_DICT',
         'METPLUS_ENS_CLIMO_MEAN_DICT',
@@ -54,6 +55,8 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         'nmep',
         'climo',
         'climo_cdp',
+        'eas',
+        'eas_width',
     ]
 
     def __init__(self, config, instance=None):
@@ -195,6 +198,15 @@ class GenEnsProdWrapper(LoopTimesWrapper):
                                       'width': 'int',
                                       }
                      )
+        })
+
+        self.add_met_config_dict('eas_prob', {
+            'width': ('list', 'remove_quotes'),
+            'shape': ('string', 'constant'),
+            'vld_thresh': 'float',
+            'alpha': 'float',
+            'gaussian_dx': 'float',
+            'gaussian_radius': 'int',
         })
 
         # get climatology config variables
