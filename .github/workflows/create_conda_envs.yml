@@ -9,7 +9,7 @@ on:
         default: ''
 
 env:
-  METPLUS_ENV_VERSION: v6.1
+  METPLUS_ENV_VERSION: v13.0
   DOCKERFILE: Dockerfile
   BASE_ENV: metplus_base
   DOCKER_USERNAME: 'dtcenter'
