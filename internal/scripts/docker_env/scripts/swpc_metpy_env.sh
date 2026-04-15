@@ -6,10 +6,14 @@
 # Notes: Adds MetPy version with support for geospatial_gradient
 ################################################################################
 
-# Conda environment to create
-ENV_NAME=swpc_metpy.v6.1
+# version of METplus when the environment was updated, e.g. v13.0
+METPLUS_VERSION=$1
 
-mamba create -y --name ${ENV_NAME} -c conda-forge python=3.14.4
+# Conda environment to create
+ENV_NAME=swpc_metpy.${METPLUS_VERSION}
+
+mamba create -y --name ${ENV_NAME} -c conda-forge \
+  python=3.14.4
 mamba install -y --name ${ENV_NAME} -c conda-forge \
   xarray \
   netcdf4 \
