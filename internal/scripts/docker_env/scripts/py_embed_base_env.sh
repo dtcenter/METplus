@@ -21,7 +21,7 @@ ENV_NAME=py_embed_base.${METPLUS_VERSION}
 
 mamba create -y --name ${ENV_NAME} -c conda-forge python=3.14.4
 mamba install -y --name ${ENV_NAME} -c conda-forge \
-  xarray \
-  netcdf4 \
-  pyyaml \
-  scipy
+  xarray~=2026.4.0 \
+  netcdf4~=1.7.4 \
+  pyyaml~=6.0.3 \
+  scipy~=1.17.1

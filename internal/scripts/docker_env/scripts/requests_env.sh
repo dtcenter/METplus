@@ -20,4 +20,5 @@ ENV_NAME=requests.${METPLUS_VERSION}
 BASE_ENV=metplus_base.${METPLUS_VERSION}
 
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-mamba install -y --name ${ENV_NAME} -c conda-forge requests
+mamba install -y --name ${ENV_NAME} -c conda-forge \
+  requests~=2.33.1

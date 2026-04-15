@@ -24,5 +24,5 @@ BASE_ENV=py_embed_base.${METPLUS_VERSION}
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 
 mamba install -y --name ${ENV_NAME} -c conda-forge \
-  pygrib \
-  metpy
+  pygrib~=2.1.8 \
+  metpy~=1.7.1

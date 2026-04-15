@@ -24,6 +24,6 @@ BASE_ENV=metplus_base.${METPLUS_VERSION}
 
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 mamba install -y --name ${ENV_NAME} -c conda-forge \
-  cartopy \
-  matplotlib \
-  pandas
+  cartopy~=0.25.0 \
+  matplotlib~=3.10.8 \
+  pandas~=3.0.2

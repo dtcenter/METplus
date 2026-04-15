@@ -20,4 +20,5 @@ ENV_NAME=wrf_plot.${METPLUS_VERSION}
 BASE_ENV=mp_analysis.${METPLUS_VERSION}
 
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-mamba install -y --name ${ENV_NAME} -c conda-forge wrf-python
+mamba install -y --name ${ENV_NAME} -c conda-forge \
+  wrf-python~=1.4.2

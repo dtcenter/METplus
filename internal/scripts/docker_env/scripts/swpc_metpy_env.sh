@@ -15,8 +15,8 @@ ENV_NAME=swpc_metpy.${METPLUS_VERSION}
 mamba create -y --name ${ENV_NAME} -c conda-forge \
   python=3.14.4
 mamba install -y --name ${ENV_NAME} -c conda-forge \
-  xarray \
-  netcdf4 \
-  pyyaml \
-  scipy \
-  metpy
+  xarray~=2026.4.0 \
+  netcdf4~=1.7.4 \
+  pyyaml~=6.0.3 \
+  scipy~=1.17.1 \
+  metpy~=1.7.1

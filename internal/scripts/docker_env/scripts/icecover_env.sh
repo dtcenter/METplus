@@ -24,7 +24,7 @@ BASE_ENV=py_embed_base.${METPLUS_VERSION}
 
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 mamba install -y --name ${ENV_NAME} -c conda-forge \
-  xarray \
-  pyresample \
-  scikit-learn \
-  pyproj
+  xarray~=2026.4.0 \
+  pyresample~=1.35.0 \
+  scikit-learn~=1.8.0 \
+  pyproj~=3.7.2

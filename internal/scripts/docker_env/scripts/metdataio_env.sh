@@ -26,8 +26,8 @@ BASE_ENV=metplus_base.${METPLUS_VERSION}
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 
 mamba install -y --name ${ENV_NAME} -c conda-forge \
-  pymysql \
-  pyyaml \
-  xarray \
-  lxml \
-  netcdf4
+  pymysql~=1.1.2 \
+  pyyaml~=6.0.3 \
+  xarray~=2026.4.0 \
+  lxml~=6.0.4 \
+  netcdf4~=1.7.4

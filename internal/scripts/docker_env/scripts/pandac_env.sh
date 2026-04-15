@@ -22,4 +22,5 @@ ENV_NAME=pandac.${METPLUS_VERSION}
 BASE_ENV=metplotpy.${METPLUS_VERSION}
 
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-mamba install -y --name ${ENV_NAME} -c conda-forge pygrib
+mamba install -y --name ${ENV_NAME} -c conda-forge \
+  pygrib~=2.1.8

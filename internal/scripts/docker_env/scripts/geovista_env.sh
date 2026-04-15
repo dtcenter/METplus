@@ -24,6 +24,6 @@ apt install -y libegl1
 
 mamba create -y --name ${ENV_NAME} -c conda-forge python=3.14.3
 mamba install -y --name ${ENV_NAME} -c conda-forge \
-  geovista \
-  xarray \
-  iris
+  geovista~=0.5.3 \
+  xarray~=2026.4.0 \
+  iris~=3.15.0

@@ -21,5 +21,5 @@ BASE_ENV=metplotpy.${METPLUS_VERSION}
 
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 mamba install -y --name ${ENV_NAME} -c conda-forge \
-  lxml \
-  pymysql
+  lxml~=6.0.4 \
+  pymysql~=1.1.2

@@ -37,18 +37,18 @@ BASE_ENV=metplus_base.${METPLUS_VERSION}
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 
 mamba install -y --name ${ENV_NAME} -c conda-forge \
-  matplotlib \
-  scipy \
+  matplotlib~=3.10.8 \
+  scipy~=1.17.1 \
   plotly \
-  xarray \
-  netcdf4 \
-  pyyaml \
-  imageio \
-  imutils \
-  scikit-image \
-  pint \
-  metpy \
-  cartopy
+  xarray~=2026.4.0 \
+  netcdf4~=1.7.4 \
+  pyyaml~=6.0.3 \
+  imageio~=2.37.0 \
+  imutils~=0.5.4 \
+  scikit-image~=0.26.0 \
+  pint~=0.25.3 \
+  metpy~=1.7.1 \
+  cartopy~=0.25.0
 
 # install kaleido via pip because (as of 2024/07/24) kaleido 1.0.0 from
 # conda-forge is installed as 0.0.0 and the plotly_get_chrome script fails
