@@ -1,14 +1,14 @@
 #! /bin/sh
 
 ################################################################################
-# Environment: py_embed_base.v6.1
-# Last Updated: 2025-02-05 (mccabe@ucar.edu)
+# Environment: py_embed_base.v13.0
+# Last Updated: 2026-04-15 (mccabe@ucar.edu)
 # Notes: Move logic to create METplus base env to script so it can be called
 #   on a local machine to create the environment
 # Python Packages:
-#   xarray==2025.1.2
-#   netcdf4==1.7.2
-#   pyyaml==6.0.2
+#   xarray
+#   netcdf4
+#   pyyaml
 #
 # Other Content: None
 ################################################################################
@@ -19,9 +19,9 @@ METPLUS_VERSION=$1
 # Conda environment to create
 ENV_NAME=py_embed_base.${METPLUS_VERSION}
 
-mamba create -y --name ${ENV_NAME} -c conda-forge python=3.12.0
+mamba create -y --name ${ENV_NAME} -c conda-forge python=3.14.4
 mamba install -y --name ${ENV_NAME} -c conda-forge \
-  xarray==2025.1.2 \
-  netcdf4==1.7.2 \
-  pyyaml==6.0.2 \
+  xarray \
+  netcdf4 \
+  pyyaml \
   scipy=1.15.1

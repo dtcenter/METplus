@@ -1,8 +1,8 @@
 #! /bin/sh
 
 ################################################################################
-# Environment: metplus_dev.v6.1
-# Last Updated: 2025-03-14 (mccabe@ucar.edu)
+# Environment: metplus_dev.v13.0
+# Last Updated: 2026-04-15 (mccabe@ucar.edu)
 # Notes: Adds Python packages used to build documentation and run unit tests
 # Python Packages:
 #

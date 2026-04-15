@@ -1,13 +1,13 @@
 #! /bin/sh
 
 ################################################################################
-# Environment: geovista.v6.1
-# Last Updated: 2025-02-05 (mccabe@ucar.edu)
+# Environment: geovista.v13.0
+# Last Updated: 2026-04-15 (mccabe@ucar.edu)
 # Notes: Adds Python packages needed to run iris use case
 # Python Packages:
-#   geovista==0.5.3
-#   xarray==2025.1.2
-#   iris==3.11.1
+#   geovista
+#   xarray
+#   iris
 #
 # Other Content: None
 ################################################################################
@@ -22,8 +22,8 @@ ENV_NAME=geovista.${METPLUS_VERSION}
 apt install -y libgl1-mesa-glx
 apt install -y libegl1
 
-mamba create -y --name ${ENV_NAME} -c conda-forge python=3.12.0
+mamba create -y --name ${ENV_NAME} -c conda-forge python=3.14.3
 mamba install -y --name ${ENV_NAME} -c conda-forge \
-  geovista==0.5.3 \
-  xarray==2025.1.2 \
-  iris==3.11.1
+  geovista \
+  xarray \
+  iris

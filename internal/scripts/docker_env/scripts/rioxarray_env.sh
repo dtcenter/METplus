@@ -1,11 +1,11 @@
 #! /bin/sh
 
 ################################################################################
-# Environment: rioxarray.v6.1
-# Last Updated: 2025-05-20 (mccabe@ucar.edu)
+# Environment: rioxarray.v13.0
+# Last Updated: 2026-04-15 (mccabe@ucar.edu)
 # Notes: Adds rioxarray package to read GeoTIFF files
 # Python Packages:
-#   rioxarray==
+#   rioxarray
 #
 # Other Content: None
 ################################################################################

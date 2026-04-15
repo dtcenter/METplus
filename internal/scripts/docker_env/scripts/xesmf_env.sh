@@ -1,17 +1,17 @@
 #! /bin/sh
 
 ################################################################################
-# Environment: xesmf.v6.1
-# Last Updated: 2025-02-05 (mccabe@ucar.edu)
+# Environment: xesmf.v13.0
+# Last Updated: 2026-04-15 (mccabe@ucar.edu)
 # Notes: Adds Python package to read Tripolar grids
 #  Updated xesmf version from 0.3.0 because <0.7.1 does not work with mamba
 #  Downgrade esmf to 8.3.1 due to know bug described in this issue:
 #  https://github.com/pangeo-data/xESMF/issues/246
 # Python Packages:
-#   netcdf4==1.7.2
-#   xarray==2025.1.2
-#   xesmf==0.8.8
-#   esmf==8.7.0
+#   netcdf4
+#   xarray
+#   xesmf
+#   esmf
 #
 # Other Content: None
 ################################################################################
@@ -27,7 +27,7 @@ BASE_ENV=metplus_base.${METPLUS_VERSION}
 
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 mamba install -y --name ${ENV_NAME} -c conda-forge \
-  netcdf4==1.7.2 \
-  xarray==2025.1.2 \
-  xesmf==0.8.8 \
-  esmf==8.7.0
+  netcdf4 \
+  xarray \
+  xesmf \
+  esmf
