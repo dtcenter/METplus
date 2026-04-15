@@ -24,4 +24,4 @@ mamba install -y --name ${ENV_NAME} -c conda-forge \
   xarray \
   netcdf4 \
   pyyaml \
-  scipy=1.15.1
+  scipy
