@@ -243,9 +243,11 @@ jobs:
       - run: .github/jobs/push_conda_image.sh
 
   gfdl-tracker:
-    if: |
-      always() && (needs.check.outputs.no_skip == 'true' ||
-      contains(fromJSON(needs.check.outputs.run_list), 'gfdl-tracker'))
+    # disable gfdl-tracker for now because it cannot build in current strategy:
+    if: false
+    #if: |
+    #  always() && (needs.check.outputs.no_skip == 'true' ||
+    #  contains(fromJSON(needs.check.outputs.run_list), 'gfdl-tracker'))
     runs-on: ubuntu-latest
     needs: [check,metplus_base]
     env:
