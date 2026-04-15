@@ -35,8 +35,8 @@ def metplus_check_python_version(user):
 
     # check if user's Python version is at least the recommended version
     if not _python_version_is_sufficient(user, recommended):
-        print("WARNING: Python {}".format(recommended),
-              "or higher is recommended."
+        print("INFO: Python {}".format(recommended),
+              "or higher is recommended to run METplus Wrappers."
               " You are using {}.".format(user))
         print("See the METplus documentation for more information.")
 
