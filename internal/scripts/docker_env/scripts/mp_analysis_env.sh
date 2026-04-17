@@ -23,7 +23,6 @@ conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 mamba install -y --name ${ENV_NAME} -c conda-forge \
   matplotlib~=3.10.8 \
   scipy~=1.17.1 \
-  plotly \
   xarray~=2026.4.0 \
   netcdf4~=1.7.4 \
   pyyaml~=6.0.3 \

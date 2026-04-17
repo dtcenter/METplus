@@ -6,7 +6,7 @@
 # Notes: Adds Python packages needed to run weather regime use case
 #  METplotpy and METcalcpy
 # Python Packages:
-#   All packages from metplotpy.v6.1
+#   All packages from metplotpy
 #   scikit-learn
 #   eofs
 #   cmocean
