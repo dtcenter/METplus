@@ -30,7 +30,7 @@ print(f"{gv.__version__=}")
 
 def read_ascii_obs(files):
     paths = sorted(glob(files))
-    datasets = [pd.read_table(p, header=None, delim_whitespace=True) for p in paths]
+    datasets = [pd.read_table(p, header=None, sep=r"\s+") for p in paths]
     combined = pd.concat(datasets)
     return combined
 
