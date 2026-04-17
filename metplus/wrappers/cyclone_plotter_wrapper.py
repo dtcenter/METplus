@@ -193,8 +193,18 @@ class CyclonePlotterWrapper(CommandBuilder):
             all_input_files = get_files(self.input_data, ".*.tcst")
 
             # read each file into pandas then concatenate them together
-            df_list = [pd.read_csv(file, delim_whitespace=True) for file in all_input_files]
-            combined = pd.concat(df_list, ignore_index=True)
+            # filter out empty dataframes to avoid FutureWarning
+            df_list = []
+            for file in all_input_files:
+                df = pd.read_csv(file, sep=r"\s+")
+                # Check if df is a DataFrame and not empty to satisfy type checkers and avoid FutureWarning
+                if isinstance(df, pd.DataFrame) and not df.empty:
+                    df_list.append(df)
+
+            if df_list:
+                combined = pd.concat(df_list, ignore_index=True)
+            else:
+                combined = pd.DataFrame()
 
             # check for empty dataframe, set error message and exit
             if combined.empty:
