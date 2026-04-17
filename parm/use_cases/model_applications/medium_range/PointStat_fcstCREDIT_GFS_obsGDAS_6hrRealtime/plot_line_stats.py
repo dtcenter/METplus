@@ -90,7 +90,6 @@ def create_plot(plot_type):
         start = perf_counter()
         plot = line.Line(config)
         plot.save_to_file()
-        plot.write_html()
         plot.write_output_file()
         end = perf_counter()
         execution_time = end - start

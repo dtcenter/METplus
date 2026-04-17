@@ -42,7 +42,6 @@ def main():
             start = perf_counter()
             plot = line.Line(settings)
             plot.save_to_file()
-            plot.write_html()
             plot.write_output_file()
             end = perf_counter()
             execution_time = end - start
