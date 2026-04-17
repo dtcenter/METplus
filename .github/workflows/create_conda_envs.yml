@@ -293,7 +293,9 @@ jobs:
     needs: [check,metplotpy]
     env:
       ENV_NAME: ${{ github.job }}
-      BASE_ENV: metplotpy
+      # changed from metplotpy to avoid issue in MacOS with conda clone wrt x264 package
+      # this allows the scripts to run locally on MacOS
+      BASE_ENV: metplus_base
     steps:
       - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
