@@ -36,10 +36,10 @@ def run_phasediagram_steps(inlabel, alldata_timefile, oplot_dir):
 
     # read data from text file
     if indexname=='OMI':
-        data = pd.read_csv(pltfile, header=None, delim_whitespace=True, names=['yyyy','mm','dd','hh','pc1','pc2','amp'],
+        data = pd.read_csv(pltfile, header=None, sep=r"\s+", names=['yyyy','mm','dd','hh','pc1','pc2','amp'],
             parse_dates={'dtime':['yyyy','mm','dd','hh']})
     elif indexname=='RMM':
-        data = pd.read_csv(pltfile,  header=None, delim_whitespace=True,
+        data = pd.read_csv(pltfile,  header=None, sep=r"\s+",
             names=['yyyy','mm','dd', 'pc1','pc2','phase','amp','source'], parse_dates={'dtime':['yyyy','mm','dd']})
 
     # Get the file with the listing of times and format of this file

@@ -49,7 +49,7 @@ def main():
     Read the first file and set up arrays
     """
     fleads = len(stat_infiles)
-    dfin = pd.DataFrame(pd.read_csv(stat_infiles[0],delim_whitespace=True,header=0))
+    dfin = pd.DataFrame(pd.read_csv(stat_infiles[0],sep=r"\s+",header=0))
     dfin['FCST_LEV'] = dfin['FCST_LEV'].str.replace('P', '')
     dfin['FCST_LEV'] = dfin['FCST_LEV'].astype('float64')
     dfin = dfin.sort_values('FCST_LEV')
@@ -67,7 +67,7 @@ def main():
     Read in the rest of the data
     """
     for i in range(1,len(stat_infiles)): 
-        df = pd.DataFrame(pd.read_csv(stat_infiles[i],delim_whitespace=True,header=0))
+        df = pd.DataFrame(pd.read_csv(stat_infiles[i],sep=r"\s+",header=0))
         df['FCST_LEV'] = df['FCST_LEV'].str.replace('P', '')
         df['FCST_LEV'] = df['FCST_LEV'].astype('float64')
         dfnew = df.sort_values('FCST_LEV')
