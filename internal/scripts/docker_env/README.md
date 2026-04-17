@@ -239,8 +239,6 @@ export METPLUS_ENV_VERSION=v13.0
 ./scripts/metplotpy_env.sh ${METPLUS_ENV_VERSION}
 
 LOCAL_CONDA_LOC=/home/met_test/miniforge3
-${LOCAL_CONDA_LOC}/envs/metplotpy.${METPLUS_ENV_VERSION}/bin/pip install kaleido==1.0.0
-${LOCAL_CONDA_LOC}/envs/metplotpy.${METPLUS_ENV_VERSION}/bin/plotly_get_chrome -y
 ${LOCAL_CONDA_LOC}/envs/metplotpy.${METPLUS_ENV_VERSION}/bin/python3 -m cartopy.feature.download cultural physical
 ```
 
