@@ -145,7 +145,7 @@ if len(sys.argv) == 3:
 
             for idx2, row in var_data.iterrows():
                 xyz, nearest, idx_nearest = find_nearest(tree, points, [row['obs_lat'], row['obs_lon']], k=1)
-                var_data.at[idx2,'idx_nearest'] = int(idx_nearest)
+                var_data.at[idx2,'idx_nearest'] = int(idx_nearest.item())
 
                 #get the obs time, search for closest in the forecast data
                 time = dt.datetime.strptime(row['obs_valid_time'],'%Y%m%d_%H%M%S')
