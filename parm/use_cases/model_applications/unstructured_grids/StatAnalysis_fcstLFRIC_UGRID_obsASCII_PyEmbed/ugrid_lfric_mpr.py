@@ -86,7 +86,7 @@ def find_nearest(tree, points, poi, k):
     # retieve the associated xyz points of the k nearest neighbours
     nearest = points[idxs]
     
-    return xyz, nearest, idxs
+    return xyz, nearest, idxs.item()
 
 def to_centers(mesh: pv.PolyData) -> pv.PolyData:
     tmp = mesh.copy()
@@ -145,7 +145,7 @@ if len(sys.argv) == 3:
 
             for idx2, row in var_data.iterrows():
                 xyz, nearest, idx_nearest = find_nearest(tree, points, [row['obs_lat'], row['obs_lon']], k=1)
-                var_data.at[idx2,'idx_nearest'] = int(idx_nearest.item())
+                var_data.at[idx2,'idx_nearest'] = int(idx_nearest)
 
                 #get the obs time, search for closest in the forecast data
                 time = dt.datetime.strptime(row['obs_valid_time'],'%Y%m%d_%H%M%S')
