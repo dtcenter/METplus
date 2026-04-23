@@ -148,25 +148,34 @@ in the
      .. dropdown:: WCOSS2
 
         | **NOAA machines Dogwood and Cactus (WCOSS2 - Cray)**
-        | *Last updated: Month DD, YYYY*
-	| *Compiler and version: Intel classic 19.1.3.304*
+        | *Last updated: April 15, 2026*
+	    | *Compiler and version: Intel classic 19.1.3.304*
 
-          * **METplus v6.1.0 / MET v12.1.0 / METplus Analysis Tools v3.1.0** (**Coming Soon**)
+          * **METplus v6.1.2 / MET v12.1.2 / METplus Analysis Tools v3.1.0** (**Coming Soon**)
 
             * MODULES:
 
               .. code-block:: ini
 
                   module reset
-                  module use /apps/dev/modulefiles/
-                  module load ve/evs/2.0
-                  module load gsl/2.7
+                  module load intel/19.1.3.304
                   module load netcdf/4.7.4
-                  module load met/12.1.0
-                  module load metplus/6.1.0
-                  module load metplotpy/3.1.0
-                  module load metdataio/3.1.0
-                  module load metcalcpy/3.1.0
+                  module load hdf5/1.10.6
+                  module load bufr/12.3.0
+                  module load zlib/1.2.11
+                  module load jasper/2.0.25
+                  module load libpng/1.6.37
+                  module load gsl/2.7
+                  module load g2c/2.2.0
+                  module load proj/7.1.0
+                  module load fckit/0.13.2
+                  module load atlas/0.44.1
+                  module load eckit/1.28.3
+                  module use /apps/dev/lmodules/intel/19.1.3.304
+                  module load ve/evs/2.1
+                  module use /apps/ops/para/libs/modulefiles/compiler/intel/19.1.3.304
+                  module load met/12.1.2
+                  module load metplus/6.1.2
 
      .. dropdown:: URSA
 
