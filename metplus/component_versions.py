@@ -14,6 +14,17 @@
 import sys
 
 VERSION_LOOKUP = {
+    '13.0': {
+        'metplus': '13.0.0',
+        'met': '13.0.0',
+        'metplotpy': '13.0.0',
+        'metcalcpy': '13.0.0',
+        'metdataio': '13.0.0',
+        'metviewer': '13.0.0',
+        'metexpress': None,
+        'metbaseimage': '3.5.3',
+    },
+    # NOTE: 7.0 will be removed once 13.0 has been tested with the next beta release
     '7.0': {
         'metplus': '7.0.0',
         'met': '13.0.0',
@@ -25,24 +36,24 @@ VERSION_LOOKUP = {
         'metbaseimage': '3.5.3',
     },
     '6.2': {
-        'metplus': '6.2.0',
-        'met': '12.2.0',
+        'metplus': '6.2.1',
+        'met': '12.2.1',
         'metplotpy': '3.2.0',
         'metcalcpy': '3.2.0',
         'metdataio': '3.2.0',
-        'metviewer': '6.2.1',
-        'metexpress': '6.2.3',
-        'metbaseimage': '3.4.8',
+        'metviewer': '6.2.4',
+        'metexpress': '6.2.8',
+        'metbaseimage': '3.4.9',
     },
     '6.1': {
-        'metplus': '6.1.0',
-        'met': '12.1.1',
+        'metplus': '6.1.2',
+        'met': '12.1.2',
         'metplotpy': '3.1.0',
         'metcalcpy': '3.1.0',
         'metdataio': '3.1.0',
         'metviewer': '6.1.0',
         'metexpress': '6.1.4',
-        'metbaseimage': '3.4.8',
+        'metbaseimage': '3.4.9',
     },
     '6.0': {
         'metplus': '6.0.0',

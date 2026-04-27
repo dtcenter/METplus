@@ -4,6 +4,8 @@ import sys
 import os
 import traceback
 from typing import Any
+import argparse
+import shutil
 
 import netCDF4
 import filecmp
@@ -14,6 +16,7 @@ from PIL import Image, ImageChops
 from pandas import isnull
 from numpy.ma import is_masked
 from numpy.ma import count_masked
+import numpy as np
 
 ###
 # Settings that are commonly overridden
@@ -426,7 +429,7 @@ def _handle_text_files(filepath_a, filepath_b, dir_a, dir_b, debug=False):
         return filepath_a, filepath_b, 'Text diff', '', msg
 
     if debug:
-        print("No differences found from compare_txt_files")
+        print(f"{details}\nNo differences found from compare_txt_files")
     return True
 
 
@@ -480,7 +483,8 @@ def compare_images(image_a, image_b):
         for y in range(0, int(ny)):
             diff_pixel = image_diff.getpixel((x, y))
             if not _is_zero_pixel(diff_pixel):
-                details += f"Difference pixel: {diff_pixel}: {x},{y}\n"
+                if os.environ.get('METPLUS_DIFF_VERBOSE'):
+                    details += f"Difference pixel: {diff_pixel}: {x},{y}\n"
                 diff_count += 1
     if diff_count:
         return image_diff, f"ERROR: Found {diff_count} differences between images\n{details.rstrip()}"
@@ -540,16 +544,8 @@ def _compare_csv_lengths(lines_a, lines_b):
     keys_a = lines_a[0].keys()
     keys_b = lines_b[0].keys()
     # compare header columns and report error if they differ
-    if len(keys_a) != len(keys_b):
-        details += (f'ERROR: Different number of columns in TRUTH ({len(keys_a)}) '
-                    f'than in OUTPUT ({len(keys_b)})')
-        only_a = [item for item in keys_a if item not in keys_b]
-        if only_a:
-            details += f'\nColumns only in TRUTH: {",".join(only_a)}'
-
-        only_b = [item for item in keys_b if item not in keys_a]
-        if only_b:
-            details += f'\nColumns only in OUTPUT: {",".join(only_b)}'
+    details = _find_keys_only_in_one(keys_a, keys_b, 'columns')
+    if details:
         return False, details
 
     # compare number of lines and error if they differ
@@ -560,6 +556,64 @@ def _compare_csv_lengths(lines_a, lines_b):
 
     return True, details
 
+def _find_keys_only_in_one(keys_truth, keys_output, key_name):
+    """!Find keys that are only in one of the two dictionaries.
+    @param keys_truth list of keys in truth dictionary
+    @param keys_output list of keys in output dictionary
+    @param key_name name of the key, e.g., 'columns' or 'attributes'
+    @returns details about differences or empty string if no differences are found.
+    """
+    if len(keys_truth) == len(keys_output):
+        return ''
+
+    details = (
+        f'ERROR: Different number of {key_name} in truth ({len(keys_truth)}) '
+        f'than in output ({len(keys_output)})'
+    )
+
+    only_truth = [item for item in keys_truth if item not in keys_output]
+    if only_truth:
+        details += f'\n  {key_name.capitalize()} only in truth: {", ".join(only_truth)}'
+
+    only_output = [item for item in keys_output if item not in keys_truth]
+    if only_output:
+        details += f'\n  {key_name.capitalize()} only in output: {", ".join(only_output)}'
+
+    return details
+
+def _find_diffs_in_dicts(truth, output, key_name):
+    details = ''
+    common_keys = list(truth.keys() & output.keys())
+
+    for key in common_keys:
+        val_truth = truth[key]
+        val_output = output[key]
+
+        # Convert to arrays to handle scalars and arrays identically
+        array_truth, array_output = np.atleast_1d(val_truth), np.atleast_1d(val_output)
+
+        if array_truth.shape != array_output.shape:
+            is_different = True
+        else:
+            try:
+                # Only use equal_nan if the data is numeric (float/complex)
+                np_array_equal_args = {}
+                if np.issubdtype(array_truth.dtype, np.floating) or np.issubdtype(array_output.dtype, np.floating):
+                    np_array_equal_args['equal_nan'] = True
+
+                is_different = not np.array_equal(array_truth, array_output, **np_array_equal_args)
+            except TypeError:
+                # Fallback for incompatible types (e.g., comparing a string to a float)
+                is_different = True
+
+        if is_different:
+            details += (
+                f"  Difference in {key} {key_name.rstrip('s')}:\n    Truth: {truth[key]}\n    Output: {output[key]}\n"
+            )
+
+    if details:
+        details = f"ERROR: Found differences in {key_name}:\n{details}"
+    return details.rstrip()
 
 def _compare_csv_columns(lines_a, lines_b):
     """!Compare length of CSV columns and lines.
@@ -664,16 +718,16 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
     if not len(lines_b):
         # filepath_a is also empty
         if not len(lines_a):
-            print("Both text files are empty, so they are equal")
-            return True, ''
+            return True, "Both text files are empty, so they are equal"
         return False, f"Empty file: {filepath_b}\nNot empty: {filepath_a}"
     # filepath_b is not empty but filepath_a is empty
     elif not len(lines_a):
         return False, f"Empty file: {filepath_a}\nNot empty: {filepath_b}"
 
-    # check if the files are "file list" files
-    # remove file_list first line for comparison
-    _handle_file_list_files(lines_a, lines_b)
+    # handle "file list" files
+    lines_a, lines_b = _handle_file_list_files(os.path.basename(filepath_a),
+                                               os.path.basename(filepath_b),
+                                               lines_a, lines_b)
 
     # check if file is a METplus data file
     # - MET stat header lines starting with 'VERSION'
@@ -685,23 +739,24 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
 
     # process data files
     header_a = None
+    details = ''
     if is_stat_file:
-        print("Comparing stat files")
+        details += "Comparing stat files"
         # check header lines
         if has_header:
             header_a = lines_a.pop(0).split()
             header_b = lines_b.pop(0).split()
             if len(header_a) != len(header_b):
-                return False, f'ERROR: Different number of header columns\n A: {header_a}\n B: {header_b}'
+                return False, f'{details}\nERROR: Different number of header columns\n A: {header_a}\n B: {header_b}'
 
     if len(lines_a) != len(lines_b):
-        return False, (f"ERROR: Different number of lines in {filepath_b}\n"
+        return False, (f"{details}\nERROR: Different number of lines in {filepath_b}\n"
                        f" File_A: {len(lines_a)}\n File_B: {len(lines_b)}")
 
     success, _ = diff_text_lines(lines_a, lines_b, dir_a=dir_a, dir_b=dir_b,
                                  is_stat_file=is_stat_file, header=header_a)
     if success:
-        return True, ''
+        return True, details
 
     # if differences found in text file, sort and try again
     orig_lines_a = lines_a.copy()
@@ -711,18 +766,19 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
     success, _ = diff_text_lines(lines_a, lines_b, dir_a=dir_a, dir_b=dir_b,
                                  is_stat_file=is_stat_file, header=header_a)
     if success:
-        return True, ''
+        return True, details
 
     # if differences persist, print the original, unsorted differences
     return diff_text_lines(orig_lines_a, orig_lines_b, dir_a=dir_a, dir_b=dir_b,
                            is_stat_file=is_stat_file, header=header_a)
 
 
-def _handle_file_list_files(lines_a, lines_b):
-    """!Check if the files are "file list" files.
-    Remove the first line that contains the string "file_list" for comparison.
+def _handle_file_list_files(filename_a, filename_b, lines_a, lines_b):
+    """!Check the file names and contents for "file_list".
     """
     is_file_list = False
+
+    # remove "file_list" from the first line for comparison
     if lines_a[0] == 'file_list':
         is_file_list = True
         lines_a.pop(0)
@@ -730,10 +786,17 @@ def _handle_file_list_files(lines_a, lines_b):
         is_file_list = True
         lines_b.pop(0)
 
+    # check for "file_list" in the filename
+    if 'file_list' in filename_a or 'file_list' in filename_b:
+       is_file_list = True
+
+    # replace "MET-*/" with "MET/" to ignore path differences
     if is_file_list:
         print("Comparing file list file")
+        lines_a = [re.sub(r"/MET-[^/]*/", r"/MET/", item) for item in lines_a]
+        lines_b = [re.sub(r"/MET-[^/]*/", r"/MET/", item) for item in lines_b]
 
-    return is_file_list
+    return lines_a, lines_b
 
 
 def diff_text_lines(lines_a, lines_b, dir_a=None, dir_b=None,
@@ -765,6 +828,7 @@ def diff_text_lines(lines_a, lines_b, dir_a=None, dir_b=None,
 
         # if the diff is in a stat file, ignore the version number
         if is_stat_file:
+            details += '\nComparing stat files'
             success, message = _diff_stat_line(compare_a, compare_b, header=header)
             if not success:
                 all_good = False
@@ -846,7 +910,9 @@ def nc_is_equal(file_a, file_b, fields=None):
         success, more_details = _nc_fields_are_equal(field, nc_a, nc_b)
         if not success:
             is_equal = False
-        details += f"\n{more_details}"
+            details += f"\n{more_details}"
+        elif os.environ.get('METPLUS_DIFF_VERBOSE'):
+            details += f"\n{more_details}"
 
     return is_equal, details
 
@@ -866,10 +932,16 @@ def _nc_fields_are_equal(field, nc_a, nc_b):
     except KeyError:
         return False, f"ERROR: Field {field} not found"
 
-    msg = f"Field: {field}\nVar_A:{var_a}\nVar_B:{var_b}\nInstance type: {type(var_a[0])}"
+    msg = f"Field: {field}\nVar_A:{var_a}\nVar_B:{var_b}"
 
     values_a = var_a[:]
     values_b = var_b[:]
+
+    # check for the same variable attributes
+    attrs_are_equal, details = _nc_attrs_are_equal( var_a, var_b)
+    if not attrs_are_equal:
+        # if attrs differ, add diff details but continue checking for other diffs
+        msg += f"\nERROR: Field ({field}) attributes differ\n{details}"
 
     # check for same amount of masked data
     if count_masked(values_a) != count_masked(values_b):
@@ -887,7 +959,7 @@ def _nc_fields_are_equal(field, nc_a, nc_b):
                         f" File_A: {var_a[:]}\n File_B: {var_b[:]}")
             msg += f"\n{details}"
             return False, msg
-        return True, msg
+        return attrs_are_equal, msg
     except ValueError:
         # check if shapes are not equal
         if values_a.shape != values_b.shape:
@@ -899,13 +971,14 @@ def _nc_fields_are_equal(field, nc_a, nc_b):
     diff_result = _check_values_diff(values_diff, field, var_a, var_b)
     msg += f"\n{diff_result[1]}"
     if diff_result[0] is not None:
-        return diff_result[0], msg
+        return diff_result[0] and attrs_are_equal, msg
 
     # if this fails, compare all values, applying the same rounding logic
     # used for other file types
     success, details = _all_values_are_equal(var_a, var_b)
     if success:
-        return True, msg
+        # result is True unless attributes differ
+        return attrs_are_equal, msg
 
     details += (f"\nERROR: Field ({field}) values differ\n"
                 f"Min diff: {values_diff.min()}, "
@@ -917,6 +990,24 @@ def _nc_fields_are_equal(field, nc_a, nc_b):
     msg += f"\n{details}"
     return False, msg
 
+def _nc_attrs_are_equal(var_a, var_b):
+    atts_a = var_a.__dict__
+    atts_b = var_b.__dict__
+    try:
+        if atts_a == atts_b:
+            return True, ''
+    except ValueError:
+        pass
+
+    msg = ''
+    details = _find_keys_only_in_one(atts_a, atts_b, 'attributes')
+    if details:
+        msg += f"\n{details}"
+
+    details = _find_diffs_in_dicts(atts_a, atts_b, 'attributes')
+    if details:
+        msg += f"\n{details}"
+    return not msg, msg.lstrip()
 
 def _check_values_diff(values_diff, field, var_a, var_b):
     """Check for NaN values and empty arrays in NetCDF field comparison.
@@ -964,8 +1055,9 @@ def _print_nc_field_diff_summary(values_diff):
     values_list = values_diff.flatten().tolist()
     idx = -1
     for idx, val in enumerate(values_list):
-        if not isclose(val, 0.0, rel_tol=1e-09, abs_tol=1e-09):
-            diff_values += f"{idx}: {val}\n"
+        if val is not None and not isclose(val, 0.0, rel_tol=1e-09, abs_tol=1e-09):
+            if os.environ.get('METPLUS_DIFF_VERBOSE'):
+                diff_values += f"{idx}: {val}\n"
             count += 1
     return f"{diff_values}{count} / {idx + 1} points differ"
 
@@ -992,26 +1084,96 @@ def _all_values_are_equal(var_a, var_b):
     return True, ''
 
 
+def copy_diff_output(diff_files, truth_data_dir, output_data_dir, diff_output_dir, scrub_diff=True):
+    """!Loop through difference output and copy files to directory so it can
+     be made available for comparison. Files will be put into the same
+      directory with _truth or _output added before their file extension.
+
+    @param diff_files list of tuples containing truth file path
+     and file path of output that was just generated. Either tuple
+     value may be an empty string if the file was not found.
+    @param truth_data_dir directory containing truth data
+    @param output_data_dir directory containing output data
+    @param diff_output_dir directory to copy files to
+    @param scrub_diff (Optional) if True, remove the diff file from "output" directory
+     after copying to diff_output_dir
+    """
+    print(f"Copying files with differences into {diff_output_dir}")
+    for truth_file, out_file, _, diff_file, _ in diff_files:
+        if truth_file:
+            _copy_to_diff_dir(truth_file, 'truth', truth_data_dir, diff_output_dir)
+        if out_file:
+            _copy_to_diff_dir(out_file, 'output', output_data_dir, diff_output_dir)
+        if diff_file:
+            _copy_to_diff_dir(diff_file, 'diff', output_data_dir, diff_output_dir)
+            if scrub_diff:
+                os.remove(diff_file)
+
+
+def _copy_to_diff_dir(file_path, data_type, input_dir, output_dir):
+    """!Generate output path based on input file path, adding text based on
+     data_type to the filename, then copy input file to that output path.
+
+    @param file_path full path of file to copy
+    @param data_type data identifier, should be 'truth' or 'output'
+    @param input_dir directory containing input file
+    @param output_dir directory to copy file to
+    @returns True if success, False if there was a problem copying the file
+    """
+    # replace data dir with diff directory
+    diff_out = file_path.replace(input_dir, output_dir)
+
+    # add data type identifier to filename before extension
+    # if data is not difference output
+    if data_type == 'diff':
+        output_path = diff_out
+    else:
+        output_path, extension = os.path.splitext(diff_out)
+        output_path = f'{output_path}_{data_type}{extension}'
+
+    # create output directory if it doesn't exist
+    if not os.path.exists(os.path.dirname(output_path)):
+        os.makedirs(os.path.dirname(output_path))
+
+    try:
+        shutil.copyfile(file_path, output_path)
+    except OSError as err:
+        print(f'Could not copy file to {output_path}. {err}')
+        return False
+
+    return True
+
+
 if __name__ == '__main__':
-    if len(sys.argv) < 3:
-        print('ERROR: Must supply 2 directories to compare as arguments')
-        sys.exit(1)
+    parser = argparse.ArgumentParser(description='Compare two directories and report differences')
+    parser.add_argument('dir_a', help='First directory to compare')
+    parser.add_argument('dir_b', help='Second directory to compare')
+    parser.add_argument('--debug', action='store_true',
+                        help='Enable debug output to view details of comparisons')
+    parser.add_argument('--save_diff', action='store_true',
+                        help='Save diff files for files with differences')
+    parser.add_argument('--diff_dir', metavar='PATH',
+                        help='Directory to copy difference files into')
+    parser.add_argument('--no_scrub_diff', action='store_true',
+                        help='Keep diff files in output directory after copying to diff_dir')
 
-    dir_a = sys.argv[1]
-    dir_b = sys.argv[2]
-    debug = any('debug' in arg for arg in sys.argv[1:])
-    save_diff = any('save_diff' in arg for arg in sys.argv[1:])
+    args = parser.parse_args()
 
-    if debug:
+    if args.debug:
         print("Debugging is turned on with --debug argument")
     else:
         print("Debugging is turned off. Add --debug argument to view details of comparisons with no differences")
 
-    if save_diff:
+    if args.save_diff:
         print("Saving diff files with --save_diff argument")
     else:
         print("Not saving diff files. Add --save_diff argument to save diff files for files with differences")
 
     # if any files were flagged, exit non-zero
-    if compare_dir(dir_a, dir_b, debug=debug, save_diff=save_diff):
+    diff_files = compare_dir(args.dir_a, args.dir_b, debug=args.debug, save_diff=args.save_diff)
+
+    if args.diff_dir and diff_files:
+        copy_diff_output(diff_files, args.dir_a, args.dir_b, args.diff_dir, scrub_diff=not args.no_scrub_diff)
+
+    if diff_files:
         sys.exit(2)

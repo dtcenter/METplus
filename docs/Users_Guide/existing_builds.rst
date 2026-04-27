@@ -23,14 +23,14 @@ is needed on a machine not listed here, please follow the
 in the 
 `MET User’s Guide <https://met.readthedocs.io/en/latest>`_.
 
-.. dropdown:: NCAR machines - Coming Soon!
+.. dropdown:: NCAR machines 
 
-    .. dropdown:: CASPER - Coming Soon!
+    .. dropdown:: CASPER 
 
        | **NCAR MACHINE CASPER** (see 
           `Casper Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/casper/>`_)
-       | *Last Updated:*
-       | *Compiler and version:*
+       | *Last Updated: February 11, 2026*
+       | *Compiler and version: Intel oneAPI 2024.2.1*
 
        * METplus-7.0.0-beta1
 
@@ -50,6 +50,7 @@ in the
 
          .. code-block:: ini
 
+            module load ncarenv/24.12
             export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
             module use $TOP_DIR/METplus/installations/modulefiles
             module load metplus/7.0.0-beta1
@@ -60,6 +61,7 @@ in the
 
            .. code-block:: ini
 
+              module load ncarenv/24.12
               export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
               module use $TOP_DIR/MET/installations/modulefiles
               module load met/7.0.0-beta1
@@ -70,6 +72,7 @@ in the
 
            .. code-block:: ini
 
+              module load ncarenv/24.12
               export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
               module use $TOP_DIR/METdataio/installations/modulefiles
               module load metdataio/7.0.0-beta1
@@ -80,6 +83,7 @@ in the
 
            .. code-block:: ini
 
+              module load ncarenv/24.12
               export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
               module use $TOP_DIR/METcalcpy/installations/modulefiles
               module load metcalcpy/7.0.0-beta1
@@ -90,6 +94,7 @@ in the
 
            .. code-block:: ini
 
+              module load ncarenv/24.12
               export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
               module use $TOP_DIR/METplotpy/installations/modulefiles
               module load metplotpy/7.0.0-beta1
@@ -145,9 +150,9 @@ in the
 
         | **NOAA machines Dogwood and Cactus (WCOSS2 - Cray)**
         | *Last updated:*
-	| *Compiler and version:*
+	    | *Compiler and version:*
 
-          * **MET v7.0.0-beta1 / METplus v7.0.0-beta1 / METplus Analysis Tools v7.0.0-beta1**
+          * **MET v7.0.0 / METplus v7.0.0 / METplus Analysis Tools v7.0.0**
 
             * MODULES:
 
@@ -280,9 +285,9 @@ in the
 
         | **NOAA MACHINE HERCULES (MANAGED BY MSU)**
         | *Last updated:*
-	| *Compiler and version: intel-oneapi-compilers/2022.2.1*
-	|
-	| **Before loading any of the modules below, it is necessary to load the following modules:**
+	    | *Compiler and version: intel-oneapi-compilers/2022.2.1*
+	    |
+	    | **Before loading any of the modules below, it is necessary to load the following modules:**
 
 	.. code-block:: ini
 
@@ -345,7 +350,7 @@ in the
 
         | **NOAA MACHINE ORION (MANAGED BY MSU)**
         | *Last updated:*
-	| *Compiler and version:*
+	    | *Compiler and version:*
 
           * **METplus-7.0.0-beta1**
 
@@ -405,75 +410,11 @@ in the
                  module use /apps/contrib/modulefiles
                  module load metdataio/7.0.0-beta1
 
-     .. dropdown:: JET - Coming Soon!
-
-        | **NOAA MACHINE JET**
-        | *Last updated:*
-        | *Compiler and version:*
-
-          * **METplus-7.0.0-beta1**
-
-            * METplus-7.0.0-beta1 Installation
-
-              * /contrib/met/METplus/METplus-7.0.0-beta1
-
-            * METplus-7.0 Sample Data
-
-              * /mnt/lfs6/HFIP/dtc-hurr/METplus/sample_data/METplus-7.0_sample_data
-
-            * To use METplus run: Create a like /mnt/lfs6/HFIP/dtc-hurr/METplus/jet.role-metplus.conf 
-              to set a personalized INPUT_BASE and OUTPUT_BASE.
-
-              .. code-block:: ini
-
-                 module load intel/2022.1.2
-                 module load nco/4.9.1
-                 module load wgrib/1.8.1.0b
-                 module load wgrib2/3.1.2_wmo
-                 module load R/4.0.2
-                 module use /contrib/met/modulefiles
-                 module load met/7.0.0-beta1
-                 module use /contrib/met/METplus/modulefiles
-                 module load metplus/7.0.0-beta1
-
-          * **METv7.0.0-beta1**
-
-            * MODULES:
-
-              .. code-block:: ini
-
-                 module load intel/2024.2.1
-                 module load contrib
-                 module use /contrib/met/modulefiles
-                 module load met/7.0.0-beta1
-
-          * **METcalcpy-7.0.0-beta1 / METplotpy-7.0.0-beta1**
-
-            * MODULES:
-
-              .. code-block:: ini
-
-                 module load intel/2024.2.1
-                 module use /contrib/met/METcalcpy/modulefiles
-                 module load metcalcpy/7.0.0-beta1
-                 module use /contrib/met/METplotpy/modulefiles
-                 module load metplotpy/7.0.0-beta1
-
-          * **METdataio-7.0.0-beta1**
-
-            * MODULES:
-
-              .. code-block:: ini
-
-                 module load intel/2024.2.1
-                 module use /contrib/met/METdataio/modulefiles
-                 module load metdataio/7.0.0-beta1
-
      .. dropdown:: GAEA - Coming Soon!
 
         | **NOAA MACHINE GAEA**
         | *Last Updated:*
-	| *Compiler and version:*
+    	| *Compiler and version:*
 
           * **METplus-7.0.0-beta1**
 
@@ -538,7 +479,7 @@ in the
 
         | **TEXAS ADVANCED COMPUTING CENTER (TACC) FRONTERA**
         | *Last Updated:*
-	| *Compiler and version:*
+	    | *Compiler and version:*
 
           * **METplus-7.0.0-beta1**
 
