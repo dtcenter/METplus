@@ -827,8 +827,7 @@ def diff_text_lines(lines_a, lines_b, dir_a=None, dir_b=None,
             continue
 
         # check for numeric summary job output
-        if compare_a.startswith(('SUMMARY')):
-            is_analysis_data = True
+        is_analysis_data = compare_a.startswith(('SUMMARY'))
 
         # if the diff is in a stat file, ignore the version number
         if is_stat_file or is_analysis_data:
