@@ -81,6 +81,31 @@ ${METPLUS_DELTA_RANGE_KM}
 //rmw_scale      =
 ${METPLUS_RMW_SCALE}
 
+//
+// Optionally convert u/v winds to tangential/radial winds
+//
+
+//compute_tangential_and_radial_winds =
+${METPLUS_COMPUTE_TANGENTIAL_AND_RADIAL_WINDS}
+
+//u_wind_field_name =
+${METPLUS_U_WIND_FIELD_NAME}
+
+//v_wind_field_name =
+${METPLUS_V_WIND_FIELD_NAME}
+
+//tangential_velocity_field_name =
+${METPLUS_TANGENTIAL_VELOCITY_FIELD_NAME}
+
+//tangential_velocity_long_field_name =
+${METPLUS_TANGENTIAL_VELOCITY_LONG_FIELD_NAME}
+
+//radial_velocity_field_name =
+${METPLUS_RADIAL_VELOCITY_FIELD_NAME}
+
+//radial_velocity_long_field_name =
+${METPLUS_RADIAL_VELOCITY_LONG_FIELD_NAME}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 //version = "V10.0";

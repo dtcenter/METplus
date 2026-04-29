@@ -15092,3 +15092,38 @@ METplus Configuration Glossary
      Sets obs_perc_value for the nth obs.field in the MET configuration file for EnsembleStat.
 
      | *Used by:* EnsembleStat
+
+   TC_RMW_COMPUTE_TANGENTIAL_AND_RADIAL_WINDS
+     Specify the value for 'compute_tangential_and_radial_winds' in the MET configuration file for TCRMW.
+
+     | *Used by:* TCRMW
+
+   TC_RMW_U_WIND_FIELD_NAME
+     Specify the value for 'u_wind_field_name' in the MET configuration file for TCRMW.
+
+     | *Used by:* TCRMW
+
+   TC_RMW_V_WIND_FIELD_NAME
+     Specify the value for 'v_wind_field_name' in the MET configuration file for TCRMW.
+
+     | *Used by:* TCRMW
+
+   TC_RMW_TANGENTIAL_VELOCITY_FIELD_NAME
+     Specify the value for 'tangential_velocity_field_name' in the MET configuration file for TCRMW.
+
+     | *Used by:* TCRMW
+
+   TC_RMW_TANGENTIAL_VELOCITY_LONG_FIELD_NAME
+     Specify the value for 'tangential_velocity_long_field_name' in the MET configuration file for TCRMW.
+
+     | *Used by:* TCRMW
+
+   TC_RMW_RADIAL_VELOCITY_FIELD_NAME
+     Specify the value for 'radial_velocity_field_name' in the MET configuration file for TCRMW.
+
+     | *Used by:* TCRMW
+
+   TC_RMW_RADIAL_VELOCITY_LONG_FIELD_NAME
+     Specify the value for 'radial_velocity_long_field_name' in the MET configuration file for TCRMW.
+
+     | *Used by:* TCRMW

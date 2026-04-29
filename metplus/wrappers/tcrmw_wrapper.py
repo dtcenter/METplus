@@ -46,6 +46,13 @@ class TCRMWWrapper(RuntimeFreqWrapper):
         'METPLUS_N_AZIMUTH',
         'METPLUS_DELTA_RANGE_KM',
         'METPLUS_RMW_SCALE',
+        'METPLUS_COMPUTE_TANGENTIAL_AND_RADIAL_WINDS',
+        'METPLUS_U_WIND_FIELD_NAME',
+        'METPLUS_V_WIND_FIELD_NAME',
+        'METPLUS_TANGENTIAL_VELOCITY_FIELD_NAME',
+        'METPLUS_TANGENTIAL_VELOCITY_LONG_FIELD_NAME',
+        'METPLUS_RADIAL_VELOCITY_FIELD_NAME',
+        'METPLUS_RADIAL_VELOCITY_LONG_FIELD_NAME',
     ]
 
     def __init__(self, config, instance=None):
@@ -132,6 +139,14 @@ class TCRMWWrapper(RuntimeFreqWrapper):
                             metplus_configs=['TC_RMW_VALID_HOUR_LIST',
                                              'TC_RMW_VALID_HOUR',
                                              ])
+
+        self.add_met_config(name='compute_tangential_and_radial_winds', data_type='bool')
+        self.add_met_config(name='u_wind_field_name', data_type='string')
+        self.add_met_config(name='v_wind_field_name', data_type='string')
+        self.add_met_config(name='tangential_velocity_field_name', data_type='string')
+        self.add_met_config(name='tangential_velocity_long_field_name', data_type='string')
+        self.add_met_config(name='radial_velocity_field_name', data_type='string')
+        self.add_met_config(name='radial_velocity_long_field_name', data_type='string')
 
         c_dict['VAR_LIST_TEMP'] = parse_var_list(self.config,
                                                  data_type='FCST',
