@@ -206,8 +206,7 @@ jobs:
           categories: ${{ matrix.categories }}
           metplotpy_branch: ${{ github.event.inputs.metplotpy_branch }}
           metcalcpy_branch: ${{ github.event.inputs.metcalcpy_branch }}
-          #metdataio_branch: ${{ github.event.inputs.metdataio_branch }}
-          metdataio_branch: feature_test_use_case_fix
+          metdataio_branch: ${{ github.event.inputs.metdataio_branch }}
 
       # copy logs with errors to error_logs directory to save as artifact
       - name: Save error logs
