@@ -12,6 +12,7 @@ from .loop_times_wrapper import LoopTimesWrapper
 from .reformat_gridded_wrapper import ReformatGriddedWrapper
 from .reformat_point_wrapper import ReformatPointWrapper
 from .compare_gridded_wrapper import CompareGriddedWrapper
+from .tc_base_wrapper import TCBaseWrapper
 
 # import RegridDataPlane wrapper because it is used by other wrappers
 from .regrid_data_plane_wrapper import RegridDataPlaneWrapper
