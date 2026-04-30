@@ -826,8 +826,23 @@ def diff_text_lines(lines_a, lines_b, dir_a=None, dir_b=None,
         if compare_a == compare_b:
             continue
 
+        # check for TC-Stat and Stat-Analysis output data
+        is_analysis_data = compare_a.startswith(
+                               ('SUMMARY',
+                                'PROBRIRW', 'RIRW',
+                                'AGGR_WDIR', 'ROW_MEAN_WDIR',
+                                'SS_INDEX', 'GO_INDEX', 'CBS_INDEX',
+                                'FHO', 'CTC', 'CTS', 'ECLV',
+                                'MCTC', 'MCTS',
+                                'SL1L2', 'SAL1L2', 'CNT',
+                                'VL1L2', 'VAL1L2', 'VCNT', 'WDIR',
+                                'PCT', 'PSTD', 'PJC', 'PRC',
+                                'NBRCTC', 'NBRCTS', 'NBRCNT',
+                                'RHIST', 'PHIST', 'RELP', 'SSVAR', 'ECNT',
+                                'RPS', 'GRAD', 'ISC', 'SEEPS'))
+
         # if the diff is in a stat file, ignore the version number
-        if is_stat_file:
+        if is_stat_file or is_analysis_data:
             details += '\nComparing stat files'
             success, message = _diff_stat_line(compare_a, compare_b, header=header)
             if not success:
