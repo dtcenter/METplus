@@ -297,19 +297,20 @@ in the
      .. dropdown:: HERCULES
 
         | **NOAA MACHINE HERCULES (MANAGED BY MSU)**
-        | *Last updated: December 5, 2025*
-	| *Compiler and version: Intel oneAPI 2022.2.1*
-	|
-	| **Before loading any of the modules below, it is necessary to load the following modules:**
+        | *Last updated: May 1, 2025*
+	    | *Compiler and version: Intel oneAPI 2025.3.1*
+	    |
+	    | **Before loading any of the modules below, it is necessary to load the following modules:**
 
 	.. code-block:: ini
 
-	   module load contrib
-           module load intel-oneapi-compilers/2022.2.1
+	   module load spack-managed-x86-64_v3
+       module load intel-oneapi-compilers/2025.3.1
+       module load contrib/0.1
 
-        * **METplus-6.2.0**
+      * **METplus-6.2.1**
 
-	  * METplus-6.2.0 Installation: /apps/contrib/MET/METplus/METplus-6.2.0
+	  * METplus-6.2.1 Installation: /apps/contrib/MET/METplus/METplus-6.2.1
 	  * METplus-6.2 Sample Data:
 
 	    * /work/noaa/ovp/METplus/sample_data/METplus-6.2_sample_data
@@ -318,17 +319,17 @@ in the
 
 	    .. code-block:: ini
 
-              module load metplus/6.2.0
+              module load metplus/6.2.1
 
 	  * Users should create a file like /work/noaa/ovp/METplus/hercules.role-ovp.conf to set a personalized INPUT_BASE and OUTPUT_BASE.
 
-        * **MET-12.2.0** 
+        * **MET-12.2.1** 
 
           * MODULES:
 
 	    .. code-block:: ini
 
-              module load met/12.2.0
+              module load met/12.2.1
 
         * **METcalcpy-3.2.0 / METplotpy-3.2.0** 
 
