@@ -297,7 +297,7 @@ in the
      .. dropdown:: HERCULES
 
         | **NOAA MACHINE HERCULES (MANAGED BY MSU)**
-        | *Last updated: May 1, 2025*
+        | *Last updated: May 1, 2026*
         | *Compiler and version: Intel oneAPI 2025.3.1*
         | **Before loading any of the modules below, it is necessary to load the following modules:**
 
