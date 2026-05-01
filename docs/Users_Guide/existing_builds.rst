@@ -304,9 +304,9 @@ in the
 
 	 .. code-block:: ini
 
-	   module load spack-managed-x86-64_v3
-       module load intel-oneapi-compilers/2025.3.1
-       module load contrib/0.1
+           module load spack-managed-x86-64_v3
+           module load intel-oneapi-compilers/2025.3.1
+           module load contrib/0.1
 
       * **METplus-6.2.1**
 
