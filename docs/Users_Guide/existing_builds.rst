@@ -298,11 +298,11 @@ in the
 
         | **NOAA MACHINE HERCULES (MANAGED BY MSU)**
         | *Last updated: May 1, 2025*
-	    | *Compiler and version: Intel oneAPI 2025.3.1*
-	    |
-	    | **Before loading any of the modules below, it is necessary to load the following modules:**
+        | *Compiler and version: Intel oneAPI 2025.3.1*
+        | **Before loading any of the modules below, it is necessary to load the following modules:**
 
-	.. code-block:: ini
+
+	 .. code-block:: ini
 
 	   module load spack-managed-x86-64_v3
        module load intel-oneapi-compilers/2025.3.1
