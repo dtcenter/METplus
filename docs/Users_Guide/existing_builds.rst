@@ -176,7 +176,7 @@ in the
      .. dropdown:: URSA
 
         | **NOAA MACHINE URSA**
-        | *Last updated: December 4, 2025*
+        | *Last updated: May 1, 2026*
         | *Compiler and version: Intel oneAPI 2025.1.1*
 
           * **METplus-6.2.0**
@@ -197,7 +197,7 @@ in the
 
               .. code-block:: ini
 
-                  module load intel/2025.1.1
+                  module load intel-oneapi-compilers/2025.1.1
                   module use /contrib/METplus/modulefiles
                   module load metplus/6.2.0
 
@@ -207,7 +207,7 @@ in the
 
               .. code-block:: ini
 
-                  module load intel/2025.1.1
+                  module load intel-oneapi-compilers/2025.1.1
                   module use -a /contrib/met/modulefiles/
                   module load met/12.2.0
 
@@ -217,7 +217,7 @@ in the
 
 	      .. code-block:: ini
 
-                  module load intel/2025.1.1
+                  module load intel-oneapi-compilers/2025.1.1
                   module use /contrib/METcalcpy/modulefiles
                   module load metcalcpy/3.2.0
                   module use /contrib/METplotpy/modulefiles
@@ -229,7 +229,7 @@ in the
 
               .. code-block:: ini
 
-                  module load intel/2025.1.1
+                  module load intel-oneapi-compilers/2025.1.1
                   module use /contrib/METdataio/modulefiles
                   module load metdataio/3.2.0
 
