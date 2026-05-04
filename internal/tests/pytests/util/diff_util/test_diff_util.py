@@ -5,6 +5,13 @@ from unittest import mock
 from PIL import Image
 import numpy as np
 
+# set env vars that should be read by the diff_util import
+EXPECTED_NEW_SKIP_KEYWORDS = ['fabienk', 'sebastian']
+os.environ['METPLUS_DIFF_SKIP_KEYWORDS'] = ', '.join(EXPECTED_NEW_SKIP_KEYWORDS)
+
+os.environ['METPLUS_DIFF_ROUNDING_OVERRIDES'] = 'khn:3, klek:4'
+EXPECTED_NEW_ROUNDING_OVERRIDES = {'khn': 3, 'klek': 4}
+
 from metplus.util import diff_util as du
 from metplus.util import mkdir_p
 
@@ -793,3 +800,10 @@ def test_compare_files_skip_extensions(capfd, tmp_path_factory, extension, check
 def test_is_equal_rounded(value_a, value_b, expected_result):
     du.rounding_precision = 3
     assert du._is_equal_rounded(value_a, value_b) == expected_result
+
+@pytest.mark.util
+def test_env_var_setting_overrides():
+    assert du.SKIP_KEYWORDS == EXPECTED_NEW_SKIP_KEYWORDS
+    for key, value in EXPECTED_NEW_ROUNDING_OVERRIDES.items():
+        assert key in du.ROUNDING_OVERRIDES
+        assert du.ROUNDING_OVERRIDES[key] == value
