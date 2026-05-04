@@ -22,7 +22,7 @@ VERSION_LOOKUP = {
         'metdataio': '13.0.0',
         'metviewer': '13.0.0',
         'metexpress': None,
-        'metbaseimage': '3.5.3',
+        'metbaseimage': '3.5.4',
     },
     # NOTE: 7.0 will be removed once 13.0 has been tested with the next beta release
     '7.0': {
