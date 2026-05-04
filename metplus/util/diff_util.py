@@ -38,6 +38,12 @@ if os.environ.get('METPLUS_DIFF_SKIP_KEYWORDS'):
 ROUNDING_OVERRIDES = {
 }
 
+if os.environ.get('METPLUS_DIFF_ROUNDING_OVERRIDES'):
+    overrides = [item.strip() for item in os.environ['METPLUS_DIFF_ROUNDING_OVERRIDES'].split(',')]
+    for override in overrides:
+        keyword, precision = override.split(':')
+        ROUNDING_OVERRIDES[keyword] = int(precision)
+
 # file extensions to skip
 # these will be reported as a successful diff test
 # override this to skip files that have any of the extensions
