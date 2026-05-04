@@ -44,7 +44,7 @@ def main():
     print('******************************')
     print("Comparing output to truth data")
     diff_files = diff_util.compare_dir(TRUTH_DIR, OUTPUT_DIR,
-                                       debug=True, save_diff=True)
+                                       debug=True, save_diff=False)
 
     # copy difference files into directory
     # so it can be easily downloaded and compared

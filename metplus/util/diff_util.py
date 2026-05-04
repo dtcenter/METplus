@@ -1135,16 +1135,8 @@ def _copy_to_diff_dir(file_path, data_type, input_dir, output_dir):
     @param output_dir directory to copy file to
     @returns True if success, False if there was a problem copying the file
     """
-    # replace data dir with diff directory
-    diff_out = file_path.replace(input_dir, output_dir)
-
-    # add data type identifier to filename before extension
-    # if data is not difference output
-    if data_type == 'diff':
-        output_path = diff_out
-    else:
-        output_path, extension = os.path.splitext(diff_out)
-        output_path = f'{output_path}_{data_type}{extension}'
+    # replace data dir with output directory and data type subdirectory
+    output_path = file_path.replace(input_dir, os.path.join(output_dir, data_type))
 
     # create output directory if it doesn't exist
     if not os.path.exists(os.path.dirname(output_path)):
