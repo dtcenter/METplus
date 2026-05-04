@@ -1,11 +1,11 @@
 #! /bin/sh
 
 ################################################################################
-# Environment: wrf_plot.v6.1
-# Last Updated: 2025-06-04 (mccabe@ucar.edu)
+# Environment: wrf_plot.v13.0
+# Last Updated: 2026-04-15 (mccabe@ucar.edu)
 # Notes: Adds wrf package to read WRF files to METplus Analysis packages
 # Python Packages:
-#   wrf==1.4.0
+#   wrf
 #
 # Other Content: None
 ################################################################################
@@ -20,4 +20,5 @@ ENV_NAME=wrf_plot.${METPLUS_VERSION}
 BASE_ENV=mp_analysis.${METPLUS_VERSION}
 
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-mamba install -y --name ${ENV_NAME} -c conda-forge wrf-python==1.4.0
+mamba install -y --name ${ENV_NAME} -c conda-forge \
+  wrf-python~=1.4.2

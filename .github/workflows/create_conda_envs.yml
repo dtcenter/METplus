@@ -9,7 +9,7 @@ on:
         default: ''
 
 env:
-  METPLUS_ENV_VERSION: v6.1
+  METPLUS_ENV_VERSION: v13.0
   DOCKERFILE: Dockerfile
   BASE_ENV: metplus_base
   DOCKER_USERNAME: 'dtcenter'
@@ -243,9 +243,11 @@ jobs:
       - run: .github/jobs/push_conda_image.sh
 
   gfdl-tracker:
-    if: |
-      always() && (needs.check.outputs.no_skip == 'true' ||
-      contains(fromJSON(needs.check.outputs.run_list), 'gfdl-tracker'))
+    # disable gfdl-tracker for now because it cannot build in current strategy:
+    if: false
+    #if: |
+    #  always() && (needs.check.outputs.no_skip == 'true' ||
+    #  contains(fromJSON(needs.check.outputs.run_list), 'gfdl-tracker'))
     runs-on: ubuntu-latest
     needs: [check,metplus_base]
     env:
@@ -291,7 +293,9 @@ jobs:
     needs: [check,metplotpy]
     env:
       ENV_NAME: ${{ github.job }}
-      BASE_ENV: metplotpy
+      # changed from metplotpy to avoid issue in MacOS with conda clone wrt x264 package
+      # this allows the scripts to run locally on MacOS
+      BASE_ENV: metplus_base
     steps:
       - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
@@ -316,7 +320,7 @@ jobs:
       always() && (needs.check.outputs.no_skip == 'true' ||
       contains(fromJSON(needs.check.outputs.run_list), 'swpc_metpy'))
     runs-on: ubuntu-latest
-    needs: [check,conda]
+    needs: [check,metplus_base]
     env:
       ENV_NAME: ${{ github.job }}
     steps:
