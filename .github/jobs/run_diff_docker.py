@@ -32,6 +32,7 @@ diff_util.SKIP_KEYWORDS = [
 diff_util.ROUNDING_OVERRIDES = {
     'UserScript_obsCFSR_obsOnly_MJO_ENSO': 5,
     'UserScript_fcstS2S_obsERAI_CrossSpectra': 4,
+    'FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics': 4,
 }
 
 TRUTH_DIR = '/data/truth'
