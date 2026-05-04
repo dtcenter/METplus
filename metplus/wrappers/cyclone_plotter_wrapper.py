@@ -10,7 +10,6 @@ import time
 import datetime
 from collections import namedtuple
 
-
 # handle if module can't be loaded to run wrapper
 WRAPPER_CANNOT_RUN = False
 EXCEPTION_ERR = ''
@@ -46,10 +45,18 @@ class CyclonePlotterWrapper(CommandBuilder):
         Reads input from ATCF files generated from MET TC-Pairs
     """
 
+    # Use named tuples to store the relevant storm track information (their index value in the dataframe,
+    # track id, and ALON values and later on the SLON (sanitized ALON values).
+    TrackPt = namedtuple("TrackPt", "indices track alons alats")
+
+    # named tuple holding "sanitized" longitudes
+    SanTrackPt = namedtuple("SanTrackPt", "indices track alons slons")
+
     def __init__(self, config, instance=None):
         self.app_name = 'cyclone_plotter'
 
         super().__init__(config, instance=instance)
+        self.sanitized_df = None
 
         if WRAPPER_CANNOT_RUN:
             self.log_error("There was a problem importing modules: "
@@ -171,7 +178,7 @@ class CyclonePlotterWrapper(CommandBuilder):
         """
         self.sanitized_df = self.retrieve_data()
         if self.sanitized_df is None:
-            return None
+            return
         self.create_plot()
 
     def retrieve_data(self):
@@ -186,175 +193,189 @@ class CyclonePlotterWrapper(CommandBuilder):
         self.logger.debug("Begin retrieving data...")
 
         # Store the data in the track list.
-        if os.path.isdir(self.input_data):
-            self.logger.debug("Get data from all files in the directory " +
-                              self.input_data)
-            # Get the list of all files (full file path) in this directory
-            all_input_files = get_files(self.input_data, ".*.tcst")
-
-            # read each file into pandas then concatenate them together
-            df_list = [pd.read_csv(file, delim_whitespace=True) for file in all_input_files]
-            combined = pd.concat(df_list, ignore_index=True)
-
-            # check for empty dataframe, set error message and exit
-            if combined.empty:
-                self.logger.error("No data found in specified files. Please check your config file settings.")
-                return None
-
-            # if there are any NaN values in the ALAT, ALON, STORM_ID, LEAD, INIT, AMODEL, or VALID column,
-            # drop that row of data (axis=0).  We need all these columns to contain valid data in order
-            # to create a meaningful plot.
-            combined_df = combined.dropna(axis=0, how='any',
-                                          subset=self.columns_of_interest)
-
-            # Retrieve and create the columns of interest
-            self.logger.debug(f"Number of rows of data: {combined_df.shape[0]}")
-            combined_subset = combined_df[self.columns_of_interest]
-            df = combined_subset.copy(deep=True)
-            df.allows_duplicate_labels = False
-            # INIT, LEAD, VALID correspond to the column headers from the MET
-            # TC tool output.  INIT_YMD, INIT_HOUR, VALID_DD, and VALID_HOUR are
-            # new columns (for a new dataframe) created from these MET columns.
-            df['INIT'] = df['INIT'].astype(str)
-            df['INIT_YMD'] = (df['INIT'].str[:8]).astype(int)
-            df['INIT_HOUR'] = (df['INIT'].str[9:11]).astype(int)
-            df['LEAD']  = df['LEAD']/10000
-            df['LEAD'] = df['LEAD'].astype(int)
-            df['VALID_DD'] = (df['VALID'].str[6:8]).astype(int)
-            df['VALID_HOUR'] = (df['VALID'].str[9:11]).astype(int)
-            df['VALID'] = df['VALID'].astype(int)
-
-            # Subset the dataframe to include only the data relevant to the user's criteria as
-            # specified in the configuration file.
-            init_date = int(self.init_date)
-            init_hh = int(self.init_hr)
-            model_name = self.model
-
-            if model_name:
-                self.logger.debug("Subsetting based on " + str(init_date) + " " + str(init_hh) +
-                                  ", and model:" + model_name )
-                mask = df[(df['AMODEL'] == model_name) & (df['INIT_YMD'] >= init_date) &
-                          (df['INIT_HOUR'] >= init_hh)]
-            else:
-                # no model specified, just subset on init date and init hour
-                mask = df[(df['INIT_YMD'] >= init_date) &
-                          (df['INIT_HOUR'] >= init_hh)]
-                self.logger.debug("Subsetting based on " + str(init_date) + ", and "+ str(init_hh))
-
-            user_criteria_df = mask
-            # reset the index so things are ordered properly in the new dataframe
-            user_criteria_df.reset_index(inplace=True)
-
-            # Aggregate the ALON values based on unique storm id to facilitate "sanitizing" the
-            # longitude values (to handle lons that cross the International Date Line).
-            unique_storm_ids_set = set(user_criteria_df['STORM_ID'])
-            self.unique_storm_ids = list(unique_storm_ids_set)
-            nunique = len(self.unique_storm_ids)
-            self.logger.debug(f" {nunique} unique storm ids identified")
-
-            # Use named tuples to store the relevant storm track information (their index value in the dataframe,
-            # track id, and ALON values and later on the SLON (sanitized ALON values).
-            TrackPt = namedtuple("TrackPt", "indices track alons alats")
-
-            # named tuple holding "sanitized" longitudes
-            SanTrackPt = namedtuple("SanTrackPt", "indices track alons slons")
-
-            # Keep track of the unique storm tracks by their storm_id
-            storm_track_dict = {}
-
-            for cur_unique in self.unique_storm_ids:
-                idx_list = user_criteria_df.index[user_criteria_df['STORM_ID'] == cur_unique].tolist()
-                alons = []
-                alats = []
-                indices = []
-
-                for idx in idx_list:
-                    alons.append(user_criteria_df.loc[idx, 'ALON'])
-                    alats.append(user_criteria_df.loc[idx, 'ALAT'])
-                    indices.append(idx)
-
-                # create the track_pt tuple and add it to the storm track dictionary
-                track_pt = TrackPt(indices, cur_unique, alons, alats)
-                storm_track_dict[cur_unique] = track_pt
-
-            # create a new dataframe to contain the sanitized lons (i.e. the original ALONs that have
-            # been cleaned up when crossing the International Date Line)
-            sanitized_df = user_criteria_df.copy(deep=True)
-
-            # Now we have a dictionary that helps in aggregating the data based on
-            # storm tracks (via storm id) and will contain the "sanitized" lons
-            sanitized_storm_tracks = {}
-            for key in storm_track_dict:
-                # "Sanitize" the longitudes to shift the lons that cross the International Date Line.
-                # Create a new SanTrackPt named tuple and add that to a new dictionary
-                # that keeps track of the sanitized data based on the storm id
-                # sanitized_lons = self.sanitize_lonlist(storm_track_dict[key].alons)
-                sanitized_lons = self.sanitize_lonlist(storm_track_dict[key].alons)
-                sanitized_track_pt = SanTrackPt(storm_track_dict[key].indices, storm_track_dict[key].track,
-                                                  storm_track_dict[key].alons, sanitized_lons)
-                sanitized_storm_tracks[key] = sanitized_track_pt
-
-            # fill in the sanitized dataframe, sanitized_df
-            for key in sanitized_storm_tracks:
-                # now use the indices of the storm tracks to correctly assign the sanitized
-                # lons to the appropriate row in the dataframe to maintain the row ordering of
-                # the original dataframe
-                idx_list = sanitized_storm_tracks[key].indices
-
-                for i, idx in enumerate(idx_list):
-                    sanitized_df.loc[idx,'SLON'] = sanitized_storm_tracks[key].slons[i]
-
-                    # Set some useful values used for plotting.
-                    # Set the IS_FIRST value to True if this is the first
-                    # point in the storm track, False
-                    # otherwise
-                    if i == 0:
-                        sanitized_df.loc[idx, 'IS_FIRST'] = True
-                    else:
-                        sanitized_df.loc[idx, 'IS_FIRST'] = False
-
-                    # Set the lead group to the character '0' if the valid hour is 0 or 12,
-                    # or to the charcter '6' if the valid hour is 6 or 18. Set the marker
-                    # to correspond to the valid hour: 'o' (open circle) for 0 or 12 valid hour,
-                    # or '+' (small plus/cross) for 6 or 18.
-                    if sanitized_df.loc[idx, 'VALID_HOUR'] == 0 or sanitized_df.loc[idx, 'VALID_HOUR'] == 12:
-                        sanitized_df.loc[idx, 'LEAD_GROUP'] ='0'
-                        sanitized_df.loc[idx, 'MARKER'] = self.circle_marker
-                    elif sanitized_df.loc[idx, 'VALID_HOUR'] == 6 or sanitized_df.loc[idx, 'VALID_HOUR'] == 18:
-                        sanitized_df.loc[idx, 'LEAD_GROUP'] = '6'
-                        sanitized_df.loc[idx, 'MARKER'] = self.cross_marker
-
-            # If the user has specified a region of interest rather than the
-            # global extent, subset the data even further to points that are within a bounding box.
-            if not self.is_global_extent:
-                self.logger.debug("Subset the data based on the region of interest.")
-                subset_by_region_df = self.subset_by_region(sanitized_df)
-                if subset_by_region_df.empty:
-                    return None
-                final_df = subset_by_region_df.copy(deep=True)
-            else:
-                final_df = sanitized_df.copy(deep=True)
-
-            # Write output ASCII file (csv) summarizing the information extracted from the input
-            # which is used to generate the plot.
-            if self.gen_ascii:
-               self.logger.debug(f" output dir: {self.output_dir}")
-               mkdir_p(self.output_dir)
-               ascii_track_parts = [self.init_date, '.csv']
-               ascii_track_output_name = ''.join(ascii_track_parts)
-               final_df_filename = os.path.join(self.output_dir, ascii_track_output_name)
-
-               # Make sure that the dataframe is sorted by STORM_ID, INIT_YMD, INIT_HOUR, and LEAD
-               # to ensure that the line plot is connecting the points in the correct order.
-               final_sorted_df = final_df.sort_values(by=['STORM_ID', 'INIT_YMD', 'INIT_HOUR', 'LEAD'], ignore_index=True)
-               final_df.reset_index(drop=True,inplace=True)
-               final_sorted_df.to_csv(final_df_filename)
-        else:
+        if not os.path.isdir(self.input_data):
             # The user's specified directory isn't valid, log the error and exit.
             self.logger.error("CYCLONE_PLOTTER_INPUT_DIR isn't a valid directory, check config file.")
             return None
 
+        self.logger.debug("Get data from all files in the directory " +
+                          self.input_data)
+        # Get the list of all files (full file path) in this directory
+        all_input_files = get_files(self.input_data, ".*.tcst")
+
+        # read each file into pandas then concatenate them together
+        # filter out empty dataframes to avoid FutureWarning
+        df_list = []
+        for file in all_input_files:
+            df = pd.read_csv(file, sep=r"\s+")
+            # Check if df is a DataFrame and not empty to satisfy type checkers and avoid FutureWarning
+            if isinstance(df, pd.DataFrame) and not df.empty:
+                df_list.append(df)
+
+        if df_list:
+            combined = pd.concat(df_list, ignore_index=True)
+        else:
+            combined = pd.DataFrame()
+
+        # check for empty dataframe, set error message and exit
+        if combined.empty:
+            self.logger.error("No data found in specified files. Please check your config file settings.")
+            return None
+
+        # if there are any NaN values in the ALAT, ALON, STORM_ID, LEAD, INIT, AMODEL, or VALID column,
+        # drop that row of data (axis=0).  We need all these columns to contain valid data in order
+        # to create a meaningful plot.
+        combined_df = combined.dropna(axis=0, how='any',
+                                      subset=self.columns_of_interest)
+
+        # Retrieve and create the columns of interest
+        self.logger.debug(f"Number of rows of data: {combined_df.shape[0]}")
+        combined_subset = combined_df[self.columns_of_interest]
+        df = combined_subset.copy(deep=True)
+        df.allows_duplicate_labels = False
+        # INIT, LEAD, VALID correspond to the column headers from the MET
+        # TC tool output.  INIT_YMD, INIT_HOUR, VALID_DD, and VALID_HOUR are
+        # new columns (for a new dataframe) created from these MET columns.
+        df['INIT'] = df['INIT'].astype(str)
+        df['INIT_YMD'] = (df['INIT'].str[:8]).astype(int)
+        df['INIT_HOUR'] = (df['INIT'].str[9:11]).astype(int)
+        df['LEAD']  = df['LEAD']/10000
+        df['LEAD'] = df['LEAD'].astype(int)
+        df['VALID_DD'] = (df['VALID'].str[6:8]).astype(int)
+        df['VALID_HOUR'] = (df['VALID'].str[9:11]).astype(int)
+        df['VALID'] = df['VALID'].astype(int)
+
+        # Subset the dataframe to include only the data relevant to the user's criteria as
+        # specified in the configuration file.
+        init_date = int(self.init_date)
+        init_hh = int(self.init_hr)
+        model_name = self.model
+
+        if model_name:
+            self.logger.debug("Subsetting based on " + str(init_date) + " " + str(init_hh) +
+                              ", and model:" + model_name )
+            mask = df[(df['AMODEL'] == model_name) & (df['INIT_YMD'] >= init_date) &
+                      (df['INIT_HOUR'] >= init_hh)]
+        else:
+            # no model specified, just subset on init date and init hour
+            mask = df[(df['INIT_YMD'] >= init_date) &
+                      (df['INIT_HOUR'] >= init_hh)]
+            self.logger.debug("Subsetting based on " + str(init_date) + ", and "+ str(init_hh))
+
+        user_criteria_df = mask
+        # reset the index so things are ordered properly in the new dataframe
+        user_criteria_df.reset_index(inplace=True)
+
+        # Aggregate the ALON values based on unique storm id to facilitate "sanitizing" the
+        # longitude values (to handle lons that cross the International Date Line).
+        unique_storm_ids_set = set(user_criteria_df['STORM_ID'])
+        self.unique_storm_ids = list(unique_storm_ids_set)
+        self.logger.debug(f" {len(self.unique_storm_ids)} unique storm ids identified")
+
+        storm_track_dict = self._get_storm_track_dict(user_criteria_df)
+
+        sanitized_df = self._sanitize_data(storm_track_dict, user_criteria_df)
+
+        # If the user has specified a region of interest rather than the
+        # global extent, subset the data even further to points that are within a bounding box.
+        final_df = self._subset_data_by_region(sanitized_df)
+        if final_df is None:
+            return None
+
+        # Make sure that the dataframe is sorted by STORM_ID, INIT_YMD, INIT_HOUR, and LEAD
+        # to ensure that the line plot is connecting the points in the correct order.
+        final_sorted_df = final_df.sort_values(by=['STORM_ID', 'INIT_YMD', 'INIT_HOUR', 'LEAD'], ignore_index=True)
+        final_df.reset_index(drop=True,inplace=True)
+
+        # Write output ASCII file (csv) summarizing the information extracted from the input
+        # which is used to generate the plot.
+        if self.gen_ascii:
+           self.logger.debug(f" output dir: {self.output_dir}")
+           mkdir_p(self.output_dir)
+           ascii_track_parts = [self.init_date, '.csv']
+           ascii_track_output_name = ''.join(ascii_track_parts)
+           final_df_filename = os.path.join(self.output_dir, ascii_track_output_name)
+           final_sorted_df.to_csv(final_df_filename)
+
         return final_sorted_df
+
+    def _get_storm_track_dict(self, user_criteria_df):
+        # Keep track of the unique storm tracks by their storm_id
+        storm_track_dict = {}
+
+        for cur_unique in self.unique_storm_ids:
+            idx_list = user_criteria_df.index[user_criteria_df['STORM_ID'] == cur_unique].tolist()
+            alons = []
+            alats = []
+            indices = []
+
+            for idx in idx_list:
+                alons.append(user_criteria_df.loc[idx, 'ALON'])
+                alats.append(user_criteria_df.loc[idx, 'ALAT'])
+                indices.append(idx)
+
+            # create the track_pt tuple and add it to the storm track dictionary
+            track_pt = self.TrackPt(indices, cur_unique, alons, alats)
+            storm_track_dict[cur_unique] = track_pt
+        return storm_track_dict
+
+    def _sanitize_data(self, storm_track_dict, user_criteria_df):
+        # create a new dataframe to contain the sanitized lons (i.e. the original ALONs that have
+        # been cleaned up when crossing the International Date Line)
+        sanitized_df = user_criteria_df.copy(deep=True)
+
+        # Now we have a dictionary that helps in aggregating the data based on
+        # storm tracks (via storm id) and will contain the "sanitized" lons
+        sanitized_storm_tracks = {}
+        for key in storm_track_dict:
+            # "Sanitize" the longitudes to shift the lons that cross the International Date Line.
+            # Create a new SanTrackPt named tuple and add that to a new dictionary
+            # that keeps track of the sanitized data based on the storm id
+            # sanitized_lons = self.sanitize_lonlist(storm_track_dict[key].alons)
+            sanitized_lons = self.sanitize_lonlist(storm_track_dict[key].alons)
+            sanitized_track_pt = self.SanTrackPt(storm_track_dict[key].indices,
+                                                 storm_track_dict[key].track,
+                                                 storm_track_dict[key].alons, sanitized_lons)
+            sanitized_storm_tracks[key] = sanitized_track_pt
+
+        # fill in the sanitized dataframe, sanitized_df
+        for key in sanitized_storm_tracks:
+            # now use the indices of the storm tracks to correctly assign the sanitized
+            # lons to the appropriate row in the dataframe to maintain the row ordering of
+            # the original dataframe
+            idx_list = sanitized_storm_tracks[key].indices
+
+            for i, idx in enumerate(idx_list):
+                sanitized_df.loc[idx, 'SLON'] = sanitized_storm_tracks[key].slons[i]
+
+                # Set some useful values used for plotting.
+                # Set the IS_FIRST value to True if this is the first
+                # point in the storm track, False
+                # otherwise
+                sanitized_df.loc[idx, 'IS_FIRST'] = i == 0
+
+                # Set the lead group to the character '0' if the valid hour is 0 or 12,
+                # or to the charcter '6' if the valid hour is 6 or 18. Set the marker
+                # to correspond to the valid hour: 'o' (open circle) for 0 or 12 valid hour,
+                # or '+' (small plus/cross) for 6 or 18.
+                if sanitized_df.loc[idx, 'VALID_HOUR'] == 0 or sanitized_df.loc[
+                    idx, 'VALID_HOUR'] == 12:
+                    sanitized_df.loc[idx, 'LEAD_GROUP'] = '0'
+                    sanitized_df.loc[idx, 'MARKER'] = self.circle_marker
+                elif sanitized_df.loc[idx, 'VALID_HOUR'] == 6 or sanitized_df.loc[
+                    idx, 'VALID_HOUR'] == 18:
+                    sanitized_df.loc[idx, 'LEAD_GROUP'] = '6'
+                    sanitized_df.loc[idx, 'MARKER'] = self.cross_marker
+        return sanitized_df
+
+    def _subset_data_by_region(self, sanitized_df):
+        if self.is_global_extent:
+            return sanitized_df.copy(deep=True)
+        self.logger.debug("Subset the data based on the region of interest.")
+        subset_by_region_df = self.subset_by_region(sanitized_df)
+        if subset_by_region_df is None or subset_by_region_df.empty:
+            return None
+        return subset_by_region_df.copy(deep=True)
 
     def create_plot(self):
         """

@@ -15,6 +15,7 @@ MPR_LINE_2 = 'V11.1.0 HRRR  ALL_1.25 120000    20220701_200000 20220701_200000 0
 REFORMATTER_HEADER = 'Idx	version	model	desc	fcst_lead	fcst_valid_beg	fcst_valid_end	fcst_init_beg	obs_lead	obs_valid_beg	obs_valid_end	fcst_var	fcst_units	fcst_lev	obs_var	obs_units	obs_lev	obtype	vx_mask	interp_mthd	interp_pnts	fcst_thresh	obs_thresh	cov_thresh	alpha	line_type	total	stat_name	stat_value	stat_ncl	stat_ncu	stat_bcl	stat_bcu'
 REFORMATTER_LINE_1 = '17	V12.1.0	SFS-GSL	NA	60000	1991-06-01	1991-06-01	1991-05-31 18:00:00	0	1991-06-01	1991-06-01	Soil_moisture	mm	0-1m	soilm1m	mm	19910601_000000,*,*	ERA5	FULL	NEAREST	1	NA	NA	-9999	0.05	CNT	21510	FBAR	504.27735	499.27867	509.27604	NA	NA'
 TC_STAT_LINE_1 = 'V12.2.0 GPMI BEST EVENT_EQUAL AL012015 AL 01 ANA 20150508_120000 240000 20150509_120000 NA NA PROBRIRW 31.6 -77.7 32.5 -77.8 NA 54.23894 5.08551 -54 135.63956 80.31028 0 24 24 44 40 50 10 10 TS TS 5 -30 0 -10 0 0 100 10 0 30 0'
+TC_STAT_SUMMARY_LINE_1 = 'SUMMARY:  CRTK_ERR   BCLP 20100629_060000     6     6  103.88155    24.49553  183.26756  75.64639     0         11.97959   45.08834  129.28296  154.28721   170.38209    185.07792 109.19888  185.07792   623.28927 120000 220000         0        0        0  NA'
 FILE_PATH_1 = '/some/path/of/fake/file/one'
 FILE_PATH_2 = '/some/path/of/fake/file/two'
 FILE_PATH_3 = '/some/path/of/fake/file/three'
@@ -211,6 +212,14 @@ def write_test_files(dirname, files):
         ({'PROBRIRW_filter_ee.tcst': [TC_STAT_LINE_1]},
          {'PROBRIRW_filter_ee.tcst': [TC_STAT_LINE_1.replace('V12.1.0', 'V12.2.0')]},
          None, True),
+        # TC-Stat summary job output - small difference flagged
+        ({'ALAL2010_stat.out': [TC_STAT_SUMMARY_LINE_1]},
+         {'ALAL2010_stat.out': [TC_STAT_SUMMARY_LINE_1.replace('103.88155', '103.88154')]},
+         6, False),
+        # TC-Stat summary job output - small difference accepted
+        ({'ALAL2010_stat.out': [TC_STAT_SUMMARY_LINE_1]},
+         {'ALAL2010_stat.out': [TC_STAT_SUMMARY_LINE_1.replace('103.88155', '103.88154')]},
+         4, True),
     ],
 )
 @pytest.mark.diff

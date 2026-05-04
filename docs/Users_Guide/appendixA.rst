@@ -317,18 +317,6 @@ METplus Components Python Packages
   Description:
     Python package to define, operate and manipulate physical quantities
 
-.. dropdown:: plotly >=6.1.1
-
-  METplus Component: 
-    | METcalcpy, 
-    | METplotpy
-
-  Source:
-    https://github.com/plotly/plotly.py
-
-  Description:
-    Makes interactive, publication-quality graphs
-
 .. dropdown:: pygrib
 
   METplus Component:
@@ -422,18 +410,6 @@ METplus Components Python Packages
 
   Description:
     A mature full-featured Python testing tool that helps to write better programs
-
-.. dropdown:: python-kaleido >=1.0.0
-
-  METplus Component:
-    | METcalcpy, 
-    | METplotpy
-
-  Source:
-    https://pypi.org/project/kaleido/
-
-  Description:
-    Provides a low-level Python API that is designed to be used by high-level plotting libraries like Plotly
 
 .. dropdown:: pyyaml >=6.0.2
 

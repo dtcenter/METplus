@@ -61,6 +61,10 @@ def handle_automation_env(host_name, reqs):
     # add version extension to conda environment name
     conda_env_w_ext = f'{conda_env}{VERSION_EXT}'
 
+    # force older version of gfdl-tracker since it cannot be rebuilt
+    if conda_env == 'gfdl-tracker':
+        conda_env_w_ext = f'{conda_env}.v6.1'
+
     # start building commands to run before run_metplus.py in Docker
     setup_env = [
         _add_to_bashrc('# BELOW WAS ADDED BY TEST SCRIPT')
