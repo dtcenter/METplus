@@ -128,7 +128,7 @@ prs_mask = prsstack[:,mskstack>0]
 tmp_mask = tmpstack[:,mskstack>0]
 
 # Get a pool of workers
-mp = multiprocessing.Pool(multiprocessing.cpu_count()-2)
+mp = multiprocessing.Pool(int(os.environ.get('PYEMBED_MPROC_NUM_WORKERS', multiprocessing.cpu_count()-2)))
 
 print("")
 print(f"COMPUTING {derivation_type.upper() if derivation_type == 'ctp' else 'HUM'}. INDEX FOR {int(tmpstack[:,mskstack>0].sizes['sid'])} CELLS.")

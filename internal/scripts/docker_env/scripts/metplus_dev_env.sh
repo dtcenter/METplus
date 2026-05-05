@@ -1,8 +1,8 @@
 #! /bin/sh
 
 ################################################################################
-# Environment: metplus_dev.v6.1
-# Last Updated: 2025-03-14 (mccabe@ucar.edu)
+# Environment: metplus_dev.v13.0
+# Last Updated: 2026-04-15 (mccabe@ucar.edu)
 # Notes: Adds Python packages used to build documentation and run unit tests
 # Python Packages:
 #
@@ -20,7 +20,8 @@ BASE_ENV=diff.${METPLUS_VERSION}
 
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 
-mamba install -y --name ${ENV_NAME} -c conda-forge pytest-cov
+mamba install -y --name ${ENV_NAME} -c conda-forge \
+  pytest-cov
 
 # install documentation requirements using requirements.txt file from docs directory
 curl https://raw.githubusercontent.com/dtcenter/METplus/refs/heads/develop/docs/requirements.txt --output docs_requirements.txt

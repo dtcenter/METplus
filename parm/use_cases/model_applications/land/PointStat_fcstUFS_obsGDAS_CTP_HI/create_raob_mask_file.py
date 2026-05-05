@@ -45,5 +45,9 @@ print(f"TOTAL OF {len(point_data)} UNIQUE SITES in create_raob_mask_file.py")
 point_data['latlon'] = point_data['lat'].astype('str')+' '+point_data['lon'].astype('str')
 
 # Write out the text file that GenVxMask needs
-point_data['latlon'].astype('object').to_csv(outfile,index=False,sep=' ',header=['RAOB_SITES'],quoting=3,escapechar=' ')
+# Convert the series to a list of strings and write directly to file
+with open(outfile, 'w') as f:
+    f.write('RAOB_SITES\n')
+    f.write('\n'.join(point_data['latlon'].astype(str)))
+
 

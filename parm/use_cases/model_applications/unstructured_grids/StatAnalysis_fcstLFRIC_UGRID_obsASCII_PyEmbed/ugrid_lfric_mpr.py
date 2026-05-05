@@ -30,7 +30,7 @@ print(f"{gv.__version__=}")
 
 def read_ascii_obs(files):
     paths = sorted(glob(files))
-    datasets = [pd.read_table(p, header=None, delim_whitespace=True) for p in paths]
+    datasets = [pd.read_table(p, header=None, sep=r"\s+") for p in paths]
     combined = pd.concat(datasets)
     return combined
 
@@ -86,7 +86,7 @@ def find_nearest(tree, points, poi, k):
     # retieve the associated xyz points of the k nearest neighbours
     nearest = points[idxs]
     
-    return xyz, nearest, idxs
+    return xyz, nearest, idxs.item()
 
 def to_centers(mesh: pv.PolyData) -> pv.PolyData:
     tmp = mesh.copy()

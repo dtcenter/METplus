@@ -1,11 +1,11 @@
 #! /bin/sh
 
 ################################################################################
-# Environment: rioxarray.v6.1
-# Last Updated: 2025-05-20 (mccabe@ucar.edu)
+# Environment: rioxarray.v13.0
+# Last Updated: 2026-04-15 (mccabe@ucar.edu)
 # Notes: Adds rioxarray package to read GeoTIFF files
 # Python Packages:
-#   rioxarray==
+#   rioxarray
 #
 # Other Content: None
 ################################################################################
@@ -20,4 +20,5 @@ ENV_NAME=rioxarray.${METPLUS_VERSION}
 BASE_ENV=py_embed_base.${METPLUS_VERSION}
 
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-mamba install -y --name ${ENV_NAME} -c conda-forge rioxarray
+mamba install -y --name ${ENV_NAME} -c conda-forge \
+  rioxarray~=0.22.0
