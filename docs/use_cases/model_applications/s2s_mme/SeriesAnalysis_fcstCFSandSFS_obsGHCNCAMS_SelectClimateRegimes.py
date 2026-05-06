@@ -25,7 +25,7 @@ model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCN_SelectClimateReg
 # Version Added
 # -------------
 #
-# METplus version 7.0
+# METplus version 13.0
 
 ##############################################################################
 # Datasets
@@ -84,7 +84,7 @@ model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCN_SelectClimateReg
 # Neutral instance:
 #
 # **VALID_LIST :** 199610100,2001110100,2003110100,2012110100,2013110100,2019110100
-
+#
 # With an increment of 1 year, all November 1st’s from 1994 to 2020 are processed 
 # for a total of 27 years for the first instance of SeriesAnalysis. In the following
 # three instances, the VALID_LIST controls how many years are read in, ranging from
@@ -152,7 +152,7 @@ model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCN_SelectClimateReg
 #
 #   .. highlight:: python
 #   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SelectClimateRegimes/wrapper_combined.py
-
+#
 # For more information on the basic requirements to utilize Python Embedding in METplus, 
 # please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
 

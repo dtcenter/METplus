@@ -27,7 +27,7 @@ model_applications/s2s_mme/SeriesAnalysis_fcstSFS_obsGHCNCAMS_Prob_SmartMasking_
 # Version Added
 # -------------
 #
-# METplus version 7.0
+# METplus version 13.0
 
 ##############################################################################
 # Datasets
@@ -70,7 +70,7 @@ model_applications/s2s_mme/SeriesAnalysis_fcstSFS_obsGHCNCAMS_Prob_SmartMasking_
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** None
 #
-
+#
 # With an increment of 1 year, all November 1st’s from 1994 to 2020 are processed 
 # for a total of 27 years in SeriesAnalysis. This use case utilizes Python Embedding
 # which moves the input into probabilistic space when it is returned to SeriesAnalysis,
@@ -133,7 +133,7 @@ model_applications/s2s_mme/SeriesAnalysis_fcstSFS_obsGHCNCAMS_Prob_SmartMasking_
 # to ingest. It also feature options for flags (FLIP_OBS, FLIP_MODELS) to handle 
 # latitude orientation mismatches, ensuring data is geometrically correct before MET sees it.
 # This use case could also be made to detrend the data, by updating the DETREND_DATA 
-#setting in function_library_withDetrend.py to TRUE.
+# setting in function_library_withDetrend.py to TRUE.
 # 
 # .. dropdown:: parm/use_cases/model_applications/s2s_mme/SeriesAnalysis_fcstSFS_obsGHCNCAMS_Prob_SmartMasking_Detrend/function_library_withDetrend.py
 #
@@ -144,7 +144,7 @@ model_applications/s2s_mme/SeriesAnalysis_fcstSFS_obsGHCNCAMS_Prob_SmartMasking_
 #
 #   .. highlight:: python
 #   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mme/SeriesAnalysis_fcstSFS_obsGHCNCAMS_Prob_SmartMasking_Detrend/wrapper_combined_withDetrend.py
-
+#
 # For more information on the basic requirements to utilize Python Embedding in METplus, 
 # please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
 

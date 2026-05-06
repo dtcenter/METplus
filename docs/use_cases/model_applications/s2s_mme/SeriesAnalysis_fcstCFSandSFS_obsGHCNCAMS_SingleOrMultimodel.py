@@ -27,7 +27,7 @@ model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCN_SingleOrMultimod
 # Version Added
 # -------------
 #
-# METplus version 7.0
+# METplus version 13.0
 
 ##############################################################################
 # Datasets
@@ -132,7 +132,7 @@ model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCN_SingleOrMultimod
 #
 #   .. highlight:: python
 #   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SingleOrMultimodel/wrapper_combined.py
-
+#
 # For more information on the basic requirements to utilize Python Embedding in METplus, 
 # please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
 
