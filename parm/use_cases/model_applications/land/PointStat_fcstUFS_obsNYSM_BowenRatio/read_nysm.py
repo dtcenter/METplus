@@ -6,21 +6,21 @@ import numpy as np
 
 # Accept command line arguments from METplus (valid time beginning and valid time end).
 arg_cnt = len(sys.argv)
-if arg_cnt < 3:
+if arg_cnt < 5:
     print("ERROR: read_nysm.py -> Missing command line argument(s).")
     print("Usage: read_nysm.py VALID_TIME_BEG VALID_TIME_END")
     sys.exit(1)
 
-last_index = 3
+last_index = 5
 if last_index < arg_cnt:
     print(" INFO: read_nysm.py -> Too many arguments, ignored {o}.".format(
         o=' '.join(sys.argv[last_index:])))
     print("Usage: read_nysm.py VALID_TIME_BEG VALID_TIME_END")
 
-valid_beg = sys.argv[1]
-valid_end = sys.argv[2]
-metplus_usecase_dir = sys.argv[3]
-metplus_obs_input_dir = sys.argv[4]
+valid_time = sys.argv[1]
+metplus_usecase_dir = sys.argv[2]
+metplus_obs_input_dir = sys.argv[3]
+min_latent_heat_flux = float(sys.argv[4])
 
 # Set the list of variables to include.
 orig_variable_list = ['TMP', 'RH', 'TSOIL', 'SOILW', 'WIND', 'SNOD']
@@ -62,8 +62,8 @@ full_var_list = variable_list + flux_var_list
 # time and time window (+/- 60 minutes or 3600 seconds around the valid time).
 # Flux files are yearly instead of monthly, so they need a separate file date list.
 time_window = 3600 # seconds
-valid_beg_dt = dt.datetime.strptime(valid_beg, '%Y%m%d%H')
-valid_end_dt = dt.datetime.strptime(valid_end, '%Y%m%d%H')
+valid_beg_dt = dt.datetime.strptime(valid_time, '%Y%m%d%H')
+valid_end_dt = dt.datetime.strptime(valid_time, '%Y%m%d%H')
 valid_time_window_beg = valid_beg_dt - dt.timedelta(seconds=time_window)
 valid_time_window_end = valid_end_dt + dt.timedelta(seconds=time_window)
 
@@ -192,50 +192,46 @@ for row in station_metadata.itertuples():
 
     # Handle soil moisture levels and names
     sm05 = met_df['var'] == 'sm05'
-    met_df.loc[sm05, 'lvl'] = 'R6'
+    met_df.loc[sm05, 'lvl'] = '0-0.1'
     met_df.loc[sm05, 'var'] = 'SOILW'
 
     sm25 = met_df['var'] == 'sm25'
-    met_df.loc[sm25, 'lvl'] = 'R8'
+    met_df.loc[sm25, 'lvl'] = '0.1-0.4'
     met_df.loc[sm25, 'var'] = 'SOILW'
 
     sm50 = met_df['var'] == 'sm50'
-    met_df.loc[sm50, 'lvl'] = 'R10'
+    met_df.loc[sm50, 'lvl'] = '0.4-1'
     met_df.loc[sm50, 'var'] = 'SOILW'
 
     # Handle soil temperature levels and names
     ts05 = met_df['var'] == 'ts05'
-    met_df.loc[ts05, 'lvl'] = 'R5'
+    met_df.loc[ts05, 'lvl'] = '0-0.1'
     met_df.loc[ts05, 'var'] = 'TSOIL'
 
     ts25 = met_df['var'] == 'ts25'
-    met_df.loc[ts25, 'lvl'] = 'R7'
+    met_df.loc[ts25, 'lvl'] = '0.1-0.4'
     met_df.loc[ts25, 'var'] = 'TSOIL'
 
     ts50 = met_df['var'] == 'ts50'
-    met_df.loc[ts50, 'lvl'] = 'R9'
+    met_df.loc[ts50, 'lvl'] = '0.4-1'
     met_df.loc[ts50, 'var'] = 'TSOIL'
 
     # Handle flux variable levels and names
     fluxLE = met_df['var'] == 'flux_LE'
-    met_df.loc[fluxLE, 'hgt'] = 0
     met_df.loc[fluxLE, 'var'] = 'LHTFL'
-    met_df.loc[fluxLE, 'lvl'] = 'R32'
+    met_df.loc[fluxLE, 'lvl'] = 'L0'
 
     fluxH = met_df['var'] == 'flux_H'
-    met_df.loc[fluxH, 'hgt'] = 0
     met_df.loc[fluxH, 'var'] = 'SHTFL'
-    met_df.loc[fluxH, 'lvl'] = 'R33'
+    met_df.loc[fluxH, 'lvl'] = 'L0'
 
     fluxUSTAR = met_df['var'] == 'flux_USTAR'
-    met_df.loc[fluxUSTAR, 'hgt'] = 0
     met_df.loc[fluxUSTAR, 'var'] = 'FRICV'
-    met_df.loc[fluxUSTAR, 'lvl'] = 'R35'
+    met_df.loc[fluxUSTAR, 'lvl'] = 'L0'
 
     fluxG6cm = met_df['var'] == 'flux_G_6cm'
-    met_df.loc[fluxG6cm, 'hgt'] = 0
     met_df.loc[fluxG6cm, 'var'] = 'GFLUX'
-    met_df.loc[fluxG6cm, 'lvl'] = 'R34'
+    met_df.loc[fluxG6cm, 'lvl'] = 'L0'
 
     fluxBOW = met_df['var'] == 'flux_Bowen_ratio'
     met_df.loc[fluxBOW, 'hgt'] = 0
