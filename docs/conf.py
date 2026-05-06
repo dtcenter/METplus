@@ -86,9 +86,9 @@ else:
 
 verinfo = version
 
-# compute MET version as X+6.Y.0 of METplus version
+# compute minimum MET version as X.Y.0 of METplus version
 x, y, _ = __version__.split('.')
-met_version = f'{int(x)+6}.{y}.0'
+met_version = f'{x}.{y}.0'
 
 release_date = __release_date__
 

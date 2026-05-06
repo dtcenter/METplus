@@ -50,6 +50,7 @@ in the
 
          .. code-block:: ini
 
+            module load ncarenv/24.12
             export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
             module use $TOP_DIR/METplus/installations/modulefiles
             module load metplus/7.0.0-beta1
@@ -60,6 +61,7 @@ in the
 
            .. code-block:: ini
 
+              module load ncarenv/24.12
               export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
               module use $TOP_DIR/MET/installations/modulefiles
               module load met/7.0.0-beta1
@@ -70,6 +72,7 @@ in the
 
            .. code-block:: ini
 
+              module load ncarenv/24.12
               export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
               module use $TOP_DIR/METdataio/installations/modulefiles
               module load metdataio/7.0.0-beta1
@@ -80,6 +83,7 @@ in the
 
            .. code-block:: ini
 
+              module load ncarenv/24.12
               export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
               module use $TOP_DIR/METcalcpy/installations/modulefiles
               module load metcalcpy/7.0.0-beta1
@@ -90,6 +94,7 @@ in the
 
            .. code-block:: ini
 
+              module load ncarenv/24.12
               export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
               module use $TOP_DIR/METplotpy/installations/modulefiles
               module load metplotpy/7.0.0-beta1

@@ -5,6 +5,13 @@ from unittest import mock
 from PIL import Image
 import numpy as np
 
+# set env vars that should be read by the diff_util import
+EXPECTED_NEW_SKIP_KEYWORDS = ['fabienk', 'sebastian']
+os.environ['METPLUS_DIFF_SKIP_KEYWORDS'] = ', '.join(EXPECTED_NEW_SKIP_KEYWORDS)
+
+os.environ['METPLUS_DIFF_ROUNDING_OVERRIDES'] = 'khn:3, klek:4'
+EXPECTED_NEW_ROUNDING_OVERRIDES = {'khn': 3, 'klek': 4}
+
 from metplus.util import diff_util as du
 from metplus.util import mkdir_p
 
@@ -15,12 +22,20 @@ MPR_LINE_2 = 'V11.1.0 HRRR  ALL_1.25 120000    20220701_200000 20220701_200000 0
 REFORMATTER_HEADER = 'Idx	version	model	desc	fcst_lead	fcst_valid_beg	fcst_valid_end	fcst_init_beg	obs_lead	obs_valid_beg	obs_valid_end	fcst_var	fcst_units	fcst_lev	obs_var	obs_units	obs_lev	obtype	vx_mask	interp_mthd	interp_pnts	fcst_thresh	obs_thresh	cov_thresh	alpha	line_type	total	stat_name	stat_value	stat_ncl	stat_ncu	stat_bcl	stat_bcu'
 REFORMATTER_LINE_1 = '17	V12.1.0	SFS-GSL	NA	60000	1991-06-01	1991-06-01	1991-05-31 18:00:00	0	1991-06-01	1991-06-01	Soil_moisture	mm	0-1m	soilm1m	mm	19910601_000000,*,*	ERA5	FULL	NEAREST	1	NA	NA	-9999	0.05	CNT	21510	FBAR	504.27735	499.27867	509.27604	NA	NA'
 TC_STAT_LINE_1 = 'V12.2.0 GPMI BEST EVENT_EQUAL AL012015 AL 01 ANA 20150508_120000 240000 20150509_120000 NA NA PROBRIRW 31.6 -77.7 32.5 -77.8 NA 54.23894 5.08551 -54 135.63956 80.31028 0 24 24 44 40 50 10 10 TS TS 5 -30 0 -10 0 0 100 10 0 30 0'
+TC_STAT_SUMMARY_LINE_1 = 'SUMMARY:  CRTK_ERR   BCLP 20100629_060000     6     6  103.88155    24.49553  183.26756  75.64639     0         11.97959   45.08834  129.28296  154.28721   170.38209    185.07792 109.19888  185.07792   623.28927 120000 220000         0        0        0  NA'
 FILE_PATH_1 = '/some/path/of/fake/file/one'
 FILE_PATH_2 = '/some/path/of/fake/file/two'
 FILE_PATH_3 = '/some/path/of/fake/file/three'
 CVS_HEADER = 'Last Name, First Name, Progress'
 CSV_VAL_1 = 'Mackenzie, Stu, 0.9999'
 CSV_VAL_2 = 'Kenny-Smith, Ambrose, 0.8977'
+
+TEST_ATTRIBUTES = {
+    'units': 'K',
+    'long_name': 'Temperature',
+    'valid_range': np.array([1, 89999]),
+    'nan_value': np.nan,
+}
 
 
 DEFAULT_NC = [
@@ -61,7 +76,8 @@ def dummy_nc1(tmp_path_factory, make_dummy_nc):
         # Note: "nc5" is not included in NETCDF_EXTENSIONS, hence
         # we use it here to specifically trigger the call to
         # netCDF.Dataset in get_file_type.
-        file_name= "fake.nc5"
+        file_name= "fake.nc5",
+        attributes=TEST_ATTRIBUTES,
     )
 
 
@@ -203,6 +219,14 @@ def write_test_files(dirname, files):
         ({'PROBRIRW_filter_ee.tcst': [TC_STAT_LINE_1]},
          {'PROBRIRW_filter_ee.tcst': [TC_STAT_LINE_1.replace('V12.1.0', 'V12.2.0')]},
          None, True),
+        # TC-Stat summary job output - small difference flagged
+        ({'ALAL2010_stat.out': [TC_STAT_SUMMARY_LINE_1]},
+         {'ALAL2010_stat.out': [TC_STAT_SUMMARY_LINE_1.replace('103.88155', '103.88154')]},
+         6, False),
+        # TC-Stat summary job output - small difference accepted
+        ({'ALAL2010_stat.out': [TC_STAT_SUMMARY_LINE_1]},
+         {'ALAL2010_stat.out': [TC_STAT_SUMMARY_LINE_1.replace('103.88155', '103.88154')]},
+         4, True),
     ],
 )
 @pytest.mark.diff
@@ -272,7 +296,7 @@ def test_get_file_type_extensions():
 
 
 @pytest.mark.parametrize(
-    "nc_data,fields,expected,check_print",
+    "nc_data,attributes,fields,expected,check_print",
     [
         (
             # Compare exact same data
@@ -283,6 +307,7 @@ def test_get_file_type_extensions():
                 DEFAULT_NC[3],
                 DEFAULT_NC[4],
             ],
+            TEST_ATTRIBUTES,
             None,
             True,
             None,
@@ -296,6 +321,7 @@ def test_get_file_type_extensions():
                 DEFAULT_NC[3],
                 "Foo",
             ],
+            TEST_ATTRIBUTES,
             None,
             False,
             [
@@ -317,6 +343,7 @@ def test_get_file_type_extensions():
                 ],
                 DEFAULT_NC[4],
             ],
+            TEST_ATTRIBUTES,
             None,
             False,
             [
@@ -336,6 +363,7 @@ def test_get_file_type_extensions():
                 ],
                 DEFAULT_NC[4],
             ],
+            TEST_ATTRIBUTES,
             ["Longitude", "Latitude", "Levels"],
             True,
             None,
@@ -343,6 +371,7 @@ def test_get_file_type_extensions():
         # Contains nan difference
         (
             DEFAULT_NC_WITH_NAN,
+            TEST_ATTRIBUTES,
             None,
             False,
             ["Variable Temp contains NaN. Comparing each value"],
@@ -360,6 +389,7 @@ def test_get_file_type_extensions():
                 ],
                 DEFAULT_NC[4],
             ],
+            TEST_ATTRIBUTES,
             None,
             False,
             ["Field Temp has differing number of missing data values"],
@@ -373,18 +403,108 @@ def test_get_file_type_extensions():
                 DEFAULT_NC[3],
                 DEFAULT_NC[4],
             ],
+            TEST_ATTRIBUTES,
             "Bar",
             False,
             ["ERROR: Field Bar not found"],
+        ),
+        # Attribute value differs
+        (
+            [
+                DEFAULT_NC[0],
+                DEFAULT_NC[1],
+                DEFAULT_NC[2],
+                DEFAULT_NC[3],
+                DEFAULT_NC[4],
+            ],
+            {**TEST_ATTRIBUTES, 'units': 'C'},
+            None,
+            False,
+            ["ERROR: Found differences in attributes",
+             "Difference in units attribute"],
+        ),
+        # Attribute value array differs
+        (
+            [
+                DEFAULT_NC[0],
+                DEFAULT_NC[1],
+                DEFAULT_NC[2],
+                DEFAULT_NC[3],
+                DEFAULT_NC[4],
+            ],
+            {**TEST_ATTRIBUTES, 'valid_range': np.array([1, 123456])},
+            None,
+            False,
+            ["ERROR: Found differences in attributes",
+             "Difference in valid_range attribute"],
+        ),
+        # Attribute value differs nan vs not nan
+        (
+            [
+                DEFAULT_NC[0],
+                DEFAULT_NC[1],
+                DEFAULT_NC[2],
+                DEFAULT_NC[3],
+                DEFAULT_NC[4],
+            ],
+            {**TEST_ATTRIBUTES, 'nan_value': 7.0},
+            None,
+            False,
+            ["ERROR: Found differences in attributes",
+             "Difference in nan_value attribute"],
+        ),
+        # Missing attribute in second file
+        (
+            [
+                DEFAULT_NC[0],
+                DEFAULT_NC[1],
+                DEFAULT_NC[2],
+                DEFAULT_NC[3],
+                DEFAULT_NC[4],
+            ],
+            {},
+            None,
+            False,
+            [f"ERROR: Different number of attributes in truth ({len(TEST_ATTRIBUTES)+1}) than in output (1)",
+             "Attributes only in truth: units, long_name, valid_range"],
+        ),
+        # Extra attribute in second file
+        (
+            [
+                DEFAULT_NC[0],
+                DEFAULT_NC[1],
+                DEFAULT_NC[2],
+                DEFAULT_NC[3],
+                DEFAULT_NC[4],
+            ],
+            {**TEST_ATTRIBUTES, 'standard_name': 'air_temperature'},
+            None,
+            False,
+            [f"ERROR: Different number of attributes in truth ({len(TEST_ATTRIBUTES)+1}) than in output ({len(TEST_ATTRIBUTES)+2})",
+             "Attributes only in output: standard_name"],
+        ),
+        # Same multiple attributes
+        (
+            [
+                DEFAULT_NC[0],
+                DEFAULT_NC[1],
+                DEFAULT_NC[2],
+                DEFAULT_NC[3],
+                DEFAULT_NC[4],
+            ],
+            TEST_ATTRIBUTES,
+            None,
+            True,
+            None,
         ),
     ],
 )
 @pytest.mark.util
 def test_nc_is_equal(
-    capfd, tmp_path_factory, make_dummy_nc, dummy_nc1, nc_data, fields, expected, check_print
+    capfd, tmp_path_factory, make_dummy_nc, dummy_nc1, nc_data, attributes, fields, expected, check_print
 ):
     # make a dummy second file to compare to dummy_nc1
-    dummy_nc2 = make_dummy_nc(tmp_path_factory.mktemp("data2"), *nc_data)
+    dummy_nc2 = make_dummy_nc(tmp_path_factory.mktemp("data2"), *nc_data, attributes=attributes)
     actual_success, actual_details = du.nc_is_equal(dummy_nc1, dummy_nc2, fields=fields)
     assert actual_success == expected
 
@@ -393,20 +513,34 @@ def test_nc_is_equal(
             assert statement in actual_details
 
 @pytest.mark.parametrize(
-    "nc_data,fields,expected,check_print",
+    "nc_data,fields,expected,check_print,env_val",
     [
         (
             DEFAULT_NC_WITH_NAN,
             None,
             True,
             ["Variable Temp contains NaN. Comparing each value"],
+            'yes'
+        ),
+        (
+            DEFAULT_NC_WITH_NAN,
+            None,
+            True,
+            None,
+            None
         ),
     ]
 )
 @pytest.mark.util
 def test_nc_is_equal_both_nan(
-    capfd, tmp_path_factory, make_dummy_nc, nc_data, fields, expected, check_print
+    capfd, tmp_path_factory, make_dummy_nc, monkeypatch, nc_data, fields, expected, check_print, env_val
 ):
+    # Set or del the environment variable based on parametrization
+    if env_val:
+        monkeypatch.setenv("METPLUS_DIFF_VERBOSE", env_val)
+    else:
+        monkeypatch.delenv("METPLUS_DIFF_VERBOSE", raising=False)
+
     dummy_nc = make_dummy_nc(tmp_path_factory.mktemp("data2"), *nc_data)
     actual_success, actual_details = du.nc_is_equal(dummy_nc, dummy_nc, fields=fields)
     assert actual_success == expected
@@ -666,3 +800,10 @@ def test_compare_files_skip_extensions(capfd, tmp_path_factory, extension, check
 def test_is_equal_rounded(value_a, value_b, expected_result):
     du.rounding_precision = 3
     assert du._is_equal_rounded(value_a, value_b) == expected_result
+
+@pytest.mark.util
+def test_env_var_setting_overrides():
+    assert du.SKIP_KEYWORDS == EXPECTED_NEW_SKIP_KEYWORDS
+    for key, value in EXPECTED_NEW_ROUNDING_OVERRIDES.items():
+        assert key in du.ROUNDING_OVERRIDES
+        assert du.ROUNDING_OVERRIDES[key] == value

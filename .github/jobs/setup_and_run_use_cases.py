@@ -172,6 +172,10 @@ def _get_metplus_env_tag(requirements):
     else:
         env_tag = 'metplus_base'
 
+    # force older version of gfdl-tracker since it cannot be rebuilt
+    if env_tag == 'gfdl-tracker':
+        return f'{env_tag}.v6.1'
+
     return f'{env_tag}{VERSION_EXT}'
 
 

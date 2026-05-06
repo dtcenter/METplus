@@ -1,14 +1,14 @@
 #! /bin/sh
 
 ################################################################################
-# Environment: diff.v6.1
-# Last Updated: 2025-02-05 (mccabe@ucar.edu)
+# Environment: diff.v13.0
+# Last Updated: 2026-04-15 (mccabe@ucar.edu)
 # Notes: Adds packages needed to run differences tests to compare output to
 #   truth data.
 # Python Packages:
-#   pandas==2.2.3
-#   pillow==11.1.0
-#   pdf2image==1.17.0
+#   pandas
+#   pillow
+#   pdf2image
 #
 # Other Content:
 #   poppler-utils
@@ -25,10 +25,10 @@ BASE_ENV=netcdf4.${METPLUS_VERSION}
 
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 mamba install -y --name ${ENV_NAME} -c conda-forge \
-  pandas==2.2.3 \
-  pillow==11.1.0
+  pandas \
+  pillow
 
 apt-get update
 apt-get install -y poppler-utils
 
-mamba install -y --name ${ENV_NAME} -c conda-forge pdf2image==1.17.0
+mamba install -y --name ${ENV_NAME} -c conda-forge pdf2image

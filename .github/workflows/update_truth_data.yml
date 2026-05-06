@@ -23,7 +23,7 @@ jobs:
       run_some_tests: ${{ steps.set-matrix.outputs.run_some_tests }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set base branch
         id: set-base-branch
@@ -134,8 +134,8 @@ jobs:
     needs: identify_diff_groups
     if: ${{ needs.identify_diff_groups.outputs.run_some_tests == 'true' }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       - name: Free disk space
@@ -156,7 +156,7 @@ jobs:
       fail-fast: false
       matrix: ${{fromJson(needs.identify_diff_groups.outputs.matrix)}}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Free disk space
         uses: dtcenter/metplus-action-free-disk-space@v1
@@ -181,7 +181,7 @@ jobs:
           categories: ${{ matrix.categories }}
 
       - name: Upload output data artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
         with:
           name: ${{ steps.get-artifact-name.outputs.artifact_name }}
@@ -192,8 +192,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [use_case_tests]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v6
+      - name: Download artifacts
+        run: gh run download --repo "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID"
+        env:
+          GH_TOKEN: ${{ github.token }}
       - name: Free disk space before creating Docker volumes
         uses: dtcenter/metplus-action-free-disk-space@v1
       - name: Create and upload output data volumes

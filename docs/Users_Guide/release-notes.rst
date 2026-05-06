@@ -13,7 +13,7 @@ the METplus Components.
 
 Note that the target dates listed below are tentative and may change in the future.
 
-The **development timeline** for the METplus 7.0.0 Coordinated Release
+The **development timeline** for the METplus 13.0.0 Coordinated Release
 is broken down into the following development cycles for each component:
 
 1. **Beta1** releases for the METplus components occurred around 2026-02-05.
@@ -47,8 +47,8 @@ describes the bugfix, enhancement, or new feature.
 Important issues are listed **in bold** for emphasis.
 
 
-METplus Version 7.0.0 Beta 1 Release Notes (2026-02-05)
--------------------------------------------------------
+METplus Version 13.0.0 Beta 1 Release Notes (2026-02-05)
+--------------------------------------------------------
 
   .. dropdown:: Enhancements
 
@@ -60,7 +60,7 @@ METplus Version 7.0.0 Beta 1 Release Notes (2026-02-05)
        (`#3109 <https://github.com/dtcenter/METplus/issues/3109>`_)
      * Resolve 10 SonarQube Reliability issues in METplus's develop branch
        (`#3129 <https://github.com/dtcenter/METplus/issues/3129>`_)
-     * Resolve findings from SonarQube for 7.0.0-beta1
+     * Resolve findings from SonarQube for 13.0.0-beta1
        (`#3146 <https://github.com/dtcenter/METplus/issues/3146>`_)
      * RegridDataPlane - improve handling of verification grid input
        (`#3157 <https://github.com/dtcenter/METplus/issues/3157>`_)
@@ -111,7 +111,7 @@ changed the default behavior for masking for
 Point-Stat, Grid-Stat, Pair-Stat, and Ensemble-Stat.
 Previously, the mask.grid value was set to *FULL* by default,
 even if a masking region is defined using **mask.poly**, **mask.sid**, or **mask.llpnt**.
-In the METplus Coordinated 7.0 release, the new default behavior is to set
+In the METplus Coordinated 13.0 release, the new default behavior is to set
 mask.grid = "FULL" only if no other masking configuration settings are defined.
 This means that existing use cases that previously generated output for the *FULL*
 grid domain may no longer generate these results without modification to the METplus configuration.
@@ -126,8 +126,8 @@ Example::
    [config]
    GRID_STAT_MASK_POLY = {MET_INSTALL_DIR}/share/met/poly/CONUS.poly
 
-Prior to METplus 7.0.0, this configuration would generate output for the
-*CONUS* and *FULL* domains. Starting in METplus 7.0.0, *FULL* output will not
+Prior to METplus 13.0.0, this configuration would generate output for the
+*CONUS* and *FULL* domains. Starting in METplus 13.0.0, *FULL* output will not
 be generated unless the following is added::
 
    GRID_STAT_MASK_GRID = FULL

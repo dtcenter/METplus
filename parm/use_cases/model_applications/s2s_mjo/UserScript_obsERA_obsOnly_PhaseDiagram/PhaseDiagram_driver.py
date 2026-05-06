@@ -32,15 +32,25 @@ def run_phasediagram_steps(inlabel, alldata_timefile, oplot_dir):
     indexname = os.environ['PLOT_INDEX']
 
     pltfile = os.path.join(os.environ[inlabel+'_PHASE_DIAGRAM_INPUT_DIR'],
-        os.environ[inlabel+'_PHASE_DIAGRAM_INPUT_FILE'])
+                           os.environ[inlabel+'_PHASE_DIAGRAM_INPUT_FILE'])
 
     # read data from text file
     if indexname=='OMI':
-        data = pd.read_csv(pltfile, header=None, delim_whitespace=True, names=['yyyy','mm','dd','hh','pc1','pc2','amp'],
-            parse_dates={'dtime':['yyyy','mm','dd','hh']})
+        time_cols = ['yyyy', 'mm', 'dd', 'hh']
+        cols = time_cols + ['pc1', 'pc2', 'amp']
     elif indexname=='RMM':
-        data = pd.read_csv(pltfile,  header=None, delim_whitespace=True,
-            names=['yyyy','mm','dd', 'pc1','pc2','phase','amp','source'], parse_dates={'dtime':['yyyy','mm','dd']})
+        time_cols = ['yyyy', 'mm', 'dd']
+        cols = time_cols + ['pc1', 'pc2', 'phase', 'amp', 'source']
+    else:
+        print(f"ERROR: Unknown index name set in PLOT_INDEX: {indexname}. Expecting OMI or RMM")
+        return
+
+    data = pd.read_csv(pltfile, header=None, sep=r"\s+", names=cols)
+
+    # Manually combine and convert after loading
+    date_map = {'yyyy': 'year', 'mm': 'month', 'dd': 'day', 'hh': 'hour'}
+    data['dtime'] = pd.to_datetime(data[time_cols].rename(columns=date_map))
+    data = data.drop(columns=time_cols)
 
     # Get the file with the listing of times and format of this file
     alldata_timefmt = os.environ[inlabel+'_PHASE_DIAGRAM_INPUT_TIME_FMT']

@@ -4,6 +4,11 @@
 # Environment: spacetime.v6.0
 # Last Updated: 2023-09-12 (mccabe@ucar.edu)
 # Notes: Adds Python packages needed to generate coherence spectra (METplotpy)
+#     The pyngl package is in maintenance mode and does not support
+#     python >= 3.12, so this environment cannot be updated until pyngl is
+#     removed from the use case.
+#     This env will fail to build once py 3.10 becomes unsupported.
+#     See https://github.com/NCAR/pyngl
 # Python Packages:
 #   netCDF4==1.6.4
 #   xarray==2023.8.0
@@ -23,4 +28,10 @@ ENV_NAME=spacetime.${METPLUS_VERSION}
 
 mamba create -y --name ${ENV_NAME} -c conda-forge python=3.10.4
 
-mamba install -y --name ${ENV_NAME} -c conda-forge netCDF4==1.6.4 xarray==2023.8.0 scipy==1.11.2 matplotlib==3.7.2 pyngl==1.6.1 pyyaml==6.0.1
+mamba install -y --name ${ENV_NAME} -c conda-forge \
+  netCDF4==1.6.4 \
+  xarray==2023.8.0 \
+  scipy==1.11.2 \
+  matplotlib==3.7.2 \
+  pyngl==1.6.1 \
+  pyyaml==6.0.1

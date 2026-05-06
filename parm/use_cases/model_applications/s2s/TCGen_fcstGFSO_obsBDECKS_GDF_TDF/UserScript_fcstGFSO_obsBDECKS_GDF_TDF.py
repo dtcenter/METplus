@@ -19,6 +19,10 @@ import os
 import sys
 import datetime
 import multiprocessing
+try:
+    multiprocessing.set_start_method('fork', force=True)
+except RuntimeError:
+    pass  # Method might already be set
 
 # Import METplotpy
 from metplotpy.contributed.tc_s2s_panel import plot_tc_s2s_panel as tc_s2s_panel

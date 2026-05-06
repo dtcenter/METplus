@@ -6,7 +6,7 @@
 # Notes: Move logic to create METplus base env to script so it can be called
 #   on a local machine to create the environment
 # Python Packages:
-#   python-dateutil==
+#   python-dateutil
 #
 # Other Content: None
 ################################################################################
@@ -17,5 +17,7 @@ METPLUS_VERSION=$1
 # Conda environment to create
 ENV_NAME=metplus_base.${METPLUS_VERSION}
 
-mamba create -y --name ${ENV_NAME} -c conda-forge python=3.12.0
-mamba install -y --name ${ENV_NAME} -c conda-forge python-dateutil
+mamba create -y --name ${ENV_NAME} -c conda-forge \
+  python=3.14.4
+mamba install -y --name ${ENV_NAME} -c conda-forge \
+  python-dateutil

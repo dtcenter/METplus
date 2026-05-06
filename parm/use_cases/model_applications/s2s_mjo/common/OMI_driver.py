@@ -32,8 +32,8 @@ def read_omi_eofs(eof1_files, eof2_files):
     nlon = len(EOF1['lon'])
 
     for doy in range(len(eof1_files)):
-        tmp1 = pd.read_csv(eof1_files[doy], header=None, delim_whitespace=True, names=['eof1'])
-        tmp2 = pd.read_csv(eof2_files[doy], header=None, delim_whitespace=True, names=['eof2'])
+        tmp1 = pd.read_csv(eof1_files[doy], header=None, sep=r"\s+", names=['eof1'])
+        tmp2 = pd.read_csv(eof2_files[doy], header=None, sep=r"\s+", names=['eof2'])
         eof1 = xr.DataArray(np.reshape(tmp1.eof1.values,(nlat, nlon)),dims=['lat','lon'])
         eof2 = xr.DataArray(np.reshape(tmp2.eof2.values,(nlat, nlon)),dims=['lat','lon'])
         EOF1[doy,:,:] = eof1.values
