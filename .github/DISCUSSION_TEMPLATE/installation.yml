@@ -2,10 +2,12 @@ body:
 - type: input
   attributes:
     description: "List the METplus software version you are using. List all relevant METplus component versions as well."
+    label: "Software Version"
   validations:
     required: true
 - type: textarea
   attributes:
-    description: "Describe the file I/O issue you are encountering."
+    description: "Describe the installation issue you are encountering."
+    label: "Text"
   validations:
     required: true

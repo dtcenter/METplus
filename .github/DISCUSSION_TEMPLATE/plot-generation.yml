@@ -2,10 +2,12 @@ body:
 - type: input
   attributes:
     description: "List the METplus software version you are using. List all relevant METplus component versions as well."
+    label: "Software Version"
   validations:
     required: true
 - type: textarea
   attributes:
-    description: "Describe the statistical computation issue you are encountering."
+    description: "Describe the plot generation issue you are encountering."
+    label: "Text"
   validations:
     required: true
