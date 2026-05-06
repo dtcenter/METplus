@@ -141,24 +141,27 @@ model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.con
 # User Scripting
 # --------------
 #
-# There are two Python scripts used in this use case, called using the "UserScript" keyword
+# There are three Python scripts used in this use case, called using the "UserScript" keyword
 # in the METplus wrappers PROCESS_LIST configuration item.  These scripts provide an
 # interface to the functions in the METdataio, METcalcpy, and METplotpy Python modules
 # of METplus.  The functions used in these scripts demonstrate reformatting
 # aggregated StatAnalysis output to meet the format required by METcalcpy and METplotpy,
 # and then plotting that reformatted output using functions from METcalcpy and METplotpy.  
 # 
-# The first Python script is called reformat_linetype.py.  This script takes the aggregated
+# The first Python scripts is called reformat_linetype.py.  This script takes the aggregated 
 # output linetype from Stat Analysis and reformats it so that the data can be plotted.  
 # The script takes an input .yaml file of which there are 2, reformat_CNT.yaml and reformat_CTS.yaml.  
 # Environment variables in the yaml file are specified in the [user_env_vars] section of the 
 # PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.conf METplus configuration file.
 #
-# The second Python script is plot_line_stats.py.
-# This script is called twice to create line plots for CREDIT and GFS.
-# One run plots MAE, ME and RMSE with lead time, using the YAML file custom_2line_6h.yaml.
-# Another run plots CSI and Frequency Bias with lead time, using the YAML file custom_2line_6h.yaml.
-# Input variables to this script are also specified in the [user_env_vars] section of the
+# The second Python script is plot_line_stats.py.  This script creates line plots for CREDIT and GFS
+# of MAE, ME and RMSE with lead time, using the YAML file custom_2line_6h.yaml.  Input variables to this 
+# script are also specified in the [user_env_vars] section of the
+# PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.conf METplus configuration file.
+#
+# The third Python script is plot_line_stats_CTS.py.  This script creates line plots for CREDIT and GFS
+# of CSI and Frequency Bias with lead time, using the YAML file custom_2line_cat_6h.yaml.  Input variables 
+# to this script are also specified in the [user_env_vars] section of the 
 # PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.conf METplus configuration file.
 #
 # For more information about YAML configuration options for the line plots shown here, see the METplotpy
@@ -178,6 +181,10 @@ model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.con
 #   .. highlight:: python
 #   .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime/plot_line_stats.py
 #
+# .. dropdown:: plot_line_stats_CTS.py
+#
+#   .. highlight:: python
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime/plot_line_stats_CTS.py
 
 ##############################################################################
 # Running METplus
@@ -202,7 +209,7 @@ model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.con
 # Output for this use case will be found in 
 # {OUTPUT_BASE}/model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.  There will
 # be 6 directories, data_ingest, GDAS, plots, point_stat, reformatted, and StatAnalaysis.  The 
-# data_ingest directory contains the observation data that has been downloaded
+# data_ingest directory contains the observation dat that has been downloaded
 # and contains 2 subdirectories, GDAS and GFS.  The GDAS directory contains 1 subdirectory, 20250924, 
 # with 2 files:
 #
@@ -272,7 +279,8 @@ model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.con
 #
 # .. note::
 #
-#   * DataIngestUseCase
+#   * DataIngestToolUseCase
+#   * AIUseCase
 #   * PB2NCToolUseCase
 #   * PointStatToolUseCase
 #   * StatAnalysisToolUseCase
@@ -284,7 +292,6 @@ model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.con
 #   * METdbLoadUseCase
 #   * METcalcpyUseCase
 #   * METplotpyUseCase
-#   * AIWPUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

@@ -78,12 +78,13 @@ Use Cases by Application:
 .. only:: html
 
    | `Air Quality and Composition <../search.html?q=AirQualityAndCompAppUseCase&check_keywords=yes&area=default>`_
+   | `AI <../search.html?q=AIUseCase&check_keywords=yes&area=default>`_
    | `Climate <../search.html?q=ClimateAppUseCase&check_keywords=yes&area=default>`_
    | `Clouds <../search.html?q=CloudsAppUseCase&check_keywords=yes&area=default>`_
    | `Data Assimilation  <../search.html?q=DataAssimilationAppUseCase&check_keywords=yes&area=default>`_
    | `Ensemble  <../search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_
    | `Fire  <../search.html?q=FireAppUseCase&check_keywords=yes&area=default>`_
-   | `Land <../search.html?q=LandAppUseCase&check_keywords=yes&area=default>`_
+   | `Land Surface <../search.html?q=LandSurfaceAppUseCase&check_keywords=yes&area=default>`_
    | `Marine and Cryosphere <../search.html?q=MarineAndCryosphereAppUseCase&check_keywords=yes&area=default>`_
    | `Medium Range <../search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_
    | `PBL <../search.html?q=PBLAppUseCase&check_keywords=yes&area=default>`_
@@ -98,12 +99,13 @@ Use Cases by Application:
 .. only:: latex
 
    | **Air Quality and Composition**: *AirQualityAndCompAppUseCase*
+   | **AI**: *AIUseCase*
    | **Climate**: *ClimateAppUseCase*
    | **Clouds**: *CloudsAppUseCase*
    | **Data Assimilation**: *DataAssimilationAppUseCase*
    | **Ensemble**: *EnsembleAppUseCase*
    | **Fire**: *FireAppUseCase*
-   | **Land**: *LandAppUseCase*
+   | **LandSurface**: *LandSurfaceAppUseCase*
    | **Marine and Cryosphere**: *MarineAndCryosphereAppUseCase*
    | **Medium Range**: *MediumRangeAppUseCase*
    | **PBL**: *PBLAppUseCase*
@@ -142,13 +144,12 @@ Use Cases by Organization:
    | **NOAA Hazardous Weather Testbed (HWT)**: *NOAAHWTOrgUseCase*
    | **State University of New York-Stony Brook University (SUNY-SBU)**: *SBUOrgUseCase*
 
-Use Cases by Feature:
-=====================
+Use Cases by METplus Feature:
+=============================
 
 .. only:: html
 
    | `Introductory Example <../search.html?q=ExampleToolUseCase&check_keywords=yes&area=default>`_
-   | `AI Weather Prediction <../search.html?q=AIWPUseCase&check_keywords=yes&area=default>`_
    | `Climatology <../search.html?q=ClimatologyUseCase&check_keywords=yes&area=default>`_
    | `Custom String Looping <../search.html?q=CustomStringLoopingUseCase&check_keywords=yes&area=default>`_
    | `DataIngest <../search.html?q=DataIngestUseCase&check_keywords=yes&area=default>`_
@@ -183,7 +184,6 @@ Use Cases by Feature:
 .. only:: latex
 
    | **Introductory Example**: *ExampleToolUseCase*
-   | `AI Weather Prediction <../search.html?q=AIWPUseCase&check_keywords=yes&area=default>`_
    | **Climatology**: *ClimatologyUseCase*
    | **Custom String Looping**: *CustomStringLoopingUseCase*
    | **DataIngest**: *DataIngestUseCase*
@@ -228,6 +228,7 @@ Use cases by File Format:
    | `Python Embedding <../search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_
    | `prepBUFR <../search.html?q=prepBUFRFileUseCase&check_keywords=yes&area=default>`_
    | `WRF <../search.html?q=WRFFileUseCase&check_keywords=yes&area=default>`_
+   | `Zarr <../search.html?q=ZarrFileUseCase&check_keywords=yes&area=default>`_
 
 .. only:: latex
 
@@ -239,3 +240,4 @@ Use cases by File Format:
    | **Python Embedding**: *PythonEmbeddingFileUseCase*
    | **prepBUFR**: *prepBUFRFileUseCase*
    | **WRF**: *WRFFileUseCase*
+   | **Zarr**: *ZarrFileUseCase*

@@ -207,14 +207,14 @@ model_applications/medium_range/GridStat_fcstCREDIT_GFS_obsGFS_6hrRealtime.conf
 #
 # .. note::
 #
-#   * DataIngestUseCase
+#   * DataIngestToolUseCase
+#   * AIUseCase
 #   * GridStatToolUseCase
 #   * StatAnalysisToolUseCase
 #   * MediumRangeAppUseCase
 #   * NCAROrgUseCase
 #   * GRIB2FileUseCase
 #   * NetCDFFileUseCase
-#   * AIWPUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
