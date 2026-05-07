@@ -1,0 +1,13 @@
+body:
+- type: input
+  attributes:
+    description: "List the METplus software version being used, along with all relevant METplus component versions."
+    label: "Software Version"
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    description: "Describe the existing builds issue encountered."
+    label: "Text"
+  validations:
+    required: true
