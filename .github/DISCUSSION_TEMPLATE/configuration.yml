@@ -1,13 +1,13 @@
 body:
 - type: input
   attributes:
-    description: "List the METplus software version you are using. List all relevant METplus component versions as well."
+    description: "List the METplus software version being used, along with all relevant METplus component versions."
     label: "Software Version"
   validations:
     required: true
 - type: textarea
   attributes:
-    description: "Describe the configuration issue you are encountering."
+    description: "Describe the configuration issue encountered."
     label: "Text"
   validations:
     required: true
