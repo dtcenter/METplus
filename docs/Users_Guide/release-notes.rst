@@ -59,8 +59,6 @@ METplus Version 13.0.0 Beta 2 Release Notes (2026-05-08)
 
   .. dropdown:: Bugfix
 
-     * Fix error when skipping run times
-       (`#2890 <https://github.com/dtcenter/METplus/issues/2890>`_)
      * Python 3.14 fixes - s2s use case and dateutil comparison
        (`#3228 <https://github.com/dtcenter/METplus/issues/3228>`_)
      * Double slash in URL not preserved when set in another variable
