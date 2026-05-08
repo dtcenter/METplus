@@ -85,7 +85,7 @@ METplus Version 13.0.0 Beta 2 Release Notes (2026-05-08)
        (`#2708 <https://github.com/dtcenter/METplus/issues/2708>`_)
      * Add prompt in METplus Discussion templates for s/w version number
        (`#3183 <https://github.com/dtcenter/METplus/issues/3183>`_)
-     * Run METplus v7.0.0-beta1 to test use cases that cannot run through GitHub actions
+     * Run METplus v13.0.0-beta1 to test use cases that cannot run through GitHub actions
        (`#3192 <https://github.com/dtcenter/METplus/issues/3192>`_)
      * Add error summary that is missing from the testing workflow log output
        (`#3204 <https://github.com/dtcenter/METplus/issues/3204>`_)
