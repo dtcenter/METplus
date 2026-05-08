@@ -47,12 +47,58 @@ describes the bugfix, enhancement, or new feature.
 Important issues are listed **in bold** for emphasis.
 
 
+METplus Version 13.0.0 Beta 2 Release Notes (2026-05-08)
+--------------------------------------------------------
+
+  .. dropdown:: Enhancements
+
+     * **Update the GenEnsProd wrapper to support EAS enhancements**
+       (`#3269 <https://github.com/dtcenter/METplus/issues/3269>`_)
+     * Enhance the TC-RMW METplus wrapper to complete support for existing configuration options
+       (`#3274 <https://github.com/dtcenter/METplus/issues/3274>`_)
+
+  .. dropdown:: Bugfix
+
+     * Fix error when skipping run times
+       (`#2890 <https://github.com/dtcenter/METplus/issues/2890>`_)
+     * Python 3.14 fixes - s2s use case and dateutil comparison
+       (`#3228 <https://github.com/dtcenter/METplus/issues/3228>`_)
+     * Double slash in URL not preserved when set in another variable
+       (`#3249 <https://github.com/dtcenter/METplus/issues/3249>`_)
+
+  .. dropdown:: New Wrappers
+
+     None
+
+  .. dropdown:: New Use Cases
+
+     * **Add new use case to evaluate GFS soil moisture using SMOPS observations**
+       (`#3195 <https://github.com/dtcenter/METplus/issues/3195>`_)
+
+  .. dropdown:: Documentation
+
+     None
+
+  .. dropdown:: Build, repository, and test
+
+     * Improve NetCDF file diff to match MET diff functionality
+       (`#2708 <https://github.com/dtcenter/METplus/issues/2708>`_)
+     * Add prompt in METplus Discussion templates for s/w version number
+       (`#3183 <https://github.com/dtcenter/METplus/issues/3183>`_)
+     * Run METplus v7.0.0-beta1 to test use cases that cannot run through GitHub actions
+       (`#3192 <https://github.com/dtcenter/METplus/issues/3192>`_)
+     * Add error summary that is missing from the testing workflow log output
+       (`#3204 <https://github.com/dtcenter/METplus/issues/3204>`_)
+     * Fix issues with the METplus diff logic after increasing the MET version number from 12.2.0 to 13.0.0
+       (`#3220 <https://github.com/dtcenter/METplus/issues/3220>`_)
+
+
 METplus Version 13.0.0 Beta 1 Release Notes (2026-02-05)
 --------------------------------------------------------
 
   .. dropdown:: Enhancements
 
-     * Enhancement: Add support for missing PointStat and EnsembleStat config options
+     * Add support for missing PointStat and EnsembleStat config options
        (`#2306 <https://github.com/dtcenter/METplus/issues/2306>`_)
      * Add support for setting file_type in the fcst and obs dictionaries for all wrappers that support it
        (`#2570 <https://github.com/dtcenter/METplus/issues/2570>`_)
