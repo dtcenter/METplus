@@ -514,28 +514,28 @@ in the
 .. dropdown:: DockerHub
 
    | **MET**
-   | *Last Updated:* February 5, 2026
+   | *Last Updated:* May 8, 2026
 
       .. code-block:: ini
 
-          docker pull dtcenter/met:7.0.0-beta1
+          docker pull dtcenter/met:13.0.0-beta2
 
      `dtcenter/met DockerHub <https://hub.docker.com/r/dtcenter/met>`_
 
    | **METplus**
-   | *Last Updated:* February 5, 2026
+   | *Last Updated:* May 8, 2026
 
       .. code-block:: ini
 
-          docker pull dtcenter/metplus:7.0.0-beta1
+          docker pull dtcenter/metplus:13.0.0-beta2
 
      `dtcenter/metplus DockerHub <https://hub.docker.com/r/dtcenter/metplus>`_
 
    | **METplus Analysis**
-   | *Last Updated:* February 5, 2026
+   | *Last Updated:* May 8, 2026
 
       .. code-block:: ini
 
-          docker pull dtcenter/metplus-analysis:7.0.0-beta1
+          docker pull dtcenter/metplus-analysis:13.0.0-beta2
 
      `dtcenter/metplus-analysis DockerHub <https://hub.docker.com/r/dtcenter/metplus-analysis>`_
