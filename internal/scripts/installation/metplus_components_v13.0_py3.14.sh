@@ -30,7 +30,7 @@ ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge psutil
 ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge pytest==9.0.3
 ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge pytest-cov
 ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge numpy==2.4.3
+${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge opencv-python>=4.13.0
 ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge libstdcxx-ng
-${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge opencv-python==4.10.0
 ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge libssh
 
