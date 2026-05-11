@@ -40,7 +40,7 @@ METplus Components Python Packages
       | METplotpy, 
       | METdataio
 
-.. dropdown::  cartopy >=0.24.0
+.. dropdown::  cartopy >=0.25.0
 
   METplus Component: 
       | Select METplus Use Cases,
@@ -132,7 +132,8 @@ METplus Components Python Packages
 .. dropdown:: imutils >=0.5.4
 
   METplus Component:
-    METplotpy
+    | METcalcpy,
+    | METplotpy
 
   Source:
     https://pypi.org/project/imutils/
@@ -140,7 +141,7 @@ METplus Components Python Packages
   Description:
     A series of convenience functions to make basic image processing functions such as translation, rotation, resizing, skeletonization, displaying Matplotlib images, sorting contours, detecting edges, and much more easier
 
-.. dropdown:: imageio
+.. dropdown:: imageio >=2.37.0
 
   METplus Component: 
     | METcalcpy,
@@ -153,7 +154,7 @@ METplus Components Python Packages
     Provides an easy interface to read and write a wide range of image data, including animated
     images, volumetric data, and scientific formats
 
-.. dropdown:: lxml >=5.3.0
+.. dropdown:: lxml >=6.0.4
 
   METplus Component: 
     | METcalcpy,
@@ -166,7 +167,7 @@ METplus Components Python Packages
   Description:
     A Pythonic binding for the C libraries libxml2 and libxslt
 
-.. dropdown:: matplotlib >=3.10.0
+.. dropdown:: matplotlib >=3.10.8
 
   METplus Component: 
     | Select METplus Use Cases,
@@ -226,10 +227,12 @@ METplus Components Python Packages
     | `UserScript: Calculate the Difficulty Index <../generated/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.html>`_ 
     | `TCGen: Genesis Density Function (GDF) and Track Density Function (TDF) <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_
 
-.. dropdown:: metpy >=1.6.3
+.. dropdown:: metpy >=1.7.1
 
   METplus Component:
-    Select METplus Use Cases
+    | Select METplus Use Cases,
+    | METcalcpy,
+    | METplotpy
 
   Source:
     https://www.unidata.ucar.edu/software/metpy/
@@ -253,7 +256,7 @@ METplus Components Python Packages
   Description:
     Extension to cftime - \**REQUIRES Python 3.7**
 
-.. dropdown:: netCDF4 >=1.7.2
+.. dropdown:: netCDF4 >=1.7.4
 
   METplus Component:
     | Select METplus Use Cases,
@@ -270,7 +273,7 @@ METplus Components Python Packages
   Use Case:
     For using MET Python embedding functionality in use cases
 
-.. dropdown:: numpy >=2.2.2
+.. dropdown:: numpy >=2.4.3
 
   METplus Component:
     | Select METplus Use Cases,
@@ -288,7 +291,19 @@ METplus Components Python Packages
   Use Case:
     For using MET Python embedding functionality in use cases
 
-.. dropdown:: pandas >=2.2.3
+.. dropdown:: opencv-python >=4.13.0
+
+  METplus Component:
+    | METcalcpy,
+    | METplotpy
+
+  Source:
+    https://pypi.org/project/opencv-python/
+
+  Description:
+    Open-source library that includes several hundreds of computer vision algorithms
+
+.. dropdown:: pandas >=3.0.2
 
   METplus Component:
     | Select METplus Use Cases, 
@@ -306,10 +321,22 @@ METplus Components Python Packages
   Use Case:
     For using MET Python embedding functionality in use cases
 
-.. dropdown:: pint >=0.24.4
+.. dropdown:: pip >=26.0
 
   METplus Component:
-    METcalcpy
+    METdataio
+
+  Source:
+    https://pip.pypa.io/en/stable/
+
+  Description:
+    The package installer for Python
+
+.. dropdown:: pint >=0.25.3
+
+  METplus Component:
+    | METcalcpy,
+    | METplotpy
 
   Source:
     https://github.com/hgrecco/pint
@@ -354,7 +381,7 @@ METplus Components Python Packages
     | `WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.html>`__  
     | `WeatherRegime Calculation: GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.html>`__
 
-.. dropdown:: pymysql >=1.1.1
+.. dropdown:: pymysql >=1.1.2
 
   METplus Component:
     | METcalcpy, 
@@ -398,7 +425,7 @@ METplus Components Python Packages
     | `GridStat: Python Embedding for sea surface salinity using level 3, 1 day composite obs <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMOS_climWOA_sss.html>`_ 
     | `GridStat: Python Embedding for sea surface salinity using level 3, 8 day mean obs <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.html>`_
 
-.. dropdown:: pytest >=8.3.4
+.. dropdown:: pytest >=9.0.3
 
   METplus Component:
     | METcalcpy, 
@@ -411,7 +438,7 @@ METplus Components Python Packages
   Description:
     A mature full-featured Python testing tool that helps to write better programs
 
-.. dropdown:: pyyaml >=6.0.2
+.. dropdown:: pyyaml >=6.0.3
 
   METplus Component:
     | METcalcpy, 
@@ -440,24 +467,10 @@ METplus Components Python Packages
     | `Grid-Stat, Stat-Analysis, Data-Ingest: CREDIT and GFS statistics and Data Download <../generated/model_applications/medium_range/GridStat_fcstCREDIT_GFS_obsGFS_6hrRealtime.html>`_
     | `Point-Stat, Stat-Analysis, UserScript, DataIngest: CREDIT and GFS point statistics, Data Download, Plots <../generated/model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.html>`_
 
-.. dropdown:: scikit-image >=0.25.1
+.. dropdown:: scikit-learn >=1.8.0
 
   METplus Component:
-    | METcalcpy, 
-    | METplotpy
-
-  Source:
-    https://scikit-image.org
-
-  Description:
-    A collection of algorithms for image processing
-
-.. dropdown:: scikit-learn >=1.6.1
-
-  METplus Component:
-    | Select METplus Use Cases,  
-    | METcalcpy, 
-    | METplotpy
+    | Select METplus Use Cases
 
   Source:
     https://github.com/scikit-learn/scikit-learn/releases
@@ -466,12 +479,20 @@ METplus Components Python Packages
     Open Source library for Machine Learning in Python
 
   Use Case:
-    | `GridStat: Python Embedding to read and process SST <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.html>`_ 
-    | `GridStat: Python Embedding to read and process ice cover <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.html>`_ 
-    | `GridStat: Python Embedding for sea surface salinity using level 3, 1 day composite obs <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMOS_climWOA_sss.html>`_ 
-    | `GridStat: Python Embedding for sea surface salinity using level 3, 8 day mean obs <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.html>`_
+    | `GridStat: Python Embedding to read and process SST <../generated/model_applications/marine_and_cryosphere/G
+ridStat_fcstRTOFS_obsGHRSST_climWOA_sst.html>`_
+    | `GridStat: Python Embedding to read and process ice cover <../generated/model_applications/marine_and_cryosp
+here/GridStat_fcstRTOFS_obsOSTIA_iceCover.html>`_
+    | `GridStat: Python Embedding for sea surface salinity using level 3, 1 day composite obs <../generated/model_
+applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMOS_climWOA_sss.html>`_
+    | `GridStat: Python Embedding for sea surface salinity using level 3, 8 day mean obs <../generated/model_appli
+cations/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.html>`_
+    | `WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_a
+pplications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.html>`__
+    | `WeatherRegime Calculation: GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code <../gener
+ated/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.html>`__
 
-.. dropdown:: scipy >=1.15.1
+.. dropdown:: scipy >=1.17.1
 
   METplus Component:
     | Select METplus Use Cases, 
@@ -494,28 +515,13 @@ METplus Components Python Packages
     | `UserScript: Make OMI plot from calculated MJO indices with ERA obs and GFS fcst <../generated/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.html>`__ 
     | `UserScript: Make RMM plots from calculated MJO indices <../generated/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.html>`__
 
-.. dropdown:: sklearn
-
-  METplus Component:
-    Select METplus Use Cases
-
-  Source:
-    https://www.kite.com/python/docs/sklearn
-
-  Description:
-    Simple and efficient tools for predictive data analysis
-
-  Description:
-    | `WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.html>`__ 
-    | `WeatherRegime Calculation: GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.html>`__
-
-
-.. dropdown:: xarray >=2025.1.2
+.. dropdown:: xarray >=2026.4.0
 
   METplus Component:
     | Select METplus Use Cases, 
     | METcalcpy, 
-    | METplotpy
+    | METplotpy,
+    | METdataio
 
   Source:
     https://xarray.pydata.org/en/v0.17.0/
