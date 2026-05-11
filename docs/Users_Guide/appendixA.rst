@@ -478,19 +478,13 @@ METplus Components Python Packages
   Description:
     Open Source library for Machine Learning in Python
 
-  Use Case:
-    | `GridStat: Python Embedding to read and process SST <../generated/model_applications/marine_and_cryosphere/G
-ridStat_fcstRTOFS_obsGHRSST_climWOA_sst.html>`_
-    | `GridStat: Python Embedding to read and process ice cover <../generated/model_applications/marine_and_cryosp
-here/GridStat_fcstRTOFS_obsOSTIA_iceCover.html>`_
-    | `GridStat: Python Embedding for sea surface salinity using level 3, 1 day composite obs <../generated/model_
-applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMOS_climWOA_sss.html>`_
-    | `GridStat: Python Embedding for sea surface salinity using level 3, 8 day mean obs <../generated/model_appli
-cations/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.html>`_
-    | `WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_a
-pplications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.html>`__
-    | `WeatherRegime Calculation: GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code <../gener
-ated/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.html>`__
+  Use Cases:
+    | `GridStat: Python Embedding to read and process SST <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.html>`_
+    | `GridStat: Python Embedding to read and process ice cover <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.html>`_
+    | `GridStat: Python Embedding for sea surface salinity using level 3, 1 day composite obs <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMOS_climWOA_sss.html>`_
+    | `GridStat: Python Embedding for sea surface salinity using level 3, 8 day mean obs <../generated/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.html>`_
+    | `WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.html>`_
+    | `WeatherRegime Calculation: GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.html>`_
 
 .. dropdown:: scipy >=1.17.1
 
