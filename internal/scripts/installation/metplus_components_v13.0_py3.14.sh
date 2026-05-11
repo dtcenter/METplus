@@ -22,7 +22,7 @@ ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge eofs==2
 ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge cmocean==4.0.3
 ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge xesmf
 ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge lxml==6.0.4
-${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge pymysql==1.1.1
+${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge pymysql==1.1.2
 ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge pandas==3.0.2
 ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge h5py
 ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge cartopy==0.25.0
