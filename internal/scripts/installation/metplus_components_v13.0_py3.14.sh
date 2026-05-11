@@ -25,7 +25,7 @@ ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge lxml==6
 ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge pymysql==1.1.1
 ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge pandas==3.0.2
 ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge h5py
-${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge cartopy==0.24.0
+${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge cartopy==0.25.0
 ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge psutil
 ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge pytest==9.0.3
 ${MINICONDA_PATH}/bin/conda install -y --name ${ENV_NAME} -c conda-forge pytest-cov
