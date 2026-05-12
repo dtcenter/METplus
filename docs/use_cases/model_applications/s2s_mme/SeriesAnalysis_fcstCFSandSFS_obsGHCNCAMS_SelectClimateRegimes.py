@@ -82,6 +82,7 @@ model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCN_SelectClimateReg
 # **VALID_LIST :** 1995110100, 1998110100, 1999110100, 2000110100, 2005110100, 2007110100, 2008110100, 2010110100, 2011110100, 2016110100, 2017110100, 2020110100
 #
 # Neutral instance:
+#
 # **VALID_LIST :** 199610100, 2001110100, 2003110100, 2012110100, 2013110100, 2019110100
 #
 # With an increment of 1 year, all November 1st’s from 1994 to 2020 are processed 
