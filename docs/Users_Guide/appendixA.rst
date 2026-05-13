@@ -291,18 +291,6 @@ METplus Components Python Packages
   Use Case:
     For using MET Python embedding functionality in use cases
 
-.. dropdown:: opencv-python >=4.13.0
-
-  METplus Component:
-    | METcalcpy,
-    | METplotpy
-
-  Source:
-    https://pypi.org/project/opencv-python/
-
-  Description:
-    Open-source library that includes several hundreds of computer vision algorithms
-
 .. dropdown:: pandas >=3.0.2
 
   METplus Component:
