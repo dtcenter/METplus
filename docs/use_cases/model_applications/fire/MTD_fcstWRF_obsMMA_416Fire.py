@@ -24,7 +24,7 @@ model_applications/fire/MTD_fcstWRF_obsMMA_416Fire.conf
 # Version Added
 # -------------
 #
-# METplus version 7.0
+# METplus version 13.0
 
 ##############################################################################
 # Datasets
