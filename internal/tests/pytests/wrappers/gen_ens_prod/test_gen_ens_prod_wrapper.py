@@ -214,6 +214,12 @@ def test_gen_ens_prod_missing_inputs(metplus_config, get_test_data_dir, run_all_
         # 27
         ({'GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDP': 'FALSE', },
          {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {climo_cdp = FALSE;}'}),
+        ({'GEN_ENS_PROD_ENSEMBLE_FLAG_EAS': 'true', },
+         {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {eas = TRUE;}'}),
+
+        ({'GEN_ENS_PROD_ENSEMBLE_FLAG_EAS_WIDTH': 'True', },
+         {'METPLUS_ENSEMBLE_FLAG_DICT': 'ensemble_flag = {eas_width = TRUE;}'}),
+
         # 28
         ({
              'GEN_ENS_PROD_ENSEMBLE_FLAG_LATLON': 'FALSE',
@@ -230,6 +236,8 @@ def test_gen_ens_prod_missing_inputs(metplus_config, get_test_data_dir, run_all_
              'GEN_ENS_PROD_ENSEMBLE_FLAG_NMEP': 'FALSE',
              'GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO': 'FALSE',
              'GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDP': 'FALSE',
+             'GEN_ENS_PROD_ENSEMBLE_FLAG_EAS': 'true',
+             'GEN_ENS_PROD_ENSEMBLE_FLAG_EAS_WIDTH': 'True',
          },
          {
              'METPLUS_ENSEMBLE_FLAG_DICT': ('ensemble_flag = {latlon = FALSE;'
@@ -239,7 +247,8 @@ def test_gen_ens_prod_missing_inputs(metplus_config, get_test_data_dir, run_all_
                                             'range = FALSE;vld_count = FALSE;'
                                             'frequency = FALSE;nep = FALSE;'
                                             'nmep = FALSE;climo = FALSE;'
-                                            'climo_cdp = FALSE;}')}),
+                                            'climo_cdp = FALSE;'
+                                            'eas = TRUE;eas_width = TRUE;}')}),
         # 29
         ({'GEN_ENS_PROD_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt', },
          {'METPLUS_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
@@ -519,6 +528,32 @@ def test_gen_ens_prod_missing_inputs(metplus_config, get_test_data_dir, run_all_
         ({'GEN_ENS_PROD_CLIMO_STDEV_VAR1_NAME': 'UGRD', 'GEN_ENS_PROD_CLIMO_STDEV_VAR1_LEVELS': 'P850',
           'GEN_ENS_PROD_CLIMO_STDEV_VAR2_NAME': 'VGRD', 'GEN_ENS_PROD_CLIMO_STDEV_VAR2_LEVELS': 'P500', },
          {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {field = [{ name="UGRD"; level="P850"; }, { name="VGRD"; level="P500"; }];}'}),
+        ({'GEN_ENS_PROD_EAS_PROB_WIDTH': '3,5, 7,  9,11,13,15', },
+         {'METPLUS_EAS_PROB_DICT': 'eas_prob = {width = [3, 5, 7, 9, 11, 13, 15];}'}),
+
+        ({'GEN_ENS_PROD_EAS_PROB_SHAPE': 'circle', },
+         {'METPLUS_EAS_PROB_DICT': 'eas_prob = {shape = CIRCLE;}'}),
+
+        ({'GEN_ENS_PROD_EAS_PROB_VLD_THRESH': '0.0', },
+         {'METPLUS_EAS_PROB_DICT': 'eas_prob = {vld_thresh = 0.0;}'}),
+
+        ({'GEN_ENS_PROD_EAS_PROB_ALPHA': '0.5', },
+         {'METPLUS_EAS_PROB_DICT': 'eas_prob = {alpha = 0.5;}'}),
+
+        ({'GEN_ENS_PROD_EAS_PROB_GAUSSIAN_DX': '81.27', },
+         {'METPLUS_EAS_PROB_DICT': 'eas_prob = {gaussian_dx = 81.27;}'}),
+
+        ({'GEN_ENS_PROD_EAS_PROB_GAUSSIAN_RADIUS': '120', },
+         {'METPLUS_EAS_PROB_DICT': 'eas_prob = {gaussian_radius = 120;}'}),
+
+        ({'GEN_ENS_PROD_EAS_PROB_WIDTH': '3,5, 7,  9,11,13,15',
+          'GEN_ENS_PROD_EAS_PROB_SHAPE': 'circle',
+          'GEN_ENS_PROD_EAS_PROB_VLD_THRESH': '0.0',
+          'GEN_ENS_PROD_EAS_PROB_ALPHA': '0.5',
+          'GEN_ENS_PROD_EAS_PROB_GAUSSIAN_DX': '81.27',
+          'GEN_ENS_PROD_EAS_PROB_GAUSSIAN_RADIUS': '120',},
+         {'METPLUS_EAS_PROB_DICT': ('eas_prob = {width = [3, 5, 7, 9, 11, 13, 15];shape = CIRCLE;'
+                                    'vld_thresh = 0.0;alpha = 0.5;gaussian_dx = 81.27;gaussian_radius = 120;}')}),
     ]
 )
 @pytest.mark.wrapper

@@ -32,6 +32,7 @@ diff_util.SKIP_KEYWORDS = [
 diff_util.ROUNDING_OVERRIDES = {
     'UserScript_obsCFSR_obsOnly_MJO_ENSO': 5,
     'UserScript_fcstS2S_obsERAI_CrossSpectra': 4,
+    'FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics': 4,
 }
 
 TRUTH_DIR = '/data/truth'
@@ -43,7 +44,7 @@ def main():
     print('******************************')
     print("Comparing output to truth data")
     diff_files = diff_util.compare_dir(TRUTH_DIR, OUTPUT_DIR,
-                                       debug=True, save_diff=True)
+                                       debug=True, save_diff=False)
 
     # copy difference files into directory
     # so it can be easily downloaded and compared

@@ -1543,6 +1543,12 @@ METplus Configuration
 | :term:`GEN_ENS_PROD_NMEP_SMOOTH_GAUSSIAN_RADIUS`
 | :term:`GEN_ENS_PROD_NMEP_SMOOTH_TYPE_METHOD`
 | :term:`GEN_ENS_PROD_NMEP_SMOOTH_TYPE_WIDTH`
+| :term:`GEN_ENS_PROD_EAS_PROB_WIDTH`
+| :term:`GEN_ENS_PROD_EAS_PROB_SHAPE`
+| :term:`GEN_ENS_PROD_EAS_PROB_VLD_THRESH`
+| :term:`GEN_ENS_PROD_EAS_PROB_ALPHA`
+| :term:`GEN_ENS_PROD_EAS_PROB_GAUSSIAN_DX`
+| :term:`GEN_ENS_PROD_EAS_PROB_GAUSSIAN_RADIUS`
 | :term:`GEN_ENS_PROD_CLIMO_MEAN_FILE_NAME`
 | :term:`GEN_ENS_PROD_CLIMO_MEAN_FILE_TYPE`
 | :term:`GEN_ENS_PROD_CLIMO_MEAN_VAR<n>_NAME`
@@ -1587,6 +1593,8 @@ METplus Configuration
 | :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_NMEP`
 | :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO`
 | :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDP`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_EAS`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_EAS_WIDTH`
 | :term:`GEN_ENS_PROD_ENS_MEMBER_IDS`
 | :term:`GEN_ENS_PROD_CONTROL_ID`
 | :term:`GEN_ENS_PROD_MET_CONFIG_OVERRIDES`
@@ -1854,6 +1862,28 @@ ${METPLUS_NMEP_SMOOTH_DICT}
    * - :term:`GEN_ENS_PROD_NMEP_SMOOTH_TYPE_WIDTH`
      - nmep_smooth.type.width
 
+${METPLUS_EAS_PROB_DICT}
+""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_EAS_PROB_WIDTH`
+     - eas_prob.width
+   * - :term:`GEN_ENS_PROD_EAS_PROB_SHAPE`
+     - eas_prob.shape
+   * - :term:`GEN_ENS_PROD_EAS_PROB_VLD_THRESH`
+     - eas_prob.vld_thresh
+   * - :term:`GEN_ENS_PROD_EAS_PROB_ALPHA`
+     - eas_prob.alpha
+   * - :term:`GEN_ENS_PROD_EAS_PROB_GAUSSIAN_DX`
+     - eas_prob.gaussian_dx
+   * - :term:`GEN_ENS_PROD_EAS_PROB_GAUSSIAN_RADIUS`
+     - eas_prob.gaussian_radius
+
 ${METPLUS_CLIMO_MEAN_DICT}
 """"""""""""""""""""""""""
 
@@ -1951,6 +1981,10 @@ ${METPLUS_ENSEMBLE_FLAG_DICT}
      - ensemble_flag.climo
    * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDP`
      - ensemble_flag.climo_cdp
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_EAS`
+     - ensemble_flag.eas
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_EAS_WIDTH`
+     - ensemble_flag.eas_width
 
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""
@@ -13007,6 +13041,13 @@ METplus Configuration
 | :term:`TC_RMW_VALID_INCLUDE_LIST`
 | :term:`TC_RMW_VALID_EXCLUDE_LIST`
 | :term:`TC_RMW_VALID_HOUR_LIST`
+| :term:`TC_RMW_COMPUTE_TANGENTIAL_AND_RADIAL_WINDS`
+| :term:`TC_RMW_U_WIND_FIELD_NAME`
+| :term:`TC_RMW_V_WIND_FIELD_NAME`
+| :term:`TC_RMW_TANGENTIAL_VELOCITY_FIELD_NAME`
+| :term:`TC_RMW_TANGENTIAL_VELOCITY_LONG_FIELD_NAME`
+| :term:`TC_RMW_RADIAL_VELOCITY_FIELD_NAME`
+| :term:`TC_RMW_RADIAL_VELOCITY_LONG_FIELD_NAME`
 | :term:`TC_RMW_SKIP_IF_OUTPUT_EXISTS`
 | :term:`TC_RMW_DESC`
 | :term:`MODEL`
@@ -13276,6 +13317,90 @@ ${METPLUS_RMW_SCALE}
      - MET Config File
    * - :term:`TC_RMW_SCALE`
      - rmw_scale
+
+${METPLUS_COMPUTE_TANGENTIAL_AND_RADIAL_WINDS}
+""""""""""""""""""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_RMW_COMPUTE_TANGENTIAL_AND_RADIAL_WINDS`
+     - compute_tangential_and_radial_winds
+
+${METPLUS_U_WIND_FIELD_NAME}
+""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_RMW_U_WIND_FIELD_NAME`
+     - u_wind_field_name
+
+${METPLUS_V_WIND_FIELD_NAME}
+""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_RMW_V_WIND_FIELD_NAME`
+     - v_wind_field_name
+
+${METPLUS_TANGENTIAL_VELOCITY_FIELD_NAME}
+"""""""""""""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_RMW_TANGENTIAL_VELOCITY_FIELD_NAME`
+     - tangential_velocity_field_name
+
+${METPLUS_TANGENTIAL_VELOCITY_LONG_FIELD_NAME}
+""""""""""""""""""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_RMW_TANGENTIAL_VELOCITY_LONG_FIELD_NAME`
+     - tangential_velocity_long_field_name
+
+${METPLUS_RADIAL_VELOCITY_FIELD_NAME}
+"""""""""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_RMW_RADIAL_VELOCITY_FIELD_NAME`
+     - radial_velocity_field_name
+
+${METPLUS_RADIAL_VELOCITY_LONG_FIELD_NAME}
+""""""""""""""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_RMW_RADIAL_VELOCITY_LONG_FIELD_NAME`
+     - radial_velocity_long_field_name
 
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""

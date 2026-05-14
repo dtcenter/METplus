@@ -13,11 +13,11 @@ the METplus Components.
 
 Note that the target dates listed below are tentative and may change in the future.
 
-The **development timeline** for the METplus 7.0.0 Coordinated Release
+The **development timeline** for the METplus 13.0.0 Coordinated Release
 is broken down into the following development cycles for each component:
 
 1. **Beta1** releases for the METplus components occurred around 2026-02-05.
-2. **Beta2** releases for the METplus components are tentatively scheduled for 2026-04-29.
+2. **Beta2** releases for the METplus components occurred around 2026-05-08.
 3. **Any additional Beta** releases for the METplus components are TBD.
 4. **Release Candidate 1** for the METplus components are TBD.
 5. **Official Release** releases are TBD.
@@ -47,12 +47,56 @@ describes the bugfix, enhancement, or new feature.
 Important issues are listed **in bold** for emphasis.
 
 
-METplus Version 7.0.0 Beta 1 Release Notes (2026-02-05)
--------------------------------------------------------
+METplus Version 13.0.0 Beta 2 Release Notes (2026-05-08)
+--------------------------------------------------------
 
   .. dropdown:: Enhancements
 
-     * Enhancement: Add support for missing PointStat and EnsembleStat config options
+     * **Update the GenEnsProd wrapper to support EAS enhancements**
+       (`#3269 <https://github.com/dtcenter/METplus/issues/3269>`_)
+     * Enhance the TC-RMW METplus wrapper to complete support for existing configuration options
+       (`#3274 <https://github.com/dtcenter/METplus/issues/3274>`_)
+
+  .. dropdown:: Bugfix
+
+     * Python 3.14 fixes - s2s use case and dateutil comparison
+       (`#3228 <https://github.com/dtcenter/METplus/issues/3228>`_)
+     * Double slash in URL not preserved when set in another variable
+       (`#3249 <https://github.com/dtcenter/METplus/issues/3249>`_)
+
+  .. dropdown:: New Wrappers
+
+     None
+
+  .. dropdown:: New Use Cases
+
+     * **Add new use case to evaluate GFS soil moisture using SMOPS observations**
+       (`#3195 <https://github.com/dtcenter/METplus/issues/3195>`_)
+
+  .. dropdown:: Documentation
+
+     None
+
+  .. dropdown:: Build, repository, and test
+
+     * Improve NetCDF file diff to match MET diff functionality
+       (`#2708 <https://github.com/dtcenter/METplus/issues/2708>`_)
+     * Add prompt in METplus Discussion templates for s/w version number
+       (`#3183 <https://github.com/dtcenter/METplus/issues/3183>`_)
+     * Run METplus v13.0.0-beta1 to test use cases that cannot run through GitHub actions
+       (`#3192 <https://github.com/dtcenter/METplus/issues/3192>`_)
+     * Add error summary that is missing from the testing workflow log output
+       (`#3204 <https://github.com/dtcenter/METplus/issues/3204>`_)
+     * Fix issues with the METplus diff logic after increasing the MET version number from 12.2.0 to 13.0.0
+       (`#3220 <https://github.com/dtcenter/METplus/issues/3220>`_)
+
+
+METplus Version 13.0.0 Beta 1 Release Notes (2026-02-05)
+--------------------------------------------------------
+
+  .. dropdown:: Enhancements
+
+     * Add support for missing PointStat and EnsembleStat config options
        (`#2306 <https://github.com/dtcenter/METplus/issues/2306>`_)
      * Add support for setting file_type in the fcst and obs dictionaries for all wrappers that support it
        (`#2570 <https://github.com/dtcenter/METplus/issues/2570>`_)
@@ -60,7 +104,7 @@ METplus Version 7.0.0 Beta 1 Release Notes (2026-02-05)
        (`#3109 <https://github.com/dtcenter/METplus/issues/3109>`_)
      * Resolve 10 SonarQube Reliability issues in METplus's develop branch
        (`#3129 <https://github.com/dtcenter/METplus/issues/3129>`_)
-     * Resolve findings from SonarQube for 7.0.0-beta1
+     * Resolve findings from SonarQube for 13.0.0-beta1
        (`#3146 <https://github.com/dtcenter/METplus/issues/3146>`_)
      * RegridDataPlane - improve handling of verification grid input
        (`#3157 <https://github.com/dtcenter/METplus/issues/3157>`_)
@@ -111,7 +155,7 @@ changed the default behavior for masking for
 Point-Stat, Grid-Stat, Pair-Stat, and Ensemble-Stat.
 Previously, the mask.grid value was set to *FULL* by default,
 even if a masking region is defined using **mask.poly**, **mask.sid**, or **mask.llpnt**.
-In the METplus Coordinated 7.0 release, the new default behavior is to set
+In the METplus Coordinated 13.0 release, the new default behavior is to set
 mask.grid = "FULL" only if no other masking configuration settings are defined.
 This means that existing use cases that previously generated output for the *FULL*
 grid domain may no longer generate these results without modification to the METplus configuration.
@@ -126,8 +170,8 @@ Example::
    [config]
    GRID_STAT_MASK_POLY = {MET_INSTALL_DIR}/share/met/poly/CONUS.poly
 
-Prior to METplus 7.0.0, this configuration would generate output for the
-*CONUS* and *FULL* domains. Starting in METplus 7.0.0, *FULL* output will not
+Prior to METplus 13.0.0, this configuration would generate output for the
+*CONUS* and *FULL* domains. Starting in METplus 13.0.0, *FULL* output will not
 be generated unless the following is added::
 
    GRID_STAT_MASK_GRID = FULL

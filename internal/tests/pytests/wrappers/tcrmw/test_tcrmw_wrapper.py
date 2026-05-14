@@ -110,6 +110,7 @@ def set_minimum_config_settings(config):
                                   'censor_val = [12000, 5000];}'
                                   )
           }),
+
         ({'TC_RMW_N_RANGE': '10', },
          {'METPLUS_N_RANGE': 'n_range = 10;'}),
 
@@ -121,6 +122,27 @@ def set_minimum_config_settings(config):
 
         ({'TC_RMW_RMW_SCALE': '15', },
          {'METPLUS_RMW_SCALE': 'rmw_scale = 15.0;'}),
+
+        ({'TC_RMW_COMPUTE_TANGENTIAL_AND_RADIAL_WINDS': 'true', },
+         {'METPLUS_COMPUTE_TANGENTIAL_AND_RADIAL_WINDS': 'compute_tangential_and_radial_winds = TRUE;'}),
+
+        ({'TC_RMW_U_WIND_FIELD_NAME': 'UGRD', },
+         {'METPLUS_U_WIND_FIELD_NAME': 'u_wind_field_name = "UGRD";'}),
+
+        ({'TC_RMW_V_WIND_FIELD_NAME': 'VGRD', },
+         {'METPLUS_V_WIND_FIELD_NAME': 'v_wind_field_name = "VGRD";'}),
+
+        ({'TC_RMW_TANGENTIAL_VELOCITY_FIELD_NAME': 'VT', },
+         {'METPLUS_TANGENTIAL_VELOCITY_FIELD_NAME': 'tangential_velocity_field_name = "VT";'}),
+
+        ({'TC_RMW_TANGENTIAL_VELOCITY_LONG_FIELD_NAME': 'Tangential Velocity', },
+         {'METPLUS_TANGENTIAL_VELOCITY_LONG_FIELD_NAME': 'tangential_velocity_long_field_name = "Tangential Velocity";'}),
+
+        ({'TC_RMW_RADIAL_VELOCITY_FIELD_NAME': 'VR', },
+         {'METPLUS_RADIAL_VELOCITY_FIELD_NAME': 'radial_velocity_field_name = "VR";'}),
+
+        ({'TC_RMW_RADIAL_VELOCITY_LONG_FIELD_NAME': 'Radial Velocity', },
+         {'METPLUS_RADIAL_VELOCITY_LONG_FIELD_NAME': 'radial_velocity_long_field_name = "Radial Velocity";'}),
 
     ]
 )
