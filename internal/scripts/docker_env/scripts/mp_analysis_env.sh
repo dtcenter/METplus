@@ -28,7 +28,6 @@ mamba install -y --name ${ENV_NAME} -c conda-forge \
   pyyaml~=6.0.3 \
   imageio~=2.37.0 \
   imutils~=0.5.4 \
-  scikit-image~=0.26.0 \
   pint~=0.25.3 \
   metpy~=1.7.1 \
   cartopy~=0.25.0 \
