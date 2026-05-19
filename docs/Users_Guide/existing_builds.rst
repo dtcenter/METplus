@@ -145,15 +145,21 @@ in the
 
         | **NOAA machines Dogwood and Cactus (WCOSS2 - Cray)**
         | *Last updated:*
-	    | *Compiler and version:*
+	| *Compiler and version:*
 
-          * **MET v13.0.0-beta2 / METplus v13.0.0-beta2 / METplus Analysis Tools v13.0.0-beta2**
+	.. note::
 
-            * MODULES:
+	   For the most recent installation of the METplus components on WCOSS2
+	   see the loading instructions on the 6.1 Existing Builds page:
+	   https://metplus.readthedocs.io/en/main_v6.1/Users_Guide/release-notes.html
 
-              .. code-block:: ini
+        * **MET v13.0.0-beta2 / METplus v13.0.0-beta2 / METplus Analysis Tools v13.0.0-beta2**
 
-                module reset
+          * MODULES:
+
+            .. code-block:: ini
+
+              module reset
 
      .. dropdown:: URSA - Coming Soon!
 
