@@ -292,6 +292,9 @@ in the
         * **METplus-13.0.0-beta2**
 
           * METplus-13.0.0-beta2 Installation
+
+	    * /apps/contrib/MET/METplus/13.0.0-beta2
+	    
           * METplus-13.0 Sample Data
 
             * /work/noaa/ovp/jprestop/METplus/METplus-13.0_sample_data
