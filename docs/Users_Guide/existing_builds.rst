@@ -279,7 +279,7 @@ in the
      .. dropdown:: HERCULES
 
         | **NOAA MACHINE HERCULES (MANAGED BY MSU)**
-        | *Last updated: May 1, 2026*
+        | *Last updated: May 19, 2026*
         | *Compiler and version: Intel oneAPI 2025.3.1*
         | **Before loading any of the modules below, it is necessary to load the following modules:**
 
@@ -289,45 +289,45 @@ in the
            module load intel-oneapi-compilers/2025.3.1
            module load contrib/0.1
 
-          * **METplus-13.0.0-beta2**
+        * **METplus-13.0.0-beta2**
 
-            * METplus-13.0.0-beta2 Installation
-            * METplus-13.0 Sample Data
+          * METplus-13.0.0-beta2 Installation
+          * METplus-13.0 Sample Data
 
-              * /work/noaa/ovp/jprestop/METplus/METplus-13.0_sample_data
+            * /work/noaa/ovp/jprestop/METplus/METplus-13.0_sample_data
 
-            * To use METplus run:
+          * To use METplus run:
 
 	      .. code-block:: ini
 
                  module load metplus/13.0.0-beta2
 		 
-            * Users should create a file like /work/noaa/ovp/METplus/hercules.role-ovp.conf to set a personalized INPUT_BASE and OUTPUT_BASE.
+          * Users should create a file like /work/noaa/ovp/METplus/hercules.role-ovp.conf to set a personalized INPUT_BASE and OUTPUT_BASE.
 
-          * **MET-13.0.0-beta2**
+        * **MET-13.0.0-beta2**
 
-            * MODULES:
+          * MODULES:
 
 	      .. code-block:: ini
 
                 module load met/13.0.0-beta2
 
-          * **METcalcpy-13.0.0-beta2 / METplotpy-13.0.0-beta2**
+        * **METcalcpy-13.0.0-beta2 / METplotpy-13.0.0-beta2**
 
-            * MODULES:
+          * MODULES:
 
 	      .. code-block:: ini
 
                 module load metcalcpy/13.0.0-beta2
                 module load metplotpy/13.0.0-beta2
 
-          * **METdataio-13.0.0-beta2**
+        * **METdataio-13.0.0-beta2**
 
-            * MODULES:
+          * MODULES:
 
 	      .. code-block:: ini
 
-                module load metdataio/13.0.0-beta2
+                 module load metdataio/13.0.0-beta2
 
 
      .. dropdown:: ORION - Coming Soon!
