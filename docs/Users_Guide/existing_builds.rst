@@ -139,7 +139,7 @@ in the
          * LOCATION: 
          * URL: 
 
-.. dropdown:: NOAA machines - Coming Soon!
+.. dropdown:: NOAA machines
 
      .. dropdown:: WCOSS2 - Coming Soon!
 
