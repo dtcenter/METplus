@@ -16,16 +16,16 @@ model_applications/short_range/GridStat_fcstHRRRCast_obsHRRRanal_zarr.conf
 # --------------------
 #
 # This use case demonstrates how to read Zarr format data from the HRRRCast
-# model.  This data is read into the Grid-Stat tool, and continuous, categorical,
-# and vector statistics are computed for temperature, reflectivity, and wind. 
-# The purpose of this use case is to demonstrate how to use the Zarr format for
-# AI models.
+# model.  Four fields, 2m temperature, reflectivity, and 200mb U and V are read 
+# into the Grid-Stat tool, and continuous, categorical, and vector statistics are 
+# computed for temperature.  The purpose of this use case is to demonstrate how 
+# to use the Zarr format for Artificial Intelligence Weather Prediction models.
 
 ##############################################################################
 # Version Added
 # -------------
 #
-# METplus version 7.0?
+# METplus version 13.0
 
 ##############################################################################
 # Datasets
@@ -56,17 +56,17 @@ model_applications/short_range/GridStat_fcstHRRRCast_obsHRRRanal_zarr.conf
 # METplus Workflow
 # ----------------
 #
-# **Beginning time (INIT_BEG):** 2024-05-01 00 UTC
+# **Beginning time (INIT_BEG):** 2024-05-02 00 UTC
 #
-# **End time (INIT_END):** 2024-05-02 03 UTC
+# **End time (INIT_END):** 2024-05-02 01 UTC
 #
 # **Increment between beginning and end times (INIT_INCREMENT):** 1 hour
 #
-# **Sequence of forecast leads to process (LEAD_SEQ):** 1 - 18 using 1 hour increments
+# **Sequence of forecast leads to process (LEAD_SEQ):** 1 - 9 using 1 hour increments, and 12 - 18 using 3 hour increments
 #
-# Starting with the 00 UTC initialization on 2024-05-01, 28 model initializations are 
-# processed ending with the run initialized at 03 UTC on 2024-05-02.  For each 
-# initialization, 18 lead times are processed, for a total of 504 Grid-Stat runs. 
+# Starting with the 00 UTC initialization on 2024-05-02, 2 model initializations are 
+# processed ending with the run initialized at 01 UTC on 2024-05-02.  For each 
+# initialization, 12 lead times are processed, for a total of 24 Grid-Stat runs. 
 
 ##############################################################################
 # METplus Configuration
@@ -99,10 +99,12 @@ model_applications/short_range/GridStat_fcstHRRRCast_obsHRRRanal_zarr.conf
 ##############################################################################
 # Python Embedding
 # ----------------
-# [UPDATE_SECTION_CONTENT]
 #
-# This use case calls a Python Embedding script to read ZARR.  But since we are
-# changing this, I am waiting to update this documentation.
+# This use case calls a Python Embedding script to read ZARR format data into Grid-Stat.
+# The script takes 5 inputs, the directory where the Zarr files are located, model 
+# initialization time, lead time, variable to be read in, and the level.  The script
+# reads in the Zarr format data, selects the desired variable, and sets up the grid
+# attributes.
 # 
 # .. dropdown:: parm/use_cases/model_applications/short_range/GridStat_fcstHRRRCast_obsHRRRanal_zarr/read_zarr_HRRRCast.py
 #
@@ -140,29 +142,44 @@ model_applications/short_range/GridStat_fcstHRRRCast_obsHRRRanal_zarr.conf
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
 # Output for this use case can be found in 
 # {OUTPUT_BASE}/model_applications/short_range/GridStat_fcstHRRRCast_obsHRRRanal_zarr/grid_stat
-# and will contain 28 directories, one for each model initialization.  The directories will 
-# have the following format::
+# and will contain 2 directories, one for each model initialization::
 #
-#  * YYYYmmddHH
+#  * 2024050200
+#  * 2024050201
 #
 # Inside each directory, there will be 12 .stat files of the format 
 # grid_stat_HRRRCast_vs_HRRR_HHMMSSL_YYYYMMDD_HHMMSSV.stat, where HHMMSSL is the hour, 
 # minute, and second of the lead time, YYYYMMDD is the year, month, and day of the valid 
-# time, and HHMMSSV is the hour, minute, and second of the valid time.  For example, the
+# time, and HHMMSSV is the hour, minute, and second of the valid time.  The 2024050200 
 # directory contains the following files::
 #
-#  * grid_stat_HRRRCast_vs_HRRR_010000L_20240501_010000V.stat
-#  * grid_stat_HRRRCast_vs_HRRR_020000L_20240501_020000V.stat
-#  * grid_stat_HRRRCast_vs_HRRR_030000L_20240501_030000V.stat
-#  * grid_stat_HRRRCast_vs_HRRR_040000L_20240501_040000V.stat
-#  * grid_stat_HRRRCast_vs_HRRR_050000L_20240501_050000V.stat
-#  * grid_stat_HRRRCast_vs_HRRR_060000L_20240501_060000V.stat
-#  * grid_stat_HRRRCast_vs_HRRR_070000L_20240501_070000V.stat
-#  * grid_stat_HRRRCast_vs_HRRR_080000L_20240501_080000V.stat
-#  * grid_stat_HRRRCast_vs_HRRR_090000L_20240501_090000V.stat
-#  * grid_stat_HRRRCast_vs_HRRR_120000L_20240501_120000V.stat
-#  * grid_stat_HRRRCast_vs_HRRR_150000L_20240501_150000V.stat
-#  * grid_stat_HRRRCast_vs_HRRR_180000L_20240501_180000V.stat
+#  * grid_stat_HRRRCast_vs_HRRR_010000L_20240502_010000V.stat
+#  * grid_stat_HRRRCast_vs_HRRR_020000L_20240502_020000V.stat
+#  * grid_stat_HRRRCast_vs_HRRR_030000L_20240502_030000V.stat
+#  * grid_stat_HRRRCast_vs_HRRR_040000L_20240502_040000V.stat
+#  * grid_stat_HRRRCast_vs_HRRR_050000L_20240502_050000V.stat
+#  * grid_stat_HRRRCast_vs_HRRR_060000L_20240502_060000V.stat
+#  * grid_stat_HRRRCast_vs_HRRR_070000L_20240502_070000V.stat
+#  * grid_stat_HRRRCast_vs_HRRR_080000L_20240502_080000V.stat
+#  * grid_stat_HRRRCast_vs_HRRR_090000L_20240502_090000V.stat
+#  * grid_stat_HRRRCast_vs_HRRR_120000L_20240502_120000V.stat
+#  * grid_stat_HRRRCast_vs_HRRR_150000L_20240502_150000V.stat
+#  * grid_stat_HRRRCast_vs_HRRR_180000L_20240502_180000V.stat
+#
+# The 2024050201 directory contains the following files::
+#
+#  * grid_stat_HRRRCast_vs_HRRR_010000L_20240502_020000V.stat
+#  * grid_stat_HRRRCast_vs_HRRR_020000L_20240502_030000V.stat
+#  * grid_stat_HRRRCast_vs_HRRR_030000L_20240502_040000V.stat
+#  * grid_stat_HRRRCast_vs_HRRR_040000L_20240502_050000V.stat
+#  * grid_stat_HRRRCast_vs_HRRR_050000L_20240502_060000V.stat
+#  * grid_stat_HRRRCast_vs_HRRR_060000L_20240502_070000V.stat
+#  * grid_stat_HRRRCast_vs_HRRR_070000L_20240502_080000V.stat
+#  * grid_stat_HRRRCast_vs_HRRR_080000L_20240502_090000V.stat
+#  * grid_stat_HRRRCast_vs_HRRR_090000L_20240502_100000V.stat
+#  * grid_stat_HRRRCast_vs_HRRR_120000L_20240502_130000V.stat
+#  * grid_stat_HRRRCast_vs_HRRR_150000L_20240502_160000V.stat
+#  * grid_stat_HRRRCast_vs_HRRR_180000L_20240502_190000V.stat
 
 ##############################################################################
 # Keywords
@@ -171,11 +188,11 @@ model_applications/short_range/GridStat_fcstHRRRCast_obsHRRRanal_zarr.conf
 # .. note::
 #
 #   * GridStatToolUseCase
-#   * AIUseCase
 #   * PythonEmbeddingFileUseCase
 #   * ZarrFileUseCase
 #   * GRIB2FileUseCase
 #   * ShortRangeAppUseCase
+#   * AIWPUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
