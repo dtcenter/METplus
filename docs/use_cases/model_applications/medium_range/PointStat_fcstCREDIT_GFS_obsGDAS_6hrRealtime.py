@@ -181,10 +181,10 @@ model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.con
 #   .. highlight:: python
 #   .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime/plot_line_stats.py
 #
-# .. dropdown:: plot_line_stats_CTS.py
+# .. dropdown:: plot_line_stats.py
 #
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime/plot_line_stats_CTS.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime/plot_line_stats.py
 
 ##############################################################################
 # Running METplus
