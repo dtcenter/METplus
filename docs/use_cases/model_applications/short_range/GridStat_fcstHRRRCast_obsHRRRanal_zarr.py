@@ -18,8 +18,8 @@ model_applications/short_range/GridStat_fcstHRRRCast_obsHRRRanal_zarr.conf
 # This use case demonstrates how to read Zarr format data from the HRRRCast
 # model.  Four fields, 2m temperature, reflectivity, and 200mb U and V are read 
 # into the Grid-Stat tool, and continuous, categorical, and vector statistics are 
-# computed for temperature.  The purpose of this use case is to demonstrate how 
-# to use the Zarr format for Artificial Intelligence Weather Prediction models.
+# computed.  The purpose of this use case is to demonstrate how to use Zarr format 
+# data for Artificial Intelligence Weather Prediction models.
 
 ##############################################################################
 # Version Added
