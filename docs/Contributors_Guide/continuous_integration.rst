@@ -294,6 +294,8 @@ use case groups change over time, the environment needs to be created for each
 METplus Coordinated vX.Y release. This workflow can be manually triggered to
 create these Conda environments and push the resulting images to DockerHub.
 
+See :ref:`cg-ci-add-conda-env` for more information.
+
 .. _cg-ci-release-checksum:
 
 Add Checksum to Release (release-checksum.yml)
@@ -1212,9 +1214,6 @@ creating Docker images that use Conda to create a Python environment that can
 run the use case. To see what is available in each of the existing Python
 environments, refer to the comments in the scripts found in
 *internal/scripts/docker_env/scripts*.
-
-New environments must be added by a METplus developer,
-so please create a discussion on the
 
 If none of these environments contain the package requirements
 needed to run a new use case, a new environment must be added by a METplus developer.
