@@ -294,6 +294,42 @@ use case groups change over time, the environment needs to be created for each
 METplus Coordinated vX.Y release. This workflow can be manually triggered to
 create these Conda environments and push the resulting images to DockerHub.
 
+.. _cg-ci-add-conda-env:
+
+Adding a New Conda Environment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If a new use case requires a Python package that is not available in any of the
+existing Conda environments, a new environment should be created.
+The following steps should be taken to add a new environment:
+
+1. Create a new script in :code:`internal/scripts/docker_env/scripts/{ENV_NAME}_env.sh`
+   that either creates a new conda environment or clones an existing one to
+   add new packages. Typically environments are based on :code:`py_embed_base`
+   if they will be used for MET Python Embedding or based on :code:`metplotpy` or
+   :code:`mp_analysis` if they use METplus Analysis functionality.
+   Currently, most other environments are based on :code:`metplus_base` because
+   at a minimum they need :code:`python-dateutil`, but this may not be
+   necessary since most packages list dateutil as a dependency, so it will
+   be available already.
+
+2. Add a section to the :code:`README.md` file in :code:`internal/scripts/docker_env`
+   to include instructions on how to create the environment in Docker and
+   locally.
+
+3. Create a new job in :code:`.github/workflows/create_conda_envs.yml` so that
+   the environment can be created in GitHub Actions. The job should be
+   formatted so the job name matches the environment name and is checked in the
+   :code:`if` condition. The dependency (:code:`needs`) should also include
+   the base environment and the Dockerfile should be chosen based on the
+   environment criteria (e.g. :code:`metplus_base`, :code:`py_embed_base`, or
+   :code:`Dockerfile.cartopy` if it contains cartopy).
+
+4. After these files are added, run the **Create Conda Envs** GHA workflow
+   from the branch where the files were added via :code:`workflow_dispatch`,
+   providing the name of the new environment to create. This workflow
+   should run without errors.
+
 .. _cg-ci-release-checksum:
 
 Add Checksum to Release (release-checksum.yml)
@@ -1209,7 +1245,7 @@ environments, refer to the comments in the scripts found in
 *internal/scripts/docker_env/scripts*.
 New environments must be added by a METplus developer,
 so please create a discussion on the
-`METplus GitHub Discussions <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html>`_
+`METplus GitHub Discussions <https://github.com/dtcenter/METplus/discussions/new/choose>`_
 forum if none of these environments contain the package requirements
 needed to run a new use case.
 
