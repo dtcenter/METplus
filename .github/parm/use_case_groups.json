@@ -371,7 +371,7 @@
   {
     "category": "short_range",
     "index_list": "17",
-    "run": true
+    "run": false
   },
   {
     "category": "space_weather",
