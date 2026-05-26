@@ -234,14 +234,14 @@ jobs:
         run: .github/jobs/run_difference_tests.sh ${{ matrix.categories }} ${{ steps.get-artifact-name.outputs.artifact_name }}
 
       - name: Upload output data artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v7.0.0
         if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
         with:
           name: ${{ steps.get-artifact-name.outputs.artifact_name }}
           path: ${{ runner.workspace }}/output
 
       - name: Upload error logs artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v7.0.0
         if: ${{ always() && steps.save-errors.outputs.upload_error_logs }}
         with:
           name: error_logs-${{ steps.get-artifact-name.outputs.artifact_name }}
@@ -249,7 +249,7 @@ jobs:
           if-no-files-found: ignore
 
       - name: Upload difference data artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v7.0.0
         if: ${{ always() && steps.run-diff.outputs.upload_diff == 'true' }}
         with:
           name: diff-${{ steps.get-artifact-name.outputs.artifact_name }}
