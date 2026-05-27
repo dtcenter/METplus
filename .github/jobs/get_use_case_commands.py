@@ -74,7 +74,7 @@ def handle_automation_env(host_name, reqs):
     python_dir = os.path.join('/usr', 'local', 'conda', 'envs',
                               conda_env_w_ext, 'bin')
     python_path = os.path.join(python_dir, 'python3')
-    setup_env.append(_add_to_bashrc(f'export PATH={python_dir}:\$PATH'))
+    setup_env.append(_add_to_bashrc(f'export PATH={python_dir}:$PATH'))
 
     # if py_embed listed in requirements and using a Python
     # environment that differs from the MET env, set MET_PYTHON_EXE
@@ -119,7 +119,7 @@ def handle_automation_env(host_name, reqs):
     # add top of METplus repo to PYTHONPATH so metplus can be imported
     if 'metplus' in str(reqs).lower():
         setup_env.append(_add_to_bashrc(
-            f'export PYTHONPATH={METPLUS_DOCKER_LOC}:\$PYTHONPATH'
+            f'export PYTHONPATH={METPLUS_DOCKER_LOC}:$PYTHONPATH'
         ))
 
     # list packages in python environment that will be used
