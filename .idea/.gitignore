@@ -7,3 +7,6 @@
 /dataSources/
 /dataSources.local.xml
 /sonarlint*
+
+# ignore project file that has local python interpreter info
+/METplus.iml

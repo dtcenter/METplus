@@ -24,7 +24,7 @@ from metplus.util import metplus_check
 @pytest.mark.util
 def test_metplus_check_python(user, torf):
     # check that version is above minimum python requirement
-    assert metplus_check.metplus_check_python_version(user) == torf
+    assert metplus_check.metplus_check_python_version(user, check_recommended=True) == torf
 
 
 # checking METPLUS_DISABLE_PLOT_WRAPPERS and METPLUS_ENABLE_PLOT_WRAPPERS

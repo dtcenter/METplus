@@ -10,7 +10,7 @@ import re
 from .. import get_python_version, get_python_version_min
 
 
-def metplus_check_python_version(user):
+def metplus_check_python_version(user, check_recommended=False):
     """!Test that the user's version of python is equal or higher than the
      the supported version of python. Also check against the recommended
      version of Python. This is used in the run_metplus.py script
@@ -20,6 +20,8 @@ def metplus_check_python_version(user):
      displayed.
 
      @param user version of Python that the user is running
+     @param check_recommended if True, also check against recommended version
+      and print INFO message if user's version is below recommended version
      @returns True if version is at least supported, False if not
     """
     supported = get_python_version_min()
@@ -34,7 +36,7 @@ def metplus_check_python_version(user):
         return False
 
     # check if user's Python version is at least the recommended version
-    if not _python_version_is_sufficient(user, recommended):
+    if check_recommended and not _python_version_is_sufficient(user, recommended):
         print("INFO: Python {}".format(recommended),
               "or higher is recommended to run METplus Wrappers."
               " You are using {}.".format(user))
