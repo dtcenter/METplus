@@ -192,7 +192,7 @@ model_applications/short_range/GridStat_fcstHRRRCast_obsHRRRanal_zarr.conf
 #   * ZarrFileUseCase
 #   * GRIB2FileUseCase
 #   * ShortRangeAppUseCase
-#   * AIWPUseCase
+#   * AIUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

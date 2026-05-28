@@ -78,13 +78,12 @@ Use Cases by Application:
 .. only:: html
 
    | `Air Quality and Composition <../search.html?q=AirQualityAndCompAppUseCase&check_keywords=yes&area=default>`_
-   | `AI <../search.html?q=AIUseCase&check_keywords=yes&area=default>`_
    | `Climate <../search.html?q=ClimateAppUseCase&check_keywords=yes&area=default>`_
    | `Clouds <../search.html?q=CloudsAppUseCase&check_keywords=yes&area=default>`_
    | `Data Assimilation  <../search.html?q=DataAssimilationAppUseCase&check_keywords=yes&area=default>`_
    | `Ensemble  <../search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_
    | `Fire  <../search.html?q=FireAppUseCase&check_keywords=yes&area=default>`_
-   | `Land Surface <../search.html?q=LandSurfaceAppUseCase&check_keywords=yes&area=default>`_
+   | `Land <../search.html?q=LandAppUseCase&check_keywords=yes&area=default>`_
    | `Marine and Cryosphere <../search.html?q=MarineAndCryosphereAppUseCase&check_keywords=yes&area=default>`_
    | `Medium Range <../search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_
    | `PBL <../search.html?q=PBLAppUseCase&check_keywords=yes&area=default>`_
@@ -100,13 +99,12 @@ Use Cases by Application:
 .. only:: latex
 
    | **Air Quality and Composition**: *AirQualityAndCompAppUseCase*
-   | **AI**: *AIUseCase*
    | **Climate**: *ClimateAppUseCase*
    | **Clouds**: *CloudsAppUseCase*
    | **Data Assimilation**: *DataAssimilationAppUseCase*
    | **Ensemble**: *EnsembleAppUseCase*
    | **Fire**: *FireAppUseCase*
-   | **LandSurface**: *LandSurfaceAppUseCase*
+   | **Land**: *LandAppUseCase*
    | **Marine and Cryosphere**: *MarineAndCryosphereAppUseCase*
    | **Medium Range**: *MediumRangeAppUseCase*
    | **PBL**: *PBLAppUseCase*
@@ -146,12 +144,13 @@ Use Cases by Organization:
    | **NOAA Hazardous Weather Testbed (HWT)**: *NOAAHWTOrgUseCase*
    | **State University of New York-Stony Brook University (SUNY-SBU)**: *SBUOrgUseCase*
 
-Use Cases by METplus Feature:
-=============================
+Use Cases by Feature:
+=====================
 
 .. only:: html
 
    | `Introductory Example <../search.html?q=ExampleToolUseCase&check_keywords=yes&area=default>`_
+   | `AI <../search.html?q=AIUseCase&check_keywords=yes&area=default>`_
    | `Climatology <../search.html?q=ClimatologyUseCase&check_keywords=yes&area=default>`_
    | `Custom String Looping <../search.html?q=CustomStringLoopingUseCase&check_keywords=yes&area=default>`_
    | `DataIngest <../search.html?q=DataIngestUseCase&check_keywords=yes&area=default>`_
@@ -186,6 +185,7 @@ Use Cases by METplus Feature:
 .. only:: latex
 
    | **Introductory Example**: *ExampleToolUseCase*
+   | **AI**: *AIUseCase*
    | **Climatology**: *ClimatologyUseCase*
    | **Custom String Looping**: *CustomStringLoopingUseCase*
    | **DataIngest**: *DataIngestUseCase*
