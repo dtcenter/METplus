@@ -148,7 +148,7 @@ model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.con
 # aggregated StatAnalysis output to meet the format required by METcalcpy and METplotpy,
 # and then plotting that reformatted output using functions from METcalcpy and METplotpy.  
 # 
-# The first Python scripts is called reformat_linetype.py.  This script takes the aggregated 
+# The first Python script is called reformat_linetype.py.  This script takes the aggregated
 # output linetype from Stat Analysis and reformats it so that the data can be plotted.  
 # The script takes an input .yaml file of which there are 2, reformat_CNT.yaml and reformat_CTS.yaml.  
 # Environment variables in the yaml file are specified in the [user_env_vars] section of the 
@@ -209,7 +209,7 @@ model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.con
 # Output for this use case will be found in 
 # {OUTPUT_BASE}/model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.  There will
 # be 6 directories, data_ingest, GDAS, plots, point_stat, reformatted, and StatAnalaysis.  The 
-# data_ingest directory contains the observation dat that has been downloaded
+# data_ingest directory contains the observation data that has been downloaded
 # and contains 2 subdirectories, GDAS and GFS.  The GDAS directory contains 1 subdirectory, 20250924, 
 # with 2 files:
 #

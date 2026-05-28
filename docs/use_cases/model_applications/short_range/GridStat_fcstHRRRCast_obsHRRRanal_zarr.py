@@ -50,7 +50,7 @@ model_applications/short_range/GridStat_fcstHRRRCast_obsHRRRanal_zarr.conf
 # METplus Components
 # ------------------
 #
-# This use case call Grid-Stat once.
+# This use case calls Grid-Stat once.
 
 ##############################################################################
 # METplus Workflow
@@ -100,7 +100,7 @@ model_applications/short_range/GridStat_fcstHRRRCast_obsHRRRanal_zarr.conf
 # Python Embedding
 # ----------------
 #
-# This use case calls a Python Embedding script to read ZARR format data into Grid-Stat.
+# This use case calls a Python Embedding script to read Zarr format data into Grid-Stat.
 # The script takes 5 inputs, the directory where the Zarr files are located, model 
 # initialization time, lead time, variable to be read in, and the level.  The script
 # reads in the Zarr format data, selects the desired variable, and sets up the grid
