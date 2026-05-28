@@ -27,7 +27,7 @@ model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.py
 # Version Added
 # -------------
 #
-# METplus version 7.0
+# METplus version 13.0
 
 ##############################################################################
 # Datasets

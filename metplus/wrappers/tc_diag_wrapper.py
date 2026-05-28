@@ -13,7 +13,7 @@ Condition codes: 0 for success, 1 for failure
 import os
 
 from ..util import time_util
-from . import RuntimeFreqWrapper
+from . import TCBaseWrapper
 from ..util import do_string_sub, get_lead_sequence
 from ..util import parse_var_list, sub_var_list, getlist
 from ..util import find_indices_in_config_section
@@ -25,7 +25,7 @@ from ..util.met_config import add_met_config_dict_list
 '''
 
 
-class TCDiagWrapper(RuntimeFreqWrapper):
+class TCDiagWrapper(TCBaseWrapper):
     RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_PER_INIT_OR_VALID'
     RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_PER_INIT_OR_VALID']
 
@@ -190,18 +190,7 @@ class TCDiagWrapper(RuntimeFreqWrapper):
 
         self.handle_regrid(c_dict, set_to_grid=False)
 
-        self.add_met_config(name='compute_tangential_and_radial_winds',
-                            data_type='bool')
-        self.add_met_config(name='u_wind_field_name', data_type='string')
-        self.add_met_config(name='v_wind_field_name', data_type='string')
-        self.add_met_config(name='tangential_velocity_field_name',
-                            data_type='string')
-        self.add_met_config(name='tangential_velocity_long_field_name',
-                            data_type='string')
-        self.add_met_config(name='radial_velocity_field_name',
-                            data_type='string')
-        self.add_met_config(name='radial_velocity_long_field_name',
-                            data_type='string')
+        self.add_met_config_tc_wind()
 
         self.add_met_config(name='vortex_removal', data_type='bool')
 
@@ -314,11 +303,11 @@ class TCDiagWrapper(RuntimeFreqWrapper):
             return
 
         # get field information to set in MET config
-        if not self.set_data_field(time_info):
+        if not self._set_data_field(time_info):
             return
 
         # set forecast lead list for MET config
-        self.set_lead_list(time_info)
+        self._set_lead_list(time_info)
 
         # get other configurations for command
         self.set_command_line_arguments(time_info)
@@ -327,35 +316,6 @@ class TCDiagWrapper(RuntimeFreqWrapper):
         self.set_environment_variables(time_info)
 
         self.build()
-
-    def set_data_field(self, time_info):
-        """!Get list of fields from config to process. Build list of field info
-            that are formatted to be read by the MET config file. Set DATA_FIELD
-            item of c_dict with the formatted list of fields.
-            Args:
-                @param time_info time dictionary to use for string substitution
-                @returns True if field list could be built, False if not.
-        """
-        field_list = sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
-        if not field_list:
-            self.log_error("Could not get field information from config.")
-            return False
-
-        all_fields = []
-        for field in field_list:
-            field_list = self.get_field_info(d_type='FCST',
-                                             v_name=field['fcst_name'],
-                                             v_level=field['fcst_level'],
-                                             )
-            if field_list is None:
-                return False
-
-            all_fields.extend(field_list)
-
-        data_field = ','.join(all_fields)
-        self.env_var_dict['METPLUS_DATA_FIELD'] = f'field = [{data_field}];'
-
-        return True
 
     def find_input_files(self, time_info):
         """!Get DECK file and list of input data files and set c_dict items.

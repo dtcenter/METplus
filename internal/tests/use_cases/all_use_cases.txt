@@ -178,6 +178,10 @@ Category: s2s_mjo
 3:: UserScript_obsERA_obsOnly_RMM:: model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.conf:: mp_analysis_env, metdataio
 4:: UserScript_obsCFSR_obsOnly_MJO_ENSO:: model_applications/s2s_mjo/UserScript_obsCFSR_obsOnly_MJO_ENSO.conf:: mp_analysis_env, metdataio
 
+Category: s2s_mme
+0:: SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SingleOrMultimodel:: model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SingleOrMultimodel.conf:: py_embed
+1:: SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SelectClimateRegimes:: model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SelectClimateRegimes.conf:: py_embed
+2:: SeriesAnalysis_fcstSFS_obsGHCNCAMS_Prob_SmartMasking_Detrend:: model_applications/s2s_mme/SeriesAnalysis_fcstSFS_obsGHCNCAMS_Prob_SmartMasking_Detrend.conf:: py_embed
 
 Category: s2s_soil_moisture
 0::PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing:: model_applications/s2s_soil_moisture/PcpCombine_obsERA5_obsOnly_soilMoisturePreProcessing.conf

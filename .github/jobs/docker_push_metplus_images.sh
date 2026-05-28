@@ -30,24 +30,27 @@ if ! time_command docker push "${METPLUS_A_IMAGE_NAME}"; then
   exit 1
 fi
 
-# only push X.Y-latest tag if requested for official or bugfix releases
-# shellcheck disable=SC2154
+# only push X.Y and X.Y-latest tags if requested for official or bugfix releases
+# NOTE: eventually remove X.Y-latest tags in favor of just X.Y
+#       keep -latest until all references to it have been replaced with X.Y
 if [[ "${UPDATE_LATEST}" == "true" && "${METPLUS_VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-  latest_version=$(echo ${METPLUS_VERSION} | cut -f1,2 -d'.')-latest
+  xy_version=$(echo ${METPLUS_VERSION} | cut -f1,2 -d'.')
 
-  # tag and push the METplus image  
-  if ! time_command docker tag ${METPLUS_IMAGE_NAME} "${dockerhub_repo}:${latest_version}"; then
-    exit 1
-  fi
-  if ! time_command docker push "${dockerhub_repo}:${latest_version}"; then
-    exit 1
-  fi
+  for tag in "${xy_version}" "${xy_version}-latest"; do
+    # tag and push the METplus image
+    if ! time_command docker tag ${METPLUS_IMAGE_NAME} "${dockerhub_repo}:${tag}"; then
+      exit 1
+    fi
+    if ! time_command docker push "${dockerhub_repo}:${tag}"; then
+      exit 1
+    fi
 
-  # tag and push the METplus Analysis image
-  if ! time_command docker tag ${METPLUS_A_IMAGE_NAME} "${dockerhub_repo_analysis}:${latest_version}"; then
-    exit 1
-  fi
-  if ! time_command docker push "${dockerhub_repo_analysis}:${latest_version}"; then
-    exit 1
-  fi
+    # tag and push the METplus Analysis image
+    if ! time_command docker tag ${METPLUS_A_IMAGE_NAME} "${dockerhub_repo_analysis}:${tag}"; then
+      exit 1
+    fi
+    if ! time_command docker push "${dockerhub_repo_analysis}:${tag}"; then
+      exit 1
+    fi
+  done
 fi

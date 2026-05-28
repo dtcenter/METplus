@@ -13,17 +13,8 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-# handle if module can't be loaded to run wrapper
-WRAPPER_CANNOT_RUN = False
-EXCEPTION_ERR = ''
-try:
-    import netCDF4
-except Exception as err_msg:
-    WRAPPER_CANNOT_RUN = True
-    EXCEPTION_ERR = err_msg
-
 from ..util import getlist, get_storms, mkdir_p, skip_time
-from ..util import do_string_sub, parse_template, get_tags
+from ..util import do_string_sub, parse_template
 from ..util import get_lead_sequence, get_lead_sequence_groups
 from ..util import ti_get_hours_from_lead, ti_get_seconds_from_lead
 from ..util import ti_get_lead_string
@@ -113,10 +104,6 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         if self.c_dict['GENERATE_PLOTS']:
             self.plot_data_plane = self._plot_data_plane_init()
-
-        if WRAPPER_CANNOT_RUN:
-            self.log_error("There was a problem importing modules: "
-                           f"{EXCEPTION_ERR}\n")
 
         self.logger.debug("Initialized SeriesAnalysisWrapper")
 
@@ -1018,8 +1005,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                 return file_time_info
         return None
 
-    @staticmethod
-    def _get_netcdf_min_max(filepath, variable_name):
+    def _get_netcdf_min_max(self, filepath, variable_name):
         """! Determine the min and max for all lead times for each
            statistic and variable pairing.
 
@@ -1029,11 +1015,16 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             None, None if something went wrong
         """
         try:
+            import netCDF4
             nc_var = netCDF4.Dataset(filepath).variables[variable_name]
             min_value = nc_var[:].min()
             max_value = nc_var[:].max()
             return min_value, max_value
         except (FileNotFoundError, KeyError):
+            return None, None
+        except (ImportError, RuntimeError):
+            self.logger.warning("Cannot compute min/max for NetCDF variable "
+                                "because netCDF4 package was not found")
             return None, None
 
     def get_formatted_fields(self, var_info, time_info):

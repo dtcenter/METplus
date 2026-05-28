@@ -22,7 +22,7 @@ VERSION_LOOKUP = {
         'metdataio': '13.0.0',
         'metviewer': '13.0.0',
         'metexpress': None,
-        'metbaseimage': '3.5.4',
+        'metbaseimage': '3.5.5',
     },
     # NOTE: 7.0 will be removed once 13.0 has been tested with the next beta release
     '7.0': {
@@ -43,7 +43,7 @@ VERSION_LOOKUP = {
         'metdataio': '3.2.0',
         'metviewer': '6.2.4',
         'metexpress': '6.2.8',
-        'metbaseimage': '3.4.9',
+        'metbaseimage': '3.4.10',
     },
     '6.1': {
         'metplus': '6.1.2',
@@ -53,7 +53,7 @@ VERSION_LOOKUP = {
         'metdataio': '3.1.0',
         'metviewer': '6.1.0',
         'metexpress': '6.1.4',
-        'metbaseimage': '3.4.9',
+        'metbaseimage': '3.4.10',
     },
     '6.0': {
         'metplus': '6.0.0',
