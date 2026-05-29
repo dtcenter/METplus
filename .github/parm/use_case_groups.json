@@ -370,12 +370,7 @@
   },
   {
     "category": "short_range",
-    "index_list": "16",
-    "run": false
-  },
-  {
-    "category": "short_range",
-    "index_list": "17",
+    "index_list": "16-17",
     "run": false
   },
   {
