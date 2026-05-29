@@ -212,6 +212,11 @@ def _check_for_new_output(debug: bool, diff_files: list[Any], dir_a, dir_b) -> i
         filepath_a = filepath_b.replace(dir_b, dir_a)
         if os.path.exists(filepath_a):
             continue
+
+        # skip files that are configured to be skipped
+        if _should_skip_file(filepath_a, filepath_b, debug):
+            continue
+
         # check if missing file is actually diff file that was generated
         diff_list = [item[3] for item in diff_files]
         if filepath_b in diff_list:
