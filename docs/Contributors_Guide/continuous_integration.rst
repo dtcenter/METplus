@@ -294,6 +294,8 @@ use case groups change over time, the environment needs to be created for each
 METplus Coordinated vX.Y release. This workflow can be manually triggered to
 create these Conda environments and push the resulting images to DockerHub.
 
+See :ref:`cg-ci-add-conda-env` for more information.
+
 .. _cg-ci-release-checksum:
 
 Add Checksum to Release (release-checksum.yml)
@@ -1106,6 +1108,10 @@ environments use this environment as a base.
 * xesmf 0.8.8
 * esmf 8.7.0
 
+**zarr_env**
+
+* All packages in py_embed_base_env
+* zarr 3.2.1
 
 Example::
 
@@ -1119,7 +1125,7 @@ Note that only one dependency that contains the **_env** suffix can be supplied
 to a given use case.
 
 If a new use case requires packages that are not included in these environments,
-create a new discussion on the METplus Discussions board.
+see :ref:`cg-ci-add-conda-env`.
 
 Other Environments
 """"""""""""""""""
@@ -1195,9 +1201,10 @@ for more information on how to use Python Embedding.
   *.github/actions/run_tests*) is used to create the testing environment and
   copy the required shapefiles into place.
 
+.. _cg-ci-add-conda-env:
 
-Creating New Python Environments
-""""""""""""""""""""""""""""""""
+Adding a New Conda Environment
+""""""""""""""""""""""""""""""
 
 In METplus v4.0.0 and earlier, a list of Python packages were added to use
 cases that required additional packages. These packages were either installed
@@ -1207,11 +1214,12 @@ creating Docker images that use Conda to create a Python environment that can
 run the use case. To see what is available in each of the existing Python
 environments, refer to the comments in the scripts found in
 *internal/scripts/docker_env/scripts*.
-New environments must be added by a METplus developer,
-so please create a discussion on the
-`METplus GitHub Discussions <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html>`_
-forum if none of these environments contain the package requirements
-needed to run a new use case.
+
+If none of these environments contain the package requirements
+needed to run a new use case, a new environment must be added by a METplus developer.
+See the instructions below or create a new discussion on the
+`METplus GitHub Discussions <https://github.com/dtcenter/METplus/discussions/new/choose>`_
+forum.
 
 A **README.md** file can be found in *internal/scripts/docker_env* that
 provides commands that can be run to recreate a Docker image if the
@@ -1227,6 +1235,51 @@ before creating an environment that builds upon these environments.
 Please note that some commands in the scripts are specific to
 the Docker environment and may need to be rerun to successfully
 build the environment locally.
+
+If a new use case requires a Python package that is not available in any of the
+existing Conda environments, a new environment should be created.
+The following steps should be taken to add a new environment:
+
+1. Create a new script in :code:`internal/scripts/docker_env/scripts/{ENV_NAME}_env.sh`
+   that either creates a new conda environment or clones an existing one to
+   add new packages. Typically environments are based on :code:`py_embed_base`
+   if they will be used for MET Python Embedding or based on :code:`metplotpy` or
+   :code:`mp_analysis` if they use METplus Analysis functionality.
+   Currently, most other environments are based on :code:`metplus_base` because
+   at a minimum they need :code:`python-dateutil`.
+   Unless a specific version is required, it is recommended to use the version
+   that Conda installs by default.
+   If the version number is not known, do not specify a version initially, then
+   add it to the script later. See the step about creating environments in
+   GitHub Actions for more information.
+
+2. Add a section to the :code:`README.md` file in :code:`internal/scripts/docker_env`
+   to include instructions on how to create the environment in Docker and
+   locally.
+
+3. Create a new job in :code:`.github/workflows/create_conda_envs.yml` so that
+   the environment can be created in GitHub Actions. The job should be
+   formatted so the job name matches the environment name and is checked in the
+   :code:`if` condition. The dependency (:code:`needs`) should also include
+   the base environment and the Dockerfile should be chosen based on the
+   environment criteria (e.g. :code:`metplus_base`, :code:`py_embed_base`, or
+   :code:`Dockerfile.cartopy` if it contains cartopy).
+
+4. After these files are added, run the **Create Conda Envs** GHA workflow
+   from the branch where the files were added via :code:`workflow_dispatch`,
+   providing the name of the new environment to create. This workflow
+   should run without errors. If the version number was not specified for any
+   of the packages, review the log output to determine which version was used.
+   Update the script to specify this version to ensure reproducibility.
+   For example, if the log output includes something like this::
+
+      #9 61.62   + zarr                     3.2.1  pyhc364b38_0     conda-forge      368kB
+
+   then update the script to specify :code:`zarr==3.2.1`.
+
+5. Add information about the new environment, including all version numbers,
+   to the :ref:`cg-ci-conda-environments` section.
+
 
 **Installing METplus Components**
 

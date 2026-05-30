@@ -488,6 +488,25 @@ export METPLUS_ENV_VERSION=v13.0
 ./scripts/requests_env.sh ${METPLUS_ENV_VERSION}
 ```
 
+## zarr.v13.0 (from py_embed_base.v13.0)
+
+### Docker
+
+```
+export METPLUS_ENV_VERSION=v13.0
+docker build -t dtcenter/metplus-envs:zarr.${METPLUS_ENV_VERSION} \
+    --build-arg METPLUS_ENV_VERSION \
+    --build-arg BASE_ENV=py_embed_base \
+    --build-arg ENV_NAME=zarr .
+docker push dtcenter/metplus-envs:zarr.${METPLUS_ENV_VERSION}
+```
+
+### Local
+
+```
+export METPLUS_ENV_VERSION=v13.0
+./scripts/zarr_env.sh ${METPLUS_ENV_VERSION}
+```
 
 ## diff.v13.0 (from netcdf4.v13.0)
 
