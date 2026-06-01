@@ -150,7 +150,7 @@ Use Cases by Feature:
 .. only:: html
 
    | `Introductory Example <../search.html?q=ExampleToolUseCase&check_keywords=yes&area=default>`_
-   | `AI Weather Prediction <../search.html?q=AIWPUseCase&check_keywords=yes&area=default>`_
+   | `AI <../search.html?q=AIUseCase&check_keywords=yes&area=default>`_
    | `Climatology <../search.html?q=ClimatologyUseCase&check_keywords=yes&area=default>`_
    | `Custom String Looping <../search.html?q=CustomStringLoopingUseCase&check_keywords=yes&area=default>`_
    | `DataIngest <../search.html?q=DataIngestUseCase&check_keywords=yes&area=default>`_
@@ -185,7 +185,7 @@ Use Cases by Feature:
 .. only:: latex
 
    | **Introductory Example**: *ExampleToolUseCase*
-   | `AI Weather Prediction <../search.html?q=AIWPUseCase&check_keywords=yes&area=default>`_
+   | **AI**: *AIUseCase*
    | **Climatology**: *ClimatologyUseCase*
    | **Custom String Looping**: *CustomStringLoopingUseCase*
    | **DataIngest**: *DataIngestUseCase*
@@ -230,6 +230,7 @@ Use cases by File Format:
    | `Python Embedding <../search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_
    | `prepBUFR <../search.html?q=prepBUFRFileUseCase&check_keywords=yes&area=default>`_
    | `WRF <../search.html?q=WRFFileUseCase&check_keywords=yes&area=default>`_
+   | `Zarr <../search.html?q=ZarrFileUseCase&check_keywords=yes&area=default>`_
 
 .. only:: latex
 
@@ -241,3 +242,4 @@ Use cases by File Format:
    | **Python Embedding**: *PythonEmbeddingFileUseCase*
    | **prepBUFR**: *prepBUFRFileUseCase*
    | **WRF**: *WRFFileUseCase*
+   | **Zarr**: *ZarrFileUseCase*

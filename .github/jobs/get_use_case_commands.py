@@ -98,22 +98,23 @@ def handle_automation_env(host_name, reqs):
     if 'metdataio' in str(reqs).lower():
         components.append('METdataio')
 
-    setup_env.append(f'cd {METPLUS_DOCKER_LOC}/..')
-    for component in components:
-        # get branch if defined, otherwise determine from METplus version
-        version = os.environ.get(f'INPUT_{component.upper()}_BRANCH')
-        if not version:
-            version = get_component_version(input_component='METplus',
-                                            input_version=metplus_version,
-                                            output_component=component,
-                                            output_format='main_v{X}.{Y}',
-                                            get_dev=False)
-        setup_env.extend((
-            'git --version',
-            f'git clone --single-branch --branch {version} https://github.com/dtcenter/{component}',
-            f'{python_path} -m pip install --no-deps {METPLUS_DOCKER_LOC}/../{component}',
-        ))
-    setup_env.append('cd -')
+    if components:
+        setup_env.append(f'cd {METPLUS_DOCKER_LOC}/..')
+        for component in components:
+            # get branch if defined, otherwise determine from METplus version
+            version = os.environ.get(f'INPUT_{component.upper()}_BRANCH')
+            if not version:
+                version = get_component_version(input_component='METplus',
+                                                input_version=metplus_version,
+                                                output_component=component,
+                                                output_format='main_v{X}.{Y}',
+                                                get_dev=False)
+            setup_env.extend((
+                'git --version',
+                f'git clone --single-branch --branch {version} https://github.com/dtcenter/{component}',
+                f'{python_path} -m pip install --no-deps {METPLUS_DOCKER_LOC}/../{component}',
+            ))
+        setup_env.append('cd -')
 
     # if metplus is in requirements list,
     # add top of METplus repo to PYTHONPATH so metplus can be imported
@@ -136,7 +137,7 @@ def handle_automation_env(host_name, reqs):
 
 
 def _add_to_bashrc(command):
-    return f"echo '{command};' >> /root/.bashrc"
+    return f"echo '{command}' >> /root/.bashrc"
 
 
 def main(categories, subset_list, work_dir=None,

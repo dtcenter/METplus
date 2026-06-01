@@ -76,7 +76,6 @@ def main():
             f"docker build -t {RUN_TAG} "
             f"--build-arg METPLUS_IMG_TAG={branch_name} "
             f"--build-arg METPLUS_ENV_TAG={env_tag} "
-            f"--build-arg METPLUS_GET_CHROME={str(_uses_metplotpy(requirements)).lower()} "
             f"-f {DOCKERFILE_DIR}/{dockerfile_name} ."
         )
 

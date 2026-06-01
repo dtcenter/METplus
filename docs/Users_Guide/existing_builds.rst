@@ -29,18 +29,18 @@ in the
 
        | **NCAR MACHINE CASPER** (see 
           `Casper Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/casper/>`_)
-       | *Last Updated: February 11, 2026*
-       | *Compiler and version: Intel oneAPI 2024.2.1*
+       | *Last Updated: May 11, 2026*
+       | *Compiler and version: Intel oneAPI 2025.2.1*
 
-       * METplus-7.0.0-beta1
+       * METplus-13.0.0-beta2
 
-          * METplus-7.0.0-beta1 Installation:
+          * METplus-13.0.0-beta2 Installation:
 
             * /glade/work/dtcrt/METplus/casper/components/METplus/installation
 
-       * METplus-7.0 Sample Data:
+       * METplus-13.0 Sample Data:
 
-          * /glade/work/dtcrt/METplus/data/components/METplus/METplus-7.0_sample_data
+          * /glade/work/dtcrt/METplus/data/components/METplus/METplus-13.0_sample_data
 
        * Users should create a file like 
           /glade/work/dtcrt/METplus/casper/components/METplus/installations/casper.dtcrt.conf 
@@ -50,54 +50,49 @@ in the
 
          .. code-block:: ini
 
-            module load ncarenv/24.12
-            export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
-            module use $TOP_DIR/METplus/installations/modulefiles
-            module load metplus/7.0.0-beta1
+            module load ncarenv/25.10
+            module use /glade/work/dtcrt/METplus/casper/components/METplus/installations/modulefiles
+            module load metplus/13.0.0-beta2
 
-       * MET-7.0.0-beta1
-
-         * MODULES:
-
-           .. code-block:: ini
-
-              module load ncarenv/24.12
-              export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
-              module use $TOP_DIR/MET/installations/modulefiles
-              module load met/7.0.0-beta1
-
-       * METdataio-7.0.0-beta1
+       * MET-13.0.0-beta2
 
          * MODULES:
 
            .. code-block:: ini
 
-              module load ncarenv/24.12
-              export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
-              module use $TOP_DIR/METdataio/installations/modulefiles
-              module load metdataio/7.0.0-beta1
+              module load ncarenv/25.10
+              module use /glade/work/dtcrt/METplus/casper/components/MET/installations/modulefiles
+              module load met/13.0.0-beta2
+
+       * METdataio-13.0.0-beta2
+
+         * MODULES:
+
+           .. code-block:: ini
+
+              module load ncarenv/25.10
+              module use /glade/work/dtcrt/METplus/casper/components/METdataio/installations/modulefiles
+              module load metdataio/13.0.0-beta2
               
-       * METcalcpy-7.0.0-beta1
+       * METcalcpy-13.0.0-beta2
       
          * MODULES:
 
            .. code-block:: ini
 
-              module load ncarenv/24.12
-              export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
-              module use $TOP_DIR/METcalcpy/installations/modulefiles
-              module load metcalcpy/7.0.0-beta1
+              module load ncarenv/25.10
+              module use /glade/work/dtcrt/METplus/casper/components/METcalcpy/installations/modulefiles
+              module load metcalcpy/13.0.0-beta2
 
-       * METplotpy-7.0.0-beta1
+       * METplotpy-13.0.0-beta2
 
          * MODULES:
 
            .. code-block:: ini
 
-              module load ncarenv/24.12
-              export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
-              module use $TOP_DIR/METplotpy/installations/modulefiles
-              module load metplotpy/7.0.0-beta1
+              module load ncarenv/25.10
+              module use /glade/work/dtcrt/METplus/casper/components/METplotpy/installations/modulefiles
+              module load metplotpy/13.0.0-beta2
 
     .. dropdown:: DERECHO - Only if necessary - See warning below
 
@@ -119,46 +114,52 @@ in the
        | *Last Updated:*
        | *Compiler and version:*
 
-       * **METv7.0.0**
+       * **METv13.0.0-beta2**
 
          * MET BUILD: 
 
-       * **METplus-7.0.0**
+       * **METplus-13.0.0-beta2**
 
          * METplus INSTALLATION: Add text here
 
     .. dropdown:: NCAR/RAL Internal Development - Coming Soon!
 
        | **NCAR RAL MACHINES SENECA**
-       | **MET-7.0.0-beta1**
+       | **MET-13.0.0-beta2**
        | *Last Updated:*
        | *Compiler and version:*
 
          * MET BUILD: 
 
        | **NCAR RAL MACHINES MOHAWK**
-       | **METviewer-7.0.0-beta1**
+       | **METviewer-13.0.0-beta2**
        | *Last Updated:*
        | *Compiler and version:*
 
          * LOCATION: 
          * URL: 
 
-.. dropdown:: NOAA machines - Coming Soon!
+.. dropdown:: NOAA machines
 
      .. dropdown:: WCOSS2 - Coming Soon!
 
         | **NOAA machines Dogwood and Cactus (WCOSS2 - Cray)**
         | *Last updated:*
-	    | *Compiler and version:*
+	| *Compiler and version:*
 
-          * **MET v7.0.0 / METplus v7.0.0 / METplus Analysis Tools v7.0.0**
+	.. note::
 
-            * MODULES:
+	   For the most recent installation of the METplus components on WCOSS2
+	   see the loading instructions on the 6.1 Existing Builds page:
+	   https://metplus.readthedocs.io/en/main_v6.1/Users_Guide/release-notes.html
 
-              .. code-block:: ini
+        * **MET v13.0.0-beta2 / METplus v13.0.0-beta2 / METplus Analysis Tools v13.0.0-beta2**
 
-                module reset
+          * MODULES:
+
+            .. code-block:: ini
+
+              module reset
 
      .. dropdown:: URSA - Coming Soon!
 
@@ -166,15 +167,15 @@ in the
         | *Last updated:*
         | *Compiler and version:*
 
-          * **METplus-7.0.0-beta1**
+          * **METplus-13.0.0-beta2**
 
-            * METplus-7.0.0-beta1 Installation
+            * METplus-13.0.0-beta2 Installation
 
-              * /contrib/METplus/METplus-7.0.0-beta1
+              * /contrib/METplus/METplus-13.0.0-beta2
 
-            * METplus-7.0 Sample Data
+            * METplus-13.0 Sample Data
 
-              * /scratch3/BMC/dtc/METplus/METplus-7.0_sample_data
+              * /scratch3/BMC/dtc/METplus/METplus-13.0_sample_data
 
             * Users should create a file like
               /scratch3/BMC/dtc/METplus/ursa.role-metplus.conf
@@ -186,9 +187,9 @@ in the
 
                   module load intel/2025.1.1
                   module use /contrib/METplus/modulefiles
-                  module load metplus/7.0.0-beta1
+                  module load metplus/13.0.0-beta2
 
-          * **MET-7.0.0-beta1**
+          * **MET-13.0.0-beta2**
 
             * MODULES:
 
@@ -196,9 +197,9 @@ in the
 
                   module load intel/2025.1.1
                   module use -a /contrib/met/modulefiles/
-                  module load met/7.0.0-beta1
+                  module load met/13.0.0-beta2
 
-          * **METcalcpy-7.0.0-beta1 / METplotpy-7.0.0-beta1**
+          * **METcalcpy-13.0.0-beta2 / METplotpy-13.0.0-beta2**
 
             * MODULES:
 
@@ -206,11 +207,11 @@ in the
 
                   module load intel/2025.1.1
                   module use /contrib/METcalcpy/modulefiles
-                  module load metcalcpy/7.0.0-beta1
+                  module load metcalcpy/13.0.0-beta2
                   module use /contrib/METplotpy/modulefiles
-                  module load metplotpy/7.0.0-beta1
+                  module load metplotpy/13.0.0-beta2
 
-          * **METdataio-7.0.0-beta1**
+          * **METdataio-13.0.0-beta2**
 
             * MODULES:
 
@@ -218,7 +219,7 @@ in the
 
                   module load intel/2025.1.1
                   module use /contrib/METdataio/modulefiles
-                  module load metdataio/7.0.0-beta1
+                  module load metdataio/13.0.0-beta2
 
 		   
      .. dropdown:: HERA - Coming Soon!
@@ -227,15 +228,15 @@ in the
         | *Last updated:*
         | *Compiler and version:*
 
-          * **METplus-7.0.0-beta1**
+          * **METplus-13.0.0-beta2**
 
-            * METplus-7.0.0-beta1 Installation
+            * METplus-13.0.0-beta2 Installation
 
-              * /contrib/METplus/METplus-7.0.0-beta1
+              * /contrib/METplus/METplus-13.0.0-beta2
 
-            * METplus-7.0 Sample Data
+            * METplus-13.0 Sample Data
 
-              * /scratch3/BMC/dtc/METplus/METplus-7.0_sample_data
+              * /scratch3/BMC/dtc/METplus/METplus-13.0_sample_data
 
             * Users should create a file like 
               /scratch3/BMC/dtc/METplus/hera.role-metplus.conf 
@@ -247,9 +248,9 @@ in the
 
                  module load intel/2022.1.2
                  module use /contrib/METplus/modulefiles
-                 module load metplus/7.0.0-beta1
+                 module load metplus/13.0.0-beta2
 
-          * **MET-7.0.0-beta1**
+          * **MET-13.0.0-beta2**
 
             * MODULES:
 
@@ -257,9 +258,9 @@ in the
 
                   module load intel/2022.1.2
                   module use -a /contrib/met/modulefiles/
-                  module load met/7.0.0-beta1
+                  module load met/13.0.0-beta2
 
-          * **METcalcpy-7.0.0-beta1 / METplotpy-7.0.0-beta1**
+          * **METcalcpy-13.0.0-beta2 / METplotpy-13.0.0-beta2**
 
             * MODULES:
 
@@ -267,11 +268,11 @@ in the
 
                   module load intel/2022.1.2
                   module use /contrib/METcalcpy/modulefiles
-                  module load metcalcpy/7.0.0-beta1
+                  module load metcalcpy/13.0.0-beta2
                   module use /contrib/METplotpy/modulefiles
-                  module load metplotpy/7.0.0-beta1
+                  module load metplotpy/13.0.0-beta2
 
-          * **METdataio-7.0.0-beta1**
+          * **METdataio-13.0.0-beta2**
 
             * MODULES:
 
@@ -279,71 +280,63 @@ in the
 
                   module load intel/2022.1.2
                   module use /contrib/METdataio/modulefiles
-                  module load metdataio/7.0.0-beta1
+                  module load metdataio/13.0.0-beta2
 
-     .. dropdown:: HERCULES - Coming Soon!
+     .. dropdown:: HERCULES
 
         | **NOAA MACHINE HERCULES (MANAGED BY MSU)**
-        | *Last updated:*
-	    | *Compiler and version: intel-oneapi-compilers/2022.2.1*
-	    |
-	    | **Before loading any of the modules below, it is necessary to load the following modules:**
+        | *Last updated: May 19, 2026*
+        | *Compiler and version: Intel oneAPI 2025.3.1*
+        | **Before loading any of the modules below, it is necessary to load the following modules:**
 
 	.. code-block:: ini
 
-           module load contrib
-           module load intel-oneapi-compilers/2022.2.1
+           module load spack-managed-x86-64_v3
+           module load intel-oneapi-compilers/2025.3.1
+           module load contrib/0.1
 
-          * **METplus-7.0.0-beta1**
+        * **METplus-13.0.0-beta2**
 
-            * METplus-7.0.0-beta1 Installation
-            * METplus-7.0 Sample Data
+          * METplus-13.0.0-beta2 Installation
 
-              * /work/noaa/ovp/jprestop/METplus/METplus-7.0_sample_data
+	    * /apps/contrib/MET/METplus/13.0.0-beta2
+	    
+          * METplus-13.0 Sample Data
 
-            * To use METplus run:
+            * /work/noaa/ovp/jprestop/METplus/METplus-13.0_sample_data
+
+          * To use METplus run:
 
 	      .. code-block:: ini
 
-                 module load metplus/7.0.0-beta1
+                 module load metplus/13.0.0-beta2
 		 
-            * Users should create a file like /work/noaa/ovp/METplus/hercules.role-ovp.conf to set a personalized INPUT_BASE and OUTPUT_BASE.
+          * Users should create a file like /work/noaa/ovp/METplus/hercules.role-ovp.conf to set a personalized INPUT_BASE and OUTPUT_BASE.
 
-          * **MET-7.0.0-beta1**
+        * **MET-13.0.0-beta2**
 
-            * MODULES:
-
-	      .. code-block:: ini
-
-                module load met/7.0.0-beta1
-
-          * **METcalcpy-7.0.0-beta1 / METplotpy-7.0.0-beta1**
-
-            * MODULES:
+          * MODULES:
 
 	      .. code-block:: ini
 
-                module load metcalcpy/7.0.0-beta1
-                module load metplotpy/7.0.0-beta1
+                module load met/13.0.0-beta2
 
-            * PIP INSTALL:
+        * **METcalcpy-13.0.0-beta2 / METplotpy-13.0.0-beta2**
 
-	      .. code-block:: ini
-
-                python -m pip install --user tornado
-                python -m pip install --user plotly
-                python -m pip install --user kaleido
-                python -m pip install --user xarray
-                python -m pip install --user netcdf4
-                python -m pip install --user h5netcdf
-
-          * **METdataio-7.0.0-beta1**
-
-            * MODULES:
+          * MODULES:
 
 	      .. code-block:: ini
 
-                module load metdataio/7.0.0-beta1
+                module load metcalcpy/13.0.0-beta2
+                module load metplotpy/13.0.0-beta2
+
+        * **METdataio-13.0.0-beta2**
+
+          * MODULES:
+
+	      .. code-block:: ini
+
+                 module load metdataio/13.0.0-beta2
 
 
      .. dropdown:: ORION - Coming Soon!
@@ -352,11 +345,11 @@ in the
         | *Last updated:*
 	    | *Compiler and version:*
 
-          * **METplus-7.0.0-beta1**
+          * **METplus-13.0.0-beta2**
 
-            * METplus-7.0 Sample Data
+            * METplus-13.0 Sample Data
 
-              * /work/noaa/ovp/jprestop/METplus/METplus-7.0_sample_data
+              * /work/noaa/ovp/jprestop/METplus/METplus-13.0_sample_data
 
             * To use METplus run: Users should create a file like /work/noaa/ovp/user_name/METplus/orion.role-ovp.conf 
               to set a personalized INPUT_BASE and OUTPUT_BASE.
@@ -364,9 +357,9 @@ in the
               .. code-block:: ini
 
                  module load contrib
-                 module load metplus/7.0.0-beta1
+                 module load metplus/13.0.0-beta2
 
-          * **MET-7.0.0-beta1**
+          * **MET-13.0.0-beta2**
 
             * MODULES:
 
@@ -374,9 +367,9 @@ in the
 
                  module load contrib
                  module load intel-oneapi-compilers/2022.2.1
-                 module load met/7.0.0-beta1
+                 module load met/13.0.0-beta2
 
-          * **METcalcpy-7.0.0-beta1 / METplotpy-7.0.0-beta1**
+          * **METcalcpy-13.0.0-beta2 / METplotpy-13.0.0-beta2**
 
             * MODULES:
 
@@ -385,8 +378,8 @@ in the
                  module load contrib
                  module load intel-oneapi-compilers/2022.2.1
                  module use /apps/contrib/modulefiles
-                 module load metcalcpy/7.0.0-beta1
-                 module load metplotpy/7.0.0-beta1
+                 module load metcalcpy/13.0.0-beta2
+                 module load metplotpy/13.0.0-beta2
 
           * PIP INSTALL
 
@@ -399,7 +392,7 @@ in the
                  python -m pip install --user netcdf4
                  python -m pip install --user h5netcdf
 
-          * **METdataio-7.0.0-beta1**
+          * **METdataio-13.0.0-beta2**
 
             * MODULES:
 
@@ -408,7 +401,7 @@ in the
                  module load contrib
                  module load intel-oneapi-compilers/2022.2.1
                  module use /apps/contrib/modulefiles
-                 module load metdataio/7.0.0-beta1
+                 module load metdataio/13.0.0-beta2
 
      .. dropdown:: GAEA - Coming Soon!
 
@@ -416,15 +409,15 @@ in the
         | *Last Updated:*
     	| *Compiler and version:*
 
-          * **METplus-7.0.0-beta1**
+          * **METplus-13.0.0-beta2**
 
-            * METplus-7.0.0-beta1 Installation
+            * METplus-13.0.0-beta2 Installation
 
-              * /usw/met/METplus/METplus-7.0.0-beta1
+              * /usw/met/METplus/METplus-13.0.0-beta2
 
-            * METplus-7.0 Sample Data
+            * METplus-13.0 Sample Data
 
-              * /ncrc/proj/nggps_psd/METplus/sample_data/METplus-7.0_sample_data
+              * /ncrc/proj/nggps_psd/METplus/sample_data/METplus-13.0_sample_data
 
             * To use METplus run: Users should create a file like 
               /ncrc/proj/nggps_psd/METplus/gaea.metplus.conf 
@@ -435,9 +428,9 @@ in the
                  module unload cray-libsci/24.07.0
                  module load intel/2023.2.0
                  module use /usw/met/METplus/modulefiles
-                 module load metplus/7.0.0-beta1
+                 module load metplus/13.0.0-beta2
 
-          * **MET-7.0.0-beta1**
+          * **MET-13.0.0-beta2**
 
             * MODULES:
 
@@ -446,10 +439,10 @@ in the
                  module unload cray-libsci/24.07.0
                  module load intel/2023.2.0
                  module use -a /usw/met/modulefiles/
-                 module load met/7.0.0-beta1
+                 module load met/13.0.0-beta2
 
 
-          * **METcalcpy-7.0.0-beta1 / METplotpy-7.0.0-beta1**
+          * **METcalcpy-13.0.0-beta2 / METplotpy-13.0.0-beta2**
 
             * MODULES:
 
@@ -458,11 +451,11 @@ in the
                  module unload cray-libsci/24.07.0
                  module load intel/2023.2.0
                  module use /usw/met/METcalcpy/modulefiles
-                 module load metcalcpy/7.0.0-beta1
+                 module load metcalcpy/13.0.0-beta2
                  module use /usw/met/METplotpy/modulefiles
-                 module load metplotpy/7.0.0-beta1
+                 module load metplotpy/13.0.0-beta2
 
-          * **METdataio-7.0.0-beta1**
+          * **METdataio-13.0.0-beta2**
 
             * MODULES:
 
@@ -471,7 +464,7 @@ in the
                  module unload cray-libsci/23.12.1.1
                  module load intel-oneapi/2022.0.2
                  module use /usw/met/METdataio/modulefiles
-                 module load metdataio/7.0.0-beta1
+                 module load metdataio/13.0.0-beta2
 
 .. dropdown:: Community machines - Coming Soon!
 
@@ -481,34 +474,34 @@ in the
         | *Last Updated:*
 	    | *Compiler and version:*
 
-          * **METplus-7.0.0-beta1**
+          * **METplus-13.0.0-beta2**
 
-            * METplus-7.0.0-beta1 Installation
+            * METplus-13.0.0-beta2 Installation
 
               * /work2/06612/tg859120/frontera/METplus
 
-            * METplus-7.0 Sample Data
+            * METplus-13.0 Sample Data
 
-              * /work2/06612/tg859120/frontera/METplus/sample_data/METplus-7.0_sample_data
+              * /work2/06612/tg859120/frontera/METplus/sample_data/METplus-13.0_sample_data
 
             * To use METplus run:
 
               .. code-block:: ini
 
                 module use /work2/06612/tg859120/frontera/modulefiles
-                module load metplus/7.0.0-beta1
+                module load metplus/13.0.0-beta2
 
             * Users should create a file like /work2/06612/tg859120/frontera/METplus/frontera.metplus.conf
               to set a personalized INPUT_BASE and OUTPUT_BASE.
 
-         * **MET-7.0.0-beta1**
+         * **MET-13.0.0-beta2**
 
            * MODULES:
 
              .. code-block:: ini
 
                module use /work2/06612/tg859120/frontera/modulefiles
-               module load met/7.0.0-beta1
+               module load met/13.0.0-beta2
 
 
 .. dropdown:: DockerHub
