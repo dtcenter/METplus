@@ -672,13 +672,13 @@ def test_handle_name_argument(metplus_config, output_name, extra_output,
          []),
         # 1: 1 input name, no level
         ('input1', '',
-         ["-field 'name=\"input1\";'"]),
+         ["-field 'name=\"input1\"; level=\"A00\";'"]),
         # 2: 1 input name, 1 level
          ('input1', 'level1',
           ["-field 'name=\"input1\"; level=\"level1\";'"]),
         # 3: 2 input names, no levels
          ('input1,input2', '',
-          ["-field 'name=\"input1\";'", "-field 'name=\"input2\";'"]),
+          ["-field 'name=\"input1\"; level=\"A00\";'", "-field 'name=\"input2\"; level=\"A00\";'"]),
         # 4: 2 input names, 2 levels
          ('input1,input2', 'level1,level2',
           ["-field 'name=\"input1\"; level=\"level1\";'",
@@ -686,7 +686,7 @@ def test_handle_name_argument(metplus_config, output_name, extra_output,
         # 5: 2 input names, 1 level
          ('input1,input2', 'level1',
           ["-field 'name=\"input1\"; level=\"level1\";'",
-           "-field 'name=\"input2\";'"]),
+           "-field 'name=\"input2\"; level=\"A00\";'"]),
     ]
 )
 @pytest.mark.wrapper
@@ -882,7 +882,7 @@ def test_add_method_missing_input(metplus_config, get_test_data_dir, input_thres
         return
 
     field_name = wrapper.config.get('config', f'{data_src}_PCP_COMBINE_INPUT_NAMES')
-    field_info = f"'name=\"{field_name}\";'"
+    field_info = f"'name=\"{field_name}\"; level=\"A01\";'"
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
