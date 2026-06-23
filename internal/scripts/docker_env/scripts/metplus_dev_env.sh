@@ -16,7 +16,7 @@ METPLUS_VERSION=$1
 ENV_NAME=metplus_dev.${METPLUS_VERSION}
 
 # Conda environment to use as base for new environment
-BASE_ENV=diff.${METPLUS_VERSION}
+BASE_ENV=py_embed_base.${METPLUS_VERSION}
 
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 
