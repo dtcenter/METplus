@@ -159,6 +159,7 @@ in the
 
                   module reset
                   module load intel/19.1.3.304
+                  module load ve/evs/2.1
                   module load netcdf/4.7.4
                   module load hdf5/1.10.6
                   module load bufr/12.3.0
@@ -171,9 +172,6 @@ in the
                   module load fckit/0.13.2
                   module load atlas/0.44.1
                   module load eckit/1.28.3
-                  module use /apps/dev/lmodules/intel/19.1.3.304
-                  module load ve/evs/2.1
-                  module use /apps/ops/para/libs/modulefiles/compiler/intel/19.1.3.304
                   module load met/12.1.2
                   module load metplus/6.1.2
 
