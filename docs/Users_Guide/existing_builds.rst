@@ -152,26 +152,16 @@ in the
      .. dropdown:: WCOSS2
 
         | **NOAA machines Dogwood and Cactus (WCOSS2 - Cray)**
-        | *Last updated: Month DD, YYYY*
-	| *Compiler and version: Intel classic 19.1.3.304*
+        | *Last updated: *
+	    | *Compiler and version: *
 
-          * **METplus v6.1.0 / MET v12.1.0 / METplus Analysis Tools v3.1.0** (**Coming Soon**)
+        .. note::
 
-            * MODULES:
+           For the most recent installation of the METplus components on WCOSS2
+           see the loading instructions on the 6.1 Existing Builds page:
+           https://metplus.readthedocs.io/en/main_v6.1/Users_Guide/release-notes.html
 
-              .. code-block:: ini
-
-                  module reset
-                  module use /apps/dev/modulefiles/
-                  module load ve/evs/2.0
-                  module load gsl/2.7
-                  module load netcdf/4.7.4
-                  module load met/12.1.0
-                  module load metplus/6.1.0
-                  module load metplotpy/3.1.0
-                  module load metdataio/3.1.0
-                  module load metcalcpy/3.1.0
- 
+          * **METplus v6.2.0 / MET v12.2.0 / METplus Analysis Tools v3.2.0** (**Unavailable**)
 
      .. dropdown:: URSA
 
