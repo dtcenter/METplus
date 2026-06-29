@@ -152,8 +152,8 @@ in the
      .. dropdown:: WCOSS2
 
         | **NOAA machines Dogwood and Cactus (WCOSS2 - Cray)**
-        | *Last updated: *
-	    | *Compiler and version: *
+        | *Last updated: April 15, 2026*
+	    | *Compiler and version: Intel classic 19.1.3.304*
 
         .. note::
 
