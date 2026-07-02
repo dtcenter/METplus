@@ -1091,6 +1091,10 @@ class CommandBuilder:
                 "Output has already been written during this METplus run and "
                 f"will be overwritten: {output_path}"
             )
+            self.logger.info(
+                "Check that the *_OUTPUT_TEMPLATE and/or *_OUTPUT_PREFIX config"
+                " options are set to produce unique output for each run"
+            )
         else:
             self.output_written.append(output_path)
 
