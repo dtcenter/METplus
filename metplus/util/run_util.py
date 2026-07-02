@@ -218,11 +218,7 @@ def run_metplus(config):
         if init_errors:
             return init_errors
 
-        all_commands = []
-        for process in processes:
-            new_commands = process.run_all_times()
-            if new_commands:
-                all_commands.extend(new_commands)
+        all_commands = _run_processes(processes)
 
         # write out all commands and environment variables to file
         write_all_commands(all_commands, config)
@@ -285,6 +281,29 @@ def _check_wrapper_init_errors(processes, logger=None):
 
     return errors
 
+def _run_processes(processes):
+    """!Loop over the list of processes and call run_all_times on each.
+    Track all commands that were run and output file regexes that were written.
+    Pass output file regexes to next process in the list so it can check if
+    duplicate paths are being overwritten.
+
+    @param processes list of processes to run
+    @returns list of tuples with all commands that were run and
+     the env vars that were set for them
+    """
+    # track output written by each process and add to next wrapper
+    # to ensure the same output is not being written by multiple processes
+    output_written = []
+
+    all_commands = []
+    for process in processes:
+        process.output_written.extend(output_written)
+        new_commands = process.run_all_times()
+        output_written.extend(process.output_written)
+        if new_commands:
+            all_commands.extend(new_commands)
+
+    return all_commands
 
 def _get_total_errors_and_log_counts(processes, logger=None):
     total_errors = 0

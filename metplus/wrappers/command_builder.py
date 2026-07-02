@@ -64,6 +64,7 @@ class CommandBuilder:
         self.outfile = ""
         self.param = ""
         self.all_commands = []
+        self.output_written = []
 
         # set app name to empty string if not set by wrapper
         # needed to create instance of parent wrapper for unit tests
@@ -1065,6 +1066,8 @@ class CommandBuilder:
             self.logger.debug(f"Creating output directory: {parent_dir}")
             mkdir_p(parent_dir)
 
+        self._check_if_output_has_been_written(output_path)
+
         if not output_exists or not skip_if_output_exists:
             return True
 
@@ -1074,6 +1077,22 @@ class CommandBuilder:
                           f'{self.app_name.upper()}_SKIP_IF_OUTPUT_EXISTS to False '
                           'to process')
         return False
+
+    def _check_if_output_has_been_written(self, output_path):
+        """!Check if output file has already been written during this METplus run.
+        Log a warning if it has already been written. Otherwise add output path
+        to the list of output files that have been written.
+
+        @param output_path path to output file or search string for apps that
+         write multiple output files
+        """
+        if output_path in self.output_written:
+            self.logger.warning(
+                "Output has already been written during this METplus run and "
+                f"will be overwritten: {output_path}"
+            )
+        else:
+            self.output_written.append(output_path)
 
     @staticmethod
     def _get_valid_and_lead_from_time_info(time_info):
