@@ -1255,3 +1255,51 @@ def test_errors_and_defaults(metplus_config):
     assert actual is None
     assert _in_last_err('bar', cb.logger)
 
+
+TEST_SEARCH_PATH = (
+    '/output/path/precip24_2026070112.nc',
+    '/output/path/precip24_2026070118.nc',
+    '/output/path/grid_stat_120000L_20050807_120000V*',
+    '/output/path/grid_stat_WRF_APCP_vs_MC_PCP_APCP_03_120000L_20050807_120000V*',
+)
+@pytest.mark.parametrize(
+    'output_paths, expected_warnings', [
+        # Case 1: First time writing a file (no warning)
+        ([TEST_SEARCH_PATH[0]], [False]),
+
+        # Case 2: Writing the same file twice (warning on second call)
+        ([TEST_SEARCH_PATH[0], TEST_SEARCH_PATH[0]], [False, True]),
+
+        # Case 3: Multiple different files (no warnings)
+        ([TEST_SEARCH_PATH[0], TEST_SEARCH_PATH[1]], [False, False]),
+
+        # Case 4: Search format/wildcard path (warning on repeat)
+        ([TEST_SEARCH_PATH[2], TEST_SEARCH_PATH[2]], [False, True]),
+
+        # Case 5: Search different wildcard paths
+        ([TEST_SEARCH_PATH[2], TEST_SEARCH_PATH[3]], [False, False]),
+    ]
+)
+@pytest.mark.wrapper
+def test_check_if_output_has_been_written(metplus_config, check_warn_output_overwrite,
+                                          output_paths, expected_warnings):
+    """!Test that CommandBuilder tracks written files and warns on overwrites.
+    """
+    # Create a CommandBuilder instance using the existing metplus_config fixture
+    cb = CommandBuilder(metplus_config)
+
+    # Iterate through the sequence of file write attempts
+    for path, should_warn in zip(output_paths, expected_warnings):
+        # Reset the mock logger for each path to isolate the check
+        cb.logger.warning.reset_mock()
+
+        # Call the new logic
+        cb._check_if_output_has_been_written(path)
+
+        check_warn_output_overwrite(cb, should_warn, path)
+
+    # Final check: verify all unique paths were added to the tracking list
+    unique_paths = list(dict.fromkeys(output_paths))
+    assert len(cb.output_written) == len(unique_paths)
+    for path in unique_paths:
+        assert path in cb.output_written
