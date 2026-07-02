@@ -1514,20 +1514,22 @@ class CommandBuilder:
                                  sub_groups=sub_groups):
             self.errors += 1
 
-    def get_wrapper_or_generic_config(self, generic_name, var_type='str'):
+    def get_wrapper_or_generic_config(self, generic_name, var_type='str',
+                                      default=''):
         """! Check for config variable with <APP_NAME>_ prepended first. If set
         use that value. If not, check for config without prefix.
 
         @param generic_name name of variable to read from config
         @param var_type type of variable to read, e.g. str, bool, int, or float.
          Default is str.
+        @param default default value to return if variables are not set
         @returns value if set or empty string if not
         """
         name = self.config.get_mp_config_name(
             [f'{self.app_name}_{generic_name}'.upper(), generic_name.upper()]
         )
         if not name:
-            return ''
+            return default
         if var_type == 'bool':
             return self.config.getbool('config', name)
         if var_type == 'float':
