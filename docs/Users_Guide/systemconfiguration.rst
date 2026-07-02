@@ -2232,6 +2232,10 @@ how these variables affect how the data is processed.
 
     FCST_SERIES_ANALYSIS_INPUT_TEMPLATE = I{init?fmt=%Y%m%d%H}_F{lead?fmt=%3H}_V{valid?fmt=%H}
 
+    SERIES_ANALYSIS_OUTPUT_DIR = /my/output/dir
+
+    SERIES_ANALYSIS_OUTPUT_TEMPLATE = I{init?fmt=%Y%m%d%H}_F{lead?fmt=%3H}_V{valid?fmt=%H}.nc
+
 In this example, the wrapper will go through all initialization and forecast
 lead times and find any files that match the template under /my/fcst/dir:
 
@@ -2251,8 +2255,11 @@ Example 1: Run Once::
 For this configuration, a single command will be built to call SeriesAnalysis.
 The wildcard character '\*' will replace init, valid, and lead in the template
 when attempting to find data to process.
+The output files will use 'all' in place of the filename template tags that
+are ambiguous.
 
 Template Used: I\*_F\*_V\*
+
 Files Processed::
 
     I2020101712_F003_V15
@@ -2261,6 +2268,10 @@ Files Processed::
     I2020101812_F006_V18
     I2020101912_F003_V15
     I2020101912_F006_V18
+
+Output Created::
+
+   Iall_Fall_Vall.nc
 
 Example 2 Run Once Per Initialization Time::
 
@@ -2273,25 +2284,44 @@ The wildcard character '\*' will replace valid and lead in the template
 when attempting to find data to process.
 
 Runtime: Init: 2020-10-17 12Z
+
 Template Used: I2020101712_F\*_V\*
+
 Files Processed::
 
     I2020101712_F003_V15
     I2020101712_F006_V18
 
+Output Created::
+
+    I2020101712_Fall_Vall.nc
+
 Runtime: Init: 2020-10-18 12Z
+
 Template Used: I2020101812_F\*_V\*
+
 Files Processed::
 
     I2020101812_F003_V15
     I2020101812_F006_V18
 
+Output Created::
+
+    I2020101812_Fall_Vall.nc
+
+
 Runtime: Init: 2020-10-19 12Z
+
 Template Used: I2020101912_F\*_V\*
+
 Files Processed::
 
     I2020101912_F003_V15
     I2020101912_F006_V18
+
+Output Created::
+
+    I2020101912_Fall_Vall.nc
 
 .. note::
     If LOOP_BY was set to VALID, then the values defined by VALID_BEG,
@@ -2309,20 +2339,32 @@ The wildcard character '\*' will replace valid and init in the template
 when attempting to find data to process.
 
 Runtime: Lead: 3 hour
+
 Template Used: I\*_F003*_V\*
+
 Files Processed::
 
     I2020101712_F003_V15
     I2020101812_F003_V15
     I2020101912_F003_V15
 
+Output Created::
+
+    Iall_F003_Vall.nc
+
 Runtime: Lead: 6 hour
+
 Template Used: I\*_F006*_V\*
+
 Files Processed::
 
     I2020101712_F006_V18
     I2020101812_F006_V18
     I2020101912_F006_V18
+
+Output Created::
+
+    Iall_F006_Vall.nc
 
 Example 4 Run Once For Each Time::
 
@@ -2335,40 +2377,76 @@ The wildcard character '\*' will replace valid only in the template
 when attempting to find data to process.
 
 Runtime: Init: 2020-10-17 12Z, Forecast: 3 hour
+
 Template Used: I2020101712_F003_V\*
+
 Files Processed::
 
     I2020101712_F003_V15
 
+Output Created::
+
+    I2020101712_F003_V15.nc
+
 Runtime: Init: 2020-10-17 12Z, Forecast: 6 hour
+
 Template Used: I2020101712_F006_V\*
+
 Files Processed::
 
     I2020101712_F006_V18
 
+Output Created::
+
+    I2020101712_F006_V18.nc
+
 Runtime: Init: 2020-10-18 12Z, Forecast: 3 hour
+
 Template Used: I2020101812_F003_V\*
+
 Files Processed::
 
     I2020101812_F003_V15
 
+Output Created::
+
+    I2020101812_F003_V15.nc
+
 Runtime: Init: 2020-10-18 12Z, Forecast: 6 hour
+
 Template Used: I2020101812_F006_V\*
+
 Files Processed::
 
     I2020101812_F006_V18
 
+Output Created::
+
+    I2020101812_F006_V18.nc
+
 Runtime: Init: 2020-10-19 12Z, Forecast: 3 hour
+
 Template Used: I2020101912_F003_V\*
+
 Files Processed::
 
     I2020101912_F003_V15
 
+Output Created::
+
+    I2020101912_F003_V15.nc
+
 Runtime: Init: 2020-10-19 12Z, Forecast: 6 hour
+
 Template Used: I2020101912_F006_V\*
+
 Files Processed::
 
     I2020101912_F006_V18
+
+Output Created::
+
+    I2020101912_F006_V18.nc
 
 
 .. _config-utilities:
