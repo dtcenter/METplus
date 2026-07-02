@@ -219,6 +219,10 @@ class CommandBuilder:
                                                        'DO_NOT_RUN_EXE',
                                                        False)
 
+        c_dict['CHECK_OUTPUT_OVERWRITE'] = self.get_wrapper_or_generic_config(
+            'CHECK_OUTPUT_OVERWRITE', var_type='bool', default=True
+        )
+
         return c_dict
 
     def clear(self, clear_input_files=True):
@@ -1086,6 +1090,9 @@ class CommandBuilder:
         @param output_path path to output file or search string for apps that
          write multiple output files
         """
+        if not self.c_dict.get('CHECK_OUTPUT_OVERWRITE', True):
+            return
+
         if output_path in self.output_written:
             self.logger.warning(
                 "Output has already been written during this METplus run and "
