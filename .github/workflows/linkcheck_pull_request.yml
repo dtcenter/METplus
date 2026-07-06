@@ -1,0 +1,15 @@
+name: linkcheck-pr
+on:
+  pull_request:
+    paths:
+      - 'docs/**'
+
+jobs:
+  linkcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtcenter/metplus-action-linkcheck@v1
+        with:
+          fail-on-broken-links: 'true'
+          upload-artifact: 'true'

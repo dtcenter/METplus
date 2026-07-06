@@ -1,0 +1,15 @@
+name: linkcheck-scheduled
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch: {}
+
+jobs:
+  linkcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtcenter/metplus-action-linkcheck@v1
+        with:
+          fail-on-broken-links: 'true'
+	  
