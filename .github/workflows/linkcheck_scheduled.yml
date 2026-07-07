@@ -12,4 +12,3 @@ jobs:
       - uses: dtcenter/metplus-action-linkcheck@v1
         with:
           fail-on-broken-links: 'true'
-	  
