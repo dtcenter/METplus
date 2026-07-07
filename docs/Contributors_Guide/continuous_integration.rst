@@ -6,6 +6,7 @@ METplus utilizes GitHub Actions to run processes automatically when changes
 are pushed to GitHub. These tasks include:
 
 * Building documentation to catch warnings/errors
+* Checking documentation for broken external links
 * Building a Docker image to run tests
 * Creating/Updating Docker data volumes with new input data used for tests
 * Running unit tests
@@ -77,6 +78,42 @@ at the bottom of the workflow summary page when the workflow has completed.
 
 .. figure:: figure/ci-doc-artifacts.png
 
+.. _cg-ci-linkcheck:
+
+Check Documentation Links (linkcheck.yml)
+------------------------------------------
+
+METplus documentation contains many links to external resources, such as
+academic papers, related software packages, and other websites. Over time,
+these external links can break as pages are moved or removed. This workflow
+runs Sphinx's ``linkcheck`` builder to identify broken links in the
+documentation.
+
+This workflow is defined in each of the METplus component repositories.
+It calls a :ref:`cg-ci-custom-actions` action,
+`dtcenter/metplus-action-linkcheck <https://github.com/dtcenter/metplus-action-linkcheck>`_,
+so that the logic to install documentation dependencies and run the
+``linkcheck`` builder does not need to be duplicated across repositories.
+
+This workflow is triggered by:
+
+* A weekly **schedule** (every Monday), so that link rot is caught even when
+  no documentation changes have been made
+* A **pull_request** event for changes to files under the **docs** directory,
+  so that new or edited links are checked before a pull request is merged
+* A manual **workflow_dispatch** event, so that a developer can run the check
+  on demand against any branch
+
+If broken links are found, the workflow job fails and reports a red X,
+and the full ``linkcheck`` report is made available for download as a
+GitHub Actions artifact so it can be reviewed.
+
+Some links may be intentionally excluded from this check. For example, a link
+may be valid but block automated/non-browser requests, or may point to a
+resource that is only reachable from an internal network. These exclusions
+are configured per repository in the ``linkcheck_ignore`` variable in that
+repository's **docs/conf.py** file.
+	    
 .. _cg-ci-sonarqube:
 
 SonarQube (sonarqube.yml)
@@ -1590,6 +1627,8 @@ When differences are found when comparing the new output from a use case to
 the truth data, an artifact is created for the use case group. It contains
 files that differ so that the user can download and examine them. Files that
 are only found in one or the other are also included.
+
+.. _cg-ci-custom-actions:
 
 Custom GitHub Actions
 =====================
