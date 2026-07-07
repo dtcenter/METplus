@@ -16,4 +16,4 @@ jobs:
         with:
           fail-on-broken-links: 'true'
           upload-artifact: 'true'
-	  install-package: 'true'
+          install-package: 'true'
