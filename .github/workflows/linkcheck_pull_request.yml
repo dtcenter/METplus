@@ -3,7 +3,8 @@ on:
   pull_request:
     paths:
       - 'docs/**'
-
+  workflow_dispatch: {}
+  
 jobs:
   linkcheck:
     runs-on: ubuntu-latest
