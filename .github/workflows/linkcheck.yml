@@ -1,10 +1,12 @@
-name: linkcheck-pr
+name: linkcheck
 on:
+  schedule:
+    - cron: '0 6 * * 1'
   pull_request:
     paths:
       - 'docs/**'
   workflow_dispatch: {}
-  
+
 jobs:
   linkcheck:
     runs-on: ubuntu-latest
