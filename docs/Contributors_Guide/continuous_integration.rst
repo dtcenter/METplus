@@ -1600,6 +1600,11 @@ Each custom action is stored in its own GitHub repository.
 Navigate to the GitHub repository for a custom action to learn more about
 using it.
 
+Custom actions in METplus may be implemented as Docker container actions,
+JavaScript actiosn, or composite actions. Composite actions are the
+preferred approach for new custom actions going forward, since they avoid
+Docker image build/pull overhead and are not restricted to Linus runners.
+
 Free Disk Space
 ---------------
 
@@ -1638,3 +1643,11 @@ Create Checksum for Release
 Add a checksum to a release
 
 `dtcenter/metplus-action-release-checksum <https://github.com/dtcenter/metplus-action-release-checksum>`_
+
+Check Documentation Links
+-------------------------
+
+Runs Sphinx's ``linkcheck`` builder against a METplus component's
+documentation to identify broken external links.
+
+`dtcenter/metplus-action-linkcheck <https://github.com/dtcenter/metplus-action-linkcheck>`_
