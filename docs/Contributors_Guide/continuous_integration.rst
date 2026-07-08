@@ -104,7 +104,7 @@ This workflow is triggered by:
 * A manual **workflow_dispatch** event, so that a developer can run the check
   on demand against any branch
 
-If broken links are found, the workflow job fails and reports a red X,
+If broken links are found, the workflow job fails, as indicated by a red X,
 and the full ``linkcheck`` report is made available for download as a
 GitHub Actions artifact so it can be reviewed.
 
@@ -1640,9 +1640,9 @@ Navigate to the GitHub repository for a custom action to learn more about
 using it.
 
 Custom actions in METplus may be implemented as Docker container actions,
-JavaScript actiosn, or composite actions. Composite actions are the
-preferred approach for new custom actions going forward, since they avoid
-Docker image build/pull overhead and are not restricted to Linus runners.
+JavaScript actions, or composite actions. Composite actions are the
+preferred approach for new development going forward, since they avoid
+Docker image build/pull overhead and are not restricted to Linux runners.
 
 Free Disk Space
 ---------------
