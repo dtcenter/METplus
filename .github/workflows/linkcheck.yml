@@ -1,4 +1,4 @@
-name: linkcheck
+name: Linkcheck
 on:
   schedule:
     - cron: '0 6 * * 1'
