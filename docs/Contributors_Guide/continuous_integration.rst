@@ -97,7 +97,7 @@ so that the logic to install documentation dependencies and run the
 
 This workflow is triggered by:
 
-* A weekly **schedule** (every Monday), so that link rot is caught even when
+* A weekly **schedule**, so that link rot is caught even when
   no documentation changes have been made
 * A **pull_request** event for changes to files under the **docs** directory,
   so that new or edited links are checked before a pull request is merged
