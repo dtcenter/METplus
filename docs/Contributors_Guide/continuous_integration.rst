@@ -81,7 +81,7 @@ at the bottom of the workflow summary page when the workflow has completed.
 .. _cg-ci-linkcheck:
 
 Check Documentation Links (linkcheck.yml)
-------------------------------------------
+-----------------------------------------
 
 METplus documentation contains many links to external resources, such as
 academic papers, related software packages, and other websites. Over time,
@@ -113,7 +113,7 @@ may be valid but block automated/non-browser requests, or may point to a
 resource that is only reachable from an internal network. These exclusions
 are configured per repository in the ``linkcheck_ignore`` variable in that
 repository's **docs/conf.py** file.
-	    
+
 .. _cg-ci-sonarqube:
 
 SonarQube (sonarqube.yml)
