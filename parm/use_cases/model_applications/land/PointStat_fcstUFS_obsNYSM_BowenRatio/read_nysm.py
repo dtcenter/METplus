@@ -6,12 +6,12 @@ import numpy as np
 
 # Accept command line arguments from METplus (valid time beginning and valid time end).
 arg_cnt = len(sys.argv)
-if arg_cnt < 5:
+if arg_cnt < 6:
     print("ERROR: read_nysm.py -> Missing command line argument(s).")
     print("Usage: read_nysm.py VALID_TIME_BEG VALID_TIME_END")
     sys.exit(1)
 
-last_index = 5
+last_index = 6
 if last_index < arg_cnt:
     print(" INFO: read_nysm.py -> Too many arguments, ignored {o}.".format(
         o=' '.join(sys.argv[last_index:])))
@@ -21,6 +21,14 @@ valid_time = sys.argv[1]
 metplus_usecase_dir = sys.argv[2]
 metplus_obs_input_dir = sys.argv[3]
 min_latent_heat_flux = float(sys.argv[4])
+obs_avg_interval = sys.argv[5]
+window_around_valid_seconds = float(sys.argv[6])
+
+# Handle the obs_avg_interval
+if not obs_avg_interval in ['1h','h','24h']:
+  print("")
+  print(f"FATAL! OBS_AVG_INTERVAL {obs_avg_interval} NOT SUPPORTED in read_nysm.py.")
+  exit(1)
 
 # Set the list of variables to include.
 orig_variable_list = ['TMP', 'RH', 'TSOIL', 'SOILW', 'WIND', 'SNOD']
@@ -28,6 +36,9 @@ orig_flux_var_list = ['LHTFL', 'SHTFL', 'FRICV', 'GFLUX','BOWEN']
 
 # Set the list of levels for soil temp and moisture
 orig_level_list = ['0-0.1m', '0.1-0.4m', '0.4-1m']
+
+# Set the list of flux site qc variables to include
+flux_site_qc_vars = ['flux LE_ok','flux H_ok','flux G_6cm_ok','flux LE_QC','flux H_QC']
 
 # Dictionary mapping grib variable names to variable names in the obs files
 var_map = {'RH': 'relh',
@@ -55,17 +66,27 @@ for var in orig_variable_list:
 flux_var_list = []
 for var in orig_flux_var_list:
     flux_var_list.append(var_map[var])
-flux_var_list_file = ['flux LE', 'flux H', 'flux USTAR', 'flux G_6cm', 'flux Bowen_ratio']
+flux_var_list_file = ['flux LE', 'flux H', 'flux USTAR', 'flux G_6cm', 'flux Bowen_ratio'] + flux_site_qc_vars
 full_var_list = variable_list + flux_var_list
 
 # Determine whether a single monthly file or two monthly files are needed based on the valid
 # time and time window (+/- 60 minutes or 3600 seconds around the valid time).
 # Flux files are yearly instead of monthly, so they need a separate file date list.
-time_window = 3600 # seconds
+time_window = window_around_valid_seconds
 valid_beg_dt = dt.datetime.strptime(valid_time, '%Y%m%d%H')
 valid_end_dt = dt.datetime.strptime(valid_time, '%Y%m%d%H')
 valid_time_window_beg = valid_beg_dt - dt.timedelta(seconds=time_window)
 valid_time_window_end = valid_end_dt + dt.timedelta(seconds=time_window)
+valid_time_beg_str = valid_time_window_beg.strftime('%Y%m%d%H')
+valid_time_end_str = valid_time_window_end.strftime('%Y%m%d%H')
+
+print("")
+print("INFO: in read_nysm.py:")
+print(f"INFO: LOOKING FOR OBSERVATIONS AROUND: {valid_time}")
+print(f"INFO: STARTING AT: {valid_time_beg_str}")
+print(f"INFO: ENDING AT: {valid_time_end_str}")
+print(f"INFO: USING AVERAGING WINDOW: {obs_avg_interval}")
+print("")
 
 if valid_time_window_beg.strftime('%Y%m') == valid_time_window_end.strftime('%Y%m'):
     file_date_list = [valid_time_window_beg]
@@ -107,7 +128,7 @@ for row in station_metadata.itertuples():
             print("File: {} does not exist. Skipping file.".format(file))
 
     # If there was no standard data found, report and move to the next site
-    if len(data)==0:
+    if len(file_data)==0:
       print(f"NO STANDARD DATA FOUND FOR {row.stid}\n")
       continue
     else:
@@ -136,12 +157,28 @@ for row in station_metadata.itertuples():
           print(f"WARNING! NO FLUX DATA FOUND FOR {row.stid} FOR REQUESTED DATES.\n")
         else:
           print(f"ADDING FLUX DATA FOR STATION: {row.stid}\n")
+    
+          print(f"PERFORMING QC FOR STATION: {row.stid}\n")
+          # Apply the QC filtering. We should insert missing data value, so that the time averaging can still occur 
+          # but insert missing data which we will then correct to MET's missing data value below.
+          LE_qc_condition = (data['flux LE_ok']>0) & (data['flux LE_QC']>0) & (data['flux LE_QC']<7)
+          data['flux_LE'] = data['flux_LE'].where(LE_qc_condition,other=np.nan)
+    
+          H_qc_condition = (data['flux H_ok']>0) & (data['flux H_QC']>0) & (data['flux H_QC']<7)
+          data['flux_H'] = data['flux_H'].where(H_qc_condition,other=np.nan)
+
+          G_qc_condition = (data['flux G_6cm_ok']>0)
+          data['flux_G_6cm'] = data['flux_G_6cm'].where(G_qc_condition,other=np.nan)
+
+          # Drop the QC vars as they are no longer needed
+          data = data.drop(flux_site_qc_vars,axis=1)
+
     else:
         data[flux_var_list] = np.nan
 
     # Perform the averaging across time (or whatever aggregation) to obtain a single value for the variable(s)
     # by using pd.resample. This currently works for resampling to hourly.
-    data_mean = data.resample('h', on='datetime', origin='start', label='right', closed='right').mean()
+    data_mean = data.resample(obs_avg_interval, on='datetime', origin='start', label='right', closed='right').mean()
 
     # Populate the 11-column object for MET
     # Read and format the input 11-column observations:
@@ -192,29 +229,35 @@ for row in station_metadata.itertuples():
 
     # Handle soil moisture levels and names
     sm05 = met_df['var'] == 'sm05'
-    met_df.loc[sm05, 'lvl'] = '0-0.1'
+    met_df.loc[sm05, 'hgt'] = 0.05
     met_df.loc[sm05, 'var'] = 'SOILW'
+    met_df.loc[sm05, 'typ'] = 'SOILWDEPTH'
 
     sm25 = met_df['var'] == 'sm25'
-    met_df.loc[sm25, 'lvl'] = '0.1-0.4'
+    met_df.loc[sm25, 'hgt'] = 0.25
     met_df.loc[sm25, 'var'] = 'SOILW'
+    met_df.loc[sm25, 'typ'] = 'SOILWDEPTH'
 
     sm50 = met_df['var'] == 'sm50'
-    met_df.loc[sm50, 'lvl'] = '0.4-1'
+    met_df.loc[sm50, 'hgt'] = 0.5
     met_df.loc[sm50, 'var'] = 'SOILW'
+    met_df.loc[sm50, 'typ'] = 'SOILWDEPTH'
 
     # Handle soil temperature levels and names
     ts05 = met_df['var'] == 'ts05'
-    met_df.loc[ts05, 'lvl'] = '0-0.1'
+    met_df.loc[ts05, 'hgt'] = 0.05
     met_df.loc[ts05, 'var'] = 'TSOIL'
+    met_df.loc[ts05, 'typ'] = 'TSOILDEPTH'
 
     ts25 = met_df['var'] == 'ts25'
-    met_df.loc[ts25, 'lvl'] = '0.1-0.4'
+    met_df.loc[ts25, 'hgt'] = 0.25
     met_df.loc[ts25, 'var'] = 'TSOIL'
+    met_df.loc[ts25, 'typ'] = 'TSOILDEPTH'
 
     ts50 = met_df['var'] == 'ts50'
-    met_df.loc[ts50, 'lvl'] = '0.4-1'
+    met_df.loc[ts50, 'hgt'] = 0.5
     met_df.loc[ts50, 'var'] = 'TSOIL'
+    met_df.loc[ts50, 'typ'] = 'TSOILDEPTH'
 
     # Handle flux variable levels and names
     fluxLE = met_df['var'] == 'flux_LE'
@@ -239,7 +282,10 @@ for row in station_metadata.itertuples():
     met_df.loc[fluxBOW, 'lvl'] = 'L0'
 
     # Reorder the columns to the order MET expects
-    met_df = met_df[['typ','sid','vld','lat','lon','elv','var','lvl','hgt','qc','obs']] 
+    met_df = met_df[['typ','sid','vld','lat','lon','elv','var','lvl','hgt','qc','obs']]
+   
+    # Replace NaN values with MET's missing data value
+    met_df['obs'] = met_df['obs'].where(~met_df['obs'].isna(),-9999.)
 
     # Append each site's time-averaged data to a list
     site_data.append(met_df)
