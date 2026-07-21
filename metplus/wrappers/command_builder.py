@@ -14,6 +14,7 @@ import glob
 from datetime import datetime
 from abc import ABCMeta
 from inspect import getframeinfo, stack
+from typing import Any
 
 from ..util.constants import PYTHON_EMBEDDING_TYPES, COMPRESSION_EXTENSIONS
 from ..util.constants import MULTIPLE_INPUT_WRAPPERS, TIME_OFFSET_WARNING_WRAPPERS
@@ -219,8 +220,8 @@ class CommandBuilder:
                                                        'DO_NOT_RUN_EXE',
                                                        False)
 
-        c_dict['CHECK_OUTPUT_OVERWRITE'] = self.get_wrapper_or_generic_config(
-            'CHECK_OUTPUT_OVERWRITE', var_type='bool', default=True
+        c_dict['SKIP_WARN_OUTPUT_OVERWRITE'] = self.get_wrapper_or_generic_config(
+            'SKIP_WARN_OUTPUT_OVERWRITE', var_type='bool', default=False
         )
 
         return c_dict
@@ -1070,7 +1071,7 @@ class CommandBuilder:
             self.logger.debug(f"Creating output directory: {parent_dir}")
             mkdir_p(parent_dir)
 
-        self._check_if_output_has_been_written(output_path)
+        self._check_if_output_has_been_written(output_path, skip_if_output_exists)
 
         if not output_exists or not skip_if_output_exists:
             return True
@@ -1082,21 +1083,26 @@ class CommandBuilder:
                           'to process')
         return False
 
-    def _check_if_output_has_been_written(self, output_path):
+    def _check_if_output_has_been_written(self, output_path, skip_if_output_exists=False):
         """!Check if output file has already been written during this METplus run.
         Log a warning if it has already been written. Otherwise add output path
         to the list of output files that have been written.
 
         @param output_path path to output file or search string for apps that
          write multiple output files
+        @param skip_if_output_exists boolean to skip writing output files if
+         they already exist
         """
-        if not self.c_dict.get('CHECK_OUTPUT_OVERWRITE', True):
+        if (self.c_dict.get('SKIP_WARN_OUTPUT_OVERWRITE', False)
+                or skip_if_output_exists):
             return
 
         if output_path in self.output_written:
             self.logger.warning(
                 "Output has already been written during this METplus run and "
-                f"will be overwritten: {output_path}"
+                f"will be overwritten: {output_path}. Disable this warning by "
+                "setting SKIP_WARN_OUTPUT_OVERWRITE=True "
+                f"or {self.app_name.upper()}_SKIP_WARN_OUTPUT_OVERWRITE=True"
             )
             self.logger.info(
                 "Check that the *_OUTPUT_TEMPLATE and/or *_OUTPUT_PREFIX config"
@@ -1522,14 +1528,14 @@ class CommandBuilder:
             self.errors += 1
 
     def get_wrapper_or_generic_config(self, generic_name, var_type='str',
-                                      default=''):
+                                      default: Any=''):
         """! Check for config variable with <APP_NAME>_ prepended first. If set
         use that value. If not, check for config without prefix.
 
         @param generic_name name of variable to read from config
         @param var_type type of variable to read, e.g. str, bool, int, or float.
          Default is str.
-        @param default default value to return if variables are not set
+        @param default value to return if variables are not set
         @returns value if set or empty string if not
         """
         name = self.config.get_mp_config_name(
