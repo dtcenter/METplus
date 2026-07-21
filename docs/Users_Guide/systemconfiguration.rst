@@ -1481,14 +1481,14 @@ This is the behavior that was previously executed when LOOP_ORDER = processes.
   VALID_END = 20190203
   VALID_INCREMENT = 1d
 
-will run in the following order::
+will run in the following order:
 
-  * PCPCombine at 2019-02-01
-  * PCPCombine at 2019-02-02
-  * PCPCombine at 2019-02-03
-  * GridStat   at 2019-02-01
-  * GridStat   at 2019-02-02
-  * GridStat   at 2019-02-03
+* PCPCombine at 2019-02-01
+* PCPCombine at 2019-02-02
+* PCPCombine at 2019-02-03
+* GridStat   at 2019-02-01
+* GridStat   at 2019-02-02
+* GridStat   at 2019-02-03
 
 
 .. _Custom_Looping:
