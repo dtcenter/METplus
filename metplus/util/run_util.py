@@ -16,6 +16,7 @@ from .config_validate import validate_config_variables
 from .. import get_metplus_version
 from .config_metplus import setup
 from . import get_wrapper_instance
+from .exceptions import MPWarningError
 
 
 class RunArgs(NamedTuple):
@@ -201,6 +202,7 @@ def run_metplus(config):
     # Use config object to get the list of processes to call
     process_list = get_process_list(config)
 
+    # catch any unexpected exceptions in the code and error/exit
     try:
         # if Usage is in process list, run it and exit
         if 'Usage' in [p[0] for p in process_list]:
@@ -225,8 +227,8 @@ def run_metplus(config):
 
         # compute total number of errors that occurred and output results
         return _get_total_errors_and_log_counts(processes, config.logger)
-    except Exception:
-        config.logger.exception("Fatal error occurred")
+    except Exception as err:
+        config.logger.exception(f"Fatal error occurred: {err}")
         config.logger.info("Check the log file for more information: "
                            f"{get_logfile_info(config)}")
         return 1
@@ -298,7 +300,16 @@ def _run_processes(processes):
     all_commands = []
     for process in processes:
         process.output_written.extend(output_written)
-        new_commands = process.run_all_times()
+        try:
+            new_commands = process.run_all_times()
+
+        # log error count if warning-on-error occurs, add any commands run
+        # before warning, then exit without running any more processes
+        except MPWarningError as err:
+            process.log_error(err)
+            all_commands.extend(process.all_commands)
+            return all_commands
+
         output_written.extend(process.output_written)
         if new_commands:
             all_commands.extend(new_commands)

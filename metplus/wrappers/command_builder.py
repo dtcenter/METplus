@@ -18,6 +18,8 @@ from typing import Any
 
 from ..util.constants import PYTHON_EMBEDDING_TYPES, COMPRESSION_EXTENSIONS
 from ..util.constants import MULTIPLE_INPUT_WRAPPERS, TIME_OFFSET_WARNING_WRAPPERS
+from ..util.constants import WARNING_CONFIGS
+from ..util.exceptions import MPWarningError
 from ..util import getlist, preprocess_file
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
 from ..util import shift_time_seconds, seconds_to_met_time
@@ -220,9 +222,12 @@ class CommandBuilder:
                                                        'DO_NOT_RUN_EXE',
                                                        False)
 
-        c_dict['SKIP_WARN_OUTPUT_OVERWRITE'] = self.get_wrapper_or_generic_config(
-            'SKIP_WARN_OUTPUT_OVERWRITE', var_type='bool', default=False
-        )
+        # read generic or wrapper-specific config for
+        # warning skips and exit on warning (all default to False)
+        for name in WARNING_CONFIGS:
+            c_dict[name] = self.get_wrapper_or_generic_config(
+                name, var_type='bool', default=False
+            )
 
         return c_dict
 
@@ -280,6 +285,11 @@ class CommandBuilder:
         self.logger.error(f"({os.path.basename(caller.filename)}:{caller.lineno}) {error_string}")
         self.errors += 1
         self.is_ok = False
+
+    def log_warning(self, message):
+        self.logger.warning(message)
+        if self.c_dict.get('EXIT_ON_WARN', False):
+            raise MPWarningError()
 
     def set_user_environment(self, time_info):
         """!Set environment variables defined in [user_env_vars] section of config
@@ -1098,7 +1108,7 @@ class CommandBuilder:
             return
 
         if output_path in self.output_written:
-            self.logger.warning(
+            self.log_warning(
                 "Output has already been written during this METplus run and "
                 f"will be overwritten: {output_path}. Disable this warning by "
                 "setting SKIP_WARN_OUTPUT_OVERWRITE=True "
