@@ -1,7 +1,7 @@
 netCDF4==1.7.2
 pandas==2.2.3
 pdf2image==1.17.0
-pillow==12.2.0
+pillow==12.3.0
 pytest==9.0.3
 pytest-cov==6.0.0
 python-dateutil==2.9.0.post0
