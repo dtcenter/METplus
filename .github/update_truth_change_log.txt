@@ -64,3 +64,4 @@
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] dtcenter/MET#3369 - Improved precision in Gen-Ens-Prod `RANGE` output variables causes minor numeric differences in output.
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3299 - new use case
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3297 for Feature Branch #3226 - Adding truth data for Zarr use case
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] dtcenter/MET#3403 - MET changes to wind derivation. See PR for details dtcenter/MET#3403

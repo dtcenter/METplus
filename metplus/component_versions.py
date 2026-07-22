@@ -21,7 +21,7 @@ VERSION_LOOKUP = {
         'metcalcpy': '13.0.0',
         'metdataio': '13.0.0',
         'metviewer': '13.0.0',
-        'metexpress': None,
+        'metexpress': '13.0.0',
         'metbaseimage': '3.5.5',
     },
     # NOTE: 7.0 will be removed once 13.0 has been tested with the next beta release
@@ -42,7 +42,7 @@ VERSION_LOOKUP = {
         'metcalcpy': '3.2.0',
         'metdataio': '3.2.0',
         'metviewer': '6.2.4',
-        'metexpress': '6.2.8',
+        'metexpress': '6.2.10',
         'metbaseimage': '3.4.10',
     },
     '6.1': {

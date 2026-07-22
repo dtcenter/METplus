@@ -277,6 +277,12 @@ package. For example, to get the latest tar files package, run:
 
    wget https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.latest.tgz
 
+.. note::
+
+   The tarfile above is compatible with the latest official release. If you are installing a 
+   betaN or rcN release, use the URL 
+   https://dtcenter.ucar.edu/dfiles/code/METplus/MET/installation/tar_files.met-base-develop.tgz.
+
 Unpack the tar files package and remove the .tgz file:
 
 .. code-block::
