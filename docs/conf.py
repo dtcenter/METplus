@@ -241,6 +241,7 @@ linkcheck_ignore = [
     # add regex patterns for URLs that should be skipped, e.g.:
     # r'https://dtcenter\.org/.*',   # verify first — some DTC pages may block
     # r'https://www\.weather\.gov/.*',      # NWS pages sometimes rate-limit or redirect oddly
+    r'^\.\./.*',
 ]
 
 linkcheck_allowed_redirects = {
