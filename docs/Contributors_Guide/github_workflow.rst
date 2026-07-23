@@ -612,7 +612,7 @@ local repository.
 * If the console output includes the text *CONFLICT*, then there are
   conflicts between the two branches that must be resolved manually.
   Refer to the GitHub documentation for help with
-  `Resolving a merge conflict using the command line <https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line>`_.
+  `Resolving a merge conflict using the command line <https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/resolving-a-merge-conflict-using-the-command-line>`_
 
 .. _wo-commit-changes:
 
