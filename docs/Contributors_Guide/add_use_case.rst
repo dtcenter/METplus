@@ -1028,7 +1028,7 @@ environment, potential reasons include:
   GitHub Actions environment
 
 GitHub Actions has
-`limited memory <https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources>`_
+`limited memory <https://docs.github.com/en/actions/reference/runners/github-hosted-runners>`_
 available and will cause the use case to fail when exceeded. A failure
 caused by exceeding the memory allocation in a Python Embedding script
 may result in an unclear error message. 
