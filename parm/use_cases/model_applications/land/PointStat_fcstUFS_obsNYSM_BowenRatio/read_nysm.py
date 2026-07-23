@@ -4,6 +4,8 @@ import datetime as dt
 import pandas as pd
 import numpy as np
 
+pd.set_option('display.max_rows', None)
+
 # Accept command line arguments from METplus (valid time beginning and valid time end).
 arg_cnt = len(sys.argv)
 if arg_cnt < 6:
@@ -21,14 +23,7 @@ valid_time = sys.argv[1]
 metplus_usecase_dir = sys.argv[2]
 metplus_obs_input_dir = sys.argv[3]
 min_latent_heat_flux = float(sys.argv[4])
-obs_avg_interval = sys.argv[5]
-window_around_valid_seconds = float(sys.argv[6])
-
-# Handle the obs_avg_interval
-if not obs_avg_interval in ['1h','h','24h']:
-  print("")
-  print(f"FATAL! OBS_AVG_INTERVAL {obs_avg_interval} NOT SUPPORTED in read_nysm.py.")
-  exit(1)
+window_around_valid_seconds = float(sys.argv[5])
 
 # Set the list of variables to include.
 orig_variable_list = ['TMP', 'RH', 'TSOIL', 'SOILW', 'WIND', 'SNOD']
@@ -39,6 +34,9 @@ orig_level_list = ['0-0.1m', '0.1-0.4m', '0.4-1m']
 
 # Set the list of flux site qc variables to include
 flux_site_qc_vars = ['flux LE_ok','flux H_ok','flux G_6cm_ok','flux LE_QC','flux H_QC']
+
+# Custom QC flag variables to use with MET
+flux_site_qc_flags = ['flux_LE_flag','flux_H_flag','flux_G_6cm_flag']
 
 # Dictionary mapping grib variable names to variable names in the obs files
 var_map = {'RH': 'relh',
@@ -85,7 +83,6 @@ print("INFO: in read_nysm.py:")
 print(f"INFO: LOOKING FOR OBSERVATIONS AROUND: {valid_time}")
 print(f"INFO: STARTING AT: {valid_time_beg_str}")
 print(f"INFO: ENDING AT: {valid_time_end_str}")
-print(f"INFO: USING AVERAGING WINDOW: {obs_avg_interval}")
 print("")
 
 if valid_time_window_beg.strftime('%Y%m') == valid_time_window_end.strftime('%Y%m'):
@@ -114,6 +111,9 @@ for row in station_metadata.itertuples():
     data = pd.DataFrame()
 
     print(f'LOOKING FOR STANDARD DATA FOR: {row.stid}')
+    
+    # Only some sites are Flux sites
+    isFlux = False
 
     # Open and save the standard data.
     for file_date in file_date_list:
@@ -138,6 +138,7 @@ for row in station_metadata.itertuples():
     if row.stid in flux_sites:
         
         print(f'\nLOOKING FOR FLUX DATA FOR FLUX SITE {row.stid}')
+        isFlux = True
 
         for flux_date in flux_date_list:
             file = os.path.join(metplus_obs_input_dir,"flux_sites/{}{}.csv".format(row.stid, flux_date.strftime('%Y')))
@@ -158,17 +159,22 @@ for row in station_metadata.itertuples():
         else:
           print(f"ADDING FLUX DATA FOR STATION: {row.stid}\n")
     
-          print(f"PERFORMING QC FOR STATION: {row.stid}\n")
-          # Apply the QC filtering. We should insert missing data value, so that the time averaging can still occur 
-          # but insert missing data which we will then correct to MET's missing data value below.
-          LE_qc_condition = (data['flux LE_ok']>0) & (data['flux LE_QC']>0) & (data['flux LE_QC']<7)
-          data['flux_LE'] = data['flux_LE'].where(LE_qc_condition,other=np.nan)
-    
-          H_qc_condition = (data['flux H_ok']>0) & (data['flux H_QC']>0) & (data['flux H_QC']<7)
-          data['flux_H'] = data['flux_H'].where(H_qc_condition,other=np.nan)
+          print(f"SETTING FLUX QC FOR STATION: {row.stid}\n")
 
-          G_qc_condition = (data['flux G_6cm_ok']>0)
-          data['flux_G_6cm'] = data['flux_G_6cm'].where(G_qc_condition,other=np.nan)
+          # Adjust the "_ok" manual QC columns to be 0 and 10 rather than 0 and 1
+          data['flux LE_ok'] = data['flux LE_ok'].astype('float') * 10.0
+          data['flux H_ok'] = data['flux H_ok'].astype('float') * 10.0
+          data['flux G_6cm_ok'] = data['flux G_6cm_ok'].astype('float') * 10.0
+
+          # Now combine the manual QC with the automated QC value for H and LE. Anything > 10 passed automated and manual QC,
+          # while anything less than 10 did not pass the manual QC.
+          data['flux_LE_flag'] = data['flux LE_ok'].astype('float') + data['flux LE_QC'].astype('float')
+          data['flux_H_flag'] = data['flux H_ok'].astype('float') + data['flux H_QC'].astype('float')
+
+          # Note there was not an automated G_6cm_QC field, so to align this with the H and LE fields,
+          # we set it to 11 everywhere it is 10, and leave the value as zero or missing elsewhere
+          data['flux_G_6cm_flag'] = data['flux G_6cm_ok'].astype('float')
+          data['flux_G_6cm_flag'] = data['flux_G_6cm_flag'].where((data['flux_G_6cm_flag']<10.0)|(data['flux_G_6cm_flag'].isna()),11.0)
 
           # Drop the QC vars as they are no longer needed
           data = data.drop(flux_site_qc_vars,axis=1)
@@ -178,7 +184,7 @@ for row in station_metadata.itertuples():
 
     # Perform the averaging across time (or whatever aggregation) to obtain a single value for the variable(s)
     # by using pd.resample. This currently works for resampling to hourly.
-    data_mean = data.resample(obs_avg_interval, on='datetime', origin='start', label='right', closed='right').mean()
+    #data_mean = data.resample(obs_avg_interval, on='datetime', origin='start', label='right', closed='right').mean()
 
     # Populate the 11-column object for MET
     # Read and format the input 11-column observations:
@@ -198,13 +204,17 @@ for row in station_metadata.itertuples():
     qc_string = "NA"
 
     # Reset the index so it's just integers and not the times
-    data_mean = data_mean.reset_index()
+    data = data.reset_index()
 
-    # I think we just need to "melt" the dataframe
     # Use "melt" from Pandas to switch this from a wide dataframe to a long dataframe for each variable and time
-    met_df = pd.melt(data_mean,
+    # The flux sites have additional QC to carry along
+    if isFlux:
+      melt_var_list = full_var_list + flux_site_qc_flags
+    else:
+      melt_var_list = full_var_list
+    met_df = pd.melt(data,
                      id_vars="datetime",
-                     value_vars=full_var_list,
+                     value_vars=melt_var_list,
                      var_name='var',
                      value_name='obs')
 
@@ -213,8 +223,8 @@ for row in station_metadata.itertuples():
     met_df['lat'] = [row.lat] * len(met_df)
     met_df['lon'] = [row.lon] * len(met_df)
     met_df['elv'] = [row.elevation] * len(met_df)
-    met_df['qc'] = qc_string
     met_df['typ'] = msg_type
+    met_df['qc'] = qc_string
     met_df['vld'] = met_df['datetime'].dt.strftime('%Y%m%d_%H%M%S')
     met_df['lvl'] = ['NA'] * len(met_df)
     met_df['hgt'] = [-9999.] * len(met_df)
@@ -260,33 +270,55 @@ for row in station_metadata.itertuples():
     met_df.loc[ts50, 'typ'] = 'TSOILDEPTH'
 
     # Handle flux variable levels and names
-    fluxLE = met_df['var'] == 'flux_LE'
-    met_df.loc[fluxLE, 'var'] = 'LHTFL'
-    met_df.loc[fluxLE, 'lvl'] = 'L0'
+    if isFlux:
+      fluxLE = met_df['var'] == 'flux_LE'
+      fluxLEflag = met_df['var'] == 'flux_LE_flag'
+      qcLEVals = met_df[fluxLEflag]['obs']
+      qcLEVals = qcLEVals.where(~qcLEVals.isna(),-9999.).astype('int')
+      met_df.loc[fluxLE, 'var'] = 'LHTFL'
+      met_df.loc[fluxLE, 'lvl'] = 'L0'
+      met_df.loc[fluxLE, 'qc'] = qcLEVals.astype('str').replace('-9999','NA').values
+      
+      fluxH = met_df['var'] == 'flux_H'
+      fluxHflag = met_df['var'] == 'flux_H_flag'
+      qcHVals = met_df[fluxHflag]['obs']
+      qcHVals = qcHVals.where(~qcHVals.isna(),-9999.).astype('int')
+      met_df.loc[fluxH, 'var'] = 'SHTFL'
+      met_df.loc[fluxH, 'lvl'] = 'L0'
+      met_df.loc[fluxH, 'qc'] = qcHVals.astype('str').replace('-9999','NA').values
 
-    fluxH = met_df['var'] == 'flux_H'
-    met_df.loc[fluxH, 'var'] = 'SHTFL'
-    met_df.loc[fluxH, 'lvl'] = 'L0'
+      fluxUSTAR = met_df['var'] == 'flux_USTAR'
+      met_df.loc[fluxUSTAR, 'var'] = 'FRICV'
+      met_df.loc[fluxUSTAR, 'lvl'] = 'L0'
 
-    fluxUSTAR = met_df['var'] == 'flux_USTAR'
-    met_df.loc[fluxUSTAR, 'var'] = 'FRICV'
-    met_df.loc[fluxUSTAR, 'lvl'] = 'L0'
+      fluxG6cm = met_df['var'] == 'flux_G_6cm'
+      fluxG6cmflag = met_df['var'] == 'flux_G_6cm_flag'
+      qcGVals = met_df[fluxG6cmflag]['obs']
+      qcGVals = qcGVals.where(~qcGVals.isna(),-9999.).astype('int')
+      met_df.loc[fluxG6cm, 'var'] = 'GFLUX'
+      met_df.loc[fluxG6cm, 'lvl'] = 'L0'
+      met_df.loc[fluxG6cm, 'qc'] = qcGVals.astype('str').replace('-9999','NA').values
 
-    fluxG6cm = met_df['var'] == 'flux_G_6cm'
-    met_df.loc[fluxG6cm, 'var'] = 'GFLUX'
-    met_df.loc[fluxG6cm, 'lvl'] = 'L0'
+      fluxBOW = met_df['var'] == 'flux_Bowen_ratio'
+      qcBOWbool = (qcLEVals.values > 10) & (qcHVals.values > 10)
+      qcBOWvals = qcBOWbool + 10
+      qcBOWvals = pd.Series(qcBOWvals)
+      qcBOWvals = qcBOWvals.astype('str')
+      qcBOWvals = qcBOWvals.replace('-9999','NA')
+      met_df.loc[fluxBOW, 'hgt'] = 0
+      met_df.loc[fluxBOW, 'var'] = 'BOWEN'
+      met_df.loc[fluxBOW, 'lvl'] = 'L0'
+      met_df.loc[fluxBOW, 'qc'] = qcBOWvals.values
 
-    fluxBOW = met_df['var'] == 'flux_Bowen_ratio'
-    met_df.loc[fluxBOW, 'hgt'] = 0
-    met_df.loc[fluxBOW, 'var'] = 'BOWEN'
-    met_df.loc[fluxBOW, 'lvl'] = 'L0'
+      # Remove any of the flux flags as we don't need them for MET
+      met_df = met_df[~met_df['var'].isin(flux_site_qc_flags)]
 
     # Reorder the columns to the order MET expects
     met_df = met_df[['typ','sid','vld','lat','lon','elv','var','lvl','hgt','qc','obs']]
    
     # Replace NaN values with MET's missing data value
     met_df['obs'] = met_df['obs'].where(~met_df['obs'].isna(),-9999.)
-
+    
     # Append each site's time-averaged data to a list
     site_data.append(met_df)
 
@@ -297,6 +329,7 @@ if len(site_data)==0:
 
 # Concatenate data from all sites into a single Dataframe
 all_sites = pd.concat(site_data)
+all_sites.to_csv('test.csv')
 
 # Convert the Dataframe to the object MET expects
 point_data = all_sites.values.tolist()
