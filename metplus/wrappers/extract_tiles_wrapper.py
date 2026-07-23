@@ -23,8 +23,8 @@ class ExtractTilesWrapper(LoopTimesWrapper):
     """! Takes tc-pairs data and regrids paired data to an n x m grid as
          specified in the config file.
     """
-    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
-    RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_FOR_EACH']
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_PER_INIT_OR_VALID'
+    RUNTIME_FREQ_SUPPORTED = 'ALL'
 
     COLUMNS_OF_INTEREST = {
         'TC_STAT': [
