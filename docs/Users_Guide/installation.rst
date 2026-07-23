@@ -274,7 +274,7 @@ GFDL Tracker (Optional)
   estimate of the vortex center position (latitude and longitude),
   and track the storm for the duration of the forecast.
 
-- Visit https://dtcenter.org/community-code/gfdl-vortex-tracker for
+- Visit https://dtcenter.org/community-code-legacy-tools for
   more information
 
     - See the manage externals section of this documentation to download
