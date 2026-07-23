@@ -173,9 +173,10 @@ class CommandBuilder:
         for env_var_key in self.WRAPPER_ENV_VAR_KEYS:
             env_var_string = f"${{{env_var_key}}}"
             if env_var_string not in content:
-                self.logger.warning(f"Environment variable {env_var_string} "
-                                    "is not utilized in MET config file: "
-                                    f"{config_file}")
+                self.logger.warning(
+                    f"Environment variable {env_var_string} is not utilized in "
+                    f"MET config file: {config_file}"
+                )
 
     def create_c_dict(self):
         c_dict = dict()
@@ -909,8 +910,9 @@ class CommandBuilder:
             # check if control file is found in ensemble list
             if ctrl_file in input_files:
                 # warn and remove control file if found
-                self.logger.warning(f"Control file found in ensemble list: "
-                                    f"{ctrl_file}. Removing from list.")
+                self.logger.warning(
+                    f"Control file found in ensemble list: {ctrl_file}. Removing from list."
+                )
                 input_files.remove(ctrl_file)
 
         # compare number of files found to expected number of members
@@ -966,8 +968,9 @@ class CommandBuilder:
             )
             # add fake files to list for ens_thresh checking
             diff = num_expected - num_found
-            self.logger.warning(f'Adding {diff} fake files to '
-                                'ensure ens_thresh check is accurate')
+            self.logger.warning(
+                f'Adding {diff} fake files to ensure ens_thresh check is accurate'
+            )
             for _ in range(0, diff, 1):
                 input_files.append('MISSING')
 

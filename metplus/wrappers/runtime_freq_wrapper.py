@@ -106,9 +106,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             err_msg = (f"{self.app_name.upper()}_RUNTIME_FREQ="
                        f"{c_dict['RUNTIME_FREQ']} not supported.")
             if hasattr(self, 'RUNTIME_FREQ_DEFAULT'):
-                self.logger.warning(
-                    f"{err_msg} Using {self.RUNTIME_FREQ_DEFAULT}"
-                )
+                self.logger.warning(f"{err_msg} Using {self.RUNTIME_FREQ_DEFAULT}")
                 c_dict['RUNTIME_FREQ'] = self.RUNTIME_FREQ_DEFAULT
             else:
                 self.log_error(err_msg)
@@ -171,8 +169,10 @@ class RuntimeFreqWrapper(CommandBuilder):
             # If templates were found with this prefix, use it
             if templates:
                 if found_prefix:
-                    self.logger.warning(f'{prefix_list[0]}_INPUT_TEMPLATE and '
-                                        f'{prefix}_INPUT_TEMPLATE are set. Using the former. ')
+                    self.logger.warning(
+                        f'{prefix_list[0]}_INPUT_TEMPLATE and '
+                        f'{prefix}_INPUT_TEMPLATE are set. Using the former.'
+                    )
                     continue
 
                 return_templates = templates.copy()
@@ -194,8 +194,10 @@ class RuntimeFreqWrapper(CommandBuilder):
             if template:
                 # log a warning if multiple formats of config are set
                 if template_found:
-                    self.logger.warning(f'{prefix_list[0]}_INPUT_FILE_LIST and '
-                                        f'{prefix}_INPUT_TEMPLATE are set. Using the former. ')
+                    self.logger.warning(
+                        f'{prefix_list[0]}_INPUT_FILE_LIST and '
+                        f'{prefix}_INPUT_TEMPLATE are set. Using the former.'
+                    )
                 c_dict['EXPLICIT_FILE_LIST'] = True
                 template_dict[label.rstrip('_')] = (template, True, False)
                 template_found = True
@@ -909,8 +911,9 @@ class RuntimeFreqWrapper(CommandBuilder):
         ctrl_file = all_input_files.get('CTRL')
         if ctrl_file in fcst_files:
             # warn and remove control file if found
-            self.logger.warning(f"Control file found in ensemble list: "
-                                f"{ctrl_file}. Removing from list.")
+            self.logger.warning(
+                f"Control file found in ensemble list: {ctrl_file}. Removing from list."
+            )
             fcst_files.remove(ctrl_file)
 
         # check EnsembleStat number of files
