@@ -287,11 +287,6 @@ class CommandBuilder:
         self.errors += 1
         self.is_ok = False
 
-    def log_warning(self, message):
-        self.logger.warning(message)
-        if self.c_dict.get('EXIT_ON_WARN', False):
-            raise MPWarningError()
-
     def set_user_environment(self, time_info):
         """!Set environment variables defined in [user_env_vars] section of config
         """
@@ -1111,13 +1106,11 @@ class CommandBuilder:
             return
 
         if output_path in self.output_written:
-            self.log_warning(
+            self.logger.warning(
                 "Output has already been written during this METplus run and "
                 f"will be overwritten: {output_path}. Disable this warning by "
                 "setting SKIP_WARN_OUTPUT_OVERWRITE=True "
-                f"or {self.app_name.upper()}_SKIP_WARN_OUTPUT_OVERWRITE=True"
-            )
-            self.logger.info(
+                f"or {self.app_name.upper()}_SKIP_WARN_OUTPUT_OVERWRITE=True. "
                 "Check that the *_OUTPUT_TEMPLATE and/or *_OUTPUT_PREFIX config"
                 " options are set to produce unique output for each run"
             )
