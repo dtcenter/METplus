@@ -22,9 +22,9 @@ File format
   Binary
 
 Location of data
-  Google Cloud: https://console.cloud.google.com/storage/browser/gcp-public-data-nexrad-l3/
+  `Google Cloud <https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fconsole.cloud.google.com%2Fstorage%2Fbrowser%2Fgcp-public-data-nexrad-l3%2F&dsh=S2014722085%3A1784845336985585&followup=https%3A%2F%2Fconsole.cloud.google.com%2Fstorage%2Fbrowser%2Fgcp-public-data-nexrad-l3%2F&osid=1&passive=1209600&service=cloudconsole&flowName=GlifWebSignIn&flowEntry=ServiceLogin&ifkv=Ac50bxuOrFPbtjTpLhgz0J6aIPHasAswS8WMo0cKVWgN_CH2YIbqBqSbfscjRxUOxPUM2UfhiO2V>`_
   
-  NCEI: https://www.ncdc.noaa.gov/nexradinv/choosesite.jsp
+  `NCEI <https://www.ncdc.noaa.gov/nexradinv/choosesite.jsp>`_
 
 Access restrictions
   None
