@@ -281,7 +281,7 @@ GFDL Tracker (Optional)
       the GFDL vortex tracker automatically as part of the system.
 
     - To download and install the tracker locally, get
-      http://dtcenter.org/sites/default/files/community-code/gfdl/standalone_gfdl-vortextracker_v3.9a.tar.gz
+      https://dtcenter.org/sites/default/files/community-code/gfdl/standalone_gfdl-vortextracker_v3.9a.tar.gz
       and follow the instructions listed in that archive to build on
       a local system.
 
