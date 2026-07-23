@@ -1521,7 +1521,7 @@ using the **\-\-volumes-from** argument to the **docker run** command.
 Build Docker Test Environment
 """""""""""""""""""""""""""""
 
-A `Docker multi-stage build <https://docs.docker.com/develop/develop-images/multistage-build>`_
+A `Docker multi-stage build <https://docs.docker.com/build/building/multi-stage/>`_
 is used to create the Docker environment to run the use cases.
 The Docker images that contain the :ref:`cg-ci-use-case-dependencies` are
 built and the relevant files (such as the Conda environment files) are
