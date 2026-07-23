@@ -32,7 +32,7 @@
 
 .. [Gilleland2010] Gilleland, E., 2010: Confidence intervals for forecast verification. *NCAR Technical Note* NCAR/TN-479+STR, 71pp.
 
-.. [Gneiting2004] Gneiting, T., A. Westveld, A. Raferty, and T. Goldman, 2004: *Calibrated Probabilistic Forecasting Using Ensemble Model Output Statistics and Minimum CRPS Estimation*. Technical Report no. 449, Department of Statistics, University of Washington. [Available online at http://www.stat.washington.edu/www/research/reports/]
+.. [Gneiting2004] Gneiting, T., A. Westveld, A. Raferty, and T. Goldman, 2004: *Calibrated Probabilistic Forecasting Using Ensemble Model Output Statistics and Minimum CRPS Estimation*. Technical Report no. 449, Department of Statistics, University of Washington. [Available online at https://www.wavestoweather.de/publications/previous_publications/gneiting_2005a.pdf]
 
 .. [Hamill2001] Hamill, T.M., 2001: Interpretation of rank histograms for verifying ensemble forecasts. *Mon. Wea. Rev*., 129, 550-560.
 
