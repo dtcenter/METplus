@@ -531,7 +531,7 @@ resulting in the following displayed text:
 
 See line blocks under 
 `Lists and Quote-like blocks <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#lists-and-quote-like-blocks>`_
-and the `line blocks <http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html#line-blocks>`_
+and the `line blocks <https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#line-blocks>`_
 section from the reStructuredText Markup Specification for more information.
 
 Links
