@@ -1601,9 +1601,9 @@ do **NOT** need to be modified and should not be modified.
 
 
 For more information about Doxygen, please refer to this
-`Doxygen web page <http://doxygen.nl/>`_.
+`Doxygen web page <https://doxygen.nl/>`_.
 
-`Download and install Doxygen <http://doxygen.nl/download.html>`_
+`Download and install Doxygen <https://doxygen.nl/download.html>`_
 to create this documentation.
 
 **Note**: Doxygen version 1.8.9.1 or higher is required to create the
