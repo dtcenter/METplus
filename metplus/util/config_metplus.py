@@ -22,6 +22,7 @@ import uuid
 from metplus.produtil.config import ProdConfig
 
 from .constants import RUNTIME_CONFS, MISSING_DATA_VALUE
+from .exceptions import MPWarningError
 from .string_template_substitution import do_string_sub
 from .string_manip import getlist, remove_quotes
 from .string_manip import validate_thresholds, find_indices_in_config_section
@@ -82,6 +83,16 @@ OLD_BASE_CONFS = [
 
 # set all loggers to use UTC
 logging.Formatter.converter = time.gmtime
+
+# logging handler for exiting on warnings if EXIT_ON_WARN is True
+class ExitOnWarningHandler(logging.Handler):
+    def __init__(self):
+        super().__init__(level=logging.WARNING)
+
+    def emit(self, record):
+        if record.levelno == logging.WARNING:
+            self.format(record)
+            raise MPWarningError()
 
 
 def setup(args, base_confs=None):
@@ -267,6 +278,11 @@ def launch(config_list):
 
     with open(final_conf, 'wt') as file_handle:
         config.write(file_handle)
+
+    # add warning handler to exit when a warning occurs if EXIT_ON_WARN is True
+    if config.getbool('config', 'EXIT_ON_WARN', False):
+        warning_handler = ExitOnWarningHandler()
+        config.logger.addHandler(warning_handler)
 
     return config
 
