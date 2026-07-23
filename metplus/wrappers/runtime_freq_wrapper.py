@@ -363,6 +363,9 @@ class RuntimeFreqWrapper(CommandBuilder):
 
     def _get_leads_as_group(self, time_input):
         """!"""
+        if self.c_dict.get('SKIP_LEAD_SEQ', False):
+            return {'': [0]}
+
         lead_groups = get_lead_sequence_groups(self.config)
         if lead_groups:
             return lead_groups
