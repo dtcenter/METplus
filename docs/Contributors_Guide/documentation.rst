@@ -854,7 +854,7 @@ using the "csv-table" directive.
 For more information, see
 `CSV Files <https://sublime-and-sphinx-guide.readthedocs.io/en/latest/tables.html#csv-files>`_
 and
-`CSV Table <https://docutils.sourceforge.io/docs/ref/rst/directives.html#csv-table-1>`_.
+`CSV Table <https://docutils.sourceforge.io/docs/ref/rst/directives.html#csv-table>`_.
 
 As of 2023, using CSV files to create tables hasn't been used in the METplus
 documentation.
@@ -1460,7 +1460,7 @@ Verification Datasets Guide:
 Read the Docs METplus Documentation
 ===================================
 
-The METplus components use `Read the Docs <https://docs.readthedocs.io/>`_ to
+The METplus components use `Read the Docs <https://docs.readthedocs.com/platform/stable/>`_ to
 build and display the documentation. Read the Docs simplifies the
 documentation process by building, versioning, and hosting the documentation.
 
