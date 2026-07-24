@@ -1255,7 +1255,7 @@ environments, refer to the comments in the scripts found in
 If none of these environments contain the package requirements
 needed to run a new use case, a new environment must be added by a METplus developer.
 See the instructions below or create a new discussion on the
-`METplus GitHub Discussions <https://github.com/dtcenter/METplus/discussions/new/choose>`_
+`METplus GitHub Discussions <https://github.com/login?return_to=https%3A%2F%2Fgithub.com%2Fdtcenter%2FMETplus%2Fdiscussions%2Fnew%2Fchoose>`_
 forum.
 
 A **README.md** file can be found in *internal/scripts/docker_env* that
