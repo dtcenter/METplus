@@ -26,7 +26,7 @@
 
 .. [Ebert2008] Ebert, E.E., 2008: Fuzzy verification of high-resolution gridded forecasts: a review and proposed framework. *Meteorological Applications*, 15, 51-64.
 
-.. [Eckel2012] Eckel, F.A., M.S. Allen, M.C. Sittel, 2012: Estimation of Ambiguity in Ensemble Forecasts. *Wea. Forecasting*, 27, 50-69. doi: http://dx.doi.org/10.1175/WAF-D-11-00015.1
+.. [Eckel2012] Eckel, F.A., M.S. Allen, M.C. Sittel, 2012: Estimation of Ambiguity in Ensemble Forecasts. *Wea. Forecasting*, 27, 50-69. doi: `http://dx.doi.org/10.1175/WAF-D-11-00015.1 <https://journals.ametsoc.org:443/view/journals/wefo/27/1/waf-d-11-00015_1.xml>`_
 
 .. [Efron2007] Efron, B. 2007: Correlation and large-scale significance testing. *Journal of the American Statistical Association*, 102(477), 93-103.
 
