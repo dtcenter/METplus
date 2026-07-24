@@ -197,6 +197,6 @@ class NullLogger:
 # generic and wrapper-specific versions are supported
 WARNING_CONFIGS = {
     'WARN_ON_DUPLICATE_OUTPUT': True,
+    'WARN_ON_OUTPUT_EXISTS': False,
     'EXIT_ON_WARN': False,
-
 }

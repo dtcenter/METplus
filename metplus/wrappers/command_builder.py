@@ -1085,10 +1085,16 @@ class CommandBuilder:
             return True
 
         # if the output file exists and we are supposed to skip, don't run tool
-        self.logger.debug(f'Skip writing output {output_path} because it already '
-                          'exists. Remove file or change '
-                          f'{self.app_name.upper()}_SKIP_IF_OUTPUT_EXISTS to False '
-                          'to process')
+        skip_config_name = f"{self.app_name.upper()}_SKIP_IF_OUTPUT_EXISTS"
+        msg = (
+            f"Skip writing output {output_path} because it already exists. "
+            f"Remove file or change {skip_config_name} to False to process"
+        )
+        if self.c_dict.get('WARN_ON_OUTPUT_EXISTS', False):
+            self.logger.warning(msg)
+        else:
+            self.logger.debug(msg)
+
         return False
 
     def _check_if_output_has_been_written(self, output_path, skip_if_output_exists=False):
