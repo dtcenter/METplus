@@ -9,7 +9,7 @@ Description
 
   Project Website: https://www.eumetnet.eu/activities/observations-programme/current-activities/opera/
  
-  BAMS Paper: https://doi.org/10.1175/BAMS-D-12-00216.1
+  BAMS Paper: `https://doi.org/10.1175/BAMS-D-12-00216.1 <https://journals.ametsoc.org:443/view/journals/bams/95/6/bams-d-12-00216.1.xml>`_
 
 Sample image
 
