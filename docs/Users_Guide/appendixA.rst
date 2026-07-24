@@ -388,7 +388,7 @@ METplus Components Python Packages
     Select METplus Use Cases
 
   Source:
-    https://github.com/pyproj4/pyproj/archive/v2.3.1rel.tar.gz
+    `https://github.com/pyproj4/pyproj/archive/v2.3.1rel.tar.gz <https://codeload.github.com/pyproj4/pyproj/tar.gz/refs/tags/v2.3.1rel>`_
 
   Description:
     Python interface to PROJ (cartographic projections and  coordinate transformations library)
@@ -421,7 +421,7 @@ METplus Components Python Packages
     | METdataio
 
   Source:
-    https://github.com/pytest-dev/pytest/archive/5.2.1.tar.gz
+    `https://github.com/pytest-dev/pytest/archive/5.2.1.tar.gz <https://codeload.github.com/pytest-dev/pytest/tar.gz/refs/tags/5.2.1>`_
 
   Description:
     A mature full-featured Python testing tool that helps to write better programs
