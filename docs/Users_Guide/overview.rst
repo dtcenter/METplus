@@ -122,7 +122,7 @@ METplus GitHub Discussions Forum, see the
 information on how to send data see the
 `How to Send Us Data post <https://github.com/dtcenter/METplus/discussions/954>`_.
 For more information about METplus, see	the
-`METplus webpage <https://dtcenter.org/community-code/metplus>`_.
+`METplus webpage <https://dtcenter.org/software-tools/metplus>`_.
 
 Our goal is to continually enhance METplus and add to its capabilities.
 Because our time, resources, and talents are sometimes limited, we welcome
