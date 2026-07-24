@@ -202,7 +202,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
 
         # if MODEL_LIST was not set, populate it from the model info list
         if not c_dict['MODEL_LIST'] and c_dict['MODEL_INFO_LIST']:
-            self.logger.warning(
+            self.logger.debug(
                 "MODEL_LIST was left blank, creating with MODELn information."
             )
             for model_info in c_dict['MODEL_INFO_LIST']:
@@ -580,7 +580,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
             if c_dict[list_name]:
                 continue
 
-            self.logger.warning(
+            self.logger.debug(
                 f"{list_name} was found in LOOP_LIST_ITEMS but is empty. "
                 "Moving to group list"
             )
