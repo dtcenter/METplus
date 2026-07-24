@@ -52,7 +52,7 @@ are required to perform the following steps.
 
 1. Create a **New project**.
 
-   - From the `DTCenter GitHub Projects <https://github.com/orgs/dtcenter/projects>`_
+   - From the `DTCenter GitHub Projects <https://github.com/orgs/dtcenter/projects?query=is%3Aopen>`_
      page, select the **New project** button.
 
    - In the **Create Project** popup window, select the
