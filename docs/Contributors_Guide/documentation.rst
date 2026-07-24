@@ -404,8 +404,8 @@ It is important to use a relative path (i.e. "../../") to get to the correct
 directory of the file being referenced in the literal include.  This will keep the 
 file linking to the correct version and branch.  
 
-As an example, refer to the METplus User's Guide.  See this 
-`line <https://github.com/dtcenter/METplus/blob/46f705fc2c1b861e3aa6314d030eb9b4c382d0b3/docs/use_cases/met_tool_wrapper/PointStat/PointStat.py#L55>`_ 
+As an example, refer to the METplus User's Guide.  See line 55 in
+`PointStat.py <https://github.com/dtcenter/METplus/blob/46f705fc2c1b861e3aa6314d030eb9b4c382d0b3/docs/use_cases/met_tool_wrapper/PointStat/PointStat.py>`_ 
 in the PointStat Wrapper Use Case documentation, which uses RST's :code:`.. literalinclude::` 
 and renders the text of the referenced file in this 
 `section <https://metplus.readthedocs.io/en/develop/generated/met_tool_wrapper/PointStat/PointStat.html#metplus-configuration>`_.
