@@ -9,7 +9,7 @@ Add or update information about software releases on the website.
   * Navigate to https://dtcenter.org and sign in to the Drupal interface.
 
   * Navigate to the METplus downloads page at
-    https://dtcenter.org/community-code/metplus/download
+    https://dtcenter.org/software-tools/metplus/download
 
   * Click on the **Edit** button to edit the Downloads page.
 
