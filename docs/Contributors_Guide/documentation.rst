@@ -865,7 +865,7 @@ If a table already exists it can be converted into a Sphinx list table by
 copying the existing table into a Google Sheet and using formulas to
 restructure it into a list table format. An example of how to do this is
 described below. This
-`spreadsheet <https://docs.google.com/spreadsheets/d/1splypR5JLRLgokFwUcAXqkWGJvQkJ4IYX9IoD8niyyY/>`_
+`spreadsheet <https://docs.google.com/spreadsheets/d/1splypR5JLRLgokFwUcAXqkWGJvQkJ4IYX9IoD8niyyY/edit>`_
 is used as an example.
 
 The first step is to copy the table into the first cell (A1) of the
