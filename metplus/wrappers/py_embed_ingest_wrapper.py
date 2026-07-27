@@ -90,8 +90,8 @@ class PyEmbedIngestWrapper(LoopTimesWrapper):
 
         self.config.set(instance, 'REGRID_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS',
                         c_dict['SKIP_IF_OUTPUT_EXISTS'])
-        self.config.set(instance, 'REGRID_DATA_PLANE_WARN_ON_DUPLICATE_OUTPUT',
-                        c_dict['WARN_ON_DUPLICATE_OUTPUT'])
+        self.config.set(instance, 'REGRID_DATA_PLANE_WARN_IF_DUPLICATE_OUTPUT',
+                        c_dict['WARN_IF_DUPLICATE_OUTPUT'])
 
         # set config variable to prevent incorrect error in RegridDataPlane
         # RDP requires either FCST_ or OBS_ options when run directly, but

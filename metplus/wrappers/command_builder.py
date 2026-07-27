@@ -1090,7 +1090,7 @@ class CommandBuilder:
             f"Skip writing output {output_path} because it already exists. "
             f"Remove file or change {skip_config_name} to False to process"
         )
-        if self.c_dict.get('WARN_ON_OUTPUT_EXISTS', False):
+        if self.c_dict.get('WARN_IF_OUTPUT_EXISTS', False):
             self.logger.warning(msg)
         else:
             self.logger.debug(msg)
@@ -1107,7 +1107,7 @@ class CommandBuilder:
         @param skip_if_output_exists boolean to skip writing output files if
          they already exist
         """
-        if (not self.c_dict.get('WARN_ON_DUPLICATE_OUTPUT', True)
+        if (not self.c_dict.get('WARN_IF_DUPLICATE_OUTPUT', True)
                 or skip_if_output_exists):
             return
 
@@ -1115,8 +1115,8 @@ class CommandBuilder:
             self.logger.warning(
                 "Output has already been written during this METplus run and "
                 f"will be overwritten: {output_path}. Disable this warning by "
-                "setting WARN_ON_DUPLICATE_OUTPUT=False "
-                f"or {self.app_name.upper()}_WARN_ON_DUPLICATE_OUTPUT=False. "
+                "setting WARN_IF_DUPLICATE_OUTPUT=False "
+                f"or {self.app_name.upper()}_WARN_IF_DUPLICATE_OUTPUT=False. "
                 "Check that the *_OUTPUT_TEMPLATE and/or *_OUTPUT_PREFIX config"
                 " options are set to produce unique output for each run"
             )

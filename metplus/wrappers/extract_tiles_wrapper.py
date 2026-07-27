@@ -154,7 +154,7 @@ class ExtractTilesWrapper(LoopTimesWrapper):
             overrides[f'{data_type}_{rdp}_OUTPUT_DIR'] = self.c_dict['OUTPUT_DIR']
 
         overrides[f'{rdp}_SKIP_IF_OUTPUT_EXISTS'] = self.c_dict['SKIP_IF_OUTPUT_EXISTS']
-        overrides[f'{rdp}_WARN_ON_DUPLICATE_OUTPUT'] = self.c_dict['WARN_ON_DUPLICATE_OUTPUT']
+        overrides[f'{rdp}_WARN_IF_DUPLICATE_OUTPUT'] = self.c_dict['WARN_IF_DUPLICATE_OUTPUT']
         overrides[f'{rdp}_ONCE_PER_FIELD'] = False
         overrides[f'{rdp}_MANDATORY'] = False
 

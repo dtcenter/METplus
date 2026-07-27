@@ -15168,435 +15168,440 @@ METplus Configuration Glossary
 
      | *Used by:* GenEnsProd
 
-   WARN_ON_DUPLICATE_OUTPUT
+   WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run.
      Set to False to supress it.
 
      | *Used by:* All
 
-   ASCII2NC_WARN_ON_DUPLICATE_OUTPUT
+   ASCII2NC_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for ASCII2NC.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* ASCII2NC
 
-   DATA_INGEST_WARN_ON_DUPLICATE_OUTPUT
+   DATA_INGEST_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for DataIngest.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* DataIngest
 
-   ENSEMBLE_STAT_WARN_ON_DUPLICATE_OUTPUT
+   ENSEMBLE_STAT_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for EnsembleStat.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* EnsembleStat
 
-   EXTRACT_TILES_WARN_ON_DUPLICATE_OUTPUT
+   EXTRACT_TILES_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for ExtractTiles.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* ExtractTiles
 
-   GEN_VX_MASK_WARN_ON_DUPLICATE_OUTPUT
+   GEN_VX_MASK_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for GenVxMask.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* GenVxMask
 
-   GEN_ENS_PROD_WARN_ON_DUPLICATE_OUTPUT
+   GEN_ENS_PROD_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for GenEnsProd.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* GenEnsProd
 
-   GRID_DIAG_WARN_ON_DUPLICATE_OUTPUT
+   GRID_DIAG_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for GridDiag.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* GridDiag
 
-   GRID_STAT_WARN_ON_DUPLICATE_OUTPUT
+   GRID_STAT_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for GridStat.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* GridStat
 
-   IODA2NC_WARN_ON_DUPLICATE_OUTPUT
+   IODA2NC_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for IODA2NC.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* IODA2NC
 
-   MADIS2NC_WARN_ON_DUPLICATE_OUTPUT
+   MADIS2NC_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for MADIS2NC.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* MADIS2NC
 
-   MODE_WARN_ON_DUPLICATE_OUTPUT
+   MODE_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for MODE.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* MODE
 
-   MTD_WARN_ON_DUPLICATE_OUTPUT
+   MTD_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for MTD.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* MTD
 
-   PAIR_STAT_WARN_ON_DUPLICATE_OUTPUT
+   PAIR_STAT_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for PairStat.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* PairStat
 
-   PB2NC_WARN_ON_DUPLICATE_OUTPUT
+   PB2NC_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for PB2NC.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* PB2NC
 
-   PCP_COMBINE_WARN_ON_DUPLICATE_OUTPUT
+   PCP_COMBINE_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for PCPCombine.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* PCPCombine
 
-   PLOT_DATA_PLANE_WARN_ON_DUPLICATE_OUTPUT
+   PLOT_DATA_PLANE_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for PlotDataPlane.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* PlotDataPlane
 
-   PLOT_POINT_OBS_WARN_ON_DUPLICATE_OUTPUT
+   PLOT_POINT_OBS_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for PlotPointObs.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* PlotPointObs
 
-   POINT2GRID_WARN_ON_DUPLICATE_OUTPUT
+   POINT2GRID_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for Point2Grid.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* Point2Grid
 
-   POINT_STAT_WARN_ON_DUPLICATE_OUTPUT
+   POINT_STAT_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for PointStat.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* PointStat
 
-   PY_EMBED_INGEST_WARN_ON_DUPLICATE_OUTPUT
+   PY_EMBED_INGEST_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for PyEmbedIngest.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* PyEmbedIngest
 
-   REGRID_DATA_PLANE_WARN_ON_DUPLICATE_OUTPUT
+   REGRID_DATA_PLANE_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for RegridDataPlane.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* RegridDataPlane
 
-   RMW_ANALYSIS_WARN_ON_DUPLICATE_OUTPUT
+   RMW_ANALYSIS_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for RMWAnalysis.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* RMWAnalysis
 
-   SERIES_ANALYSIS_WARN_ON_DUPLICATE_OUTPUT
+   SERIES_ANALYSIS_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for SeriesAnalysis.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* SeriesAnalysis
 
-   STAT_ANALYSIS_WARN_ON_DUPLICATE_OUTPUT
+   STAT_ANALYSIS_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for StatAnalysis.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* StatAnalysis
 
-   TC_DIAG_WARN_ON_DUPLICATE_OUTPUT
+   TC_DIAG_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for TCDiag.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* TCDiag
 
-   TC_GEN_WARN_ON_DUPLICATE_OUTPUT
+   TC_GEN_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for TCGen.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* TCGen
 
-   TC_PAIRS_WARN_ON_DUPLICATE_OUTPUT
+   TC_PAIRS_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for TCPairs.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* TCPairs
 
-   TCRMW_WARN_ON_DUPLICATE_OUTPUT
+   TCRMW_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for TCRMW.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* TCRMW
 
-   TC_STAT_WARN_ON_DUPLICATE_OUTPUT
+   TC_STAT_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for TCStat.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* TCStat
 
-   WAVELET_STAT_WARN_ON_DUPLICATE_OUTPUT
+   WAVELET_STAT_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for WaveletStat.
      Set to False to supress it.
-     See also :term:`WARN_ON_DUPLICATE_OUTPUT`.
+     See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* WaveletStat
 
-   WARN_ON_OUTPUT_EXISTS
+   WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* All
 
-   ASCII2NC_WARN_ON_OUTPUT_EXISTS
+   ASCII2NC_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for ASCII2NC
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* ASCII2NC
 
-   DATA_INGEST_WARN_ON_OUTPUT_EXISTS
+   DATA_INGEST_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for DataIngest.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* DataIngest
 
-   ENSEMBLE_STAT_WARN_ON_OUTPUT_EXISTS
+   ENSEMBLE_STAT_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for EnsembleStat.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* EnsembleStat
 
-   EXTRACT_TILES_WARN_ON_OUTPUT_EXISTS
+   EXTRACT_TILES_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for ExtractTiles.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* ExtractTiles
 
-   GEN_VX_MASK_WARN_ON_OUTPUT_EXISTS
+   GEN_VX_MASK_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for GenVxMask.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* GenVxMask
 
-   GEN_ENS_PROD_WARN_ON_OUTPUT_EXISTS
+   GEN_ENS_PROD_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for GenEnsProd.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* GenEnsProd
 
-   GRID_DIAG_WARN_ON_OUTPUT_EXISTS
+   GRID_DIAG_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for GridDiag.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* GridDiag
 
-   GRID_STAT_WARN_ON_OUTPUT_EXISTS
+   GRID_STAT_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for GridStat.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* GridStat
 
-   IODA2NC_WARN_ON_OUTPUT_EXISTS
+   IODA2NC_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for IODA2NC.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* IODA2NC
 
-   MADIS2NC_WARN_ON_OUTPUT_EXISTS
+   MADIS2NC_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for MADIS2NC.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* MADIS2NC
 
-   MODE_WARN_ON_OUTPUT_EXISTS
+   MODE_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for MODE.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* MODE
 
-   MTD_WARN_ON_OUTPUT_EXISTS
+   MTD_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for MTD.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* MTD
 
-   PAIR_STAT_WARN_ON_OUTPUT_EXISTS
+   PAIR_STAT_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for PairStat.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* PairStat
 
-   PB2NC_WARN_ON_OUTPUT_EXISTS
+   PB2NC_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for PB2NC.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* PB2NC
 
-   PCP_COMBINE_WARN_ON_OUTPUT_EXISTS
+   PCP_COMBINE_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for PCPCombine.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* PCPCombine
 
-   PLOT_DATA_PLANE_WARN_ON_OUTPUT_EXISTS
+   PLOT_DATA_PLANE_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for PlotDataPlane.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* PlotDataPlane
 
-   PLOT_POINT_OBS_WARN_ON_OUTPUT_EXISTS
+   PLOT_POINT_OBS_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for PlotPointObs.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* PlotPointObs
 
-   POINT2GRID_WARN_ON_OUTPUT_EXISTS
+   POINT2GRID_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for Point2Grid.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* Point2Grid
 
-   POINT_STAT_WARN_ON_OUTPUT_EXISTS
+   POINT_STAT_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for PointStat.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* PointStat
 
-   PY_EMBED_INGEST_WARN_ON_OUTPUT_EXISTS
+   PY_EMBED_INGEST_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for PyEmbedIngest.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* PyEmbedIngest
 
-   REGRID_DATA_PLANE_WARN_ON_OUTPUT_EXISTS
+   REGRID_DATA_PLANE_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for RegridDataPlane.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* RegridDataPlane
 
-   RMW_ANALYSIS_WARN_ON_OUTPUT_EXISTS
+   RMW_ANALYSIS_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for RMWAnalysis.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* RMWAnalysis
 
-   SERIES_ANALYSIS_WARN_ON_OUTPUT_EXISTS
+   SERIES_ANALYSIS_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for SeriesAnalysis.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* SeriesAnalysis
 
-   STAT_ANALYSIS_WARN_ON_OUTPUT_EXISTS
+   STAT_ANALYSIS_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for StatAnalysis.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* StatAnalysis
 
-   TC_DIAG_WARN_ON_OUTPUT_EXISTS
+   TC_DIAG_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for TCDiag.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* TCDiag
 
-   TC_GEN_WARN_ON_OUTPUT_EXISTS
+   TC_GEN_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for TCGen.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* TCGen
 
-   TC_PAIRS_WARN_ON_OUTPUT_EXISTS
+   TC_PAIRS_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for TCPairs.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* TCPairs
 
-   TCRMW_WARN_ON_OUTPUT_EXISTS
+   TCRMW_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for TCRMW.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* TCRMW
 
-   TC_STAT_WARN_ON_OUTPUT_EXISTS
+   TC_STAT_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for TCStat.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* TCStat
 
-   WAVELET_STAT_WARN_ON_OUTPUT_EXISTS
+   WAVELET_STAT_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for WaveletStat.
-     Set to True to output warning. See also :term:`WARN_ON_OUTPUT_EXISTS`.
+     Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
 
      | *Used by:* WaveletStat
+
+   EXIT_ON_WARN
+     Immediately exit METplus run when a warning message is encountered.
+
+     | *Used by:* All

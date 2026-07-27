@@ -196,7 +196,6 @@ class NullLogger:
 # config variable names that involve warnings and their default values
 # generic and wrapper-specific versions are supported
 WARNING_CONFIGS = {
-    'WARN_ON_DUPLICATE_OUTPUT': True,
-    'WARN_ON_OUTPUT_EXISTS': False,
-    'EXIT_ON_WARN': False,
+    'WARN_IF_DUPLICATE_OUTPUT': True,
+    'WARN_IF_OUTPUT_EXISTS': False,
 }
