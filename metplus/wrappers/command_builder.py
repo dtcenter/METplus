@@ -1081,21 +1081,31 @@ class CommandBuilder:
 
         self._check_if_output_has_been_written(output_path, skip_if_output_exists)
 
-        if not output_exists or not skip_if_output_exists:
+        if not output_exists:
             return True
 
-        # if the output file exists and we are supposed to skip, don't run tool
-        skip_config_name = f"{self.app_name.upper()}_SKIP_IF_OUTPUT_EXISTS"
-        msg = (
-            f"Skip writing output {output_path} because it already exists. "
-            f"Remove file or change {skip_config_name} to False to process"
-        )
-        if self.c_dict.get('WARN_IF_OUTPUT_EXISTS', False):
-            self.logger.warning(msg)
-        else:
-            self.logger.debug(msg)
+        warn_if_exists = self.c_dict.get('WARN_IF_OUTPUT_EXISTS', False)
 
-        return False
+        if skip_if_output_exists:
+            # if the output file exists and we are supposed to skip, don't run tool
+            skip_config_name = f"{self.app_name.upper()}_SKIP_IF_OUTPUT_EXISTS"
+            msg = (
+                f"Skip writing output {output_path} because it already exists. "
+                f"Remove file or change {skip_config_name} to False to process"
+            )
+            if self.c_dict.get('WARN_IF_OUTPUT_EXISTS', False):
+                self.logger.warning(msg)
+            else:
+                self.logger.debug(msg)
+
+            return False
+
+        if warn_if_exists:
+            self.logger.warning(f"Output {output_path} already exists and will be overwritten. "
+                                f"Set {self.app_name.upper()}_WARN_IF_OUTPUT_EXISTS=False to turn "
+                                "off this warning.")
+
+        return True
 
     def _check_if_output_has_been_written(self, output_path, skip_if_output_exists=False):
         """!Check if output file has already been written during this METplus run.
