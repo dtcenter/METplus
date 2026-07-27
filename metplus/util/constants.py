@@ -193,9 +193,9 @@ class NullLogger:
     def warning(self, message): pass # skip logging
     def error(self, message): pass # skip logging
 
-# config variable names that involve warnings
+# config variable names that involve warnings and their default values
 # generic and wrapper-specific versions are supported
-WARNING_CONFIGS = (
-    'SKIP_WARN_OUTPUT_OVERWRITE',
-    'EXIT_ON_WARN',
-)
+WARNING_CONFIGS = {
+    'WARN_IF_DUPLICATE_OUTPUT': True,
+    'WARN_IF_OUTPUT_EXISTS': False,
+}

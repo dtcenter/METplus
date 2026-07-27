@@ -50,6 +50,7 @@ EXPECTED_CONFIG_KEYS = [
     'METPLUS_VERSION',
     'ALLOW_MISSING_INPUTS',
     'INPUT_THRESH',
+    'EXIT_ON_WARN',
 ]
 
 def remove_output_base(config):
