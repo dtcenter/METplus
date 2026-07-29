@@ -52,8 +52,8 @@ are required to perform the following steps.
 
 1. Create a **New project**.
 
-   - From the `DTCenter GitHub Projects <https://github.com/orgs/dtcenter/projects?query=is%3Aopen>`_
-     page, select the **New project** button.
+   - From the `DTCenter GitHub Projects page <https://github.com/orgs/dtcenter/projects?query=is%3Aopen>`_,
+     select the **New project** button.
 
    - In the **Create Project** popup window, select the
      **Project templates: From your organization** option on the left side,
@@ -331,7 +331,7 @@ Sequence of Events - Contributing Code
 The user must set up a GitHub account if one does not already exist.
 Log into the account.  For more information about GitHub accounts, please refer
 to the GitHub Documentation on
-`GitHub accounts <https://help.github.com/en/github/getting-started-with-github/signing-up-for-a-new-github-account>`_.
+`GitHub accounts <https://docs.github.com/en/account-and-profile/how-tos/account-management/creating-an-account-on-github>`_.
 
 
 Workflow Overview

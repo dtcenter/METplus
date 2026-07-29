@@ -344,7 +344,7 @@ and
 `Math support in Sphinx <https://sphinx-rtd-trial.readthedocs.io/en/latest/ext/math.html>`_ for additional information.
 
 There are quite a few examples in
-`MET Appendix C <https://met.readthedocs.io/en/develop/Users_Guide/appendixC.html#appendix-c-verification-measures>`_.
+`MET Appendix C <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/appendixC.html#appendix-c-verification-measures>`_.
 
 
 Equations
@@ -374,7 +374,7 @@ Matrices
 Matrices are not frequently used in the METplus documentation, however there
 is an example in the
 `MET documentation for Stable Equitable Error in Probability Space (SEEPS)
-<https://met.readthedocs.io/en/develop/Users_Guide/appendixC.html#stable-equitable-error-in-probability-space-seeps>`_.
+<https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/appendixC.html#stable-equitable-error-in-probability-space-seeps>`_.
 Example::
 
   .. math:: \{S^{S}_{vf}\} = \frac{1}{2}
@@ -837,7 +837,7 @@ Line Breaks in List Tables
 In some instances, the text in a column of a table needs to wrap to keep the
 text readable.  To create a line break use :code:`:raw-html:`<br />``. See
 Column Number 37-38 in the first column of 
-`Table 13.8 Format information for SSVAR <https://met.readthedocs.io/en/latest/Users_Guide/ensemble-stat.html#id8>`_ 
+`Table 14.8 Format information for SSVAR <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/ensemble-stat.html#id8>`_ 
 as an example. The raw RST for that cell is:
 
 .. code-block:: none
@@ -888,7 +888,7 @@ could be used), paste in the formula below to reformat the existing table::
 In the formula above, the following functions are used and documentation
 describing each function is linked below:
 
-  * `char <https://https://support.google.com/docs/answer/3094120?hl=en&ref_topic=3105625&sjid=11023572608666589922-NA>`_ -
+  * `char <https://support.google.com/docs/answer/3094120?hl=en&ref_topic=3105625&sjid=11023572608666589922-NA>`_ -
     Converts a number into a character according to the current Unicode table.
 
   * `split <https://support.google.com/docs/answer/3094136?sjid=11023572608666589922-NA>`_ -
@@ -1012,7 +1012,7 @@ of grid tables.
 An example of the use of a grid table can be found in the MET Installation Guide under the
 dropdown title **IF THE USER ALREADY HAS THE LIBRARY DEPENDENCIES INSTALLED** in
 the section 
-`External Library Handling in compile_MET_all.sh <https://met.readthedocs.io/en/latest/Users_Guide/installation.html#external-library-handling-in-compile-met-all-sh>`_.
+`External Library Handling in compile_MET_all.sh <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/installation.html#external-library-handling-in-compile-met-all-sh>`_.
 
 To force a grid table to use a line break inside of a cell so that the text will
 wrap, insert an empty line between the text to be wrapped.  The raw RST for this table
@@ -1500,12 +1500,12 @@ branch and a bugfix branch when the branch is deleted.
 Documentation for each METplus component can be found at the links below:
 
 * `METplus <https://metplus.readthedocs.io/>`_
-* `MET <https://met.readthedocs.io/>`_  
-* `METcalcpy <https://metcalcpy.readthedocs.io/>`_
-* `METdataio <https://metdataio.readthedocs.io/>`_
-* `METexpress <https://metexpress.readthedocs.io/>`_
-* `METplotpy <https://metplotpy.readthedocs.io/>`_
-* `METviewer <https://metviewer.readthedocs.io/>`_
+* `MET <https://metplus.readthedocs.io/projects/met/en/latest/>`_  
+* `METcalcpy <https://metplus.readthedocs.io/projects/metcalcpy/en/latest/>`_
+* `METdataio <https://metplus.readthedocs.io/projects/metdataio/en/latest/>`_
+* `METexpress <https://metplus.readthedocs.io/projects/metexpress/en/latest//>`_
+* `METplotpy <https://metplus.readthedocs.io/projects/metplotpy/en/latest/>`_
+* `METviewer <https://metplus.readthedocs.io/projects/metviewer/en/latest/>`_
 
 
 Building Sphinx Documentation Manually

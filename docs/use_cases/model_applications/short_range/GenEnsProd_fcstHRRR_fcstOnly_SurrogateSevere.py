@@ -26,7 +26,7 @@ model_applications/short_range/GenEnsProd_fcstHRRR_fcstOnly_SurrogateSevere.conf
 #    2. Create a binary mask of points that meet a given threshold of UH.
 #    3. Convert the binary mask into a probability field by applying a Gaussian filter.
 # 
-# For more information, please reference Sobash et al. 2011 (https://journals.ametsoc.org/doi/full/10.1175/WAF-D-10-05046.1).
+# For more information, please reference Sobash et al. 2011 (`https://journals.ametsoc.org/doi/full/10.1175/WAF-D-10-05046.1 <https://journals.ametsoc.org:443/view/journals/wefo/26/5/waf-d-10-05046_1.xml>`_).
 
 ##############################################################################
 # Version Added
