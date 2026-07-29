@@ -666,11 +666,6 @@ To make sure the web address is correct:
 
     `StatAnalysis: Basic Use Case <../generated/met_tool_wrapper/StatAnalysis/StatAnalysis.html>`_
 
-Examples of the links can be seen in this 
-`table <https://metplus.readthedocs.io/en/latest/Users_Guide/overview.html#metplus-components-python-requirements>`_ 
-in the far right column.  Please note, it may be necessary to scroll down to
-use the horizontal scroll bar to see the far right **Use Cases** column.
-
 
 Linking to a Table
 ^^^^^^^^^^^^^^^^^^

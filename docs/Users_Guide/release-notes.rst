@@ -29,11 +29,11 @@ is broken down into the following development cycles for each component:
 METplus Components Release Note Links
 =====================================
 
-* MET (`latest <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/release-notes.html>`__, `development <https://met.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__)
-* METviewer (`latest <https://metviewer.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__, `development <https://metviewer.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__)
-* METplotpy (`latest <https://metplotpy.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__, `development <https://metplotpy.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__)
-* METcalcpy (`latest <https://metcalcpy.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__, `development <https://metcalcpy.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__)
-* METdataio (`latest <https://metdataio.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__, `development <https://metdataio.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__)
+* MET (`latest <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/release-notes.html>`__, `development <https://metplus.readthedocs.io/projects/met/en/develop/Users_Guide/release-notes.html>`__)
+* METviewer (`latest <https://metplus.readthedocs.io/projects/metviewer/en/latest/Users_Guide/release-notes.html>`__, `development <https://metplus.readthedocs.io/projects/metviewer/en/develop/Users_Guide/release-notes.html>`__)
+* METplotpy (`latest <https://metplus.readthedocs.io/projects/metplotpy/en/latest/Users_Guide/release-notes.html>`__, `development <https://metplus.readthedocs.io/projects/metplotpy/en/develop/Users_Guide/release-notes.html>`__)
+* METcalcpy (`latest <https://metplus.readthedocs.io/projects/metcalcpy/en/latest/Users_Guide/release-notes.html>`__, `development <https://metplus.readthedocs.io/projects/metcalcpy/en/develop/Users_Guide/release-notes.html>`__)
+* METdataio (`latest <https://metplus.readthedocs.io/projects/metdataio/en/latest/Users_Guide/release-notes.html>`__, `development <https://metplus.readthedocs.io/projects/metdataio/en/develop/Users_Guide/release-notes.html>`__)
 * METexpress (`latest <https://github.com/dtcenter/METexpress/releases>`__, `development <https://github.com/dtcenter/METexpress/releases>`__)
 * METplus Wrappers (`latest <https://metplus.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__, :ref:`upgrade instructions <upgrade-instructions>`, `development <https://metplus.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__)
 
