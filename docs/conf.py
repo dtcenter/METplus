@@ -268,6 +268,7 @@ linkcheck_ignore = [
     r"https://hub\.docker\.com/repository/docker/dtcenter/met/general", # Ignore Docker Hub MET repository page
     r"https://hub\.docker\.com/repository/docker/dtcenter/metplus-data/tags", # Ignore Docker Hub METplus-data tags page
     r"https://hub\.docker\.com/repository/docker/dtcenter/metplus/tags", # Ignore Docker Hub METplus tags page
+    r"https://nco\.sourceforge\.net/nco\.html",  # Ignore NCO documentation page
 ]
 
 linkcheck_allowed_redirects = {

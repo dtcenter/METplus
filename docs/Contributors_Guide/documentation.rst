@@ -6,7 +6,7 @@ Overview
 ========
 
 The METplus documentation (beginning with version 3.0) is available
-`online <https://metplus.readthedocs.io/>`_. The majority of the documentation 
+`online <https://metplus.readthedocs.io/en/latest/>`_. The majority of the documentation 
 is created using the Sphinx documentation generator tool, which was originally 
 created for Python documentation. The METplus documentation is created using 
 `reStructuredText (RST) <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html>`_. 

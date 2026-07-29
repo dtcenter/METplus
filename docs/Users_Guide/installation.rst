@@ -14,7 +14,7 @@ Supported Architectures
 
 METplus Wrappers was developed on Debian Linux and is supported on this
 platform. Each release listed on the
-`METplus Downloads <https://dtcenter.org/community-code/metplus/download>`_
+`METplus Downloads <https://dtcenter.org/software-tools/metplus/download>`_
 page includes a link to the **Existing Builds and Docker** for that version.
 The METplus team supports the installation of the METplus components on
 several operational and research high performance computing platforms,

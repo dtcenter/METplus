@@ -36,7 +36,7 @@ model_applications/space_weather/GenVxMask_fcstGloTEC_solar_altitude.conf
 # Background: The solar altitude angle is the angle of the sun relative to the Earth's horizon,
 # and is measured in degrees. The altitude is zero at sunrise and sunset, and can reach a
 # maximum of 90 degrees (directly overhead) at noon at latitudes near the equator.
-# [Source: https://sciencing.com/solar-altitude-23364.html]
+# [Source: https://www.sciencing.com:443/solar-altitude-23364/]
 
 ##############################################################################
 # Scientific Objective

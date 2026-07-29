@@ -36,14 +36,14 @@ Add or update information about software releases on the website.
         use "develop" in the URL, but for official releases, please ensure the
         link uses the branch name (e.g. main_vX.Y) as opposed to the tag name
         (e.g. vX.Y.Z).  For example, use
-        "https://metplus.readthedocs.io/en/main_vX.Y/Users_Guide/" and NOT
-        "https://metplus.readthedocs.io/en/vX.Y.Z/Users_Guide/"
+        :code:`https://metplus.readthedocs.io/en/main_vX.Y/Users_Guide/` and NOT
+        :code:`https://metplus.readthedocs.io/en/vX.Y.Z/Users_Guide/`
 
       * Add Link: Link text should be "Existing Builds and Docker" and the URL
         should be the latest Existing Builds page. Beta releases can use
         "develop" in the URL, but for rcN and official releases, please ensure
         the link uses the branch name (e.g. main_vX.Y). For example, use
-        https://metplus.readthedocs.io/en/main_vX.Y/Users_Guide/release-notes.html#existing-builds
+        :code:`https://metplus.readthedocs.io/en/main_vX.Y/Users_Guide/release-notes.html#existing-builds`
 
     * In the **Release Notes** text box provide a direct link to the
       *release-notes.html* file in the User's Guide.

@@ -15,7 +15,7 @@ File format
   GRIB2
 
 Location of data
-  Web: https://mrms.ncep.noaa.gov/data/; NOAA HPSS; LDM
+  Web: https://mrms.ncep.noaa.gov/; NOAA HPSS; LDM
 
 Access restrictions
   None
