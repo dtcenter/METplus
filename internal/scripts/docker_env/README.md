@@ -533,7 +533,7 @@ export METPLUS_ENV_VERSION=v13.0
 ```
 
 
-## metplus_dev.v13.0 (from diff.v13.0)
+## metplus_dev.v13.0 (from py_embed_base.v13.0)
 
 This environment is used for METplus wrappers development.
 It contains all the requirements for METplus wrappers,
@@ -545,7 +545,7 @@ the difference tests, and building the documentation.
 export METPLUS_ENV_VERSION=v13.0
 docker build -t dtcenter/metplus-envs:metplus_dev.${METPLUS_ENV_VERSION} \
     --build-arg METPLUS_ENV_VERSION \
-    --build-arg BASE_ENV=diff \
+    --build-arg BASE_ENV=py_embed_base \
     --build-arg ENV_NAME=metplus_dev .
 docker push dtcenter/metplus-envs:metplus_dev.${METPLUS_ENV_VERSION}
 ```

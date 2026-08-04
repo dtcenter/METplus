@@ -634,9 +634,11 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                          level=None, extra=None):
         if name is None:
             name = 'APCP'
+            self.logger.debug(f"Field name not specified. Assuming {name}")
+
+        if level is None:
             level = f'A{str(search_accum).zfill(2)}'
-            self.logger.debug("Field name not specified. Assuming "
-                              f"{name}/{level}")
+            self.logger.debug(f"Field level not specified. Assuming {level}")
 
         field_info = self.get_field_info(v_name=name,
                                          v_level=level,

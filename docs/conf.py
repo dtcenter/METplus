@@ -230,6 +230,26 @@ intersphinx_mapping = {'numpy':("https://numpy.org/doc/stable/", None)}
 def setup(app):
     app.add_css_file("custom.css")
 
+# -- linkcheck builder configuration ----------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-the-linkcheck-builder
+
+linkcheck_timeout = 10
+linkcheck_retries = 2
+linkcheck_workers = 8
+
+linkcheck_ignore = [
+    # add regex patterns for URLs that should be skipped, e.g.:
+    # r'https://dtcenter\.org/.*',   # verify first — some DTC pages may block
+    # r'https://www\.weather\.gov/.*',      # NWS pages sometimes rate-limit or redirect oddly
+]
+
+linkcheck_allowed_redirects = {
+    # map of regex -> regex for redirects that are fine to follow
+}
+
+linkcheck_anchors = True
+linkcheck_anchors_ignore = ['^!']
+
 # -- Replace values in docs ------------------------------------------------------------
 rst_epilog = f"""
 .. |copyright|    replace:: {copyright}

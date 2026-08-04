@@ -388,10 +388,10 @@ jobs:
       always() && (needs.check.outputs.no_skip == 'true' ||
       contains(fromJSON(needs.check.outputs.run_list), 'metplus_dev'))
     runs-on: ubuntu-latest
-    needs: [check,diff]
+    needs: [check,py_embed_base]
     env:
       ENV_NAME: ${{ github.job }}
-      BASE_ENV: diff
+      BASE_ENV: py_embed_base
     steps:
       - uses: actions/checkout@v6
       - run: .github/jobs/build_conda_image.sh
