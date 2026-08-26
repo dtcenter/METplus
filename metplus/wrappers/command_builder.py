@@ -19,7 +19,6 @@ from typing import Any
 from ..util.constants import PYTHON_EMBEDDING_TYPES, COMPRESSION_EXTENSIONS
 from ..util.constants import MULTIPLE_INPUT_WRAPPERS, TIME_OFFSET_WARNING_WRAPPERS
 from ..util.constants import WARNING_CONFIGS
-from ..util.exceptions import MPWarningError
 from ..util import getlist, preprocess_file
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
 from ..util import shift_time_seconds, seconds_to_met_time
@@ -503,10 +502,7 @@ class CommandBuilder:
             # error should already be reported
             self.logger.error(log_message)
         else:
-            if self.c_dict.get('SUPPRESS_WARNINGS', False):
-                self.logger.debug(log_message)
-            else:
-                self.logger.warning(log_message)
+            self.log_warn_or_debug(log_message, not self.c_dict.get('SUPPRESS_WARNINGS', False))
 
         return None, time_info
 
@@ -639,10 +635,7 @@ class CommandBuilder:
         """
         # warn instead of error if it is not mandatory to find files
         if self._is_optional_input(mandatory):
-            if self.c_dict.get('SUPPRESS_WARNINGS', False):
-                self.logger.debug(msg)
-            else:
-                self.logger.warning(msg)
+            self.log_warn_or_debug(msg, not self.c_dict.get('SUPPRESS_WARNINGS', False))
         else:
             self.log_error(msg)
 
@@ -1022,28 +1015,7 @@ class CommandBuilder:
              to output file path specified)
             @returns True if the app should be run or False if it should not
         """
-        output_path = output_path_template
-
-        # if output path template not specified, get it from
-        # c_dict keys OUTPUT_DIR and OUTPUT_TEMPLATE
-        if not output_path:
-            output_dir = self.c_dict.get('OUTPUT_DIR', '')
-            output_template = self.c_dict.get('OUTPUT_TEMPLATE', '')
-
-            # remove trailing path separator if necessary (directories)
-            output_template = output_template.rstrip(os.path.sep)
-            output_path = os.path.join(output_dir, output_template)
-
-        # substitute time info if provided
-        if time_info:
-            output_path = do_string_sub(output_path, **time_info)
-
-        # replace wildcard character * with all
-        output_path = output_path.replace('*', 'all')
-
-        # replace any whitespace with an underscore
-        output_path = '_'.join(output_path.split())
-
+        output_path = self._get_output_path_to_check(output_path_template, time_info)
         skip_if_output_exists = self.c_dict.get('SKIP_IF_OUTPUT_EXISTS', False)
 
         # get directory that the output file will exist
@@ -1093,11 +1065,7 @@ class CommandBuilder:
                 f"Skip writing output {output_path} because it already exists. "
                 f"Remove file or change {skip_config_name} to False to process"
             )
-            if self.c_dict.get('WARN_IF_OUTPUT_EXISTS', False):
-                self.logger.warning(msg)
-            else:
-                self.logger.debug(msg)
-
+            self.log_warn_or_debug(msg, self.c_dict.get('WARN_IF_OUTPUT_EXISTS', False))
             return False
 
         if warn_if_exists:
@@ -1106,6 +1074,30 @@ class CommandBuilder:
                                 "off this warning.")
 
         return True
+
+    def _get_output_path_to_check(self, output_path_template, time_info):
+        output_path = output_path_template
+
+        # if output path template not specified, get it from
+        # c_dict keys OUTPUT_DIR and OUTPUT_TEMPLATE
+        if not output_path:
+            output_dir = self.c_dict.get('OUTPUT_DIR', '')
+            output_template = self.c_dict.get('OUTPUT_TEMPLATE', '')
+
+            # remove trailing path separator if necessary (directories)
+            output_template = output_template.rstrip(os.path.sep)
+            output_path = os.path.join(output_dir, output_template)
+
+        # substitute time info if provided
+        if time_info:
+            output_path = do_string_sub(output_path, **time_info)
+
+        # replace wildcard character * with all
+        output_path = output_path.replace('*', 'all')
+
+        # replace any whitespace with an underscore
+        output_path = '_'.join(output_path.split())
+        return output_path
 
     def _check_if_output_has_been_written(self, output_path, skip_if_output_exists=False):
         """!Check if output file has already been written during this METplus run.
@@ -1811,3 +1803,8 @@ class CommandBuilder:
                                 env_var_name=env_var_name,
                                 metplus_configs=metplus_configs,
                                 extra_args={'constant': True})
+
+    def log_warn_or_debug(self, msg: str, should_it_warn: bool) -> None:
+        """Logs a message at WARNING level if condition is True, otherwise at DEBUG level."""
+        log_method = getattr(self.logger, 'warning' if should_it_warn else 'debug')
+        log_method(msg)

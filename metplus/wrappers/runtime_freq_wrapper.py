@@ -630,11 +630,7 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         msg = 'A problem occurred trying to obtain input files'
         if self.c_dict['ALLOW_MISSING_INPUTS']:
-            if self.c_dict.get('SUPPRESS_WARNINGS', False):
-                self.logger.debug(msg)
-            else:
-                self.logger.warning(msg)
-
+            self.log_warn_or_debug(msg, not self.c_dict.get('SUPPRESS_WARNINGS', False))
             return False
 
         # increment error counter for GridDiag because it does not log error for each missing file

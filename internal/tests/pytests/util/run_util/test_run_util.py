@@ -560,6 +560,6 @@ def test_exit_on_warn(metplus_config_files, tmp_path_factory, make_dummy_empty, 
     else:
         assert processes
 
-        all_commands = ru._run_processes(processes)
+        ru._run_processes(processes)
         total_errors = ru._get_total_errors_and_log_counts(processes, config.logger)
         assert total_errors == expected_run_errors
