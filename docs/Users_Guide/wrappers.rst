@@ -418,6 +418,8 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_CONTROL_ID`
 | :term:`ENSEMBLE_STAT_GRID_WEIGHT_FLAG`
 | :term:`ENSEMBLE_STAT_POINT_WEIGHT_FLAG`
+| :term:`ENSEMBLE_STAT_KDE_REF_ANGLE`
+| :term:`ENSEMBLE_STAT_WRITE_WEIGHTS`
 | :term:`ENSEMBLE_STAT_PROB_CAT_THRESH`
 | :term:`ENSEMBLE_STAT_PROB_PCT_THRESH`
 | :term:`ENSEMBLE_STAT_ECLV_POINTS`
@@ -1357,6 +1359,30 @@ ${METPLUS_POINT_WEIGHT_FLAG}
      - MET Config File
    * - :term:`ENSEMBLE_STAT_POINT_WEIGHT_FLAG`
      - point_weight_flag
+
+${METPLUS_KDE_REF_ANGLE}
+""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_KDE_REF_ANGLE`
+     - kde_ref_angle
+
+${METPLUS_WRITE_WEIGHTS}
+""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_WRITE_WEIGHTS`
+     - write_weights
 
 ${METPLUS_OUTPUT_PREFIX}
 """"""""""""""""""""""""
@@ -6389,6 +6415,8 @@ Configuration
 | :term:`PAIR_STAT_OUTPUT_FLAG_SEEPS`
 | :term:`PAIR_STAT_OUTPUT_FLAG_SEEPS_MPR`
 | :term:`PAIR_STAT_POINT_WEIGHT_FLAG`
+| :term:`PAIR_STAT_KDE_REF_ANGLE`
+| :term:`PAIR_STAT_WRITE_WEIGHTS`
 | :term:`PAIR_STAT_CUSTOM_LOOP_LIST`
 | :term:`PAIR_STAT_SKIP_IF_OUTPUT_EXISTS`
 | :term:`PAIR_STAT_MET_CONFIG_OVERRIDES`
@@ -7273,6 +7301,30 @@ ${METPLUS_POINT_WEIGHT_FLAG}
      - MET Config File
    * - :term:`PAIR_STAT_POINT_WEIGHT_FLAG`
      - point_weight_flag
+
+${METPLUS_KDE_REF_ANGLE}
+""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_KDE_REF_ANGLE`
+     - kde_ref_angle
+
+${METPLUS_WRITE_WEIGHTS}
+""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_WRITE_WEIGHTS`
+     - write_weights
 
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""
@@ -8593,6 +8645,8 @@ Configuration
 | :term:`POINT_STAT_UGRID_COORDINATES_FILE`
 | :term:`POINT_STAT_UGRID_CONFIG_FILE`
 | :term:`POINT_STAT_POINT_WEIGHT_FLAG`
+| :term:`POINT_STAT_KDE_REF_ANGLE`
+| :term:`POINT_STAT_WRITE_WEIGHTS`
 | :term:`POINT_STAT_ALLOW_MISSING_INPUTS`
 | :term:`POINT_STAT_INPUT_THRESH`
 |
@@ -9382,6 +9436,30 @@ ${METPLUS_POINT_WEIGHT_FLAG}
      - MET Config File
    * - :term:`POINT_STAT_POINT_WEIGHT_FLAG`
      - point_weight_flag
+
+${METPLUS_KDE_REF_ANGLE}
+""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_KDE_REF_ANGLE`
+     - kde_ref_angle
+
+${METPLUS_WRITE_WEIGHTS}
+""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_WRITE_WEIGHTS`
+     - write_weights
 
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""
