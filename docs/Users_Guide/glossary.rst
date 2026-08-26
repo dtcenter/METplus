@@ -15171,14 +15171,14 @@ METplus Configuration Glossary
    WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run.
-     Set to False to supress it.
+     Set to False to suppress it.
 
      | *Used by:* All
 
    ASCII2NC_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for ASCII2NC.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* ASCII2NC
@@ -15186,7 +15186,7 @@ METplus Configuration Glossary
    DATA_INGEST_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for DataIngest.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* DataIngest
@@ -15194,7 +15194,7 @@ METplus Configuration Glossary
    ENSEMBLE_STAT_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for EnsembleStat.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* EnsembleStat
@@ -15202,7 +15202,7 @@ METplus Configuration Glossary
    EXTRACT_TILES_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for ExtractTiles.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* ExtractTiles
@@ -15210,7 +15210,7 @@ METplus Configuration Glossary
    GEN_VX_MASK_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for GenVxMask.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* GenVxMask
@@ -15218,7 +15218,7 @@ METplus Configuration Glossary
    GEN_ENS_PROD_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for GenEnsProd.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* GenEnsProd
@@ -15226,7 +15226,7 @@ METplus Configuration Glossary
    GRID_DIAG_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for GridDiag.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* GridDiag
@@ -15234,7 +15234,7 @@ METplus Configuration Glossary
    GRID_STAT_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for GridStat.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* GridStat
@@ -15242,7 +15242,7 @@ METplus Configuration Glossary
    IODA2NC_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for IODA2NC.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* IODA2NC
@@ -15250,7 +15250,7 @@ METplus Configuration Glossary
    MADIS2NC_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for MADIS2NC.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* MADIS2NC
@@ -15258,7 +15258,7 @@ METplus Configuration Glossary
    MODE_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for MODE.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* MODE
@@ -15266,7 +15266,7 @@ METplus Configuration Glossary
    MTD_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for MTD.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* MTD
@@ -15274,7 +15274,7 @@ METplus Configuration Glossary
    PAIR_STAT_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for PairStat.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* PairStat
@@ -15282,7 +15282,7 @@ METplus Configuration Glossary
    PB2NC_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for PB2NC.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* PB2NC
@@ -15290,7 +15290,7 @@ METplus Configuration Glossary
    PCP_COMBINE_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for PCPCombine.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* PCPCombine
@@ -15298,7 +15298,7 @@ METplus Configuration Glossary
    PLOT_DATA_PLANE_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for PlotDataPlane.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* PlotDataPlane
@@ -15306,7 +15306,7 @@ METplus Configuration Glossary
    PLOT_POINT_OBS_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for PlotPointObs.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* PlotPointObs
@@ -15314,7 +15314,7 @@ METplus Configuration Glossary
    POINT2GRID_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for Point2Grid.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* Point2Grid
@@ -15322,7 +15322,7 @@ METplus Configuration Glossary
    POINT_STAT_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for PointStat.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* PointStat
@@ -15330,7 +15330,7 @@ METplus Configuration Glossary
    PY_EMBED_INGEST_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for PyEmbedIngest.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* PyEmbedIngest
@@ -15338,7 +15338,7 @@ METplus Configuration Glossary
    REGRID_DATA_PLANE_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for RegridDataPlane.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* RegridDataPlane
@@ -15346,7 +15346,7 @@ METplus Configuration Glossary
    RMW_ANALYSIS_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for RMWAnalysis.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* RMWAnalysis
@@ -15354,7 +15354,7 @@ METplus Configuration Glossary
    SERIES_ANALYSIS_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for SeriesAnalysis.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* SeriesAnalysis
@@ -15362,7 +15362,7 @@ METplus Configuration Glossary
    STAT_ANALYSIS_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for StatAnalysis.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* StatAnalysis
@@ -15370,7 +15370,7 @@ METplus Configuration Glossary
    TC_DIAG_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for TCDiag.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* TCDiag
@@ -15378,7 +15378,7 @@ METplus Configuration Glossary
    TC_GEN_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for TCGen.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* TCGen
@@ -15386,7 +15386,7 @@ METplus Configuration Glossary
    TC_PAIRS_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for TCPairs.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* TCPairs
@@ -15394,7 +15394,7 @@ METplus Configuration Glossary
    TCRMW_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for TCRMW.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* TCRMW
@@ -15402,7 +15402,7 @@ METplus Configuration Glossary
    TC_STAT_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for TCStat.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* TCStat
@@ -15410,7 +15410,7 @@ METplus Configuration Glossary
    WAVELET_STAT_WARN_IF_DUPLICATE_OUTPUT
      Log a warning message when an output file is written
      more than once during a single METplus run for WaveletStat.
-     Set to False to supress it.
+     Set to False to suppress it.
      See also :term:`WARN_IF_DUPLICATE_OUTPUT`.
 
      | *Used by:* WaveletStat
