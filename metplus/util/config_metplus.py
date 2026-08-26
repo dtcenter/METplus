@@ -84,7 +84,7 @@ OLD_BASE_CONFS = [
 # set all loggers to use UTC
 logging.Formatter.converter = time.gmtime
 
-# logging handler for exiting on warnings if EXIT_ON_WARN is True
+# logging handler for exiting on warnings if EXIT_IF_WARN is True
 class ExitOnWarningHandler(logging.Handler):
     def __init__(self):
         super().__init__(level=logging.WARNING)
@@ -279,8 +279,8 @@ def launch(config_list):
     with open(final_conf, 'wt') as file_handle:
         config.write(file_handle)
 
-    # add warning handler to exit when a warning occurs if EXIT_ON_WARN is True
-    if config.getbool('config', 'EXIT_ON_WARN', False):
+    # add warning handler to exit when a warning occurs if EXIT_IF_WARN is True
+    if config.getbool('config', 'EXIT_IF_WARN', False):
         warning_handler = ExitOnWarningHandler()
         config.logger.addHandler(warning_handler)
 

@@ -50,7 +50,7 @@ EXPECTED_CONFIG_KEYS = [
     'METPLUS_VERSION',
     'ALLOW_MISSING_INPUTS',
     'INPUT_THRESH',
-    'EXIT_ON_WARN',
+    'EXIT_IF_WARN',
 ]
 
 def remove_output_base(config):
@@ -538,11 +538,11 @@ def test_exit_on_warn(metplus_config_files, tmp_path_factory, make_dummy_empty, 
         f'config.FCST_PCP_COMBINE_OUTPUT_DIR={fake_output_dir}/pcp_combine',
     ]
 
-    # set EXIT_ON_WARN before config init because it is currently read in config_metplus.launch
-    # after refactor to support wrapper-specific EXIT_ON_WARN, this can be set in config_overrides instead
+    # set EXIT_IF_WARN before config init because it is currently read in config_metplus.launch
+    # after refactor to support wrapper-specific EXIT_IF_WARN, this can be set in config_overrides instead
 
     if exit_on_warn:
-        initial_overrides.append('config.EXIT_ON_WARN=True')
+        initial_overrides.append('config.EXIT_IF_WARN=True')
     config = metplus_config_files(initial_overrides)
 
     for key, value in success_settings.items():
@@ -554,7 +554,7 @@ def test_exit_on_warn(metplus_config_files, tmp_path_factory, make_dummy_empty, 
     process_list = ru.get_process_list(config)
     processes = ru._load_all_wrappers(config, process_list)
 
-    # initialization warning when EXIT_ON_WARN=True cause processes to be None
+    # initialization warning when EXIT_IF_WARN=True cause processes to be None
     if expected_init_errors:
         assert processes is None
     else:

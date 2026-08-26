@@ -15601,7 +15601,7 @@ METplus Configuration Glossary
 
      | *Used by:* WaveletStat
 
-   EXIT_ON_WARN
+   EXIT_IF_WARN
      Immediately exit METplus run when a warning message is encountered.
 
      | *Used by:* All
