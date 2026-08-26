@@ -182,14 +182,16 @@ def _get_use_case_cmds(host_name, use_case_by_requirement, work_dir, group_name,
         use_case_cmds.append('status=0')
     for use_case in use_case_by_requirement.use_cases:
         # add parm/use_cases path to config args if they are conf files
-        config_args = _get_config_args(use_case.config_args, work_dir, host_name)
+        config_args, ci_overrides = (
+            _get_config_args(use_case.config_args, work_dir, host_name)
+        )
 
         output_base = os.path.join(output_top_dir,
                                    group_name.split('-')[0],
                                    use_case.name)
         use_case_cmd = (f"run_metplus.py"
                         f" {' '.join(config_args)}"
-                        f" {py_embed_arg}{test_settings_conf}"
+                        f" {py_embed_arg}{test_settings_conf} {ci_overrides}"
                         f" config.OUTPUT_BASE={output_base}")
         use_case_cmds.append(use_case_cmd)
         # check exit code from use case command and
@@ -206,7 +208,7 @@ def _get_use_case_cmds(host_name, use_case_by_requirement, work_dir, group_name,
 
 def _get_config_args(input_config_args, work_dir, host_name):
     config_args = []
-    ci_overrides = None
+    ci_overrides = ''
     for config_arg in input_config_args:
         if config_arg.endswith('.conf'):
             config_arg = os.path.join(work_dir, 'parm',
@@ -220,11 +222,11 @@ def _get_config_args(input_config_args, work_dir, host_name):
 
         config_args.append(config_arg)
 
-    # add CI overrides config file if running in docker
-    if ci_overrides and host_name == 'docker':
-        config_args.append(ci_overrides)
+    # remove CI overrides config file if not running in docker
+    if ci_overrides and host_name != 'docker':
+        ci_overrides = ''
 
-    return config_args
+    return config_args, ci_overrides
 
 
 def handle_command_line_args():
