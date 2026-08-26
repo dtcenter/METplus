@@ -15605,3 +15605,21 @@ METplus Configuration Glossary
      Immediately exit METplus run when a warning message is encountered.
 
      | *Used by:* All
+
+   WARN_IF_ENSEMBLE_IS_MISSING
+     Log a warning if an ensemble member was not found.
+     Set to False to suppress it.
+
+     | *Used by:* GenEnsProd, EnsembleStat
+
+   GEN_ENS_PROD_WARN_IF_ENSEMBLE_IS_MISSING
+     Log a warning if an ensemble member was not found for GenEnsProd.
+     Set to False to suppress it.
+
+     | *Used by:* GenEnsProd
+
+   ENSEMBLE_STAT_WARN_IF_ENSEMBLE_IS_MISSING
+     Log a warning if an ensemble member was not found for EnsembleStat.
+     Set to False to suppress it.
+
+     | *Used by:* EnsembleStat

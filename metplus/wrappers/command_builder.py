@@ -224,7 +224,12 @@ class CommandBuilder:
 
         # read generic or wrapper-specific config for
         # warning skips and exit on warning (all default to False)
-        for name, default in WARNING_CONFIGS.items():
+        for name, (default, app_list) in WARNING_CONFIGS.items():
+            # skip reading warning config if only certain apps use it,
+            # and this app is not one of them
+            if app_list and self.app_name not in app_list:
+                continue
+
             c_dict[name] = self.get_wrapper_or_generic_config(
                 name, var_type='bool', default=default
             )
@@ -885,8 +890,17 @@ class CommandBuilder:
             self.infiles.append(file_list_path)
             return True
 
+        # suppress warnings if requested
+        suppress_warnings = self.c_dict.get('SUPPRESS_WARNINGS', False)
+        if not self.c_dict.get('WARN_IF_ENSEMBLE_IS_MISSING', True):
+            self.c_dict['SUPPRESS_WARNINGS'] = True
+
         # get list of ensemble files to process
         input_files = self.find_model(time_info, return_list=True, mandatory=False)
+
+        # restore suppress warnings setting
+        self.c_dict['SUPPRESS_WARNINGS'] = suppress_warnings
+
         if not input_files:
             msg = "Could not find any input files"
             self._log_message_dynamic_level(msg, True)
@@ -950,14 +964,16 @@ class CommandBuilder:
 
         # if fewer files found than expected, warn and add fake files
         if num_found < num_expected:
-            self.logger.warning(
+            self.log_warn_or_debug(
                 f"Found fewer files than expected. "
-                f"Found {num_found} expected {num_expected}"
+                f"Found {num_found} expected {num_expected}",
+                self.c_dict.get('WARN_IF_ENSEMBLE_IS_MISSING', True)
             )
             # add fake files to list for ens_thresh checking
             diff = num_expected - num_found
-            self.logger.warning(
-                f'Adding {diff} fake files to ensure ens_thresh check is accurate'
+            self.log_warn_or_debug(
+                f'Adding {diff} fake files to ensure ens_thresh check is accurate',
+                self.c_dict.get('WARN_IF_ENSEMBLE_IS_MISSING', True)
             )
             for _ in range(0, diff, 1):
                 input_files.append('MISSING')
