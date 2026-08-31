@@ -15623,3 +15623,33 @@ METplus Configuration Glossary
      Set to False to suppress it.
 
      | *Used by:* EnsembleStat
+
+   POINT_STAT_KDE_REF_ANGLE
+     Specify the value for 'kde_ref_angle' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_WRITE_WEIGHTS
+     Specify the value for 'write_weights' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   ENSEMBLE_STAT_KDE_REF_ANGLE
+     Specify the value for 'kde_ref_angle' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_WRITE_WEIGHTS
+     Specify the value for 'write_weights' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   PAIR_STAT_KDE_REF_ANGLE
+     Specify the value for 'kde_ref_angle' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat
+
+   PAIR_STAT_WRITE_WEIGHTS
+     Specify the value for 'write_weights' in the MET configuration file for PairStat.
+
+     | *Used by:* PairStat

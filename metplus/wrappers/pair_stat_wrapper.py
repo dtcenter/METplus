@@ -77,6 +77,8 @@ class PairStatWrapper(CompareGriddedWrapper):
         'METPLUS_SEEPS_P1_THRESH',
         'METPLUS_OUTPUT_FLAG_DICT',
         'METPLUS_POINT_WEIGHT_FLAG',
+        'METPLUS_KDE_REF_ANGLE',
+        'METPLUS_WRITE_WEIGHTS',
     ]
 
     OUTPUT_FLAGS = [
@@ -228,6 +230,8 @@ class PairStatWrapper(CompareGriddedWrapper):
 
         self.add_met_config(name='point_weight_flag', data_type='string',
                             extra_args={'constant': True})
+        self.add_met_config(name='kde_ref_angle', data_type='float')
+        self.add_met_config(name='write_weights', data_type='bool')
 
         if not c_dict['OUTPUT_DIR']:
             self.log_error('Must set PAIR_STAT_OUTPUT_DIR in config file')
