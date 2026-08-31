@@ -61,6 +61,8 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_UGRID_MAX_DISTANCE_KM',
         'METPLUS_UGRID_COORDINATES_FILE',
         'METPLUS_POINT_WEIGHT_FLAG',
+        'METPLUS_KDE_REF_ANGLE',
+        'METPLUS_WRITE_WEIGHTS',
     ]
 
     # deprecated env vars that are no longer supported in the wrapped MET conf
@@ -265,9 +267,10 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.add_met_config(name='ugrid_max_distance_km', data_type='int')
         self.add_met_config(name='ugrid_coordinates_file', data_type='string')
 
-        self.add_met_config(name='point_weight_flag',
-                            data_type='string',
+        self.add_met_config(name='point_weight_flag', data_type='string',
                             extra_args={'constant': True})
+        self.add_met_config(name='kde_ref_angle', data_type='float')
+        self.add_met_config(name='write_weights', data_type='bool')
 
         if not c_dict['FCST_INPUT_TEMPLATE']:
             self.log_error('Must set FCST_POINT_STAT_INPUT_TEMPLATE '
