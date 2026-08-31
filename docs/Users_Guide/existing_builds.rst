@@ -29,8 +29,8 @@ in the
 
        | **NCAR MACHINE CASPER** (see 
           `Casper Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/casper/>`_)
-       | *Last Updated: December 3, 2025*
-       | *Compiler and version: Intel oneAPI 2024.2.1*
+       | *Last Updated: August 31, 2026*
+       | *Compiler and version: Intel oneAPI 2025.2.1*
 
        * METplus-6.2.0
 
@@ -49,21 +49,21 @@ in the
 
          .. code-block:: ini
 
-             module load ncarenv/24.12
+             module load ncarenv/25.10
              export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
              module use $TOP_DIR/METplus/installations/modulefiles
              module load metplus/6.2.0
 
-       * MET-12.2.0
+       * MET-12.2.2
 
          * MODULES:
 
            .. code-block:: ini
 
-               module load ncarenv/24.12
+               module load ncarenv/25.10
                export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
                module use $TOP_DIR/MET/installations/modulefiles
-               module load met/12.2.0
+               module load met/12.2.2
 
        * METdataio-3.2.0
 
@@ -71,7 +71,7 @@ in the
 
            .. code-block:: ini
 
-               module load ncarenv/24.12
+               module load ncarenv/25.10
                export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
                module use $TOP_DIR/METdataio/installations/modulefiles
                module load metdataio/3.2.0
@@ -82,7 +82,7 @@ in the
 
            .. code-block:: ini
 
-               module load ncarenv/24.12
+               module load ncarenv/25.10
                export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
                module use $TOP_DIR/METcalcpy/installations/modulefiles
                module load metcalcpy/3.2.0
@@ -93,7 +93,7 @@ in the
 
            .. code-block:: ini
 
-               module load ncarenv/24.12
+               module load ncarenv/25.10
                export TOP_DIR=/glade/work/dtcrt/METplus/casper/components
                module use $TOP_DIR/METplotpy/installations/modulefiles
                module load metplotpy/3.2.0
