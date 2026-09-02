@@ -9,7 +9,7 @@ ways of automatically accessing configuration options."""
 
 ##@var __all__
 # decides what symbols are imported by "from produtil.config import *"
-__all__=['from_file','confwalker','ProdConfig','ENVIRONMENT','ProdTask']
+__all__=['from_file','confwalker','ProdConfig','ENVIRONMENT']
 
 import collections,re,os,logging,threading
 import os.path,sys
@@ -20,7 +20,10 @@ import configparser
 from configparser import ConfigParser
 from io import StringIO
 
-from metplus.produtil.datastore import Datastore,Task
+# NOTE:
+# Datastore is intentionally imported lazily inside getdatastore() so
+# importing metplus.produtil.config does not require datastore support.
+Task=object
 
 from metplus.produtil.numerics import to_datetime, to_datetime_rel, fcst_hr_min
 from string import Formatter
@@ -821,6 +824,13 @@ class ProdConfig(object):
             return d
         with self:
             if self._datastore is None:
+                try:
+                    from metplus.produtil.datastore import Datastore
+                except ImportError as e:
+                    raise ImportError(
+                        'Datastore support is unavailable. '
+                        'METplus no longer requires produtil.datastore.'
+                    ) from e
                 dsfile=self.getstr('config','datastore')
                 self._datastore=Datastore(dsfile,
                     logger=self.log('datastore'))
@@ -1365,6 +1375,11 @@ class ProdTask(Task):
                the taskvars arguments of produtil.config.ProdConfig member
                functions.
         @param kwargs passed to the parent class constructor."""
+        raise RuntimeError(
+            'ProdTask is deprecated in METplus and depends on '
+            'produtil.datastore. Use METplus wrapper/task logic instead.'
+        )
+
         if taskname is None:
             taskname=section
         conf.register_task(taskname)

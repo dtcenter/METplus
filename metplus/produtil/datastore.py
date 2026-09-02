@@ -6,7 +6,7 @@ created by some Task.  Both Product and Task classes derive from
 Datum, which is the base class of anything that can be stored in the
 Datastore."""
 
-import sqlite3, threading, collections, re, contextlib, datetime, logging, os, time
+import threading, collections, re, contextlib, datetime, logging, os, time
 import metplus.produtil.fileop as fileop
 from metplus.produtil.locking import LockFile
 from metplus.produtil.log import jlogger
@@ -195,6 +195,13 @@ class Datastore(object):
             if tid in self._connections:
                 return self._connections[tid]
             else:
+                try:
+                    import sqlite3
+                except ImportError as e:
+                    raise ImportError(
+                        'sqlite3 support is required only when using '
+                        'metplus.produtil.datastore.Datastore'
+                    ) from e
                 c=sqlite3.connect(self.filename)
                 self._connections[tid]=c
                 return c

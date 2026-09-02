@@ -18,3 +18,9 @@ platforms.
 + @ref produtil.config --- Parses UNIX conf files and makes the result readily available.
 This is part of the produtil package and is referenced here as a convenience.
 
+METplus note:
+
+- The METplus runtime does not require `produtil.datastore`.
+- sqlite3 is loaded lazily only when datastore APIs are explicitly used.
+- Datastore-backed task helpers in `produtil.config` are deprecated for METplus usage.
+
