@@ -35,13 +35,20 @@ def test_run_metplus_exists():
 
 @pytest.mark.parametrize(
     'command, expected_return_code', [
-        ([RUN_METPLUS], 2),
-        ([RUN_METPLUS, EXAMPLE_CONF, 'config.OUTPUT_BASE=/path/to'], 2),
+        # no arguments
+        ([RUN_METPLUS], 1),
+        # no arguments after deprecated config args are removed
+        ([RUN_METPLUS, "--config", "-config", "-c"], 1),
+        # help flag requests usage statement and returns success
+        ([RUN_METPLUS, "-h"], 0),
+        ([RUN_METPLUS, "-help"], 0),
+        ([RUN_METPLUS, "--help"], 0),
+        ([RUN_METPLUS, EXAMPLE_CONF, 'config.OUTPUT_BASE=/path/to'], 3),
         ([RUN_METPLUS, EXAMPLE_CONF, MINIMUM_CONF, OUTPUT_BASE_OVERRIDE], 0),
         ([RUN_METPLUS, '-c', EXAMPLE_CONF, MINIMUM_CONF, OUTPUT_BASE_OVERRIDE], 0),
         ([RUN_METPLUS, EXAMPLE_CONF, MINIMUM_CONF, LIST_CONFIG_OVERRIDE_1], 0),
         ([RUN_METPLUS, EXAMPLE_CONF, MINIMUM_CONF, LIST_CONFIG_OVERRIDE_2], 0),
-        ([RUN_METPLUS, EXAMPLE_CONF, MINIMUM_CONF, '--fake-arg'], 1),
+        ([RUN_METPLUS, EXAMPLE_CONF, MINIMUM_CONF, '--fake-arg'], 2),
     ]
 )
 @pytest.mark.run_metplus
