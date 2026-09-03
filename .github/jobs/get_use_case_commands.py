@@ -6,6 +6,7 @@
 
 import sys
 import os
+import shutil
 
 # add METplus directory to sys path so the test suite can be found
 METPLUS_TOP_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__),
@@ -54,7 +55,7 @@ def handle_automation_env(host_name, reqs):
     # if not using docker (automation),
     # return no setup commands and python embedding argument to command
     if host_name != 'docker':
-        if 'py_embed' in reqs and conda_env != METPLUS_BASE_ENV:
+        if _met_python_exe_should_be_set(reqs, conda_env):
             return '', 'user_env_vars.MET_PYTHON_EXE=python3'
         return '', ''
 
@@ -70,51 +71,23 @@ def handle_automation_env(host_name, reqs):
         _add_to_bashrc('# BELOW WAS ADDED BY TEST SCRIPT')
     ]
 
-    # add conda bin to beginning of PATH
-    python_dir = os.path.join('/usr', 'local', 'conda', 'envs',
-                              conda_env_w_ext, 'bin')
-    python_path = os.path.join(python_dir, 'python3')
-    setup_env.append(_add_to_bashrc(f'export PATH={python_dir}:$PATH'))
+    # get path to conda bin unless metplus_base (default) is used
+    if conda_env != METPLUS_BASE_ENV:
+        python_dir = os.path.join('/usr', 'local', 'conda', 'envs',
+                                  conda_env_w_ext, 'bin')
+        python_path = os.path.join(python_dir, 'python3')
+        # add python path to PATH in bashrc so run_metplus.py is called with that version of Python
+        setup_env.append(_add_to_bashrc(f'export PATH={python_dir}:$PATH'))
+    else:
+        python_path = shutil.which('python3')
 
     # if py_embed listed in requirements and using a Python
     # environment that differs from the MET env, set MET_PYTHON_EXE
-    if 'py_embed' in reqs and conda_env != METPLUS_BASE_ENV:
+    py_embed_arg = ''
+    if _met_python_exe_should_be_set(reqs, conda_env):
         py_embed_arg = f'user_env_vars.MET_PYTHON_EXE={python_path} '
-    else:
-        py_embed_arg = ''
 
-    # get METplus version to determine which version of
-    # METplotpy/METcalcpy/METdataio to use
-    # If stable release, get main branch, otherwise get develop
-    metplus_version = get_metplus_version()
-
-    # if any metplotpy/metcalcpy keywords are in requirements list,
-    # add command to obtain and install METplotpy and METcalcpy
-    components = []
-    if any([item for item in PLOTCALC_KEYWORDS if item in str(reqs).lower()]):
-        components.extend(('METplotpy', 'METcalcpy'))
-
-    # if metdataio is in requirements list, add command to obtain METdataio
-    if 'metdataio' in str(reqs).lower():
-        components.append('METdataio')
-
-    if components:
-        setup_env.append(f'cd {METPLUS_DOCKER_LOC}/..')
-        for component in components:
-            # get branch if defined, otherwise determine from METplus version
-            version = os.environ.get(f'INPUT_{component.upper()}_BRANCH')
-            if not version:
-                version = get_component_version(input_component='METplus',
-                                                input_version=metplus_version,
-                                                output_component=component,
-                                                output_format='main_v{X}.{Y}',
-                                                get_dev=False)
-            setup_env.extend((
-                'git --version',
-                f'git clone --single-branch --branch {version} https://github.com/dtcenter/{component}',
-                f'{python_path} -m pip install --no-deps {METPLUS_DOCKER_LOC}/../{component}',
-            ))
-        setup_env.append('cd -')
+    _handle_metplus_analysis_components(reqs, python_path, setup_env)
 
     # if metplus is in requirements list,
     # add top of METplus repo to PYTHONPATH so metplus can be imported
@@ -135,6 +108,64 @@ def handle_automation_env(host_name, reqs):
 
     return ';'.join(setup_env), py_embed_arg
 
+def _met_python_exe_should_be_set(reqs, conda_env):
+    return 'py_embed' in reqs and conda_env != METPLUS_BASE_ENV
+
+def _handle_metplus_analysis_components(reqs, python_path, setup_env):
+    """
+    Handles the addition of METplus analysis components (METplotpy, METcalcpy, METdataio)
+    to the setup environment based on specific requirements. This function checks whether
+    the provided requirements contain specific keywords or component names and, based on
+    the presence of these, constructs commands to clone and install the appropriate versions
+    of these components.
+
+    @param reqs List of software requirements that may include keywords indicating the need
+        for METplotpy, METcalcpy, or METdataio.
+
+    @param python_path Path to the Python executable that should be used for installing
+        the required components.
+
+    @param setup_env List representing the setup environment configuration. The function
+        appends the appropriate commands to this list for setting up the required components.
+
+    @returns None
+    """
+    # if any metplotpy/metcalcpy keywords are in requirements list,
+    # add command to obtain and install METplotpy and METcalcpy
+    components = []
+    if any([item for item in PLOTCALC_KEYWORDS if item in str(reqs).lower()]):
+        components.extend(('METplotpy', 'METcalcpy'))
+
+    # if metdataio is in requirements list, add command to obtain METdataio
+    if 'metdataio' in str(reqs).lower():
+        components.append('METdataio')
+
+    # do not add any commands if no METplus Analysis components are needed
+    if not components:
+        return
+
+    # get METplus version to determine which version of
+    # METplotpy/METcalcpy/METdataio to use
+    # If stable release, get main branch, otherwise get develop
+    metplus_version = get_metplus_version()
+
+    # add commands to install METplus Analysis components in directory above METplus repo
+    setup_env.append(f'cd {METPLUS_DOCKER_LOC}/..')
+    for component in components:
+        # get branch if defined, otherwise determine from METplus version
+        version = os.environ.get(f'INPUT_{component.upper()}_BRANCH')
+        if not version:
+            version = get_component_version(input_component='METplus',
+                                            input_version=metplus_version,
+                                            output_component=component,
+                                            output_format='main_v{X}.{Y}',
+                                            get_dev=False)
+        setup_env.extend((
+            'git --version',
+            f'git clone --single-branch --branch {version} https://github.com/dtcenter/{component}',
+            f'{python_path} -m pip install --no-deps {METPLUS_DOCKER_LOC}/../{component}',
+        ))
+    setup_env.append('cd -')
 
 def _add_to_bashrc(command):
     return f"echo '{command}' >> /root/.bashrc"
