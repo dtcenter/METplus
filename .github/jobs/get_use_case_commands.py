@@ -80,7 +80,8 @@ def handle_automation_env(host_name, reqs):
         setup_env.append(_add_to_bashrc(f'export PATH={python_dir}:$PATH'))
     else:
         python_path = shutil.which('python3')
-
+        if python_path is None:
+            raise RuntimeError('python3 not found in PATH; cannot determine base-image Python executable')
     # if py_embed listed in requirements and using a Python
     # environment that differs from the MET env, set MET_PYTHON_EXE
     py_embed_arg = ''

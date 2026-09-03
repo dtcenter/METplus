@@ -897,7 +897,7 @@ class METplusConfig(object):
             return False
 
         # if value is not correct type, log error and return None
-        self.logger.error(f"[{sec}] {name} must be an boolean.")
+        self.logger.error(f"[{sec}] {name} must be a boolean.")
         return None
 
     def getint(self, sec, name, default=None):
