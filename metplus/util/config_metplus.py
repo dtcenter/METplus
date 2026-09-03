@@ -538,56 +538,6 @@ class METplusConfig(object):
                 self._conf.add_section(section)
             self._conf.set(section, str(key), str(value))
 
-    def _resolve_option(self, sec, opt):
-        if self._conf.has_option(sec, opt):
-            return self._conf.get(sec, opt, raw=True)
-
-        if self._conf.has_option("config", opt):
-            return self._conf.get("config", opt, raw=True)
-
-        return _NOT_FOUND
-
-    def _resolve_tag_value(self, sec, tag_name, kwargs, depth):
-        if tag_name in kwargs:
-            return kwargs[tag_name]
-
-        target_sec = sec
-        target_opt = tag_name
-        split_index = tag_name.find("/")
-        if split_index >= 0:
-            if split_index > 0:
-                target_sec = tag_name[:split_index]
-            target_opt = tag_name[split_index + 1 :]
-
-        if not target_opt:
-            return None
-
-        resolved = self._resolve_option(target_sec, target_opt)
-        if resolved is _NOT_FOUND:
-            return None
-
-        return self._interpolate(target_sec, resolved, kwargs=kwargs, depth=depth + 1)
-
-    def _interpolate(self, sec, value, kwargs=None, depth=0):
-        if kwargs is None:
-            kwargs = {}
-
-        if depth >= _MAX_INTERP_DEPTH or "{" not in value:
-            return value
-
-        interpolated = value
-        for match in re.findall(r"\{([^{}]+)\}", value):
-            replacement = self._resolve_tag_value(sec, match, kwargs, depth)
-            if replacement is None:
-                continue
-            interpolated = interpolated.replace(f"{{{match}}}", str(replacement))
-
-        # Resolve newly expanded nested tags until stable or depth limit.
-        if interpolated != value and "{" in interpolated and depth < _MAX_INTERP_DEPTH:
-            return self._interpolate(sec, interpolated, kwargs=kwargs, depth=depth + 1)
-
-        return interpolated
-
     def get(self, sec, opt, default=None):
         return self.getstr(sec, opt, default=default)
 
