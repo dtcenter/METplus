@@ -185,6 +185,9 @@ class TCStatWrapper(RuntimeFreqWrapper):
         c_dict['FIND_FILES'] = False
         # force error if inputs are missing
         c_dict['ALLOW_MISSING_INPUTS'] = False
+        # ignore forecast leads
+        c_dict['SKIP_LEAD_SEQ'] = True
+
         return c_dict
 
     def set_met_config_for_environment_variables(self):

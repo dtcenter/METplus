@@ -329,8 +329,9 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         # if there is more than 1 file, create file list file
         if len(model_path) > 1:
-            self.logger.warning('Multiple forecast files found.'
-                                'Using the first one')
+            self.logger.warning(
+                'Multiple forecast files found. Using the first one'
+            )
 
         self.infiles.append(model_path[0])
 

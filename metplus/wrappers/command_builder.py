@@ -14,9 +14,11 @@ import glob
 from datetime import datetime
 from abc import ABCMeta
 from inspect import getframeinfo, stack
+from typing import Any
 
 from ..util.constants import PYTHON_EMBEDDING_TYPES, COMPRESSION_EXTENSIONS
 from ..util.constants import MULTIPLE_INPUT_WRAPPERS, TIME_OFFSET_WARNING_WRAPPERS
+from ..util.constants import WARNING_CONFIGS
 from ..util import getlist, preprocess_file
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
 from ..util import shift_time_seconds, seconds_to_met_time
@@ -64,6 +66,7 @@ class CommandBuilder:
         self.outfile = ""
         self.param = ""
         self.all_commands = []
+        self.output_written = []
 
         # set app name to empty string if not set by wrapper
         # needed to create instance of parent wrapper for unit tests
@@ -169,9 +172,10 @@ class CommandBuilder:
         for env_var_key in self.WRAPPER_ENV_VAR_KEYS:
             env_var_string = f"${{{env_var_key}}}"
             if env_var_string not in content:
-                self.logger.warning(f"Environment variable {env_var_string} "
-                                    "is not utilized in MET config file: "
-                                    f"{config_file}")
+                self.logger.warning(
+                    f"Environment variable {env_var_string} is not utilized in "
+                    f"MET config file: {config_file}"
+                )
 
     def create_c_dict(self):
         c_dict = dict()
@@ -217,6 +221,18 @@ class CommandBuilder:
         c_dict['DO_NOT_RUN_EXE'] = self.config.getbool('config',
                                                        'DO_NOT_RUN_EXE',
                                                        False)
+
+        # read generic or wrapper-specific config for
+        # warning skips and exit on warning (all default to False)
+        for name, (default, app_list) in WARNING_CONFIGS.items():
+            # skip reading warning config if only certain apps use it,
+            # and this app is not one of them
+            if app_list and self.app_name not in app_list:
+                continue
+
+            c_dict[name] = self.get_wrapper_or_generic_config(
+                name, var_type='bool', default=default
+            )
 
         return c_dict
 
@@ -491,10 +507,7 @@ class CommandBuilder:
             # error should already be reported
             self.logger.error(log_message)
         else:
-            if self.c_dict.get('SUPPRESS_WARNINGS', False):
-                self.logger.debug(log_message)
-            else:
-                self.logger.warning(log_message)
+            self.log_warn_or_debug(log_message, not self.c_dict.get('SUPPRESS_WARNINGS', False))
 
         return None, time_info
 
@@ -627,10 +640,7 @@ class CommandBuilder:
         """
         # warn instead of error if it is not mandatory to find files
         if self._is_optional_input(mandatory):
-            if self.c_dict.get('SUPPRESS_WARNINGS', False):
-                self.logger.debug(msg)
-            else:
-                self.logger.warning(msg)
+            self.log_warn_or_debug(msg, not self.c_dict.get('SUPPRESS_WARNINGS', False))
         else:
             self.log_error(msg)
 
@@ -880,8 +890,17 @@ class CommandBuilder:
             self.infiles.append(file_list_path)
             return True
 
+        # suppress warnings if requested
+        suppress_warnings = self.c_dict.get('SUPPRESS_WARNINGS', False)
+        if not self.c_dict.get('WARN_IF_ENSEMBLE_IS_MISSING', True):
+            self.c_dict['SUPPRESS_WARNINGS'] = True
+
         # get list of ensemble files to process
         input_files = self.find_model(time_info, return_list=True, mandatory=False)
+
+        # restore suppress warnings setting
+        self.c_dict['SUPPRESS_WARNINGS'] = suppress_warnings
+
         if not input_files:
             msg = "Could not find any input files"
             self._log_message_dynamic_level(msg, True)
@@ -893,8 +912,9 @@ class CommandBuilder:
             # check if control file is found in ensemble list
             if ctrl_file in input_files:
                 # warn and remove control file if found
-                self.logger.warning(f"Control file found in ensemble list: "
-                                    f"{ctrl_file}. Removing from list.")
+                self.logger.warning(
+                    f"Control file found in ensemble list: {ctrl_file}. Removing from list."
+                )
                 input_files.remove(ctrl_file)
 
         # compare number of files found to expected number of members
@@ -944,14 +964,17 @@ class CommandBuilder:
 
         # if fewer files found than expected, warn and add fake files
         if num_found < num_expected:
-            self.logger.warning(
+            self.log_warn_or_debug(
                 f"Found fewer files than expected. "
-                f"Found {num_found} expected {num_expected}"
+                f"Found {num_found} expected {num_expected}",
+                self.c_dict.get('WARN_IF_ENSEMBLE_IS_MISSING', True)
             )
             # add fake files to list for ens_thresh checking
             diff = num_expected - num_found
-            self.logger.warning(f'Adding {diff} fake files to '
-                                'ensure ens_thresh check is accurate')
+            self.log_warn_or_debug(
+                f'Adding {diff} fake files to ensure ens_thresh check is accurate',
+                self.c_dict.get('WARN_IF_ENSEMBLE_IS_MISSING', True)
+            )
             for _ in range(0, diff, 1):
                 input_files.append('MISSING')
 
@@ -1008,28 +1031,7 @@ class CommandBuilder:
              to output file path specified)
             @returns True if the app should be run or False if it should not
         """
-        output_path = output_path_template
-
-        # if output path template not specified, get it from
-        # c_dict keys OUTPUT_DIR and OUTPUT_TEMPLATE
-        if not output_path:
-            output_dir = self.c_dict.get('OUTPUT_DIR', '')
-            output_template = self.c_dict.get('OUTPUT_TEMPLATE', '')
-
-            # remove trailing path separator if necessary (directories)
-            output_template = output_template.rstrip(os.path.sep)
-            output_path = os.path.join(output_dir, output_template)
-
-        # substitute time info if provided
-        if time_info:
-            output_path = do_string_sub(output_path, **time_info)
-
-        # replace wildcard character * with all
-        output_path = output_path.replace('*', 'all')
-
-        # replace any whitespace with an underscore
-        output_path = '_'.join(output_path.split())
-
+        output_path = self._get_output_path_to_check(output_path_template, time_info)
         skip_if_output_exists = self.c_dict.get('SKIP_IF_OUTPUT_EXISTS', False)
 
         # get directory that the output file will exist
@@ -1065,15 +1067,79 @@ class CommandBuilder:
             self.logger.debug(f"Creating output directory: {parent_dir}")
             mkdir_p(parent_dir)
 
-        if not output_exists or not skip_if_output_exists:
+        self._check_if_output_has_been_written(output_path, skip_if_output_exists)
+
+        if not output_exists:
             return True
 
-        # if the output file exists and we are supposed to skip, don't run tool
-        self.logger.debug(f'Skip writing output {output_path} because it already '
-                          'exists. Remove file or change '
-                          f'{self.app_name.upper()}_SKIP_IF_OUTPUT_EXISTS to False '
-                          'to process')
-        return False
+        warn_if_exists = self.c_dict.get('WARN_IF_OUTPUT_EXISTS', False)
+
+        if skip_if_output_exists:
+            # if the output file exists and we are supposed to skip, don't run tool
+            skip_config_name = f"{self.app_name.upper()}_SKIP_IF_OUTPUT_EXISTS"
+            msg = (
+                f"Skip writing output {output_path} because it already exists. "
+                f"Remove file or change {skip_config_name} to False to process"
+            )
+            self.log_warn_or_debug(msg, self.c_dict.get('WARN_IF_OUTPUT_EXISTS', False))
+            return False
+
+        if warn_if_exists:
+            self.logger.warning(f"Output {output_path} already exists and will be overwritten. "
+                                f"Set {self.app_name.upper()}_WARN_IF_OUTPUT_EXISTS=False to turn "
+                                "off this warning.")
+
+        return True
+
+    def _get_output_path_to_check(self, output_path_template, time_info):
+        output_path = output_path_template
+
+        # if output path template not specified, get it from
+        # c_dict keys OUTPUT_DIR and OUTPUT_TEMPLATE
+        if not output_path:
+            output_dir = self.c_dict.get('OUTPUT_DIR', '')
+            output_template = self.c_dict.get('OUTPUT_TEMPLATE', '')
+
+            # remove trailing path separator if necessary (directories)
+            output_template = output_template.rstrip(os.path.sep)
+            output_path = os.path.join(output_dir, output_template)
+
+        # substitute time info if provided
+        if time_info:
+            output_path = do_string_sub(output_path, **time_info)
+
+        # replace wildcard character * with all
+        output_path = output_path.replace('*', 'all')
+
+        # replace any whitespace with an underscore
+        output_path = '_'.join(output_path.split())
+        return output_path
+
+    def _check_if_output_has_been_written(self, output_path, skip_if_output_exists=False):
+        """!Check if output file has already been written during this METplus run.
+        Log a warning if it has already been written. Otherwise add output path
+        to the list of output files that have been written.
+
+        @param output_path path to output file or search string for apps that
+         write multiple output files
+        @param skip_if_output_exists boolean to skip writing output files if
+         they already exist
+        """
+        if (not self.c_dict.get('WARN_IF_DUPLICATE_OUTPUT', True)
+                or skip_if_output_exists):
+            return
+
+        if output_path in self.output_written:
+            self.logger.warning(
+                "Output has already been written during this METplus run and "
+                f"will be overwritten: {output_path}. Disable this warning by "
+                "setting WARN_IF_DUPLICATE_OUTPUT=False "
+                f"or {self.app_name.upper()}_WARN_IF_DUPLICATE_OUTPUT=False. "
+                "Check that the *_OUTPUT_TEMPLATE and/or *_OUTPUT_PREFIX config"
+                " options are set to produce unique output for each run"
+            )
+        else:
+            self.output_written.append(output_path)
 
     @staticmethod
     def _get_valid_and_lead_from_time_info(time_info):
@@ -1491,20 +1557,22 @@ class CommandBuilder:
                                  sub_groups=sub_groups):
             self.errors += 1
 
-    def get_wrapper_or_generic_config(self, generic_name, var_type='str'):
+    def get_wrapper_or_generic_config(self, generic_name, var_type='str',
+                                      default: Any=''):
         """! Check for config variable with <APP_NAME>_ prepended first. If set
         use that value. If not, check for config without prefix.
 
         @param generic_name name of variable to read from config
         @param var_type type of variable to read, e.g. str, bool, int, or float.
          Default is str.
+        @param default value to return if variables are not set
         @returns value if set or empty string if not
         """
         name = self.config.get_mp_config_name(
             [f'{self.app_name}_{generic_name}'.upper(), generic_name.upper()]
         )
         if not name:
-            return ''
+            return default
         if var_type == 'bool':
             return self.config.getbool('config', name)
         if var_type == 'float':
@@ -1751,3 +1819,8 @@ class CommandBuilder:
                                 env_var_name=env_var_name,
                                 metplus_configs=metplus_configs,
                                 extra_args={'constant': True})
+
+    def log_warn_or_debug(self, msg: str, should_it_warn: bool) -> None:
+        """Logs a message at WARNING level if condition is True, otherwise at DEBUG level."""
+        log_method = getattr(self.logger, 'warning' if should_it_warn else 'debug')
+        log_method(msg)
