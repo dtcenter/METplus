@@ -12,14 +12,13 @@ Output Files: N/A
 import os
 import re
 import logging
+import threading
 from datetime import datetime, timezone
 import time
 import shutil
 from configparser import ConfigParser, NoOptionError
 from pathlib import Path
 import uuid
-
-from metplus.produtil.config import ProdConfig
 
 from .constants import RUNTIME_CONFS, MISSING_DATA_VALUE
 from .exceptions import MPWarningError
@@ -38,10 +37,9 @@ first METplus job via the metplus.config_metplus.launch().
 The launch() function does more than just create the conf file though.
 It creates several initial files and  directories
 
-The METplusConfig class is used in place of a produtil.config.ProdConfig
-throughout the METplus system.  It can be used as a drop-in replacement
-for a produtil.config.ProdConfig, but has additional features needed to
-support initial creation of the METplus system.
+The METplusConfig class extends a METplus-native configuration base class
+to provide additional features needed to support initial creation of the
+METplus system.
 """
 
 '''!@var __all__
@@ -80,6 +78,12 @@ OLD_BASE_CONFS = [
     'metplus_runtime.conf',
     'metplus_logging.conf'
 ]
+
+# used to indicate that a config variable was not found in the config object
+_NOT_FOUND = object()
+
+# max depth of recursion for variable substitution to prevent infinite loops
+_MAX_INTERP_DEPTH = 10
 
 # set all loggers to use UTC
 logging.Formatter.converter = time.gmtime
@@ -450,7 +454,7 @@ def replace_config_from_section(config, section, required=True):
     return new_config
 
 
-class METplusConfig(ProdConfig):
+class METplusConfig(object):
     """! Configuration class to store configuration values read from
     METplus config files.
     """
@@ -470,12 +474,16 @@ class METplusConfig(ProdConfig):
         @param run_id 8 character identifier for the run or None if ID should
         be created. Defaults to None.
         """
+        self._lock = threading.RLock()
         # set interpolation to None so you can supply filename template
         # that contain % to config.set
-        conf = ConfigParser(strict=False,
+        self._conf = ConfigParser(strict=False,
                             inline_comment_prefixes=(';',),
                             interpolation=None) if (conf is None) else conf
-        super().__init__(conf)
+        self._conf.optionxform = str
+        if not self._conf.has_section("config"):
+            self._conf.add_section("config")
+
         self._cycle = None
         self.run_id = run_id if run_id else str(uuid.uuid4())[0:8]
         # if run ID is specified, this is a copy of a config
@@ -491,6 +499,13 @@ class METplusConfig(ProdConfig):
         # add section to hold environment variables defined by the user
         self.add_section('user_env_vars')
 
+    def __enter__(self):
+        self._lock.acquire()
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self._lock.release()
+
     def __del__(self):
         """!When object is deleted, close and remove all log handlers"""
         # do not close log handlers if this is a copied config object
@@ -501,9 +516,69 @@ class METplusConfig(ProdConfig):
             self.logger.removeHandler(handler)
             handler.close()
 
+    def read(self, source):
+        with self:
+            self._conf.read(source)
+        return self
+
+    def write(self, fileobject):
+        with self:
+            self._conf.write(fileobject)
+
+    def add_section(self, sec):
+        with self:
+            if not self._conf.has_section(sec):
+                self._conf.add_section(sec)
+        return self
+
+    def has_section(self, sec):
+        with self:
+            return self._conf.has_section(sec)
+
+    def has_option(self, sec, opt):
+        with self:
+            return self._conf.has_option(sec, opt)
+
+    def keys(self, sec):
+        with self:
+            return list(self._conf.options(sec))
+
+    def sections(self):
+        with self:
+            return self._conf.sections()
+
+    def set(self, section, key, value):
+        with self:
+            section = str(section)
+            if not self._conf.has_section(section):
+                self._conf.add_section(section)
+            self._conf.set(section, str(key), str(value))
+
+    def get(self, sec, opt, default=None):
+        return self.getstr(sec, opt, default=default)
+
+    def items(self, sec):
+        with self:
+            result = []
+            for opt in self._conf.options(sec):
+                result.append((opt, self.getstr(sec, opt)))
+            return result
+
+    def __getitem__(self, arg):
+        with self:
+            if isinstance(arg, str):
+                return dict(self.items(arg))
+            if isinstance(arg, (list, tuple)):
+                if len(arg) == 1:
+                    return dict(self.items(arg[0]))
+                if len(arg) == 2:
+                    return self.get(arg[0], arg[1])
+                if len(arg) == 3:
+                    return self.get(arg[0], arg[1], default=arg[2])
+        return NotImplemented
+
     def log(self, sublog=None):
-        """! Overrides method in ProdConfig
-        If the sublog argument is
+        """!If the sublog argument is
         provided, then the logger will be under that subdomain of the
         "metplus" logging domain.  Otherwise, this METplusConfig's logger
         (usually the "metplus" domain) is returned.
@@ -526,7 +601,7 @@ class METplusConfig(ProdConfig):
             for key in all_configs:
                 self.set('config',
                          key,
-                         super().getraw(section, key))
+                         self._getraw_nosub(section, key))
 
             self._conf.remove_section(section)
 
@@ -549,7 +624,7 @@ class METplusConfig(ProdConfig):
                 continue
 
             # add conf to [runtime] section
-            self.set(to_section, key, super().getraw(from_section, key))
+            self.set(to_section, key, self._getraw_nosub(from_section, key))
 
             # remove conf from [config] section
             self._conf.remove_option(from_section, key)
@@ -562,6 +637,72 @@ class METplusConfig(ProdConfig):
         for current_var in current_vars:
             if self.has_option('config', current_var):
                 self._conf.remove_option('config', current_var)
+
+    def _substitute_raw_template(self, sec, in_template, default='', count=0,
+                                 keep_double_slash=False, extra_vars=None):
+        """Apply METplus variable substitution to a raw template string."""
+        if count >= _MAX_INTERP_DEPTH:
+            self.logger.error("Could not resolve getraw - check for circular "
+                              "references in METplus configuration variables")
+            return ''
+
+        match_list = re.findall(r'\{([^}{]*)\}', in_template)
+        for var_name in match_list:
+            if extra_vars and var_name in extra_vars:
+                value = str(extra_vars[var_name])
+            elif self.has_option(sec, var_name):
+                value = self.getraw(sec, var_name, default, count+1,
+                                    keep_double_slash=keep_double_slash)
+            elif self.has_option('config', var_name):
+                value = self.getraw('config', var_name, default, count+1,
+                                    keep_double_slash=keep_double_slash)
+            elif var_name.startswith('ENV[') and var_name.endswith(']'):
+                value = os.environ.get(var_name[4:-1])
+            else:
+                value = None
+
+            if value is None:
+                continue
+            in_template = in_template.replace(f"{{{var_name}}}", value)
+
+        if not keep_double_slash:
+            in_template = in_template.replace('//', '/')
+
+        return in_template
+
+    def _get_existing_option_value(self, sec, name):
+        """Return raw value from section/config fallback or raise NoOptionError."""
+        if self.has_option(sec, name):
+            return self._getraw_nosub(sec, name)
+        if sec != 'config' and self.has_option('config', name):
+            return self._getraw_nosub('config', name)
+        raise NoOptionError(name, sec)
+
+    def strinterp(self, sec, string, **kwargs):
+        """Apply METplus substitution rules to an arbitrary input string."""
+        if not isinstance(string, str):
+            raise TypeError('strinterp requires string input')
+
+        if sec in self.OLD_SECTIONS:
+            sec = 'config'
+
+        return self._substitute_raw_template(sec,
+                                             string,
+                                             keep_double_slash=True,
+                                             extra_vars=kwargs)
+
+    def _getraw_nosub(self, sec, opt, default=None):
+        """!Get raw text from config without any variable substitution.
+        Used to get/move raw values so they can still be substituted later.
+         If the option is not found, return the default value if specified, otherwise raise NoOptionError.
+        """
+        try:
+            with self:
+                return self._conf.get(sec, opt, raw=True)
+        except NoOptionError:
+            if default is not None:
+                return default
+            raise
 
     # override get methods to perform additional error checking
     def getraw(self, sec, opt, default='', count=0, sub_vars=True, keep_double_slash=False):
@@ -579,17 +720,12 @@ class METplusConfig(ProdConfig):
             @returns Raw string or empty string if function calls itself too
              many times
         """
-        if count >= 10:
-            self.logger.error("Could not resolve getraw - check for circular "
-                              "references in METplus configuration variables")
-            return ''
-
         # if requested section is in the list of sections that are no longer
         # used, look in the [config] section for the variable
         if sec in self.OLD_SECTIONS:
             sec = 'config'
 
-        in_template = super().getraw(sec, opt, '')
+        in_template = self._getraw_nosub(sec, opt, '')
         # if default is set but variable was not, set variable to default value
         if not in_template and default:
             self.check_default(sec, opt, default)
@@ -599,32 +735,11 @@ class METplusConfig(ProdConfig):
         if not sub_vars:
             return in_template
 
-        # get inner-most tags that could potentially be other variables
-        match_list = re.findall(r'\{([^}{]*)\}', in_template)
-        for var_name in match_list:
-            # check if each tag is an existing METplus config variable
-            if self.has_option(sec, var_name):
-                value = self.getraw(sec, var_name, default, count+1, keep_double_slash=keep_double_slash)
-            elif self.has_option('config', var_name):
-                value = self.getraw('config', var_name, default, count+1, keep_double_slash=keep_double_slash)
-            elif var_name.startswith('ENV'):
-                # if environment variable, ENV[nameofvar], get nameofvar
-                value = os.environ.get(var_name[4:-1])
-            else:
-                value = None
-
-            if value is None:
-                continue
-            in_template = in_template.replace(f"{{{var_name}}}", value)
-
-        # Replace double slash with single slash because MET config files fail
-        # when they encounter double slash. This is a GitHub issue MET #1277
-        # This fix will prevent using URLs with https:// so the MET issue must
-        # be resolved before we can remove the replace call
-        if not keep_double_slash:
-            in_template = in_template.replace('//', '/')
-
-        return in_template
+        return self._substitute_raw_template(sec,
+                                             in_template,
+                                             default=default,
+                                             count=count,
+                                             keep_double_slash=keep_double_slash)
 
     def check_default(self, sec, name, default):
         """! helper function for get methods, report error and raise
@@ -662,8 +777,10 @@ class METplusConfig(ProdConfig):
         """! Wraps produtil exe with checks to see if option is set and if
             exe actually exists. Returns None if not found instead of exiting
         """
+        del default, morevars, taskvars
+
         try:
-            exe_path = super().getstr('config', exe_name)
+            exe_path = self.getstr('config', exe_name)
         except NoOptionError as e:
             if self.logger:
                 self.logger.error(e)
@@ -708,8 +825,15 @@ class METplusConfig(ProdConfig):
         return dir_path
 
     def getdir_nocheck(self, dir_name, default=None):
-        return super().getstr('config', dir_name,
-                              default=default).replace('//', '/')
+        try:
+            raw_value = self._get_existing_option_value('config', dir_name)
+            return self._substitute_raw_template('config',
+                                                 raw_value,
+                                                 keep_double_slash=False)
+        except NoOptionError:
+            if default is None:
+                raise
+            return default.replace('//', '/')
 
     def getstr_nocheck(self, sec, name, default=None):
         # if requested section is in the list of sections that are
@@ -717,11 +841,18 @@ class METplusConfig(ProdConfig):
         if sec in self.OLD_SECTIONS:
             sec = 'config'
 
-        return super().getstr(sec, name, default=default).replace('//', '/')
+        try:
+            raw_value = self._get_existing_option_value(sec, name)
+            return self._substitute_raw_template(sec,
+                                                 raw_value,
+                                                 keep_double_slash=False)
+        except NoOptionError:
+            if default is None:
+                raise
+            return default.replace('//', '/')
 
-    def getstr(self, sec, name, default=None, badtypeok=False, morevars=None,
-               taskvars=None):
-        """! Wraps produtil getstr. Config variable is checked with a default
+    def getstr(self, sec, name, default=None):
+        """!Config variable is checked with a default
          value of None because if the config is not set and a default is
           specified, it will just return that value.
           We want to log that a default was used and set it in the config so
@@ -735,17 +866,15 @@ class METplusConfig(ProdConfig):
             sec = 'config'
 
         try:
-            return super().getstr(sec, name, default=None,
-                                  badtypeok=badtypeok, morevars=morevars,
-                                  taskvars=taskvars).replace('//', '/')
+            raw_value = self._get_existing_option_value(sec, name)
+            return self._substitute_raw_template(sec, raw_value)
         except NoOptionError:
             # if config variable is not set
             self.check_default(sec, name, default)
             return default.replace('//', '/')
 
-    def getbool(self, sec, name, default=None, badtypeok=False, morevars=None,
-                taskvars=None):
-        """! Wraps produtil getbool. Config variable is checked with a
+    def getbool(self, sec, name, default=None):
+        """! Get boolean value from config. Config variable is checked with a
          default value of None because if the config is not set and a
          default is specified, it will just return that value.
          We want to log that a default was used and set it in the config so
@@ -759,48 +888,43 @@ class METplusConfig(ProdConfig):
             sec = 'config'
 
         try:
-            return super().getbool(sec, name, default=None,
-                                   badtypeok=badtypeok, morevars=morevars,
-                                   taskvars=taskvars)
+            value_string = self.getstr(sec, name)
         except NoOptionError:
             # config item was not set
             self.check_default(sec, name, default)
             return default
-        except ValueError:
-            # check if it was an empty string and return default or False if so
-            value_string = super().getstr(sec, name)
-            if not value_string:
-                if default:
-                    return default
 
-                return False
+        # check if it was an empty string and return default or False if so
+        if not value_string:
+            if default:
+                return default
+            return False
 
-            # check if value is y/Y/n/N and return True/False if so
-            value_string = remove_quotes(value_string)
-            if value_string.lower() == 'y':
-                return True
-            if value_string.lower() == 'n':
-                return False
+        # check if value is y/Y/n/N and return True/False if so
+        value_string = remove_quotes(value_string)
+        if value_string.lower() == 'y':
+            return True
+        if value_string.lower() == 'n':
+            return False
 
-            # if value is not correct type, log error and return None
-            self.logger.error(f"[{sec}] {name} must be an boolean.")
-            return None
+        if value_string.lower() in ('true', '.true.', 'yes', 'on', '1', 't'):
+            return True
+        if value_string.lower() in ('false', '.false.', 'no', 'off', '0', 'f'):
+            return False
 
-    def getint(self, sec, name, default=None, badtypeok=False, morevars=None,
-               taskvars=None):
-        """!Wraps produtil getint to gracefully report if variable is not set
-            and no default value is specified
+        # if value is not correct type, log error and return None
+        self.logger.error(f"[{sec}] {name} must be a boolean.")
+        return None
+
+    def getint(self, sec, name, default=None):
+        """!Get integer value from config. Report if variable is not set and no default value is specified
             @returns Value if set, default of missing value if not set,
              None if value is an incorrect type"""
         if sec in self.OLD_SECTIONS:
             sec = 'config'
 
         try:
-            # call ProdConfig function with no default set so
-            # we can log and set the default
-            return super().getint(sec, name, default=None,
-                                  badtypeok=badtypeok, morevars=morevars,
-                                  taskvars=taskvars)
+            return int(self.getstr(sec, name))
 
         # if config variable is not set
         except NoOptionError:
@@ -813,7 +937,7 @@ class METplusConfig(ProdConfig):
         # if invalid value
         except ValueError:
             # check if it was an empty string and return MISSING_DATA_VALUE
-            value = super().getstr(sec, name)
+            value = self.getstr(sec, name)
             if value == '':
                 return MISSING_DATA_VALUE
 
@@ -829,9 +953,8 @@ class METplusConfig(ProdConfig):
             self.logger.error(f"[{sec}] {name} must be an integer.")
             return None
 
-    def getfloat(self, sec, name, default=None, badtypeok=False, morevars=None,
-                 taskvars=None):
-        """!Wraps produtil getint to gracefully report if variable is not set
+    def getfloat(self, sec, name, default=None):
+        """!Get float value from config. Report if variable is not set
             and no default value is specified
             @returns Value if set, default of missing value if not set,
              None if value is an incorrect type"""
@@ -839,11 +962,7 @@ class METplusConfig(ProdConfig):
             sec = 'config'
 
         try:
-            # call ProdConfig function with no default set so
-            # we can log and set the default
-            return super().getfloat(sec, name, default=None,
-                                    badtypeok=badtypeok, morevars=morevars,
-                                    taskvars=taskvars)
+            return float(self.getstr(sec, name))
 
         # if config variable is not set
         except NoOptionError:
@@ -856,15 +975,14 @@ class METplusConfig(ProdConfig):
         # if invalid value
         except ValueError:
             # check if it was an empty string and return MISSING_DATA_VALUE
-            if super().getstr(sec, name) == '':
+            if self.getstr(sec, name) == '':
                 return MISSING_DATA_VALUE
 
             # if value is not correct type, log error and return None
             self.logger.error(f"[{sec}] {name} must be a float.")
             return None
 
-    def getseconds(self, sec, name, default=None, badtypeok=False,
-                   morevars=None, taskvars=None):
+    def getseconds(self, sec, name, default=None):
         """!Converts time values ending in H, M, or S to seconds"""
         if sec in self.OLD_SECTIONS:
             sec = 'config'
@@ -872,9 +990,7 @@ class METplusConfig(ProdConfig):
         try:
             # convert value to seconds
             # Valid options match format 3600, 3600S, 60M, or 1H
-            value = super().getstr(sec, name, default=None,
-                                   badtypeok=badtypeok, morevars=morevars,
-                                   taskvars=taskvars)
+            value = self.getstr(sec, name)
             regex_and_multiplier = {r'(-*)(\d+)S': 1,
                                     r'(-*)(\d+)M': 60,
                                     r'(-*)(\d+)H': 3600,

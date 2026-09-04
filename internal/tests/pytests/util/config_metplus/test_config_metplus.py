@@ -905,3 +905,23 @@ def test_get_raw_keep_double_slash(metplus_config):
     config.set('config', 'URMA_ANLY_URL', TEST_URL)
     config.set('config', 'DATA_INGEST_1_INPUT_TEMPLATE', '{URMA_ANLY_URL}')
     assert config.getraw('config', 'DATA_INGEST_1_INPUT_TEMPLATE', keep_double_slash=True) == TEST_URL
+
+@pytest.mark.util
+def test_nocheck_getters(metplus_config):
+    config = metplus_config
+    getstr_check_val = config.getstr('config', 'GETSTR_CHECK_VAL', 'getstr_check_default')
+    getstr_nocheck_val = config.getstr_nocheck('config', 'GETSTR_NO_CHECK_VAL', 'getstr_nocheck_default')
+    getdir_check_val = config.getdir('GETDIR_CHECK_VAL', 'getdir_check_default')
+    getdir_nocheck_val = config.getdir_nocheck('GETDIR_NO_CHECK_VAL', 'getdir_nocheck_default')
+
+    # ensure default value is returned and set for config variable that did not exist
+    # new default value should not be used - config variable should be set in the previous get call
+    assert getstr_check_val == config.getstr('config', 'GETSTR_CHECK_VAL', 'getstr_check_default2')
+    assert getdir_check_val == config.getdir('GETDIR_CHECK_VAL', 'getdir_check_default2')
+
+    # ensure default value is returned but not set for config variable that did not exist
+    # new default value should be used and therefore not match the previous get call
+    assert getstr_nocheck_val == 'getstr_nocheck_default'
+    assert getstr_nocheck_val != config.get('config', 'GETSTR_NO_CHECK_VAL', 'getstr_nocheck_default2')
+    assert getdir_nocheck_val == 'getdir_nocheck_default'
+    assert getdir_nocheck_val != config.get('config', 'GETDIR_NO_CHECK_VAL', 'getdir_nocheck_default2')
