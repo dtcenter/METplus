@@ -58,7 +58,6 @@ def usage():
           "Arguments:\n"
           "/path/to/parmfile.conf -- Specify custom configuration file to use\n"
           "section.option=value -- override conf options on the command line")
-    sys.exit(2)
 
 
 def get_config_inputs_from_command_line():
@@ -72,11 +71,13 @@ def get_config_inputs_from_command_line():
     # if not arguments were provided, print usage and exit
     if len(sys.argv) < 2:
         usage()
+        sys.exit(1)
 
     # print usage statement and exit if help arg is found
     help_args = ('-h', '--help', '-help')
     if any(arg in sys.argv for arg in help_args):
         usage()
+        sys.exit(0)
 
     # pull out command line arguments, removing deprecated config arguments
     config_args = ('-c', '--config', '-config')
@@ -85,6 +86,7 @@ def get_config_inputs_from_command_line():
     # if no valid config_inputs were found, print usage and exit
     if not config_inputs:
         usage()
+        sys.exit(1)
 
     return config_inputs
 
@@ -93,11 +95,11 @@ def cli_main():
     try:
         produtil_setup(send_dbn=False, jobname='run-METplus')
         if not main():
-            sys.exit(1)
+            sys.exit(2)
     except Exception as exc:
         print(traceback.format_exc())
         print('ERROR: run_metplus  failed: %s' % exc)
-        sys.exit(2)
+        sys.exit(3)
 
 if __name__ == "__main__":
     cli_main()
