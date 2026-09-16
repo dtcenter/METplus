@@ -619,14 +619,24 @@ def test_series_analysis_missing_inputs(metplus_config, get_test_data_dir, run_a
 )
 @pytest.mark.wrapper_a
 def test_series_analysis_single_field(metplus_config, config_overrides,
-                                      env_var_values, compare_command_and_env_vars):
+                                      env_var_values, compare_command_and_env_vars,
+                                      tmp_path_factory):
 
     config = metplus_config
 
     set_minimum_config_settings(config)
 
-    # set config variable overrides
+    # create tmp directory to handle input file lists if set
+    tmp_dir = None
+
+    # set config variable overrides - adding tmp dir to file list paths if set
     for key, value in config_overrides.items():
+        if 'INPUT_FILE_LIST' in str(key):
+            if tmp_dir is None:
+                tmp_dir = tmp_path_factory.mktemp('input_file_list_dir')
+            value = tmp_dir / value
+            value.touch()
+            config_overrides[key] = value
         config.set('config', key, value)
 
     wrapper = SeriesAnalysisWrapper(config)
@@ -678,8 +688,8 @@ def test_series_analysis_single_field(metplus_config, config_overrides,
                                  wrapper, special_values)
 
 
-def _set_file_args(config_overrides: Any, fcst_file: str, is_both: bool, obs_file: str,
-                   out_dir: Any | None) -> str:
+def _set_file_args(config_overrides: dict, fcst_file: str, is_both: bool, obs_file: str,
+                   out_dir: str) -> str:
     if is_both:
         both_path = f"{out_dir}/{fcst_file}"
         if 'BOTH_SERIES_ANALYSIS_INPUT_FILE_LIST' in config_overrides:
@@ -991,7 +1001,8 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
         # 3: filter by lead all storms
         ({'LEAD_SEQ': '0H, 6H, 12H',
           'SERIES_ANALYSIS_OUTPUT_TEMPLATE': "series_{fcst_name}_{fcst_level}.nc",
-          'TEST_OUTPUT_DIRNAME': 'byleadallstorms'},
+          'TEST_OUTPUT_DIRNAME': 'byleadallstorms',
+          'SERIES_ANALYSIS_RUNTIME_FREQ': 'RUN_ONCE_PER_LEAD',},
          {'init': '*',
           'valid': '*',
           'lead': 21600,
@@ -1007,7 +1018,8 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
         # 4: filter by lead 1 storm
         ({'LEAD_SEQ': '0H, 6H, 12H',
           'SERIES_ANALYSIS_OUTPUT_TEMPLATE': "series_{fcst_name}_{fcst_level}.nc",
-          'TEST_OUTPUT_DIRNAME': 'byleadstormA'},
+          'TEST_OUTPUT_DIRNAME': 'byleadstormA',
+          'SERIES_ANALYSIS_RUNTIME_FREQ': 'RUN_ONCE_PER_LEAD',},
          {'init': '*',
           'valid': '*',
           'lead': 21600,
@@ -1021,7 +1033,8 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
         # 5: filter by lead another storm
         ({'LEAD_SEQ': '0H, 6H, 12H',
           'SERIES_ANALYSIS_OUTPUT_TEMPLATE': "series_{fcst_name}_{fcst_level}.nc",
-          'TEST_OUTPUT_DIRNAME': 'byleadstormB'},
+          'TEST_OUTPUT_DIRNAME': 'byleadstormB',
+          'SERIES_ANALYSIS_RUNTIME_FREQ': 'RUN_ONCE_PER_LEAD',},
          {'init': '*',
           'valid': '*',
           'lead': 21600,
@@ -1038,7 +1051,8 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
           'LEAD_SEQ_2': '12H',
           'LEAD_SEQ_2_LABEL': 'Group2',
           'SERIES_ANALYSIS_OUTPUT_TEMPLATE': "series_{fcst_name}_{fcst_level}.nc",
-          'TEST_OUTPUT_DIRNAME': 'byleadgroupAallstorms'},
+          'TEST_OUTPUT_DIRNAME': 'byleadgroupAallstorms',
+          'SERIES_ANALYSIS_RUNTIME_FREQ': 'RUN_ONCE_PER_LEAD',},
          {'init': '*',
           'valid': '*',
           },
@@ -1060,7 +1074,8 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
           'LEAD_SEQ_2': '12H',
           'LEAD_SEQ_2_LABEL': 'Group2',
           'SERIES_ANALYSIS_OUTPUT_TEMPLATE': "series_{fcst_name}_{fcst_level}.nc",
-          'TEST_OUTPUT_DIRNAME': 'byleadgroupBallstorms'},
+          'TEST_OUTPUT_DIRNAME': 'byleadgroupBallstorms',
+          'SERIES_ANALYSIS_RUNTIME_FREQ': 'RUN_ONCE_PER_LEAD',},
          {'init': '*',
           'valid': '*',
           },
@@ -1113,7 +1128,16 @@ def test_get_fcst_and_obs_path(metplus_config, config_overrides,
         storm_dir = storm_id
         wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = True
 
-    assert wrapper.get_all_files()
+    # get files for lead if lead is specified, otherwise get all files
+    if ('SERIES_ANALYSIS_RUNTIME_FREQ' in config_overrides and
+            config_overrides['SERIES_ANALYSIS_RUNTIME_FREQ'] == 'RUN_ONCE_PER_LEAD'):
+        if lead_group is not None:
+            wrapper.c_dict['ALL_FILES'] = wrapper.get_all_files_for_leads(time_info, lead_group[1])
+        else:
+            wrapper.c_dict['ALL_FILES'] = wrapper.get_all_files_for_lead(time_info)
+    else:
+        wrapper.c_dict['ALL_FILES'] = wrapper.get_all_files()
+    assert wrapper.c_dict['ALL_FILES']
 
     templates = config_overrides['SERIES_ANALYSIS_OUTPUT_TEMPLATE'].split('/')
     if len(templates) == 1:
@@ -1297,18 +1321,26 @@ def test_get_fcst_obs_not_embedding(metplus_config):
     ]
 )
 @pytest.mark.wrapper_a
-def test_get_fcst_and_obs_path(metplus_config,
+def test_get_fcst_and_obs_path_file_lists(metplus_config,
                            lead_group,
                            use_both,
                            mock_exists,
-                           expected):
+                           expected,
+                           tmp_path_factory):
+    # create tmp dir for fake file path files
+    tmp_dir = tmp_path_factory.mktemp('input_file_list_dir')
+
     config = metplus_config
     set_minimum_config_settings(config)
     wrapper = SeriesAnalysisWrapper(config)
     wrapper.c_dict['EXPLICIT_FILE_LIST'] = True
-    wrapper.c_dict['FCST_INPUT_FILE_LIST'] = 'fcst_path'
-    wrapper.c_dict['OBS_INPUT_FILE_LIST'] = 'obs_path'
-    wrapper.c_dict['BOTH_INPUT_FILE_LIST'] = 'both_path'
+    wrapper.c_dict['FCST_INPUT_FILE_LIST'] = str(tmp_dir / 'fcst_path')
+    wrapper.c_dict['OBS_INPUT_FILE_LIST'] = str(tmp_dir / 'obs_path')
+    wrapper.c_dict['BOTH_INPUT_FILE_LIST'] = str(tmp_dir / 'both_path')
+    wrapper.c_dict['FCST_INPUT_TEMPLATE'] = ''
+    wrapper.c_dict['OBS_INPUT_TEMPLATE'] = ''
+    wrapper.c_dict['FCST_INPUT_DIR'] = ''
+    wrapper.c_dict['OBS_INPUT_DIR'] = ''
     wrapper.c_dict['USING_BOTH'] = use_both
 
     time_info = {'loop_by': 'init',
@@ -1320,10 +1352,16 @@ def test_get_fcst_and_obs_path(metplus_config,
                  'date': datetime(2005, 8, 7, 0, 0),
                  'storm_id': '*'}
 
+    if lead_group is not None:
+        wrapper.c_dict['ALL_FILES'] = wrapper.get_all_files_for_leads(time_info, lead_group[1])
+    else:
+        wrapper.c_dict['ALL_FILES'] = wrapper.get_all_files()
+
     if mock_exists:
         with mock.patch.object(os.path, "exists", return_value=True):
             actual = wrapper._get_fcst_and_obs_path(time_info, '*', lead_group) 
     else:
-        actual = wrapper._get_fcst_and_obs_path(time_info, '*', lead_group) 
-    assert actual == expected
+        actual = wrapper._get_fcst_and_obs_path(time_info, '*', lead_group)
 
+    expected_full = (os.path.join(tmp_dir, expected[0]), os.path.join(tmp_dir, expected[1])) if expected[0] and expected[1] else (None, None)
+    assert actual == expected_full
