@@ -74,6 +74,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_CONTROL_ID',
         'METPLUS_GRID_WEIGHT_FLAG',
         'METPLUS_POINT_WEIGHT_FLAG',
+        'METPLUS_KDE_REF_ANGLE',
+        'METPLUS_WRITE_WEIGHTS',
         'METPLUS_PROB_CAT_THRESH',
         'METPLUS_PROB_PCT_THRESH',
         'METPLUS_ECLV_POINTS',
@@ -210,8 +212,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             self.config.getraw('config', 'ENSEMBLE_STAT_MET_OBS_ERR_TABLE')
         )
 
-        self.add_met_config(name='vld_thresh',
-                            data_type='float',
+        self.add_met_config(name='vld_thresh', data_type='float',
                             metplus_configs=[
                                 'ENSEMBLE_STAT_VLD_THRESH',
                                 'ENSEMBLE_STAT_VALID_THRESH',
@@ -222,8 +223,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                 'ENSEMBLE_STAT_ENS_VLD_THRESH',
                             ])
 
-        self.add_met_config(name='obs_thresh',
-                            data_type='list',
+        self.add_met_config(name='obs_thresh', data_type='list',
                             metplus_configs=['ENSEMBLE_STAT_OBS_THRESH',
                                              'ENSEMBLE_STAT_ENS_OBS_THRESH'],
                             extra_args={'remove_quotes': True,
@@ -238,14 +238,12 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         self.add_met_config(name='ens_phist_bin_size', data_type='float')
 
-        self.add_met_config(name='ens_thresh',
-                            data_type='float',
+        self.add_met_config(name='ens_thresh', data_type='float',
                             metplus_configs=['ENSEMBLE_STAT_ENS_THRESH',
                                              'ENSEMBLE_STAT_FCST_ENS_THRESH',
                                              'FCST_ENSEMBLE_STAT_ENS_THRESH'])
 
-        self.add_met_config(name='duplicate_flag',
-                            data_type='string',
+        self.add_met_config(name='duplicate_flag', data_type='string',
                             extra_args={'remove_quotes': True})
         self.add_met_config(name='obs_summary', data_type='string',
                             extra_args={'constant': True})
@@ -277,19 +275,16 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.handle_flags('OUTPUT')
         self.handle_flags('NC_ORANK')
 
-        self.add_met_config(name='flag',
-                            data_type='bool',
+        self.add_met_config(name='flag', data_type='bool',
                             env_var_name='METPLUS_OBS_ERROR_FLAG',
                             metplus_configs=['ENSEMBLE_STAT_OBS_ERROR_FLAG'])
 
-        self.add_met_config(name='grid',
-                            data_type='list',
+        self.add_met_config(name='grid', data_type='list',
                             env_var_name='METPLUS_MASK_GRID',
                             metplus_configs=['ENSEMBLE_STAT_MASK_GRID'],
                             extra_args={'allow_empty': True})
 
-        self.add_met_config(name='poly',
-                            data_type='list',
+        self.add_met_config(name='poly', data_type='list',
                             env_var_name='METPLUS_MASK_POLY',
                             metplus_configs=['ENSEMBLE_STAT_MASK_POLY',
                                              'ENSEMBLE_STAT_POLY',
@@ -297,59 +292,49 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                               'VERIFICATION_MASK_TEMPLATE')],
                             extra_args={'allow_empty': True})
 
-        self.add_met_config(name='ci_alpha',
-                            data_type='list',
+        self.add_met_config(name='ci_alpha', data_type='list',
                             extra_args={'remove_quotes': True})
 
-        self.add_met_config(name='censor_thresh',
-                            data_type='list',
+        self.add_met_config(name='censor_thresh', data_type='list',
                             extra_args={'remove_quotes': True})
 
-        self.add_met_config(name='censor_val',
-                            data_type='list',
+        self.add_met_config(name='censor_val', data_type='list',
                             extra_args={'remove_quotes': True})
 
-        self.add_met_config(name='message_type',
-                            data_type='list',
+        self.add_met_config(name='message_type', data_type='list',
                             extra_args={'allow_empty': True})
 
         self.add_met_config_window('obs_window')
 
         self.add_met_config(
-            name='obs_quality_inc',
-            data_type='list',
+            name='obs_quality_inc', data_type='list',
             metplus_configs=['ENSEMBLE_STAT_OBS_QUALITY_INC',
                              'ENSEMBLE_STAT_OBS_QUALITY_INCLUDE']
         )
         self.add_met_config(
-            name='obs_quality_exc',
-            data_type='list',
+            name='obs_quality_exc', data_type='list',
             metplus_configs=['ENSEMBLE_STAT_OBS_QUALITY_EXC',
                              'ENSEMBLE_STAT_OBS_QUALITY_EXCLUDE']
         )
 
-        self.add_met_config(name='ens_member_ids',
-                            data_type='list')
+        self.add_met_config(name='ens_member_ids', data_type='list')
 
-        self.add_met_config(name='control_id',
-                            data_type='string')
+        self.add_met_config(name='control_id', data_type='string')
 
-        self.add_met_config(name='grid_weight_flag',
-                            data_type='string',
+        self.add_met_config(name='grid_weight_flag', data_type='string',
                             extra_args={'constant': True})
 
-        self.add_met_config(name='point_weight_flag',
-                            data_type='string',
+        self.add_met_config(name='point_weight_flag', data_type='string',
                             extra_args={'constant': True})
+        self.add_met_config(name='kde_ref_angle', data_type='float')
+        self.add_met_config(name='write_weights', data_type='bool')
 
-        self.add_met_config(name='prob_pct_thresh',
-                            data_type='list',
+        self.add_met_config(name='prob_pct_thresh', data_type='list',
                             extra_args={'remove_quotes': True})
 
         self.add_met_config(name='eclv_points', data_type='float')
 
-        self.add_met_config(name='prob_cat_thresh',
-                            data_type='list',
+        self.add_met_config(name='prob_cat_thresh', data_type='list',
                             extra_args={'remove_quotes': True})
 
         return c_dict

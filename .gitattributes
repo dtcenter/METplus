@@ -1,0 +1,10 @@
+# Exclude folders and files
+.github/ export-ignore
+.gitignore export-ignore
+.gitattributes export-ignore
+.coveragerc export-ignore
+.readthedocs.yaml export-ignore
+.idea/ export-ignore
+
+internal/scripts/ export-ignore
+internal/tests/use_cases export-ignore

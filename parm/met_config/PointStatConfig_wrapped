@@ -219,6 +219,12 @@ ${METPLUS_UGRID_COORDINATES_FILE}
 
 //point_weight_flag =
 ${METPLUS_POINT_WEIGHT_FLAG}
+//kde_ref_angle =
+${METPLUS_KDE_REF_ANGLE}
+//write_weights =
+${METPLUS_WRITE_WEIGHTS}
+
+////////////////////////////////////////////////////////////////////////////////
 
 tmp_dir = "${MET_TMP_DIR}";
 

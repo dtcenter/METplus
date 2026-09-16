@@ -321,20 +321,15 @@ class TCPairsWrapper(RuntimeFreqWrapper):
 
         # check deprecated TC_PAIRS_RUN_ONCE, warn and handle if set
         elif self.config.has_option('config', 'TC_PAIRS_RUN_ONCE'):
-            self.logger.warning('TC_PAIRS_RUN_ONCE is deprecated.')
             run_once = self.config.getbool('config', 'TC_PAIRS_RUN_ONCE', True)
-            if run_once:
-                self.logger.warning('Setting TC_PAIRS_RUNTIME_FREQ=RUN_ONCE.'
-                                    'Please remove TC_PAIRS_RUN_ONCE and '
-                                    'set TC_PAIRS_RUNTIME_FREQ=RUN_ONCE '
-                                    'to remove this warning')
-                c_dict['RUNTIME_FREQ'] = 'RUN_ONCE'
-            else:
-                self.logger.warning('Setting TC_PAIRS_RUNTIME_FREQ=RUN_ONCE_FOR_EACH.'
-                                    'Please remove TC_PAIRS_RUN_ONCE and '
-                                    'set TC_PAIRS_RUNTIME_FREQ=RUN_ONCE_FOR_EACH '
-                                    'to remove this warning')
-                c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_FOR_EACH'
+            freq_override = 'RUN_ONCE' if run_once else 'RUN_ONCE_FOR_EACH'
+            c_dict['RUNTIME_FREQ'] = freq_override
+            msg = (
+                f"TC_PAIRS_RUN_ONCE is deprecated. Setting TC_PAIRS_RUNTIME_FREQ={freq_override}. "
+                f"Please remove TC_PAIRS_RUN_ONCE and set TC_PAIRS_RUNTIME_FREQ={freq_override} "
+                "to remove this warning"
+            )
+            self.logger.warning(msg)
 
         # if runtime frequency set to run once for each time, check skip lead
         if c_dict['RUNTIME_FREQ'] == 'RUN_ONCE_FOR_EACH':

@@ -30,7 +30,7 @@ in the
        | **NCAR MACHINE CASPER** (see 
           `Casper Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/casper/>`_)
        | *Last Updated:*
-       | *Compiler and version:*
+       | *Compiler and version: Intel oneAPI 2024.2.1*
 
        * METplus-X.Y.0-beta1
 
@@ -112,7 +112,7 @@ in the
 
        | **NCAR RAL MACHINES (STANDARD LOCATION)**
        | *Last Updated:*
-       | *Compiler and version:*
+       | *Compiler and version: GNU 12.2.0*
 
        * **METvX.Y.0**
 
@@ -159,7 +159,7 @@ in the
 
         | **NOAA MACHINE URSA**
         | *Last updated:*
-        | *Compiler and version:*
+        | *Compiler and version: Intel oneAPI 2025.1.1*
 
           * **METplus-X.Y.Z-beta1**
 
@@ -179,7 +179,7 @@ in the
 
               .. code-block:: ini
 
-                  module load intel/2025.1.1
+                  module load intel-oneapi-compilers/2025.1.1
                   module use /contrib/METplus/modulefiles
                   module load metplus/X.Y.Z-beta1
 
@@ -189,7 +189,7 @@ in the
 
               .. code-block:: ini
 
-                  module load intel/2025.1.1
+                  module load intel-oneapi-compilers/2025.1.1
                   module use -a /contrib/met/modulefiles/
                   module load met/X.Y.Z-beta1
 
@@ -199,7 +199,7 @@ in the
 
               .. code-block:: ini
 
-                  module load intel/2025.1.1
+                  module load intel-oneapi-compilers/2025.1.1
                   module use /contrib/METcalcpy/modulefiles
                   module load metcalcpy/X.Y.Z-beta1
                   module use /contrib/METplotpy/modulefiles
@@ -211,7 +211,7 @@ in the
 
               .. code-block:: ini
 
-                  module load intel/2025.1.1
+                  module load intel-oneapi-compilers/2025.1.1
                   module use /contrib/METdataio/modulefiles
                   module load metdataio/X.Y.Z-beta1
 
@@ -220,7 +220,7 @@ in the
 
         | **NOAA MACHINE HERA**
         | *Last updated:*
-        | *Compiler and version:*
+        | *Compiler and version: Intel oneAPI 2024.2.1*
 
           * **METplus-X.Y.0-beta1**
 
@@ -240,7 +240,7 @@ in the
 
               .. code-block:: ini
 
-                 module load intel/2022.1.2
+                 module load intel/2024.2.1
                  module use /contrib/METplus/modulefiles
                  module load metplus/X.Y.0-beta1
 
@@ -250,7 +250,7 @@ in the
 
               .. code-block:: ini
 
-                  module load intel/2022.1.2
+                  module load intel/2024.2.1
                   module use -a /contrib/met/modulefiles/
                   module load met/X.Y.0-beta1
 
@@ -260,7 +260,7 @@ in the
 
               .. code-block:: ini
 
-                  module load intel/2022.1.2
+                  module load intel/2024.2.1
                   module use /contrib/METcalcpy/modulefiles
                   module load metcalcpy/X.Y.0-beta1
                   module use /contrib/METplotpy/modulefiles
@@ -272,7 +272,7 @@ in the
 
               .. code-block:: ini
 
-                  module load intel/2022.1.2
+                  module load intel/2024.2.1
                   module use /contrib/METdataio/modulefiles
                   module load metdataio/X.Y.0-beta1
 
@@ -280,14 +280,15 @@ in the
 
         | **NOAA MACHINE HERCULES (MANAGED BY MSU)**
         | *Last updated:*
-	| *Compiler and version: intel-oneapi-compilers/2022.2.1*
+	| *Compiler and version: Intel oneAPI 2025.3.1*
 	|
 	| **Before loading any of the modules below, it is necessary to load the following modules:**
 
 	.. code-block:: ini
 
-           module load contrib
-           module load intel-oneapi-compilers/2022.2.1
+           module load spack-managed-x86-64_v3
+           module load intel-oneapi-compilers/2025.3.1
+           module load contrib/0.1
 
           * **METplus-X.Y.0-beta1**
 
@@ -345,7 +346,7 @@ in the
 
         | **NOAA MACHINE ORION (MANAGED BY MSU)**
         | *Last updated:*
-	| *Compiler and version:*
+	| *Compiler and version: Intel oneAPI 2024.1.0*
 
           * **METplus-X.Y.0-beta1**
 
@@ -368,7 +369,7 @@ in the
               .. code-block:: ini
 
                  module load contrib
-                 module load intel-oneapi-compilers/2022.2.1
+                 module load intel-oneapi-compilers/2024.1.0
                  module load met/X.Y.0-beta1
 
           * **METcalcpy-X.Y.0-beta1 / METplotpy-X.Y.0-beta1**
@@ -378,7 +379,7 @@ in the
               .. code-block:: ini
 
                  module load contrib
-                 module load intel-oneapi-compilers/2022.2.1
+                 module load intel-oneapi-compilers/2024.1.0
                  module use /apps/contrib/modulefiles
                  module load metcalcpy/X.Y.0-beta1
                  module load metplotpy/X.Y.0-beta1
@@ -401,79 +402,15 @@ in the
               .. code-block:: ini
 
                  module load contrib
-                 module load intel-oneapi-compilers/2022.2.1
+                 module load intel-oneapi-compilers/2024.1.0
                  module use /apps/contrib/modulefiles
-                 module load metdataio/X.Y.0-beta1
-
-     .. dropdown:: JET - Coming Soon!
-
-        | **NOAA MACHINE JET**
-        | *Last updated:*
-        | *Compiler and version:*
-
-          * **METplus-X.Y.0-beta1**
-
-            * METplus-X.Y.0-beta1 Installation
-
-              * /contrib/met/METplus/METplus-X.Y.0-beta1
-
-            * METplus-X.Y Sample Data
-
-              * /mnt/lfs6/HFIP/dtc-hurr/METplus/sample_data/METplus-X.Y_sample_data
-
-            * To use METplus run: Create a like /mnt/lfs6/HFIP/dtc-hurr/METplus/jet.role-metplus.conf 
-              to set a personalized INPUT_BASE and OUTPUT_BASE.
-
-              .. code-block:: ini
-
-                 module load intel/2022.1.2
-                 module load nco/4.9.1
-                 module load wgrib/1.8.1.0b
-                 module load wgrib2/3.1.2_wmo
-                 module load R/4.0.2
-                 module use /contrib/met/modulefiles
-                 module load met/X.Y.0-beta1
-                 module use /contrib/met/METplus/modulefiles
-                 module load metplus/X.Y.0-beta1
-
-          * **METvX.Y.0-beta1**
-
-            * MODULES:
-
-              .. code-block:: ini
-
-                 module load intel/2024.2.1
-                 module load contrib
-                 module use /contrib/met/modulefiles
-                 module load met/X.Y.0-beta1
-
-          * **METcalcpy-X.Y.0-beta1 / METplotpy-X.Y.0-beta1**
-
-            * MODULES:
-
-              .. code-block:: ini
-
-                 module load intel/2024.2.1
-                 module use /contrib/met/METcalcpy/modulefiles
-                 module load metcalcpy/X.Y.0-beta1
-                 module use /contrib/met/METplotpy/modulefiles
-                 module load metplotpy/X.Y.0-beta1
-
-          * **METdataio-X.Y.0-beta1**
-
-            * MODULES:
-
-              .. code-block:: ini
-
-                 module load intel/2024.2.1
-                 module use /contrib/met/METdataio/modulefiles
                  module load metdataio/X.Y.0-beta1
 
      .. dropdown:: GAEA - Coming Soon!
 
         | **NOAA MACHINE GAEA**
         | *Last Updated:*
-	| *Compiler and version:*
+	| *Compiler and version: Intel classic 2023.2.0*
 
           * **METplus-X.Y.0-beta1**
 
@@ -538,7 +475,7 @@ in the
 
         | **TEXAS ADVANCED COMPUTING CENTER (TACC) FRONTERA**
         | *Last Updated:*
-	| *Compiler and version:*
+	| *Compiler and version: Intel oneAPI 2023.1.0*
 
           * **METplus-X.Y.Z-beta1**
 

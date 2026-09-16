@@ -67,7 +67,8 @@ METplus Configuration
 | :term:`ASCII2NC_INC_INIT_TIMES`
 | :term:`ASCII2NC_ALLOW_MISSING_INPUTS`
 | :term:`ASCII2NC_INPUT_THRESH`
-
+| :term:`ASCII2NC_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`ASCII2NC_WARN_IF_OUTPUT_EXISTS`
 |
 
 .. _ascii2nc-met-conf:
@@ -214,6 +215,8 @@ Optional:
 | :term:`DATA_INGEST_<n>_AUTO_DECOMPRESS`
 | :term:`DATA_INGEST_<n>_USERNAME`
 | :term:`DATA_INGEST_<n>_PASSWORD`
+| :term:`DATA_INGEST_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`DATA_INGEST_WARN_IF_OUTPUT_EXISTS`
 
 
 .. _ensemble_stat_wrapper:
@@ -418,6 +421,8 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_CONTROL_ID`
 | :term:`ENSEMBLE_STAT_GRID_WEIGHT_FLAG`
 | :term:`ENSEMBLE_STAT_POINT_WEIGHT_FLAG`
+| :term:`ENSEMBLE_STAT_KDE_REF_ANGLE`
+| :term:`ENSEMBLE_STAT_WRITE_WEIGHTS`
 | :term:`ENSEMBLE_STAT_PROB_CAT_THRESH`
 | :term:`ENSEMBLE_STAT_PROB_PCT_THRESH`
 | :term:`ENSEMBLE_STAT_ECLV_POINTS`
@@ -470,7 +475,9 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_INC_INIT_TIMES`
 | :term:`ENSEMBLE_STAT_ALLOW_MISSING_INPUTS`
 | :term:`ENSEMBLE_STAT_INPUT_THRESH`
-|
+| :term:`ENSEMBLE_STAT_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`ENSEMBLE_STAT_WARN_IF_OUTPUT_EXISTS`
+| :term:`ENSEMBLE_STAT_WARN_IF_ENSEMBLE_IS_MISSING`
 
 .. warning:: **DEPRECATED:**
 
@@ -1358,6 +1365,30 @@ ${METPLUS_POINT_WEIGHT_FLAG}
    * - :term:`ENSEMBLE_STAT_POINT_WEIGHT_FLAG`
      - point_weight_flag
 
+${METPLUS_KDE_REF_ANGLE}
+""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_KDE_REF_ANGLE`
+     - kde_ref_angle
+
+${METPLUS_WRITE_WEIGHTS}
+""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_WRITE_WEIGHTS`
+     - write_weights
+
 ${METPLUS_OUTPUT_PREFIX}
 """"""""""""""""""""""""
 
@@ -1450,6 +1481,8 @@ the dimensions and density of the tiles comprising the subregion:
 | :term:`EXTRACT_TILES_VAR_LIST`
 | :term:`EXTRACT_TILES_SKIP_IF_OUTPUT_EXISTS`
 | :term:`EXTRACT_TILES_CUSTOM_LOOP_LIST`
+| :term:`EXTRACT_TILES_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`EXTRACT_TILES_WARN_IF_OUTPUT_EXISTS`
 |
 
 .. warning:: **DEPRECATED:**
@@ -1606,7 +1639,9 @@ METplus Configuration
 | :term:`GEN_ENS_PROD_INPUT_THRESH`
 | :term:`GEN_ENS_PROD_N_MEMBERS`
 | :term:`GEN_ENS_PROD_VLD_THRESH`
-
+| :term:`GEN_ENS_PROD_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`GEN_ENS_PROD_WARN_IF_OUTPUT_EXISTS`
+| :term:`GEN_ENS_PROD_WARN_IF_ENSEMBLE_IS_MISSING`
 
 
 .. _gen-ens-prod-met-conf:
@@ -2033,6 +2068,8 @@ Configuration
 | :term:`GEN_VX_MASK_INC_INIT_TIMES`
 | :term:`GEN_VX_MASK_ALLOW_MISSING_INPUTS`
 | :term:`GEN_VX_MASK_INPUT_THRESH`
+| :term:`GEN_VX_MASK_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`GEN_VX_MASK_WARN_IF_OUTPUT_EXISTS`
 |
 
 .. _gfdl_tracker_wrapper:
@@ -3346,6 +3383,8 @@ METplus Configuration
 | :term:`GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_1D`
 | :term:`GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_2D`
 | :term:`GRID_DIAG_OUTPUT_FLAG_INFO_THEORY`
+| :term:`GRID_DIAG_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`GRID_DIAG_WARN_IF_OUTPUT_EXISTS`
 
 
 .. _grid-diag-met-conf:
@@ -3715,7 +3754,8 @@ METplus Configuration
 | :term:`GRID_STAT_INPUT_THRESH`
 | :term:`GRID_STAT_GRADIENT_DX`
 | :term:`GRID_STAT_GRADIENT_DY`
-|
+| :term:`GRID_STAT_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`GRID_STAT_WARN_IF_OUTPUT_EXISTS`
 
 .. warning:: **DEPRECATED**
 
@@ -4509,6 +4549,9 @@ METplus Configuration
 | :term:`IODA2NC_INC_INIT_TIMES`
 | :term:`IODA2NC_ALLOW_MISSING_INPUTS`
 | :term:`IODA2NC_INPUT_THRESH`
+| :term:`IODA2NC_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`IODA2NC_WARN_IF_OUTPUT_EXISTS`
+
 
 .. _ioda2nc-met-conf:
 
@@ -4793,7 +4836,9 @@ METplus Configuration
 | :term:`MADIS2NC_INC_INIT_TIMES`
 | :term:`MADIS2NC_ALLOW_MISSING_INPUTS`
 | :term:`MADIS2NC_INPUT_THRESH`
-|
+| :term:`MADIS2NC_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`MADIS2NC_WARN_IF_OUTPUT_EXISTS`
+
 
 .. _madis2nc-met-conf:
 
@@ -5222,7 +5267,9 @@ METplus Configuration
 | :term:`MODE_TIME_OFFSET_WARNING`
 | :term:`MODE_ALLOW_MISSING_INPUTS`
 | :term:`MODE_INPUT_THRESH`
-|
+| :term:`MODE_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`MODE_WARN_IF_OUTPUT_EXISTS`
+
 
 .. warning:: **DEPRECATED:**
 
@@ -5984,7 +6031,9 @@ METplus Configuration
 | :term:`MTD_INC_INIT_TIMES`
 | :term:`MTD_ALLOW_MISSING_INPUTS`
 | :term:`MTD_INPUT_THRESH`
-|
+| :term:`MTD_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`MTD_WARN_IF_OUTPUT_EXISTS`
+
 
 .. warning:: **DEPRECATED:**
 
@@ -6389,6 +6438,8 @@ Configuration
 | :term:`PAIR_STAT_OUTPUT_FLAG_SEEPS`
 | :term:`PAIR_STAT_OUTPUT_FLAG_SEEPS_MPR`
 | :term:`PAIR_STAT_POINT_WEIGHT_FLAG`
+| :term:`PAIR_STAT_KDE_REF_ANGLE`
+| :term:`PAIR_STAT_WRITE_WEIGHTS`
 | :term:`PAIR_STAT_CUSTOM_LOOP_LIST`
 | :term:`PAIR_STAT_SKIP_IF_OUTPUT_EXISTS`
 | :term:`PAIR_STAT_MET_CONFIG_OVERRIDES`
@@ -6406,6 +6457,9 @@ Configuration
 | :term:`PAIR_STAT_INC_INIT_TIMES`
 | :term:`PAIR_STAT_ALLOW_MISSING_INPUTS`
 | :term:`PAIR_STAT_INPUT_THRESH`
+| :term:`PAIR_STAT_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`PAIR_STAT_WARN_IF_OUTPUT_EXISTS`
+
 
 .. _pair-stat-met-conf:
 
@@ -7274,6 +7328,30 @@ ${METPLUS_POINT_WEIGHT_FLAG}
    * - :term:`PAIR_STAT_POINT_WEIGHT_FLAG`
      - point_weight_flag
 
+${METPLUS_KDE_REF_ANGLE}
+""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_KDE_REF_ANGLE`
+     - kde_ref_angle
+
+${METPLUS_WRITE_WEIGHTS}
+""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PAIR_STAT_WRITE_WEIGHTS`
+     - write_weights
+
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""
 
@@ -7338,6 +7416,9 @@ METplus Configuration
 | :term:`PB2NC_INC_INIT_TIMES`
 | :term:`PB2NC_ALLOW_MISSING_INPUTS`
 | :term:`PB2NC_INPUT_THRESH`
+| :term:`PB2NC_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`PB2NC_WARN_IF_OUTPUT_EXISTS`
+
 
 .. warning:: **DEPRECATED:**
 
@@ -7697,7 +7778,8 @@ METplus Configuration
 | :term:`OBS_PCP_COMBINE_VLD_THRESH`
 | :term:`PCP_COMBINE_ALLOW_MISSING_INPUTS`
 | :term:`PCP_COMBINE_INPUT_THRESH`
-|
+| :term:`PCP_COMBINE_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`PCP_COMBINE_WARN_IF_OUTPUT_EXISTS`
 
 .. warning:: **DEPRECATED:**
 
@@ -7763,6 +7845,8 @@ Configuration
 | :term:`PLOT_DATA_PLANE_INC_INIT_TIMES`
 | :term:`PLOT_DATA_PLANE_ALLOW_MISSING_INPUTS`
 | :term:`PLOT_DATA_PLANE_INPUT_THRESH`
+| :term:`PLOT_DATA_PLANE_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`PLOT_DATA_PLANE_WARN_IF_OUTPUT_EXISTS`
 
 .. _plot_point_obs_wrapper:
 
@@ -7832,6 +7916,8 @@ Configuration
 | :term:`PLOT_POINT_OBS_INC_INIT_TIMES`
 | :term:`PLOT_POINT_OBS_ALLOW_MISSING_INPUTS`
 | :term:`PLOT_POINT_OBS_INPUT_THRESH`
+| :term:`PLOT_POINT_OBS_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`PLOT_POINT_OBS_WARN_IF_OUTPUT_EXISTS`
 
 
 .. _plot-point-obs-met-conf:
@@ -8221,7 +8307,9 @@ METplus Configuration
 | :term:`POINT2GRID_MET_CONFIG_OVERRIDES`
 | :term:`POINT2GRID_ALLOW_MISSING_INPUTS`
 | :term:`POINT2GRID_INPUT_THRESH`
-|
+| :term:`POINT2GRID_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`POINT2GRID_WARN_IF_OUTPUT_EXISTS`
+
 
 .. warning:: **DEPRECATED:**
 
@@ -8593,9 +8681,13 @@ Configuration
 | :term:`POINT_STAT_UGRID_COORDINATES_FILE`
 | :term:`POINT_STAT_UGRID_CONFIG_FILE`
 | :term:`POINT_STAT_POINT_WEIGHT_FLAG`
+| :term:`POINT_STAT_KDE_REF_ANGLE`
+| :term:`POINT_STAT_WRITE_WEIGHTS`
 | :term:`POINT_STAT_ALLOW_MISSING_INPUTS`
 | :term:`POINT_STAT_INPUT_THRESH`
-|
+| :term:`POINT_STAT_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`POINT_STAT_WARN_IF_OUTPUT_EXISTS`
+
 
 .. warning:: **DEPRECATED:**
 
@@ -9383,6 +9475,30 @@ ${METPLUS_POINT_WEIGHT_FLAG}
    * - :term:`POINT_STAT_POINT_WEIGHT_FLAG`
      - point_weight_flag
 
+${METPLUS_KDE_REF_ANGLE}
+""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_KDE_REF_ANGLE`
+     - kde_ref_angle
+
+${METPLUS_WRITE_WEIGHTS}
+""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_WRITE_WEIGHTS`
+     - write_weights
+
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""
 
@@ -9416,7 +9532,9 @@ METplus Configuration
 | :term:`PY_EMBED_INGEST_CUSTOM_LOOP_LIST`
 | :term:`PY_EMBED_INGEST_<n>_OUTPUT_FIELD_NAME`
 | :term:`PY_EMBED_INGEST_SKIP_IF_OUTPUT_EXISTS`
-|
+| :term:`PY_EMBED_INGEST_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`PY_EMBED_INGEST_WARN_IF_OUTPUT_EXISTS`
+
 
 .. warning:: **DEPRECATED:**
 
@@ -9472,7 +9590,9 @@ METplus Configuration
 | :term:`REGRID_DATA_PLANE_INC_INIT_TIMES`
 | :term:`REGRID_DATA_PLANE_ALLOW_MISSING_INPUTS`
 | :term:`REGRID_DATA_PLANE_INPUT_THRESH`
-|
+| :term:`REGRID_DATA_PLANE_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`REGRID_DATA_PLANE_WARN_IF_OUTPUT_EXISTS`
+
 
 .. warning:: **DEPRECATED:**
 
@@ -9528,7 +9648,9 @@ METplus Configuration
 | :term:`RMW_ANALYSIS_INC_VALID_TIMES`
 | :term:`RMW_ANALYSIS_SKIP_INIT_TIMES`
 | :term:`RMW_ANALYSIS_INC_INIT_TIMES`
-|
+| :term:`RMW_ANALYSIS_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`RMW_ANALYSIS_WARN_IF_OUTPUT_EXISTS`
+
 
 .. _rmw-analysis-met-conf:
 
@@ -10043,7 +10165,9 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_INPUT_THRESH`
 | :term:`SERIES_ANALYSIS_GRADIENT_DX`
 | :term:`SERIES_ANALYSIS_GRADIENT_DY`
-|
+| :term:`SERIES_ANALYSIS_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`SERIES_ANALYSIS_WARN_IF_OUTPUT_EXISTS`
+
 
 .. warning:: **DEPRECATED:**
 
@@ -10860,6 +10984,9 @@ The following values are optional in the METplus configuration file:
 | :term:`STAT_ANALYSIS_INC_VALID_TIMES`
 | :term:`STAT_ANALYSIS_SKIP_INIT_TIMES`
 | :term:`STAT_ANALYSIS_INC_INIT_TIMES`
+| :term:`STAT_ANALYSIS_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`STAT_ANALYSIS_WARN_IF_OUTPUT_EXISTS`
+
 
 .. warning:: **DEPRECATED:**
 
@@ -11452,7 +11579,9 @@ METplus Configuration
 | :term:`TC_DIAG_INC_INIT_TIMES`
 | :term:`TC_DIAG_ALLOW_MISSING_INPUTS`
 | :term:`TC_DIAG_INPUT_THRESH`
-|
+| :term:`TC_DIAG_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`TC_DIAG_WARN_IF_OUTPUT_EXISTS`
+
 
 .. _tc-diag-met-conf:
 
@@ -11986,6 +12115,9 @@ METplus Configuration
 | :term:`TC_GEN_NC_PAIRS_GRID`
 | :term:`TC_GEN_ALLOW_MISSING_INPUTS`
 | :term:`TC_GEN_INPUT_THRESH`
+| :term:`TC_GEN_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`TC_GEN_WARN_IF_OUTPUT_EXISTS`
+
 
 .. warning:: **DEPRECATED:**
 
@@ -12647,7 +12779,9 @@ METplus Configuration
 | :term:`TC_PAIRS_INC_VALID_TIMES`
 | :term:`TC_PAIRS_SKIP_INIT_TIMES`
 | :term:`TC_PAIRS_INC_INIT_TIMES`
-|
+| :term:`TC_PAIRS_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`TC_PAIRS_WARN_IF_OUTPUT_EXISTS`
+
 
 .. warning:: **DEPRECATED:**
 
@@ -13057,7 +13191,9 @@ METplus Configuration
 | :term:`TC_RMW_INC_VALID_TIMES`
 | :term:`TC_RMW_SKIP_INIT_TIMES`
 | :term:`TC_RMW_INC_INIT_TIMES`
-|
+| :term:`TCRMW_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`TCRMW_WARN_IF_OUTPUT_EXISTS`
+
 
 .. _tc-rmw-met-conf:
 
@@ -13486,7 +13622,9 @@ METplus Configuration
 | :term:`TC_STAT_INC_VALID_TIMES`
 | :term:`TC_STAT_SKIP_INIT_TIMES`
 | :term:`TC_STAT_INC_INIT_TIMES`
-|
+| :term:`TC_STAT_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`TC_STAT_WARN_IF_OUTPUT_EXISTS`
+
 
 .. warning:: **DEPRECATED:**
 
@@ -14252,6 +14390,9 @@ METplus Configuration
 | :term:`WAVELET_STAT_TIME_OFFSET_WARNING`
 | :term:`WAVELET_STAT_ALLOW_MISSING_INPUTS`
 | :term:`WAVELET_STAT_INPUT_THRESH`
+| :term:`WAVELET_STAT_WARN_IF_DUPLICATE_OUTPUT`
+| :term:`WAVELET_STAT_WARN_IF_OUTPUT_EXISTS`
+
 
 .. _wavelet-stat-met-conf:
 

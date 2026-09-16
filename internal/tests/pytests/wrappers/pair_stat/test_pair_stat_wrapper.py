@@ -624,6 +624,10 @@ def test_pair_stat_missing_inputs(metplus_config, get_test_data_dir, run_all_and
                                            'hour_interval = 12;}')}),
         ({'PAIR_STAT_POINT_WEIGHT_FLAG': 'SID', },
          {'METPLUS_POINT_WEIGHT_FLAG': 'point_weight_flag = SID;'}),
+        ({'PAIR_STAT_KDE_REF_ANGLE': '0.8', },
+         {'METPLUS_KDE_REF_ANGLE': 'kde_ref_angle = 0.8;'}),
+        ({'PAIR_STAT_WRITE_WEIGHTS': 'true', },
+         {'METPLUS_WRITE_WEIGHTS': 'write_weights = TRUE;'}),
         ({'PAIR_STAT_FCST_LEAD': '12, 180000', },
          {'METPLUS_FCST_LEAD': 'fcst_lead = ["12", "180000"];'}),
 
