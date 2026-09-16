@@ -341,3 +341,21 @@ def run_all_and_check_missing():
         assert wrapper.errors == errors
 
     return run_all_and_check_missing_run_error
+
+@pytest.fixture(scope="module")
+def check_warn_output_overwrite():
+    def check_warn_output_overwrite_wrapper(wrapper, expected_warning, expected_path):
+        if expected_warning:
+            # Verify that a warning was logged
+            assert wrapper.logger.warning.called
+
+            # Extract and verify the warning message content
+            # Using the same pattern as existing tests in the file
+            last_msg = wrapper.logger.warning.call_args_list[-1][0][0]
+            assert "Output has already been written" in last_msg
+            assert expected_path in last_msg
+        else:
+            # Verify that no warning was logged for new files
+            assert not wrapper.logger.warning.called
+
+    return check_warn_output_overwrite_wrapper
