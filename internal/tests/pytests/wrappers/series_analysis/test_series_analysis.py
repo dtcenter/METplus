@@ -1310,7 +1310,7 @@ def test_get_fcst_obs_not_embedding(metplus_config):
         (('Group1', [0, 21600]), True, True, ('both_path', 'both_path')),
         (('F012', [relativedelta(hours=12)]), True, False, (None, None)),
         (('Group2', [0, 200]), False, True, ('fcst_path', 'obs_path')),
-        ((None, [0, 200]), False, False, (None, None)),
+        (None, False, False, (None, None)),
     ]
 )
 @pytest.mark.wrapper_a
