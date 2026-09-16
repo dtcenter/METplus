@@ -402,7 +402,6 @@ def test_series_analysis_missing_inputs(metplus_config, get_test_data_dir, run_a
           'BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE': 'True,True',
           },
          {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}'}),
-        # TODO: Fix these tests to include file list paths
         ({'SERIES_ANALYSIS_REGRID_TO_GRID': 'FCST',
           'BOTH_SERIES_ANALYSIS_INPUT_FILE_LIST': 'both_file_list',
           'FCST_SERIES_ANALYSIS_INPUT_TEMPLATE': '',
@@ -641,7 +640,7 @@ def test_series_analysis_single_field(metplus_config, config_overrides,
     wrapper = SeriesAnalysisWrapper(config)
     assert wrapper.is_ok
 
-    is_both = wrapper.c_dict.get('USING_BOTH')
+    is_both = wrapper.c_dict.get('USING_BOTH', False)
     
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -657,19 +656,7 @@ def test_series_analysis_single_field(metplus_config, config_overrides,
     if 'SERIES_ANALYSIS_AGGR_INPUT_TEMPLATE' in config_overrides:
         extra_args += f'-aggr {os.path.join(aggr_dir, aggr_rel)} '
 
-    if is_both:
-        both_path = f"{out_dir}/{fcst_file}"
-        if 'BOTH_SERIES_ANALYSIS_INPUT_FILE_LIST' in config_overrides:
-            both_path = config_overrides['BOTH_SERIES_ANALYSIS_INPUT_FILE_LIST']
-        file_args = f"-both {both_path}"
-    else:
-        fcst_path = f"{out_dir}/{fcst_file}"
-        obs_path = f"{out_dir}/{obs_file}"
-        if 'FCST_SERIES_ANALYSIS_INPUT_FILE_LIST' in config_overrides:
-            fcst_path = config_overrides['FCST_SERIES_ANALYSIS_INPUT_FILE_LIST']
-        if 'OBS_SERIES_ANALYSIS_INPUT_FILE_LIST' in config_overrides:
-            obs_path = config_overrides['OBS_SERIES_ANALYSIS_INPUT_FILE_LIST']
-        file_args = f"-fcst {fcst_path} -obs {obs_path}"
+    file_args = _set_file_args(config_overrides, fcst_file, is_both, obs_file, out_dir)
 
     expected_cmds = []
     for run_time in run_times:
@@ -697,6 +684,24 @@ def test_series_analysis_single_field(metplus_config, config_overrides,
     # only compare first command since the rest are not series_analysis
     compare_command_and_env_vars(compare_cmds, expected_cmds, env_var_values,
                                  wrapper, special_values)
+
+
+def _set_file_args(config_overrides: Any, fcst_file: str, is_both: bool, obs_file: str,
+                   out_dir: Any | None) -> str:
+    if is_both:
+        both_path = f"{out_dir}/{fcst_file}"
+        if 'BOTH_SERIES_ANALYSIS_INPUT_FILE_LIST' in config_overrides:
+            both_path = config_overrides['BOTH_SERIES_ANALYSIS_INPUT_FILE_LIST']
+        file_args = f"-both {both_path}"
+    else:
+        fcst_path = f"{out_dir}/{fcst_file}"
+        obs_path = f"{out_dir}/{obs_file}"
+        if 'FCST_SERIES_ANALYSIS_INPUT_FILE_LIST' in config_overrides:
+            fcst_path = config_overrides['FCST_SERIES_ANALYSIS_INPUT_FILE_LIST']
+        if 'OBS_SERIES_ANALYSIS_INPUT_FILE_LIST' in config_overrides:
+            obs_path = config_overrides['OBS_SERIES_ANALYSIS_INPUT_FILE_LIST']
+        file_args = f"-fcst {fcst_path} -obs {obs_path}"
+    return file_args
 
 
 @pytest.mark.wrapper_a
