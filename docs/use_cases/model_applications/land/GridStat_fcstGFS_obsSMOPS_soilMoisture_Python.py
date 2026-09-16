@@ -21,7 +21,7 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 # a GFS HR run to SMOPS, a combination dataset of satellite measurements concerning
 # soil characteristics. By completing temporal and spatial verification measurements,
 # this use case serves as an excellent baseline for evaluating near surface model soil moisture.
-# In addition, Grid-Diag is used to compute histograms and information theory statistics for
+# In addition, GridDiag is used to compute histograms and information theory statistics for
 # both the forecast and observation soil moisture fields, providing a summary of the
 # distribution of values, and the relationship between the two fields, over the
 # verification domain.
@@ -56,8 +56,8 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 # ------------------
 #
 # The three MET tools used in this use case are GridStat, SeriesAnalysis, and
-# Grid-Diag. All three tools require Python Embedding to ingest the observation
-# data. Grid-Diag is passed the same forecast and observation data as two
+# GridDiag. All three tools require Python Embedding to ingest the observation
+# data. GridDiag is passed the same forecast and observation data using two
 # separate -data command line arguments.
 
 ##############################################################################
@@ -74,20 +74,19 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 #
 # With an increment of 12 hours and no difference between the INIT_BEG and INIT_END,
 # only one time is run in this use case: a 24 hour lead from 2020-06-07.
-# GridStat, SeriesAnalysis, and Grid-Diag are all used over this time frame. GridStat
+# GridStat, SeriesAnalysis, and GridDiag are all used over this time frame. GridStat
 # requests CNT line type output. Because all three tools are run using the same
-# forecast input data, much of SeriesAnalysis' and Grid-Diag's settings reference
+# forecast input data, much of SeriesAnalysis' and GridDiag's settings reference
 # GridStat's settings, which is the first tool used. The forecast and observation
-# grid resolutions differ, so regridding is used by GridStat and SeriesAnalysis to
-# interpolate the higher resolution forecast data to the lower resolution
-# observation data for verification, using a bilinear method. Note that for rigorous
-# comparisons of water budgets users may want to use conservative regridding rather
-# than bilinear as bilinear regridding does not conserve total water mass. A poly masking
-# for CONUS is used, with the mask being available from the MET installation. Grid-Diag
-# uses the same CONUS mask and is passed both the forecast and observation soil moisture
-# fields, computing a 1-dimensional histogram for each (25 bins over the range [0.0, 0.5]),
-# a 2-dimensional joint histogram of the two fields, and information theory statistics
-# describing the relationship between them.
+# grid resolutions differ, so regridding is used to interpolate the higher
+# resolution forecast data to the lower resolution observation grid for
+# for verification, using a bilinear method. Note that for rigorous comparisons
+# of water budgets users may want to use conservative regridding rather than
+# bilinear as bilinear regridding does not conserve total water mass. A poly masking
+# for CONUS is used, with the mask being available from the MET installation. GridDiag
+# applies the same CONUS mask to the forecast and observation soil moisture fields.
+# It constructs individual and joint histograms of the input data and computes
+# information theory statistics describing the relationship between them.
 
 ##############################################################################
 # METplus Configuration
@@ -130,7 +129,7 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 # ----------------
 #
 # This use case calls the read_SMOPS_data.py script to read and pass to GridStat,
-# SeriesAnalysis, and Grid-Diag a MET-usable dataset for the observation data. In its current form,
+# SeriesAnalysis, and GridDiag a MET-usable dataset for the observation data. In its current form,
 # the SMOPS data is read in by MET upside down, and is not CF-compliant. Using
 # a simplified Python script, the input file and variable field are passed at runtime
 # and the associated data is extracted. This is passed in memory to MET and
