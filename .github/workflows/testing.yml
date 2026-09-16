@@ -54,6 +54,11 @@ on:
       pusher_email:
         description: 'Email address of user who triggered push event (used by external repo triggering)'
 
+# Group by workflow name and branch/PR reference
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
 
   event_info:
