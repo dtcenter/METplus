@@ -36,10 +36,11 @@ class ExampleWrapper(RuntimeFreqWrapper):
             self.logger.debug('EXAMPLE_INPUT_DIR was not set')
 
         if not c_dict['INPUT_TEMPLATE']:
-            self.logger.warning('EXAMPLE_INPUT_TEMPLATE was not set. '
-                                'You should set this variable to see how the '
-                                'runtime is substituted. '
-                                'For example: {valid?fmt=%Y%m%d%H}.ext')
+            self.logger.warning(
+                'EXAMPLE_INPUT_TEMPLATE was not set. '
+                'You should set this variable to see how the '
+                'runtime is substituted. For example: {valid?fmt=%Y%m%d%H}.ext'
+            )
 
         full_path = os.path.join(c_dict['INPUT_DIR'], c_dict['INPUT_TEMPLATE'])
         self.logger.info(f"Input directory is {c_dict['INPUT_DIR']}")
