@@ -16,6 +16,7 @@ from .config_validate import validate_config_variables
 from .. import get_metplus_version
 from .config_metplus import setup
 from . import get_wrapper_instance
+from .exceptions import MPWarningError
 
 
 class RunArgs(NamedTuple):
@@ -201,6 +202,7 @@ def run_metplus(config):
     # Use config object to get the list of processes to call
     process_list = get_process_list(config)
 
+    # catch any unexpected exceptions in the code and error/exit
     try:
         # if Usage is in process list, run it and exit
         if 'Usage' in [p[0] for p in process_list]:
@@ -218,19 +220,15 @@ def run_metplus(config):
         if init_errors:
             return init_errors
 
-        all_commands = []
-        for process in processes:
-            new_commands = process.run_all_times()
-            if new_commands:
-                all_commands.extend(new_commands)
+        all_commands = _run_processes(processes)
 
         # write out all commands and environment variables to file
         write_all_commands(all_commands, config)
 
         # compute total number of errors that occurred and output results
         return _get_total_errors_and_log_counts(processes, config.logger)
-    except Exception:
-        config.logger.exception("Fatal error occurred")
+    except Exception as err:
+        config.logger.exception(f"Fatal error occurred: {err}")
         config.logger.info("Check the log file for more information: "
                            f"{get_logfile_info(config)}")
         return 1
@@ -285,6 +283,38 @@ def _check_wrapper_init_errors(processes, logger=None):
 
     return errors
 
+def _run_processes(processes):
+    """!Loop over the list of processes and call run_all_times on each.
+    Track all commands that were run and output file regexes that were written.
+    Pass output file regexes to next process in the list so it can check if
+    duplicate paths are being overwritten.
+
+    @param processes list of processes to run
+    @returns list of tuples with all commands that were run and
+     the env vars that were set for them
+    """
+    # track output written by each process and add to next wrapper
+    # to ensure the same output is not being written by multiple processes
+    output_written = []
+
+    all_commands = []
+    for process in processes:
+        process.output_written.extend(output_written)
+        try:
+            new_commands = process.run_all_times()
+
+        # log error count if warning-on-error occurs, add any commands run
+        # before warning, then exit without running any more processes
+        except MPWarningError as err:
+            process.log_error(err)
+            all_commands.extend(process.all_commands)
+            return all_commands
+
+        output_written.extend(process.output_written)
+        if new_commands:
+            all_commands.extend(new_commands)
+
+    return all_commands
 
 def _get_total_errors_and_log_counts(processes, logger=None):
     total_errors = 0

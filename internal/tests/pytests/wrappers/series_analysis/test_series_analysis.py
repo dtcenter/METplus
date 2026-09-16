@@ -6,6 +6,7 @@ from dateutil.relativedelta import relativedelta
 
 from metplus.wrappers.series_analysis_wrapper import SeriesAnalysisWrapper
 from metplus.wrappers import series_analysis_wrapper as saw
+from metplus.util.run_util import get_process_list, _load_all_wrappers, _run_processes
 
 fcst_dir = '/some/fcst/dir'
 obs_dir = '/some/obs/dir'
@@ -95,7 +96,7 @@ def set_minimum_config_settings(config):
     config.set('config', 'SERIES_ANALYSIS_OUTPUT_DIR',
                '{OUTPUT_BASE}/SeriesAnalysis/output')
     config.set('config', 'SERIES_ANALYSIS_OUTPUT_TEMPLATE',
-               '{init?fmt=%Y%m%d%H}')
+               'sa_{init?fmt=%Y%m%d%H}.nc')
 
     config.set('config', 'FCST_VAR1_NAME', fcst_name)
     config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
@@ -660,7 +661,7 @@ def test_series_analysis_single_field(metplus_config, config_overrides,
 
     expected_cmds = []
     for run_time in run_times:
-        cmd = (f"{app_path} {file_args} -out {out_dir}/<INIT_TIME>{extra_args}"
+        cmd = (f"{app_path} {file_args} -out {out_dir}/sa_<INIT_TIME>.nc{extra_args}"
                f"-config {config_file} {verbosity}")
         expected_cmds.append(cmd.replace('<INIT_TIME>', run_time))
 
