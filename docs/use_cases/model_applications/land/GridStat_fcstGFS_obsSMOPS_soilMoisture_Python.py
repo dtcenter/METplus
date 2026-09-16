@@ -35,9 +35,9 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 ##############################################################################
 # Datasets
 # --------
-# **Forecast:** Global Forecast System (GFS) v17 prototype version (tag HR1) 12km resolution, 0-0.1 meter soil temperature
+# **Forecast:** Global Forecast System (GFS) v17 prototype version (tag HR1) 12km resolution, 0-0.1 meter soil moisture
 #
-# **Observation:** NOAA Soil Moisture Products System (SMOPS) 0.25 degree resolution, blended soil temperature
+# **Observation:** NOAA Soil Moisture Products System (SMOPS) 0.25 degree resolution, blended soil moisture
 # **NOTE:** Retrieving observation data from CLASS requires user account
 #
 # **Climatology:** None
