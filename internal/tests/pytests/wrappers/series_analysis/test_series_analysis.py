@@ -6,6 +6,7 @@ from dateutil.relativedelta import relativedelta
 
 from metplus.wrappers.series_analysis_wrapper import SeriesAnalysisWrapper
 from metplus.wrappers import series_analysis_wrapper as saw
+from metplus.util.run_util import get_process_list, _load_all_wrappers, _run_processes
 
 fcst_dir = '/some/fcst/dir'
 obs_dir = '/some/obs/dir'
@@ -95,7 +96,7 @@ def set_minimum_config_settings(config):
     config.set('config', 'SERIES_ANALYSIS_OUTPUT_DIR',
                '{OUTPUT_BASE}/SeriesAnalysis/output')
     config.set('config', 'SERIES_ANALYSIS_OUTPUT_TEMPLATE',
-               '{init?fmt=%Y%m%d%H}')
+               'sa_{init?fmt=%Y%m%d%H}.nc')
 
     config.set('config', 'FCST_VAR1_NAME', fcst_name)
     config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
@@ -647,7 +648,7 @@ def test_series_analysis_single_field(metplus_config, config_overrides,
 
     expected_cmds = []
     for run_time in run_times:
-        cmd = (f"{app_path} {file_args} -out {out_dir}/<INIT_TIME>{extra_args}"
+        cmd = (f"{app_path} {file_args} -out {out_dir}/sa_<INIT_TIME>.nc{extra_args}"
                f"-config {config_file} {verbosity}")
         expected_cmds.append(cmd.replace('<INIT_TIME>', run_time))
 
@@ -1304,3 +1305,75 @@ def test_get_fcst_and_obs_path(metplus_config,
         actual = wrapper._get_fcst_and_obs_path(time_info, '*', lead_group) 
     assert actual == expected
 
+@pytest.mark.parametrize(
+    'config_overrides, expected_warning, expected_path', [
+        # no warning
+        ({}, False, None),
+        # 2 fields/vars, so output is overwritten
+        ({'FCST_VAR2_NAME': 'FBCD', 'FCST_VAR2_LEVELS': fcst_level,
+          'OBS_VAR2_NAME': 'OBCD', 'OBS_VAR2_LEVELS': obs_level,},
+        True, '2005080712.nc'),
+        # 2 fields/vars, output template includes field, so output is not overwritten
+        ({'FCST_VAR2_NAME': 'FBCD', 'FCST_VAR2_LEVELS': fcst_level,
+         'OBS_VAR2_NAME': 'OBCD', 'OBS_VAR2_LEVELS': obs_level,
+         'SERIES_ANALYSIS_OUTPUT_TEMPLATE': 'sa_{init?fmt=%Y%m%d%H}_{fcst_name}.nc',},
+        False, None),
+        # output template does not include init
+        ({'SERIES_ANALYSIS_OUTPUT_TEMPLATE': 'sa_F{lead?fmt=%H}.nc'}, True, 'sa_Fall.nc'),
+        # run once per lead, template does not include lead
+        ({'SERIES_ANALYSIS_RUNTIME_FREQ': 'RUN_ONCE_PER_LEAD', 'LEAD_SEQ': '12H, 18H'}, True, 'sa_all.nc'),
+        # run once per lead, template includes lead
+        ({'SERIES_ANALYSIS_OUTPUT_TEMPLATE': 'sa_F{lead?fmt=%H}.nc',
+         'SERIES_ANALYSIS_RUNTIME_FREQ': 'RUN_ONCE_PER_LEAD', 'LEAD_SEQ': '12H, 18H'},
+         False, None),
+
+        # custom loop list causes multiple duplicate runs
+        ({'SERIES_ANALYSIS_CUSTOM_LOOP_LIST': 'A,B'}, True, '2005080712.nc'),
+        # custom loop list with custom string in output template
+        ({'SERIES_ANALYSIS_CUSTOM_LOOP_LIST': 'A,B',
+         'SERIES_ANALYSIS_OUTPUT_TEMPLATE': 'sa_{init?fmt=%Y%m%d%H}_{custom}.nc'}, False, None),
+        # custom loop list with custom string in output template but no init in template
+        ({'SERIES_ANALYSIS_CUSTOM_LOOP_LIST': 'A,B',
+         'SERIES_ANALYSIS_OUTPUT_TEMPLATE': 'sa_{custom}.nc'}, True, 'sa_B.nc'),
+
+        # multiple instances cause multiple duplicate runs
+        ({'PROCESS_LIST': 'SeriesAnalysis(A), SeriesAnalysis(B)'}, True, '2005080712.nc'),
+        # multiple instances with instance string in output template
+        ({'PROCESS_LIST': 'SeriesAnalysis(A), SeriesAnalysis(B)',
+         'SERIES_ANALYSIS_OUTPUT_TEMPLATE': 'sa_{init?fmt=%Y%m%d%H}_{instance}.nc'}, False, None),
+        # multiple instances with instance string in output template but no init in template
+        ({'PROCESS_LIST': 'SeriesAnalysis(A), SeriesAnalysis(B)',
+         'SERIES_ANALYSIS_OUTPUT_TEMPLATE': 'sa_{instance}.nc'}, True, 'sa_B.nc'),
+
+    ]
+)
+@pytest.mark.wrapper_b
+def test_series_analysis_warn_on_overwrite(metplus_config, check_warn_output_overwrite,
+                                           config_overrides, expected_warning, expected_path):
+    config = metplus_config
+    set_minimum_config_settings(config)
+
+    # set config variable overrides
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    process_list = get_process_list(config)
+    processes = _load_all_wrappers(config, process_list)
+    assert processes
+
+    for wrapper in processes:
+
+        # create one of the expected output files to ensure that the existence
+        # of this file does not affect the logging of the warning message
+        output_dir = wrapper.config.getdir('SERIES_ANALYSIS_OUTPUT_DIR')
+        os.makedirs(output_dir, exist_ok=True)
+        for output_file in ('2005080700.nc', '2005080712.nc'):
+            output_path = os.path.join(output_dir, output_file)
+            with open(output_path, 'w') as file_handle:
+                file_handle.write('')
+            assert os.path.exists(output_path)
+
+    _run_processes(processes)
+
+    for wrapper in processes:
+        check_warn_output_overwrite(wrapper, expected_warning, expected_path)
