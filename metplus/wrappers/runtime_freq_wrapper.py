@@ -199,6 +199,7 @@ class RuntimeFreqWrapper(CommandBuilder):
                         f'{prefix}_INPUT_TEMPLATE are set. Using the former.'
                     )
                 c_dict['EXPLICIT_FILE_LIST'] = True
+                c_dict[f"{label}INPUT_FILE_LIST"] = template
                 template_dict[label.rstrip('_')] = (template, True, False)
                 template_found = True
 
@@ -953,7 +954,11 @@ class RuntimeFreqWrapper(CommandBuilder):
         list_file_dict = {}
         for identifier, input_files in all_input_files.items():
             if identifier.endswith('time_info'): continue
-            if len(input_files) == 1 and not force_list:
+            # if only 1 file was found,
+            # don't write a file list unless force_list is True or EXPLICIT_FILE_LIST is set
+            if (len(input_files) == 1 and
+                    (not force_list or
+                     self.c_dict.get('EXPLICIT_FILE_LIST', False))):
                 list_file_dict[identifier] = input_files[0]
                 continue
 

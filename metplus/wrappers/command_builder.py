@@ -544,8 +544,14 @@ class CommandBuilder:
 
     def _find_exact_file(self, data_type, time_info, mandatory=True,
                          return_list=False, allow_dir=False):
+
         input_template = self.c_dict.get(f'{data_type}INPUT_TEMPLATE', '')
         data_dir = self.c_dict.get(f'{data_type}INPUT_DIR', '')
+
+        # read explicit file list if set instead of template/dir
+        if self.c_dict.get('EXPLICIT_FILE_LIST', False):
+            input_template = self.c_dict.get(f'{data_type}INPUT_FILE_LIST', '')
+            data_dir = ''
 
         if not input_template:
             self.log_error(f"Could not find any {data_type}INPUT files "
