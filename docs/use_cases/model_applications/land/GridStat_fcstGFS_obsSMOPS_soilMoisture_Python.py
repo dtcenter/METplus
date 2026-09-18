@@ -19,12 +19,13 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 # is critical to ensuring that model upgrades are completed with minimal
 # downsides or degradation in verification statistics. This use case compares
 # a GFS HR run to SMOPS, a combination dataset of satellite measurements concerning
-# soil characteristics. By completing temporal and spatial verification measurements,
+# soil characteristics, and GLEAM, the Global Land Evaporation Amsterdam Model.i
+# By completing temporal and spatial verification measurements,
 # this use case serves as an excellent baseline for evaluating near surface model soil moisture.
-# In addition, GridDiag is used to compute histograms and information theory statistics for
-# both the forecast and observation soil moisture fields, providing a summary of the
-# distribution of values, and the relationship between the two fields, over the
-# verification domain.
+# In addition, GridDiag is used to compute histograms and information theory statistics
+# to intercompare forecast and observation soil moisture, latent heat flux, and
+# sensible heat flux, providing a summary of the distribution of values and the
+# relationships between these fields over the verification domain.
 
 ##############################################################################
 # Version Added
@@ -37,8 +38,9 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 # --------
 # **Forecast:** Global Forecast System (GFS) v17 prototype version (tag HR1) 12km resolution, 0-0.1 meter soil moisture
 #
-# **Observation:** NOAA Soil Moisture Products System (SMOPS) 0.25 degree resolution, blended soil moisture
-# **NOTE:** Retrieving observation data from CLASS requires user account
+# **Observation:** NOAA Soil Moisture Products System (SMOPS) 0.25 degree resolution, blended soil moisture and
+#                  Global Land Evaporation Amsterdam Model (GLEAM) version 4.3a
+# **NOTE:** Retrieving observation data from CLASS and GLEAM requires user account
 #
 # **Climatology:** None
 #
@@ -196,8 +198,9 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 #  * series_cnt_OBAR(lat, lon)
 #
 # For the GridDiag folder, one netCDF output file is created containing the
-# 1-dimensional histogram counts for both the forecast and observation soil
-# moisture fields, the 2-dimensional joint histogram counts of the two fields,
+# 1-dimensional histogram counts for all 6 of the forecast and observation
+# soil moisture, latent heat flux, and sensible heat flux fields, the
+# 2-dimensional joint histogram counts of all possible pairs of these fields,
 # and information theory statistics describing the relationship between them.
 
 ##############################################################################
