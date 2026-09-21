@@ -40,6 +40,7 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 #
 # **Observation:** NOAA Soil Moisture Products System (SMOPS) 0.25 degree resolution, blended soil moisture and
 #                  Global Land Evaporation Amsterdam Model (GLEAM) version 4.3a
+#
 # **NOTE:** Retrieving observation data from CLASS and GLEAM requires user account
 #
 # **Climatology:** None
