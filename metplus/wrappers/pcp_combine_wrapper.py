@@ -394,12 +394,13 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             lookback = self.c_dict[f"{data_src}_LOOKBACK"]
         elif var_info:
                 lookback = var_info[f'{data_src.lower()}_level']
-                self.logger.warning(
+                self.logger.debug(
                     f'{data_src}_PCP_COMBINE_LOOKBACK is '
                     f'not set. Using {lookback} from '
                     f'{data_src}_VAR{var_info.get("index")}_LEVELS'
                     '. It is recommended that you explicitly set '
-                    'the output accumulation.')
+                    'the output accumulation.'
+                )
         else:
             lookback = '0'
 
@@ -760,7 +761,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         output_name = self.c_dict.get(f'{data_src}_OUTPUT_NAME')
         if not output_name and var_info:
             output_name = var_info.get(f"{data_src.lower()}_name")
-            self.logger.warning(
+            self.logger.debug(
                 f'{data_src}_PCP_COMBINE_OUTPUT_NAME is '
                 f'not set. Using {output_name} from '
                 f'{data_src}_VAR{var_info.get("index")}_NAME.'

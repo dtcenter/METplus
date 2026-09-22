@@ -50,6 +50,7 @@ EXPECTED_CONFIG_KEYS = [
     'METPLUS_VERSION',
     'ALLOW_MISSING_INPUTS',
     'INPUT_THRESH',
+    'EXIT_IF_WARN',
 ]
 
 def remove_output_base(config):
@@ -473,3 +474,92 @@ def test_post_run_cleanup_errors(post_run_config):
         post_run_config, ['Check the log file for more information: /log/file.log']
     )
     assert mock.call(err_msg) in post_run_config.logger.error.call_args_list
+
+success_settings = {
+    'PROCESS_LIST': 'GridStat, PCPCombine',
+    'LOOP_BY': 'INIT',
+    'INIT_TIME_FMT': '%Y%m%d%H',
+    'INIT_BEG': '2005080700',
+    'INIT_END': '2005080700',
+    'INIT_INCREMENT': '12H',
+    'LEAD_SEQ': '12H',
+    'FCST_GRID_STAT_INPUT_DIR': '{INPUT_BASE}/met_test/data/sample_fcst',
+    'FCST_GRID_STAT_INPUT_TEMPLATE': '{init?fmt=%Y%m%d%H}/wrfprs_ruc13_{lead?fmt=%HH}.tm00_G212',
+    'OBS_GRID_STAT_INPUT_DIR': '{INPUT_BASE}/met_test/new',
+    'OBS_GRID_STAT_INPUT_TEMPLATE': 'ST2ml{valid?fmt=%Y%m%d%H}_A03h.nc',
+    'GRID_STAT_OUTPUT_TEMPLATE': '{init?fmt=%Y%m%d%H}',
+    'FCST_PCP_COMBINE_RUN': True,
+    'FCST_PCP_COMBINE_METHOD': 'SUM',
+    'FCST_PCP_COMBINE_INPUT_DIR': '/some/dir',
+    'FCST_PCP_COMBINE_INPUT_TEMPLATE': '{init?fmt=%Y%m%d}/file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc',
+    'FCST_PCP_COMBINE_OUTPUT_TEMPLATE': 'file.{init?fmt=%Y%m%d%H}.f{lead?fmt=%HHH}.nc',
+    'BOTH_VAR1_NAME': 'APCP',
+    'BOTH_VAR1_LEVELS': 'A03',
+    'BOTH_VAR1_THRESH': 'gt1, gt5',
+    'INPUT_MUST_EXIST': 'False',
+    'DO_NOT_RUN_EXE': 'True',
+}
+
+@pytest.mark.parametrize(
+    'exit_on_warn, config_overrides, expected_init_errors, expected_run_errors',
+    [
+        # successful run without warnings or errors
+        (False, {}, 0, 0),
+        (True, {}, 0, 0),
+        # warning in init - GridStat (1st process)
+        (False, {'GRID_STAT_FCST_INPUT_TEMPLATE': 'template.nc'}, 0, 0),
+        (True, {'GRID_STAT_FCST_INPUT_TEMPLATE': 'template.nc'}, 1, 0),
+        # warning in init - PCPCombine (2nd process)
+        (False, {'PCP_COMBINE_FCST_INPUT_TEMPLATE': 'template.nc'}, 0, 0),
+        (True, {'PCP_COMBINE_FCST_INPUT_TEMPLATE': 'template.nc'}, 1, 0),
+        # warning in init - both processes
+        (False, {'GRID_STAT_FCST_INPUT_TEMPLATE': 'template.nc','PCP_COMBINE_FCST_INPUT_TEMPLATE': 'template.nc'}, 0, 0),
+        (True, {'GRID_STAT_FCST_INPUT_TEMPLATE': 'template.nc', 'PCP_COMBINE_FCST_INPUT_TEMPLATE': 'template.nc'}, 1, 0),
+        # warning in run - GridStat (1st process)
+        (False, {'GRID_STAT_WARN_IF_OUTPUT_EXISTS': True}, 0, 0),
+        (True, {'GRID_STAT_WARN_IF_OUTPUT_EXISTS': True}, 0, 1),
+        # warning in run - PCPCombine (2nd process)
+        (False, {'PCP_COMBINE_WARN_IF_OUTPUT_EXISTS': True}, 0, 0),
+        (True, {'PCP_COMBINE_WARN_IF_OUTPUT_EXISTS': True}, 0, 1),
+        # warning in run - both processes
+        (False, {'GRID_STAT_WARN_IF_OUTPUT_EXISTS': True, 'PCP_COMBINE_WARN_IF_OUTPUT_EXISTS': True}, 0, 0),
+        (True, {'GRID_STAT_WARN_IF_OUTPUT_EXISTS': True, 'PCP_COMBINE_WARN_IF_OUTPUT_EXISTS': True}, 0, 1),
+    ],
+)
+@pytest.mark.util
+def test_exit_on_warn(metplus_config_files, tmp_path_factory, make_dummy_empty, exit_on_warn, config_overrides, expected_init_errors, expected_run_errors):
+    # create fake output directories to test warnings when output already exists
+    fake_output_dir = tmp_path_factory.mktemp("output_dir")
+    make_dummy_empty(fake_output_dir, 'grid_stat/2005080700/grid_stat_120000L_20050807_120000V.stat')
+    make_dummy_empty(fake_output_dir, 'pcp_combine/file.2005080700.f012.nc')
+
+    initial_overrides = [
+        f'config.GRID_STAT_OUTPUT_DIR={fake_output_dir}/grid_stat',
+        f'config.FCST_PCP_COMBINE_OUTPUT_DIR={fake_output_dir}/pcp_combine',
+    ]
+
+    # set EXIT_IF_WARN before config init because it is currently read in config_metplus.launch
+    # after refactor to support wrapper-specific EXIT_IF_WARN, this can be set in config_overrides instead
+
+    if exit_on_warn:
+        initial_overrides.append('config.EXIT_IF_WARN=True')
+    config = metplus_config_files(initial_overrides)
+
+    for key, value in success_settings.items():
+        config.set('config', key, value)
+
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    process_list = ru.get_process_list(config)
+    processes = ru._load_all_wrappers(config, process_list)
+
+    # initialization warning when EXIT_IF_WARN=True cause processes to be None
+    if expected_init_errors:
+        assert processes is None
+    else:
+        assert processes
+
+        ru._run_processes(processes)
+        total_errors = ru._get_total_errors_and_log_counts(processes, config.logger)
+        assert total_errors == expected_run_errors

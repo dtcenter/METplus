@@ -192,3 +192,13 @@ class NullLogger:
     def info(self, message): pass # skip logging
     def warning(self, message): pass # skip logging
     def error(self, message): pass # skip logging
+
+# config variable names that involve warnings and their default values
+# generic and wrapper-specific versions are supported
+# If explicit apps are listed, the wrapper-specific version is only available
+#  for that wrapper.
+WARNING_CONFIGS = {
+    'WARN_IF_DUPLICATE_OUTPUT': (True, ()),
+    'WARN_IF_OUTPUT_EXISTS': (False, ()),
+    'WARN_IF_ENSEMBLE_IS_MISSING': (True, ('ensemble_stat', 'gen_ens_prod')),
+}
