@@ -16,11 +16,16 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 # --------------------
 #
 # Comparison between prototype forecast models and existing observational data
-# is critical to ensuring that model upgrades are completed with minimal 
+# is critical to ensuring that model upgrades are completed with minimal
 # downsides or degradation in verification statistics. This use case compares
 # a GFS HR run to SMOPS, a combination dataset of satellite measurements concerning
-# soil characteristics. By completing temporal and spatial verification measurements,
-# this use case serves as an excellent baseline for evaluating near surface model soil moisture
+# soil characteristics, and GLEAM, the Global Land Evaporation Amsterdam Model.i
+# By completing temporal and spatial verification measurements,
+# this use case serves as an excellent baseline for evaluating near surface model soil moisture.
+# In addition, GridDiag is used to compute histograms and information theory statistics
+# to intercompare forecast and observation soil moisture, latent heat flux, and
+# sensible heat flux, providing a summary of the distribution of values and the
+# relationships between these fields over the verification domain.
 
 ##############################################################################
 # Version Added
@@ -31,10 +36,12 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 ##############################################################################
 # Datasets
 # --------
-# **Forecast:** Global Forecast System (GFS) v17 prototype version (tag HR1) 12km resolution, 0-0.1 meter soil temperature
+# **Forecast:** Global Forecast System (GFS) v17 prototype version (tag HR1) 12km resolution, 0-0.1 meter soil moisture
 #
-# **Observation:** NOAA Soil Moisture Products System (SMOPS) 0.25 degree resolution, blended soil temperature
-# **NOTE:** Retrieving observation data from CLASS requires user account
+# **Observation:** NOAA Soil Moisture Products System (SMOPS) 0.25 degree resolution, blended soil moisture and
+#                  Global Land Evaporation Amsterdam Model (GLEAM) version 4.3a
+#
+# **NOTE:** Retrieving observation data from CLASS and GLEAM requires user account
 #
 # **Climatology:** None
 #
@@ -51,8 +58,10 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 # METplus Components
 # ------------------
 #
-# The two MET tools used in this use case are GridStat and SeriesAnalysis. 
-# Both tools require Python Embedding to ingest observation data. 
+# The three MET tools used in this use case are GridStat, SeriesAnalysis, and
+# GridDiag. All three tools require Python Embedding to ingest the observation
+# data. GridDiag is passed the same forecast and observation data using two
+# separate -data command line arguments.
 
 ##############################################################################
 # METplus Workflow
@@ -68,15 +77,19 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 #
 # With an increment of 12 hours and no difference between the INIT_BEG and INIT_END,
 # only one time is run in this use case: a 24 hour lead from 2020-06-07.
-# Both GridStat and SeriesAnalysis are used over this time frame, requesting CNT line
-# type output. Because both tools are run using the same input data,
-# much of SeriesAnalysis' settings reference GridStat's settings, which is the first
-# tool used. The forecast and observation grid resolutions differ, so regridding is
-# used to interpolate the higher resolution forecast data to the lower resolution 
-# observation data for verification, using a bilinear method. Note that for rigorous
-# comparisons of water budgets users may want to use conservative regridding rather
-# than bilinear as bilinear regridding does not conserve total water mass. A poly masking
-# for CONUS is used, with the mask being available from the MET installation.
+# GridStat, SeriesAnalysis, and GridDiag are all used over this time frame. GridStat
+# requests CNT line type output. Because all three tools are run using the same
+# forecast input data, much of SeriesAnalysis' and GridDiag's settings reference
+# GridStat's settings, which is the first tool used. The forecast and observation
+# grid resolutions differ, so regridding is used to interpolate the higher
+# resolution forecast data to the lower resolution observation grid for
+# for verification, using a bilinear method. Note that for rigorous comparisons
+# of water budgets users may want to use conservative regridding rather than
+# bilinear as bilinear regridding does not conserve total water mass. A poly masking
+# for CONUS is used, with the mask being available from the MET installation. GridDiag
+# applies the same CONUS mask to the forecast and observation soil moisture fields.
+# It constructs individual and joint histograms of the input data and computes
+# information theory statistics describing the relationship between them.
 
 ##############################################################################
 # METplus Configuration
@@ -109,13 +122,17 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 # .. dropdown:: SeriesAnalysisConfig_wrapped
 #
 #   .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
+#
+# .. dropdown:: GridDiagConfig_wrapped
+#
+#   .. literalinclude:: ../../../../parm/met_config/GridDiagConfig_wrapped
 
 ##############################################################################
 # Python Embedding
 # ----------------
 #
-# This use case calls the read_SMOPS_data.py script to read and pass to GridStat
-# and SeriesAnalysis a MET-usable dataset for the observation data. In its current form,
+# This use case calls the read_SMOPS_data.py script to read and pass to GridStat,
+# SeriesAnalysis, and GridDiag a MET-usable dataset for the observation data. In its current form,
 # the SMOPS data is read in by MET upside down, and is not CF-compliant. Using
 # a simplified Python script, the input file and variable field are passed at runtime
 # and the associated data is extracted. This is passed in memory to MET and
@@ -154,11 +171,12 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 #
 #   INFO: METplus has successfully finished running.
 #
-# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. 
-# Output will be in two subfolders relative to **OUTPUT_BASE**:
+# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
+# Output will be in three subfolders relative to **OUTPUT_BASE**:
 #
 #  * GridStat
 #  * SeriesAnalysis
+#  * GridDiag
 #
 # Each of these directories will hold the output from their respectively named tools.
 # The GridStat folder will contain two files, one STAT file with the CNT line type output
@@ -170,7 +188,7 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 #  * DIFF_SOILW_Z0.1-0_Blended_SM_UNKNOWN_CONUS(lat, lon)
 #
 # For the SeriesAnalysis folder, only one netCDF output is created.
-# Six variable fields are present (not including the lat/lon and series fields). 
+# Six variable fields are present (not including the lat/lon and series fields).
 # Those variables are:
 #
 #  * series_cnt_ME(lat, lon)
@@ -179,6 +197,12 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 #  * series_cnt_MBIAS(lat, lon)
 #  * series_cnt_FBAR(lat, lon)
 #  * series_cnt_OBAR(lat, lon)
+#
+# For the GridDiag folder, one netCDF output file is created containing the
+# 1-dimensional histogram counts for all 6 of the forecast and observation
+# soil moisture, latent heat flux, and sensible heat flux fields, the
+# 2-dimensional joint histogram counts of all possible pairs of these fields,
+# and information theory statistics describing the relationship between them.
 
 ##############################################################################
 # Keywords
@@ -187,6 +211,8 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 # .. note::
 #
 #   * GridStatToolUseCase
+#   * SeriesAnalysisUseCase
+#   * GridDiagToolUseCase
 #   * PythonEmbeddingFileUseCase
 #   * LandAppUseCase
 #
