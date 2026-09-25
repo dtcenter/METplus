@@ -2,7 +2,7 @@
 SeriesAnalysis: Verifying one or more seasonal models using Python embedding
 ============================================================================
 
-model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCN_SingleOrMultimodel.conf
+model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SingleOrMultimodel.conf
 
 """
 ##############################################################################

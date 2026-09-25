@@ -54,8 +54,8 @@ model_applications/s2s_mme/SeriesAnalysis_fcstSFS_obsGHCNCAMS_Prob_SmartMasking_
 # METplus Components
 # ------------------
 #
-# The only tool this use case calls is SeriesAnalysis, but there are
-# four instances of SeriesAnalysis. A Python script is used for ingesting 
+# The only tool this use case calls is SeriesAnalysis,
+# A Python script is used for ingesting
 # forecast and observation data, once for each year  of data in the CFSv2 and SFS ensembles.
 
 ##############################################################################
@@ -112,29 +112,29 @@ model_applications/s2s_mme/SeriesAnalysis_fcstSFS_obsGHCNCAMS_Prob_SmartMasking_
 # Python Embedding
 # ----------------
 #
-# This use case utilizes two Python scripts. The first, function_library.py,
+# This use case utilizes two shared Python scripts. The first, function_library.py,
 # serves the purpose of data handling. It opens and reads in NMME and observational data,
-# while also calculating the tercile probabilities evaluated in METplus using CPC methodologies 
+# while also calculating the tercile probabilities evaluated in METplus using CPC methodologies
 # (including non-normal assumption for precipitation terciles, or other variables as needed).
-# For more simple changes, users can add additional models under MODEL_SPECS 
-# (in the format 'model_name': nMembers); and additional model groupings can 
-# be added under MODEL_GROUPS, in the format  'short_name’: ['list', 'of', 'models']. 
-# Both of these are near the top of the function library. Additional observed datasets 
-# can be added under the file_map and var_map, under create_obs_anomalies. 
-# This python has the additional enhancement of a dynamic "smart masking" logic.
-# This procedure identifies the valid domain of any input variable (e.g., Land for 
-# temperature, Ocean for SST) and converts NaN values within that domain to 
-# zeros to ensure non-events are statistically counted as "misses." It also
-# re-applies the original data mask to the invalid regions (e.g., oceans for 
-# land-only data), preventing invalid verification over undefined areas regardless of the variable type.
-# The second script, wrapper_combined.py, serves as the interface between python logic and METplus.
-# Based on options in the METplus config file, it formats model and observational 
-# data (e.g., standardizing to lat x lon grids) and holds it in memory for METplus 
-# to ingest. It also feature options for flags (FLIP_OBS, FLIP_MODELS) to handle 
-# latitude orientation mismatches, ensuring data is geometrically correct before MET sees it.
-# This use case could also be made to detrend the data, by updating the DETREND_DATA 
-# setting in function_library.py to TRUE.
-# 
+# For more simple changes, users can add additional models under MODEL_SPECS
+# (in the format 'model_name': nMembers); and additional model groupings can
+# be added under MODEL_GROUPS, in the format 'short_name': ['list', 'of', 'models'].
+# Both of these are near the top of the shared function library. Additional observed datasets
+# can be added under the file_map and var_map, under create_obs_anomalies.
+# This use case also uses the shared smart-masking logic.
+# This procedure identifies the valid domain of any input variable (e.g., land for
+# temperature, ocean for SST) and converts NaN values within that domain to
+# zeros so non-events are statistically counted as misses. It also
+# re-applies the original data mask to invalid regions, preventing verification
+# over undefined areas regardless of the variable type.
+# The second shared script, wrapper_combined.py, serves as the interface between python logic and METplus.
+# Based on options in the METplus config file, it formats model and observational
+# data (e.g., standardizing to lat x lon grids) and holds it in memory for METplus
+# to ingest. It also supports orientation flags (FLIP_OBS, FLIP_MODELS)
+# plus optional boolean arguments for detrending and smart masking.
+# This use case enables both detrending and smart masking by passing boolean
+# arguments from the METplus configuration to the shared wrapper.
+#
 # .. dropdown:: parm/use_cases/model_applications/s2s_mme/common/function_library.py
 #
 #   .. highlight:: python
