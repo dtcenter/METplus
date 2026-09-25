@@ -16,7 +16,7 @@ model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCN_SelectClimateReg
 # --------------------
 #
 # This use case uses conditional time periods for verification, relying on METplus tool
-# instances and valid listing to create specific verifiction windows. Instead of aggregating 
+# instances and valid listing to create specific verification windows. Instead of aggregating
 # statistics over the entire hindcast period, this configuration allows users 
 # to assess model skill during specific climate regimes, such as El Niño, La Niña,
 # or Neutral years. 
@@ -36,8 +36,8 @@ model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCN_SelectClimateReg
 #
 # **Climatology:** None
 #
-# Note that this use case ingests the same dataset used in two other use cases in the this category,
-# and in an effort to mimize data duplication, paths to the data may reference another use case name
+# Note that this use case ingests the same dataset used in two other use cases in this category,
+# and in an effort to minimize data duplication, paths to the data may reference another use case name
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
@@ -90,7 +90,7 @@ model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCN_SelectClimateReg
 # three instances, the VALID_LIST controls how many years are read in, ranging from
 # six to twelve years. This use case utilizes Python Embedding to process the 
 # forecast and observation inputs, reading user-set variables like TIME_PERIOD and 
-# CLIM to fine-tune what temporal size the means are calcuated over and what climatology
+# CLIM to fine-tune what temporal size the means are calculated over and what climatology
 # period is available, respectively. Outputs of ME, MAE, and RMSE, among others, provide
 # climate-useful statistical output. Instead of utilizing LEAD_SEQ, this use case
 # uses the CUSTOM_LOOP_LIST for 1, 2, and 3 month leads. This is done so that the Python script can
@@ -129,7 +129,7 @@ model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCN_SelectClimateReg
 # ----------------
 #
 # This use case utilizes two Python scripts. The first, function_library.py,
-# serves the purpose of data handling. It open and reads in NMME and observational data,
+# serves the purpose of data handling. It opens and reads in NMME and observational data,
 # while also calculating climatologies, anomalies, and tercile probabilities using CPC methodologies 
 # (including non-normal assumption for precipitation terciles, or other variables as needed).
 # For more simple changes, users can add additional models under MODEL_SPECS 
@@ -140,18 +140,18 @@ model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCN_SelectClimateReg
 # The second script, wrapper_combined.py, serves as the interface between python logic and METplus.
 # Based on options in the METplus config file, it formats model and observational 
 # data (e.g., standardizing to lat x lon grids) and holds it in memory for METplus 
-# to ingest. It also feature options for flags (FLIP_OBS, FLIP_MODELS) to handle 
+# to ingest. It also features options for flags (FLIP_OBS, FLIP_MODELS) to handle
 # latitude orientation mismatches, ensuring data is geometrically correct before MET sees it.
 # 
-# .. dropdown:: parm/use_cases/model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SelectClimateRegimes/function_library.py
+# .. dropdown:: parm/use_cases/model_applications/s2s_mme/common/function_library.py
 #
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SelectClimateRegimes/function_library.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mme/common/function_library.py
 # 
-# .. dropdown:: parm/use_cases/model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SelectClimateRegimes/wrapper_combined.py
+# .. dropdown:: parm/use_cases/model_applications/s2s_mme/common/wrapper_combined.py
 #
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SelectClimateRegimes/wrapper_combined.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mme/common/wrapper_combined.py
 #
 # For more information on the basic requirements to utilize Python Embedding in METplus, 
 # please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.
