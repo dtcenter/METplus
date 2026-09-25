@@ -1,6 +1,7 @@
+import os
+
 import numpy as np
 import xarray as xr
-import os
 
 
 # --------------------------------------------------------------------------------------------------
@@ -24,9 +25,54 @@ MODEL_GROUPS = {
 # --------------------------------------------------------------------------------------------------
 
 
+# --------------------------------------------------------------------------------------------------
+def detrend_grid(data_array, years):
+    """
+    Linearly detrends data at every grid point over the time dimension (axis 0).
+    data_array: Shape (Time, Lat, Lon)
+    years: 1D array of years corresponding to Time axis.
+    Returns:
+        detrended_data: Shape (Time, Lat, Lon) with trend removed (residuals + mean)
+        slope_grid: Shape (Lat, Lon) - Slope per year
+        intercept_grid: Shape (Lat, Lon)
+    """
+    print("    Calculating linear trend for removal...")
+    n_t, n_lat, n_lon = data_array.shape
 
+    if n_t < 2:
+        print("    WARNING: Need at least two time steps to detrend. Returning original data.")
+        nan_grid = np.full((n_lat, n_lon), np.nan)
+        return data_array.copy(), nan_grid, nan_grid.copy()
 
+    y_reshaped = data_array.reshape(n_t, -1)
+    valid_mask = np.isfinite(y_reshaped).all(axis=0)
 
+    detrended_flat = y_reshaped.copy()
+    slope_flat = np.full(y_reshaped.shape[1], np.nan)
+    intercept_flat = np.full(y_reshaped.shape[1], np.nan)
+
+    if np.any(valid_mask):
+        x = np.asarray(years, dtype=np.float64)
+        y_valid = y_reshaped[:, valid_mask]
+
+        coeffs = np.polyfit(x, y_valid, 1)
+        slopes = coeffs[0, :]
+        intercepts = coeffs[1, :]
+
+        trend = np.outer(x, slopes) + intercepts
+        means = np.mean(y_valid, axis=0)
+        detrended_valid = y_valid - trend + means
+
+        detrended_flat[:, valid_mask] = detrended_valid
+        slope_flat[valid_mask] = slopes
+        intercept_flat[valid_mask] = intercepts
+
+    return (
+        detrended_flat.reshape(n_t, n_lat, n_lon),
+        slope_flat.reshape(n_lat, n_lon),
+        intercept_flat.reshape(n_lat, n_lon),
+    )
+# --------------------------------------------------------------------------------------------------
 
 
 # --------------------------------------------------------------------------------------------------
@@ -50,8 +96,8 @@ def setup(model_input_list, clim_per_str):
     try:
         start_year, end_year = map(int, clim_per_str.split('_'))
         years = np.arange(start_year, end_year + 1, 1)
-    except ValueError:
-        raise ValueError(f"Climatology format '{clim_per_str}' is invalid.")
+    except ValueError as exc:
+        raise ValueError(f"Climatology format '{clim_per_str}' is invalid.") from exc
 
     print(f"    Climatology Period: {clim_per_str} (Years: {len(years)})")
     print(f"    Total Ensemble Members (nEns): {n_ens}")
@@ -65,8 +111,11 @@ def setup(model_input_list, clim_per_str):
     }
 # --------------------------------------------------------------------------------------------------
 
+
 # --------------------------------------------------------------------------------------------------
 def get_time_indices(init, lead, init_year, config):
+    del config
+
     init_idx = int(init) - 1
     lead_int = int(lead)
     init_yr_int = int(init_year)
@@ -91,6 +140,7 @@ def get_time_indices(init, lead, init_year, config):
     }
 # --------------------------------------------------------------------------------------------------
 
+
 # --------------------------------------------------------------------------------------------------
 def open_and_process_models(base_path, variable, time_period,
                             init_month, lead_time, init_year,
@@ -101,11 +151,7 @@ def open_and_process_models(base_path, variable, time_period,
 
     model_order = config['model_out']
     ds_list = []
-
-    # We need to know the grid shape in case everything fails.
-    # Hardcoding 1x1 Global grid (181, 360) based on your metadata.
-    # If using different grids, you might need to read a "sample" file first.
-    GRID_SHAPE = (181, 360)
+    grid_shape = (181, 360)
 
     for model_name in model_order:
         n_members = config['model_dict'][model_name]
@@ -113,14 +159,11 @@ def open_and_process_models(base_path, variable, time_period,
         full_path = os.path.join(base_path, model_name, file_name)
 
         try:
-            # Check if file exists first
             if not os.path.exists(full_path):
                 print(f"    WARNING: File missing: {full_path}")
                 continue
 
             ds = xr.open_dataset(full_path, decode_times=False)
-
-            # Check if data variable exists
             if 'fcst' not in ds:
                 print(f"    WARNING: 'fcst' variable missing in {full_path}")
                 continue
@@ -128,30 +171,24 @@ def open_and_process_models(base_path, variable, time_period,
             ds_subset = ds.isel(ensmem=slice(0, n_members))
             ds_list.append(ds_subset)
 
-        except Exception as e:
-            print(f"    WARNING: Error reading {full_path}: {e}")
+        except Exception as exc:
+            print(f"    WARNING: Error reading {full_path}: {exc}")
             continue
 
-    # --- FAIL-SAFE BLOCK ---
     if not ds_list:
         print(f"    WARNING: No valid data found for {init_year}. Returning -9999 to MET.")
-        # Return -9999 instead of np.nan
-        return np.full(GRID_SHAPE, -9999.0)
+        return np.full(grid_shape, -9999.0)
 
-    # Combine data
     ds_combined = xr.concat(ds_list, dim='ensmem')
     fcst_data = ds_combined['fcst'].values
     fcst_data = np.where(np.abs(fcst_data) < 9999, fcst_data, np.nan)
 
-    # --- NAN CHECK ---
-    # If the file opened but contains only NaNs
     if np.isnan(fcst_data).all():
-         print(f"    WARNING: Data for {init_year} is all-NaN. Returning -9999 to MET.")
-         return np.full(GRID_SHAPE, -9999.0)
+        print(f"    WARNING: Data for {init_year} is all-NaN. Returning -9999 to MET.")
+        return np.full(grid_shape, -9999.0)
 
     lead_int = int(lead_time)
 
-    # Time Slicing Logic
     try:
         if time_period == 'monthly':
             fcst_proc = fcst_data[:, lead_int, :, :]
@@ -159,35 +196,35 @@ def open_and_process_models(base_path, variable, time_period,
             leads_to_avg = slice(lead_int - 1, lead_int + 2)
             fcst_subset = fcst_data[:, leads_to_avg, :, :]
             fcst_proc = np.nanmean(fcst_subset, axis=1)
+        else:
+            raise ValueError(f"Unsupported time period: {time_period}")
     except IndexError:
-         print(f"    WARNING: Lead time {lead_int} out of bounds for {init_year}. Returning NaNs.")
-         return np.full(GRID_SHAPE, np.nan)
+        print(f"    WARNING: Lead time {lead_int} out of bounds for {init_year}. Returning NaNs.")
+        return np.full(grid_shape, np.nan)
 
     if return_members:
         fcst = fcst_proc
     else:
         fcst = np.nanmean(fcst_proc, axis=0)
 
-    # Unit Conversion
     if variable == 'prate':
         fcst = fcst * 86400
     elif variable in ['tmp2m', 'tmpsfc']:
         fcst = fcst - 273.15
         if variable == 'tmpsfc':
-             fcst = np.where(fcst > 600, np.nan, fcst)
+            fcst = np.where(fcst > 600, np.nan, fcst)
 
     print(f"    Shape of fcst array: {fcst.shape}")
     return fcst
 # --------------------------------------------------------------------------------------------------
 
+
 # --------------------------------------------------------------------------------------------------
-def calc_clim(base_path, variable, time_period,
-              init_month, lead_time, config,
-              return_members=False):
-
-    mode_str = "Member-Wise" if return_members else "Ensemble Mean"
-    print(f"Calculating {mode_str} Climatology for {variable}...")
-
+def _load_history_stack(base_path, variable, time_period, init_month, lead_time, config):
+    """
+    Helper to avoid duplication in climatology and detrending logic.
+    Returns array of shape: (Years, Members, Lat, Lon)
+    """
     clim_years = config['years']
     model_order = config['model_out']
     lead_int = int(lead_time)
@@ -202,54 +239,50 @@ def calc_clim(base_path, variable, time_period,
             file_name = f"{model_name}.{variable}.{year_str}{init_month}.fcst.nc"
             full_path = os.path.join(base_path, model_name, file_name)
 
-            # --- SAFETY CHECK 1: File Existence ---
             if not os.path.exists(full_path):
                 print(f"    WARNING: File missing for year {year_str}: {full_path}")
-                continue # Skip this model, try next model or next year
+                continue
 
             try:
                 ds = xr.open_dataset(full_path, decode_times=False)
                 ds_subset = ds.isel(ensmem=slice(0, n_members))
                 current_year_models.append(ds_subset)
-            except Exception as e:
-                print(f"    WARNING: Error reading {full_path}: {e}")
+            except Exception as exc:
+                print(f"    WARNING: Error reading {full_path}: {exc}")
                 continue
 
-        # --- SAFETY CHECK 2: Did we find ANY models for this year? ---
         if not current_year_models:
-            print(f"    WARNING: No valid model data found for year {year_str}. Skipping this year in climatology.")
-            continue # Skip to the next year
+            print(f"    WARNING: No valid model data found for year {year_str}. Skipping.")
+            continue
 
-        # Combine models (if multi-model) or just take the single model
         try:
             ds_combined = xr.concat(current_year_models, dim='ensmem')
             fcst_data = ds_combined['fcst'].values
             fcst_data = np.where(np.abs(fcst_data) < 9999, fcst_data, np.nan)
-        except Exception as e:
-            print(f"    WARNING: Error combining data for {year_str}: {e}. Skipping.")
+        except Exception as exc:
+            print(f"    WARNING: Error combining data for {year_str}: {exc}. Skipping.")
             continue
 
-        # --- SAFETY CHECK 3: Is the data All-NaNs? (The 2003 Fix) ---
         if np.isnan(fcst_data).all():
-            print(f"    WARNING: Data for {year_str} is entirely NaN. Skipping this year in climatology.")
+            print(f"    WARNING: Data for {year_str} is entirely NaN. Skipping.")
             continue
 
-        # Process Time Period (Monthly vs Seasonal)
         if time_period == 'monthly':
             data_proc = fcst_data[:, lead_int, :, :]
         elif time_period == 'seasonal':
             leads_to_avg = slice(lead_int - 1, lead_int + 2)
             fcst_subset = fcst_data[:, leads_to_avg, :, :]
             data_proc = np.nanmean(fcst_subset, axis=1)
+        else:
+            raise ValueError(f"Unsupported time period: {time_period}")
 
         history_stack.append(data_proc)
 
-    # --- FINAL CHECK: Did we get enough years? ---
-    if len(history_stack) == 0:
-        raise RuntimeError("CRITICAL ERROR: No valid years found for climatology. Check paths and data.")
+    if not history_stack:
+        raise RuntimeError("CRITICAL ERROR: No valid years found for climatology.")
+
     full_hist_array = np.stack(history_stack, axis=0)
 
-    # Unit Conversions
     if variable == 'prate':
         full_hist_array = full_hist_array * 86400
     elif variable in ['tmp2m', 'tmpsfc']:
@@ -257,7 +290,46 @@ def calc_clim(base_path, variable, time_period,
         if variable == 'tmpsfc':
             full_hist_array = np.where(full_hist_array > 600, np.nan, full_hist_array)
 
-    # Statistics Calculation
+    return full_hist_array
+# --------------------------------------------------------------------------------------------------
+
+
+# --------------------------------------------------------------------------------------------------
+def get_trend_value(base_path, variable, time_period, init_month, lead_time, config, target_year):
+    """
+    Get the trend adjustment to remove from a target year forecast.
+    Returns a grid of values to subtract from the raw forecast.
+    """
+    clim_years = config['years']
+    hist_array = _load_history_stack(base_path, variable, time_period, init_month, lead_time, config)
+    hist_ens_mean = np.nanmean(hist_array, axis=1)
+
+    _, slope, intercept = detrend_grid(hist_ens_mean, clim_years)
+    hist_mean = np.nanmean(hist_ens_mean, axis=0)
+    trend_val = (slope * int(target_year) + intercept) - hist_mean
+
+    return trend_val
+# --------------------------------------------------------------------------------------------------
+
+
+# --------------------------------------------------------------------------------------------------
+def calc_clim(base_path, variable, time_period,
+              init_month, lead_time, config,
+              return_members=False, detrend=False):
+
+    mode_str = "Member-Wise" if return_members else "Ensemble Mean"
+    print(f"Calculating {mode_str} Climatology for {variable} (Detrend={detrend})...")
+
+    clim_years = config['years']
+    full_hist_array = _load_history_stack(base_path, variable, time_period, init_month, lead_time, config)
+
+    if detrend:
+        ens_mean_hist = np.nanmean(full_hist_array, axis=1)
+        detrended_mean, _, _ = detrend_grid(ens_mean_hist, clim_years)
+        adjustment = ens_mean_hist - detrended_mean
+        adjustment = adjustment[:, np.newaxis, :, :]
+        full_hist_array = full_hist_array - adjustment
+
     if return_members:
         clim = np.nanmean(full_hist_array, axis=0)
         stddev = np.nanstd(full_hist_array, axis=0)
@@ -270,7 +342,7 @@ def calc_clim(base_path, variable, time_period,
         anoms = yearly_means - clim
         ptiles = np.nanpercentile(anoms, [33, 66], axis=0)
 
-    print(f"    Climatology successfully calculated using {len(history_stack)} valid years.")
+    print(f"    Climatology successfully calculated using {full_hist_array.shape[0]} valid years.")
     print(f"    clim shape: {clim.shape}")
     return clim, stddev, ptiles
 # --------------------------------------------------------------------------------------------------
@@ -286,6 +358,7 @@ def calc_anom(fcst, clim, stddev):
     print(f'    anom Shape: {anom.shape}')
     return anom, std_anom
 # --------------------------------------------------------------------------------------------------
+
 
 # --------------------------------------------------------------------------------------------------
 def create_terciles(fcst, clim, stddev, ptiles, variable):
@@ -317,30 +390,29 @@ def create_terciles(fcst, clim, stddev, ptiles, variable):
 # --------------------------------------------------------------------------------------------------
 
 
+# --------------------------------------------------------------------------------------------------
+def _parse_climo_start_year(clim_period):
+    for separator in ('_', '-'):
+        if separator in clim_period:
+            return int(clim_period.split(separator)[0])
+    raise ValueError(f"Unable to parse climatology period start year from '{clim_period}'.")
+# --------------------------------------------------------------------------------------------------
+
 
 # --------------------------------------------------------------------------------------------------
-def create_obs_anomalies(base_path, clim_period, variable, init_month, lead_time, time_period):
-    """
-    The Corrected Xarray Implementation.
-    - Precision: float64
-    - Logic: Vectorized (No loops)
-    - Boundary: Truncated (No time wrapping)
-    - NaNs: Handled via nanmean
-    - FIXED: Slicing logic now aligns strictly with file start year
-    """
-    import xarray as xr
-    import numpy as np
-    import os
+def _get_obs_years(ds, target_month_idx):
+    for coord_name in ('time', 'T'):
+        if coord_name in ds.coords and hasattr(ds[coord_name], 'dt'):
+            return np.asarray(ds[coord_name].dt.year.values)[target_month_idx::12].astype(int)
+    return None
+# --------------------------------------------------------------------------------------------------
 
-    # 1. Setup Logic
+
+# --------------------------------------------------------------------------------------------------
+def create_obs_anomalies(base_path, clim_period, variable, init_month, lead_time, time_period, detrend=False):
     init = int(init_month) - 1
     lead = int(lead_time)
-
-    # This finds the correct month index (0=Jan, 1=Feb) regardless of lead time
     target_month_idx = (init + lead) % 12
-
-    # We do NOT want to use (init + lead) as the start index, because if init+lead > 12,
-    # it skips the first year of data in the file. We want all available years.
     clim_str = clim_period.replace('_', '-')
 
     file_map = {
@@ -358,14 +430,22 @@ def create_obs_anomalies(base_path, clim_period, variable, init_month, lead_time
 
     full_path = os.path.join(obs_path, file_map[variable])
 
-    # 2. Load Data (Xarray automatically promotes to float64)
+    ds = None
+    obs_years = None
     try:
-        ds = xr.open_dataset(full_path, decode_times=False)
-        obs_raw = ds[var_map.get(variable, variable)].values.astype(np.float64)
-    except Exception as e:
-        raise FileNotFoundError(f"Error loading {full_path}: {e}")
+        ds = xr.open_dataset(full_path, decode_times=True)
+        obs_years = _get_obs_years(ds, target_month_idx)
+    except Exception:
+        ds = None
 
-    # 3. Seasonal Means Logic
+    try:
+        if ds is None:
+            ds = xr.open_dataset(full_path, decode_times=False)
+
+        obs_raw = ds[var_map.get(variable, variable)].values.astype(np.float64)
+    except Exception as exc:
+        raise FileNotFoundError(f"Error loading {full_path}: {exc}") from exc
+
     if time_period == 'seasonal':
         term_minus = np.roll(obs_raw, 1, axis=0)
         term_plus = np.roll(obs_raw, -1, axis=0)
@@ -374,25 +454,25 @@ def create_obs_anomalies(base_path, clim_period, variable, init_month, lead_time
         term_plus[-1] = np.nan
 
         stack_season = np.stack([term_minus, obs_raw, term_plus], axis=0)
-
         with np.errstate(invalid='ignore'):
             obs_processed = np.nanmean(stack_season, axis=0)
-
-    else:
+    elif time_period == 'monthly':
         obs_processed = obs_raw
+    else:
+        raise ValueError(f"Unsupported time period: {time_period}")
 
-    # 4. Climatology Calculation
-    # Slice: Start at target month, step by 12.
-    clim_slice = obs_processed[target_month_idx::12, :, :]
-    obs_clim = np.nanmean(clim_slice, axis=0)
-    obs_stddev = np.nanstd(clim_slice, axis=0)
+    obs_target_season = obs_processed[target_month_idx::12, :, :]
 
-    # 5. Verification Slicing
-    # We use target_month_idx instead of verif_start_idx.
-    # This ensures that if the file starts in 1994, Index 0 is the 1994 target season.
-    verif_slice = obs_processed[target_month_idx::12, :, :]
+    if obs_years is None or len(obs_years) != obs_target_season.shape[0]:
+        start_year = _parse_climo_start_year(clim_period)
+        obs_years = np.arange(start_year, start_year + obs_target_season.shape[0])
 
-    # 6. Anomaly Calculation
+    if detrend:
+        obs_target_season, _, _ = detrend_grid(obs_target_season, obs_years.astype(np.float64))
+
+    obs_clim = np.nanmean(obs_target_season, axis=0)
+    obs_stddev = np.nanstd(obs_target_season, axis=0)
+    verif_slice = obs_target_season
     obs_anom = verif_slice - obs_clim
 
     with np.errstate(divide='ignore', invalid='ignore'):
@@ -400,7 +480,7 @@ def create_obs_anomalies(base_path, clim_period, variable, init_month, lead_time
 
     obs_std_anom = np.where(np.isfinite(obs_std_anom), obs_std_anom, np.nan)
 
-    return verif_slice, obs_anom, obs_std_anom, obs_clim, obs_stddev
+    return verif_slice, obs_anom, obs_std_anom, obs_clim, obs_stddev, obs_years
 # --------------------------------------------------------------------------------------------------
 
 
@@ -424,6 +504,7 @@ def create_obs_terciles(obs_anom, obs_std_anom, variable):
     return terciles_obs
 # --------------------------------------------------------------------------------------------------
 
+
 # --------------------------------------------------------------------------------------------------
 def create_dominant_tercile_fcst(terciles_fcst):
     max_indices = np.argmax(terciles_fcst, axis=0)
@@ -433,6 +514,7 @@ def create_dominant_tercile_fcst(terciles_fcst):
     dominant_tercile_model = np.where(np.isnan(mask_check), np.nan, dominant_tercile_model)
     return dominant_tercile_model
 # --------------------------------------------------------------------------------------------------
+
 
 # --------------------------------------------------------------------------------------------------
 def create_dominant_tercile_obs(terciles_obs):
