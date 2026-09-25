@@ -3,23 +3,25 @@ import os
 import numpy as np
 import xarray as xr
 
+GEM5_2_NEMO = 'GEM5.2_NEMO'
+
 
 # --------------------------------------------------------------------------------------------------
 # 1. Define nMembers in each model
 MODEL_SPECS = {
     'CFSv2': 24, 'NCAR_CCSM4': 10, 'GEM5_NEMO': 10, 'NASA_GEOS5v2': 4,
-    'CanCM4i': 10, 'GFDL_SPEAR': 15, 'GEM5.2_NEMO': 20, 'CanESM5': 20,
+    'CanCM4i': 10, 'GFDL_SPEAR': 15, GEM5_2_NEMO: 20, 'CanESM5': 20,
     'SFS_Baseline': 9, 'NCAR_CESM1': 10, 'obs': 1
 }
 
 # 2. Define Model Groups
 MODEL_GROUPS = {
-    'NMME': ['CFSv2', 'NCAR_CCSM4', 'GEM5.2_NEMO', 'NASA_GEOS5v2', 'CanESM5', 'GFDL_SPEAR'],
+    'NMME': ['CFSv2', 'NCAR_CCSM4', GEM5_2_NEMO, 'NASA_GEOS5v2', 'CanESM5', 'GFDL_SPEAR'],
     'miniNMME': ['CFSv2', 'NCAR_CCSM4', 'GFDL_SPEAR'],
     'miniNMME_addSFS': ['CFSv2', 'NCAR_CCSM4', 'GFDL_SPEAR', 'SFS_Baseline'],
     'miniNMME_replaceCFSwSFS': ['SFS_Baseline', 'NCAR_CCSM4', 'GFDL_SPEAR'],
-    'NMMEwithCFS': ['CFSv2', 'NCAR_CCSM4', 'NCAR_CESM1', 'GFDL_SPEAR', 'GEM5.2_NEMO', 'CanESM5', 'NASA_GEOS5v2'],
-    'NMMEwithSFS': ['SFS_Baseline', 'NCAR_CCSM4', 'NCAR_CESM1', 'GFDL_SPEAR', 'GEM5.2_NEMO', 'CanESM5', 'NASA_GEOS5v2'],
+    'NMMEwithCFS': ['CFSv2', 'NCAR_CCSM4', 'NCAR_CESM1', 'GFDL_SPEAR', GEM5_2_NEMO, 'CanESM5', 'NASA_GEOS5v2'],
+    'NMMEwithSFS': ['SFS_Baseline', 'NCAR_CCSM4', 'NCAR_CESM1', 'GFDL_SPEAR', GEM5_2_NEMO, 'CanESM5', 'NASA_GEOS5v2'],
     'CFSandSFS': ['SFS_Baseline', 'CFSv2'],
 }
 # --------------------------------------------------------------------------------------------------
@@ -108,35 +110,6 @@ def setup(model_input_list, clim_per_str):
         'model_out': list(final_model_dict.keys()),
         'climo': clim_per_str,
         'mems_total': n_ens
-    }
-# --------------------------------------------------------------------------------------------------
-
-
-# --------------------------------------------------------------------------------------------------
-def get_time_indices(init, lead, init_year, config):
-    del config
-
-    init_idx = int(init) - 1
-    lead_int = int(lead)
-    init_yr_int = int(init_year)
-
-    absolute_month_index = init_idx + lead_int
-    years_added = absolute_month_index // 12
-    target_month_idx = absolute_month_index % 12
-    target_year = init_yr_int + years_added
-
-    month_abbrs = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    season_abbrs = ['DJF', 'JFM', 'FMA', 'MAM', 'AMJ', 'MJJ', 'JJA', 'JAS', 'ASO', 'SON', 'OND', 'NDJ']
-
-    target_lead_name = month_abbrs[target_month_idx]
-    target_season_name = season_abbrs[target_month_idx]
-
-    print(f"    Date Info: Init {init} (Year {init_year}) + Lead {lead} --> Valid: {target_lead_name} ({target_season_name}) Year {target_year}")
-
-    return {
-        'target_year': target_year,
-        'lead_name': target_lead_name,
-        'season_name': target_season_name,
     }
 # --------------------------------------------------------------------------------------------------
 
