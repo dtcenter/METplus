@@ -270,57 +270,62 @@ Scripts to manage these common labels are provided in the :code:`.github/labels`
 directory of the METplus repository:
 
 
-  - :code:`common_labels.txt` defines the name, color, and description for each of the
-    labels common to all METplus repositories.
+  - :code:`common_labels.txt` defines the name, color, description, and archived
+    state for each of the labels common to all METplus repositories. It contains
+    one JSON object per line, as accepted by the GitHub labels API:
 
-  - :code:`process_labels.sh` has two required arguments: the GitHub user name and
-    authorization token for command line actions. It loops through the METplus
-    component repositories and runs the following scripts for each.
+    .. code-block:: none
 
-  - :code:`post_patch_labels.sh` is called by :code:`process_labels.sh` for each
-    METplus repository. It retrieves the list of existing labels for the specified
-    repository, compares it to :code:`common_labels.txt` and generates commands to
-    *add* new labels (i.e. :code:`curl POST`) or *update* existing labels (i.e.
-    :code:`curl PATCH`). For example, if the label description is modified, the update
-    command will make that change.
+      {"name": "type: bug","color": "e5bf7e","description": "Fix something that is not working","archived": false}
 
-  - :code:`delete_labels.sh` is called by :code:`process_labels.sh` for each
-    METplus repository. It retrieves the list of existing labels for the specified
-    repository, compares it to :code:`common_labels.txt`, and generates commands
-    to *delete* (i.e. :code:`curl DELETE`) any labels that should be removed.
-
-  - :code:`get_labels.sh` retrieves the current set of the labels from the
-    specified METplus repository.
+  - :code:`update_labels.sh` manages the labels for all of the METplus component
+    repositories. It uses the `GitHub CLI <https://cli.github.com>`_
+    (:code:`gh`), which must be installed and authenticated by running
+    :code:`gh auth login` before use. Run :code:`update_labels.sh --help` for
+    the full list of options.
 
 
-Note that the scripts **DO NOT** actually add, modify, or delete any labels
-directly.  Instead, they generate the *curl* commands for those actions and
-write them to shell scripts in the **commands** sub-directory.  After generating
-these commands, the user should carefully review them to decide before executing
-them:
+The most common operation brings every repository in line with the common label
+definitions, creating any missing labels and correcting the color, description,
+and archived state of the existing ones:
+
+.. code-block:: none
+
+  .github/labels/update_labels.sh --sync
+
+Adding the :code:`--prune` option also deletes repository labels which are *not*
+defined in :code:`common_labels.txt`. The repository-specific **component** and
+**type** labels are always kept, as are archived labels.
+
+Individual labels can also be managed directly using the :code:`--create`,
+:code:`--rename`, :code:`--update`, :code:`--move`, :code:`--assign`,
+:code:`--archive`, :code:`--unarchive`, and :code:`--delete` options. Note that
+*archiving* a label retains its history on existing issues and pull requests but
+prevents it from being added to new ones, whereas *deleting* a label removes it
+everywhere and cannot be undone.
 
 
-  - :code:`commands/post_labels_*_cmd.sh` scripts contain :code:`curl POST` commands
-    for adding new common labels. Run these after adding a new common label.
+Note that the script **DOES NOT** actually add, modify, or delete any labels
+directly.  Instead, it generates the :code:`gh` commands for those actions and
+writes them to shell scripts in the **commands** sub-directory.  After
+generating these commands, the user should carefully review them to decide
+before executing them:
 
-  - :code:`commands/delete_labels_*_cmd.sh` scripts contain :code:`curl DELETE`
-    commands to remove labels which should not exist. Run these after deleting
-    existing common labels. Proceed with caution since deletions cannot be undone,
-    and all occurrences of these labels will be removed.
 
-  - :code:`commands/patch_labels_*_cmd.sh` scripts contain :code:`curl PATCH` commands for
-    updating all existing labels. Run these after modifying the description or color
-    of existing common labels.
+  - :code:`commands/update_labels_<repo>_cmd.sh` contains the commands for a
+    single METplus repository.
+
+  - :code:`commands/update_labels_all_cmd.sh` runs each of the per-repository
+    command files listed above.
 
 
 The process of adding a new label, for example, consists of the following steps:
 
   1. Add a new line in :code:`common_labels.txt` to define it.
 
-  2. Run :code:`process_labels.sh` to generate commands, supplying your GitHub user name
-     and access token as arguments.
+  2. Run :code:`update_labels.sh --sync` to generate the commands.
 
-  3. Review the actions in the :code:`commands/post_labels_*_cmd.sh` scripts and run them.
+  3. Review the actions in the :code:`commands/update_labels_*_cmd.sh` scripts and run them.
 
 
 Sequence of Events - Contributing Code
