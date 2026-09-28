@@ -54,6 +54,10 @@ EDIT_DESC=()
 ARCHIVE_LIST=()
 UNARCHIVE_LIST=()
 DELETE_LIST=()
+UNASSIGN_LIST=()
+
+# Remove every archived label from the open issues and pull requests
+STRIP_ARCHIVED=0
 
 # Synchronize each repository against a file of common label definitions
 SYNC=0
@@ -99,6 +103,13 @@ Usage: ${SCRIPT_NAME} [options]
                            labelled OLD, leaving OLD in place. Closed
                            issues/PRs are never touched. Nothing is deleted.
                            May be used more than once.
+      --unassign "NAME"    Remove label NAME from every OPEN issue/PR. The
+                           label itself is kept, as are its assignments on
+                           closed issues/PRs. May be used more than once.
+      --strip-archived     Remove every archived label from the OPEN issues
+                           and PRs of each repository, including any labels
+                           archived earlier in the same run. Their history on
+                           closed issues/PRs is left intact.
   -n, --rename "OLD=>NEW"  Rename existing label OLD to NEW, preserving its
                            existing assignments. May be used more than once.
   -u, --update "NAME"      Update label NAME in place, without renaming it.
@@ -236,6 +247,12 @@ drop_rec() {
     && mv ${TMP_FILE}.new ${TMP_FILE}
 }
 
+archive_rec() {
+  awk -F'\t' -v OFS='\t' -v n="$1" \
+      '$1 == n && $4 == "" { $4 = "pending" } { print }' ${TMP_FILE} > ${TMP_FILE}.new \
+    && mv ${TMP_FILE}.new ${TMP_FILE}
+}
+
 # Track which operation --color and --description apply to
 LAST_OP=""
 
@@ -294,6 +311,14 @@ while [[ $# -gt 0 ]]; do
       # Store as a no-op rename so that it shares the --rename code path
       EDIT_LIST+=("$2=>$2"); EDIT_COLOR+=("${UNSET}"); EDIT_DESC+=("${UNSET}")
       LAST_OP="edit"; shift 2 ;;
+    --unassign)
+      if [[ -z "$2" ]]; then
+        echo "ERROR: ${SCRIPT_NAME} ... --unassign requires a label name."
+        exit 1
+      fi
+      UNASSIGN_LIST+=("$2"); LAST_OP=""; shift 2 ;;
+    --strip-archived)
+      STRIP_ARCHIVED=1; LAST_OP=""; shift 1 ;;
     --archive)
       if [[ -z "$2" ]]; then
         echo "ERROR: ${SCRIPT_NAME} ... --archive requires a label name."
@@ -345,7 +370,8 @@ fi
 if [[ ${SYNC}               -eq 0 && ${#CREATE_LIST[@]}    -eq 0 && \
       ${#MOVE_LIST[@]}      -eq 0 && ${#ASSIGN_LIST[@]}    -eq 0 && \
       ${#EDIT_LIST[@]}      -eq 0 && ${#ARCHIVE_LIST[@]}   -eq 0 && \
-      ${#UNARCHIVE_LIST[@]} -eq 0 && ${#DELETE_LIST[@]}    -eq 0 ]]; then
+      ${#UNARCHIVE_LIST[@]} -eq 0 && ${#DELETE_LIST[@]}    -eq 0 && \
+      ${#UNASSIGN_LIST[@]}  -eq 0 && ${STRIP_ARCHIVED}     -eq 0 ]]; then
   echo "ERROR: ${SCRIPT_NAME} ... must specify at least one label operation."
   usage
   exit 1
@@ -831,6 +857,7 @@ for REPO in ${REPO_LIST}; do
     echo "gh api --method PATCH `sq "${LABEL_PATH}"` \
 -F archived=true --silent" >> ${CMD_FILE}
     ((n_cmd+=1))
+    archive_rec "${NAME}"
 
   done
 
@@ -854,6 +881,53 @@ for REPO in ${REPO_LIST}; do
     echo "gh api --method PATCH `sq "${LABEL_PATH}"` \
 -F archived=true --silent" >> ${CMD_FILE}
     ((n_cmd+=1))
+    archive_rec "${NAME}"
+
+  done
+
+  # Remove labels from the open issues/PRs, keeping the label itself and its
+  # assignments on closed issues/PRs. This runs after the archive phase so
+  # that --strip-archived also covers labels archived earlier in this run.
+  STRIP_LIST=("${UNASSIGN_LIST[@]}")
+
+  if [[ ${STRIP_ARCHIVED} -eq 1 ]]; then
+    while IFS=$'\037' read -r name color desc arch; do
+      [[ -n "${name}" && -n "${arch}" ]] || continue
+      # Skip any label already named by --unassign
+      SEEN=0
+      for EXISTING in "${STRIP_LIST[@]}"; do
+        [[ "${EXISTING}" == "${name}" ]] && SEEN=1 && break
+      done
+      [[ ${SEEN} -eq 1 ]] || STRIP_LIST+=("${name}")
+    done < <(tr '\t' '\037' < ${TMP_FILE})
+  fi
+
+  for NAME in "${STRIP_LIST[@]}"; do
+
+    if [[ -z "`get_rec "${NAME}"`" ]]; then
+      echo "  [SKIP  ] no \"${NAME}\" label defined in ${SLUG}"
+      continue
+    fi
+
+    NUMBERS=`gh api "repos/${SLUG}/issues" --paginate -X GET \
+             -f state=open -f per_page=100 -f labels="${NAME}" \
+             --jq '.[].number' 2>/dev/null`
+
+    n_num=`printf '%s' "${NUMBERS}" | grep -c '[0-9]'`
+
+    if [[ ${n_num} -eq 0 ]]; then
+      echo "  [SKIP  ] ${SLUG} ... no open issues/PRs labelled \"${NAME}\""
+      continue
+    fi
+
+    echo "  [STRIP ] ${SLUG} ... \"${NAME}\" from ${n_num} open issues/PRs"
+
+    ENC=`urlenc "${NAME}"`
+    for NUM in ${NUMBERS}; do
+      echo "gh api --method DELETE `sq "repos/${SLUG}/issues/${NUM}/labels/${ENC}"` \
+--silent" >> ${CMD_FILE}
+      ((n_cmd+=1))
+    done
 
   done
 

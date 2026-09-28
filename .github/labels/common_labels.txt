@@ -60,7 +60,7 @@
 {"name": "requestor: NOAA/NHC","color": "3101c1","description": "NOAA National Hurricane Center","archived": false}
 {"name": "requestor: NOAA/NSSL","color": "3101c1","description": "NOAA National Severe Storms Laboratory","archived": false}
 {"name": "requestor: NOAA/NWS","color": "3101c1","description": "NOAA National Weather Service","archived": false}
-{"name": "requestor: NOAA/OMD","color": "3101c1","description": "NOAA Office of Model Development","archived": false}
+{"name": "requestor: NOAA/OMD","color": "3101c1","description": "NOAA Office of Modeling and Development","archived": false}
 {"name": "requestor: NOAA/OPC","color": "3101c1","description": "NOAA Ocean Prediction Center","archived": true}
 {"name": "requestor: NOAA/OTC","color": "3101c1","description": "NOAA Ocean and Tsunami Center","archived": false}
 {"name": "requestor: NOAA/other","color": "3101c1","description": "NOAA Laboratory, not otherwise specified","archived": false}

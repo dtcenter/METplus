@@ -299,10 +299,26 @@ defined in :code:`common_labels.txt`. The repository-specific **component** and
 
 Individual labels can also be managed directly using the :code:`--create`,
 :code:`--rename`, :code:`--update`, :code:`--move`, :code:`--assign`,
-:code:`--archive`, :code:`--unarchive`, and :code:`--delete` options. Note that
-*archiving* a label retains its history on existing issues and pull requests but
-prevents it from being added to new ones, whereas *deleting* a label removes it
-everywhere and cannot be undone.
+:code:`--unassign`, :code:`--archive`, :code:`--unarchive`, and
+:code:`--delete` options. Note that *archiving* a label retains its history on
+existing issues and pull requests but prevents it from being added to new ones,
+whereas *deleting* a label removes it everywhere and cannot be undone.
+
+The :code:`--assign` and :code:`--unassign` options add or remove a label for
+the *open* issues and pull requests only, leaving the closed ones untouched.
+The :code:`--strip-archived` option removes *every* archived label from the
+open issues and pull requests of each repository, which is a convenient way to
+retire a label without losing the record of it on work already completed.
+
+Retiring a label in favor of a new one therefore consists of defining the new
+label and archiving the old one in :code:`common_labels.txt`, and then running
+a single command to create it, reassign the open issues and pull requests,
+archive the old label, and strip it from the open issues and pull requests:
+
+.. code-block:: none
+
+  .github/labels/update_labels.sh --sync --strip-archived \
+    --assign "requestor: NOAA/EMC=>requestor: NOAA/OMD"
 
 
 Note that the script **DOES NOT** actually add, modify, or delete any labels
