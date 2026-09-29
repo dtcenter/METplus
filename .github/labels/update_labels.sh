@@ -439,6 +439,15 @@ fi
 
 mkdir -p ${CMD_DIR}
 
+# Remove the command files from any previous run, so that the files left in
+# the directory are only those written by this run. Only generated command
+# files are removed, leaving .gitignore in place.
+n_old=$(ls ${CMD_DIR}/update_labels_*_cmd.sh 2>/dev/null | wc -l | tr -d ' ')
+if [[ ${n_old} -gt 0 ]]; then
+  echo "Removing ${n_old} command files from a previous run in ${CMD_DIR}"
+  rm -f ${CMD_DIR}/update_labels_*_cmd.sh
+fi
+
 # Master command file that runs all of the per-repository files
 ALL_CMD_FILE="${CMD_DIR}/update_labels_all_cmd.sh"
 echo '#!/bin/bash' > ${ALL_CMD_FILE}

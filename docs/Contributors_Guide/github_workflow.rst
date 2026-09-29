@@ -305,6 +305,10 @@ commands for the requested actions, and writes them to shell scripts in the
   - :code:`update_labels_all_cmd.sh` runs each of the per-repository command
     files listed above.
 
+Each run first removes the command files left over from any previous run, so
+the :code:`commands` sub-directory only contains the commands from the most
+recent one.
+
 The user should carefully review the generated commands before running
 :code:`update_labels_all_cmd.sh` to apply them. The commands are written in
 dependency order (unarchive, create, move, rename/update, assign, archive,
