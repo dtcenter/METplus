@@ -311,7 +311,7 @@ recent one.
 
 The user should carefully review the generated commands before running
 :code:`update_labels_all_cmd.sh` to apply them. The commands are written in
-dependency order (unarchive, create, move, rename/update, assign, archive,
+dependency order (unarchive, create, rename/merge/update, assign, archive,
 strip, delete), so that a label can be created, assigned, and archived in a
 single run.
 
@@ -352,9 +352,6 @@ statement. The options are summarized below:
    * - :code:`--delete "NAME"`
      - Permanently delete label NAME, removing it from every issue and pull
        request.
-   * - :code:`--move "OLD=>NEW"`
-     - Add label NEW to every open *and* closed issue and pull request labelled
-       OLD, and then delete label OLD.
    * - :code:`--assign "NEW"`
      - Add label NEW to every *open* issue and pull request.
    * - :code:`--assign "OLD=>NEW"`
@@ -368,7 +365,10 @@ statement. The options are summarized below:
      - Remove every archived label from the *open* issues and pull requests,
        leaving their history on closed ones intact.
    * - :code:`--rename "OLD=>NEW"`
-     - Rename label OLD to NEW, preserving its existing assignments.
+     - Rename label OLD to NEW, preserving its existing assignments. If label
+       NEW already exists, merge OLD into it instead by adding NEW to every open
+       and closed issue and pull request labelled OLD and then deleting label
+       OLD.
    * - :code:`--update "NAME"`
      - Update the color and/or description of label NAME in place.
    * - :code:`--archive "NAME"`
@@ -377,11 +377,10 @@ statement. The options are summarized below:
      - Restore previously archived label NAME.
    * - :code:`--color HEX`
      - Set the color of the label named by the preceding :code:`--create`,
-       :code:`--move`, :code:`--assign`, :code:`--rename`, or
-       :code:`--update` option.
+       :code:`--assign`, :code:`--rename`, or :code:`--update` option.
    * - :code:`--description TEXT`
      - Set the description of the label named by the preceding
-       :code:`--create`, :code:`--move`, :code:`--assign`, :code:`--rename`, or
+       :code:`--create`, :code:`--assign`, :code:`--rename`, or
        :code:`--update` option.
    * - :code:`--repos "R1 R2 ..."`
      - Space-separated list of repositories to process. Defaults to all of the

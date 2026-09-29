@@ -42,9 +42,6 @@ UNSET="@@NOT_SET@@"
 CREATE_LIST=()
 CREATE_COLOR=()
 CREATE_DESC=()
-MOVE_LIST=()
-MOVE_COLOR=()
-MOVE_DESC=()
 ASSIGN_LIST=()
 ASSIGN_COLOR=()
 ASSIGN_DESC=()
@@ -74,7 +71,7 @@ SYNC_COLOR=()
 SYNC_DESC=()
 SYNC_ARCH=()
 
-# Labels created by --create, --move, or --assign, listed at the end so that
+# Labels created by --create or --assign, listed at the end so that
 # they can be added to the common label definitions
 NEW_NAME=()
 NEW_COLOR=()
@@ -101,9 +98,6 @@ Usage: ${SCRIPT_NAME} [options]
                            every issue/PR that carries it. Consider --archive
                            instead, which preserves history. May be used more
                            than once.
-  -m, --move   "OLD=>NEW"  Add label NEW to every issue/PR currently labelled
-                           OLD and then delete label OLD. Affects open and
-                           closed issues/PRs. May be used more than once.
   -a, --assign "NEW"       Add label NEW to every OPEN issue/PR.
       --assign "OLD=>NEW"  Add label NEW to every OPEN issue/PR currently
                            labelled OLD, leaving OLD in place. If NEW does
@@ -119,7 +113,10 @@ Usage: ${SCRIPT_NAME} [options]
                            archived earlier in the same run. Their history on
                            closed issues/PRs is left intact.
   -n, --rename "OLD=>NEW"  Rename existing label OLD to NEW, preserving its
-                           existing assignments. May be used more than once.
+                           existing assignments. If label NEW already exists,
+                           merge OLD into it instead: add NEW to every open
+                           and closed issue/PR labelled OLD and then delete
+                           label OLD. May be used more than once.
   -u, --update "NAME"      Update label NAME in place, without renaming it.
                            Use with --color and/or --description. May be used
                            more than once.
@@ -129,10 +126,10 @@ Usage: ${SCRIPT_NAME} [options]
       --unarchive "NAME"   Restore a previously archived label NAME. May be
                            used more than once.
   -c, --color  HEX         Set the color of the label named by the preceding
-                           --create, --move, --assign, --rename, or --update
-                           option. The leading "#" is optional.
+                           --create, --assign, --rename, or --update option.
+                           The leading "#" is optional.
   -d, --description TEXT   Set the description of the label named by the
-                           preceding --create, --move, --assign, --rename, or
+                           preceding --create, --assign, --rename, or
                            --update option. Pass "" to clear an existing
                            description.
   -r, --repos  "R1 R2 .."  Space-separated list of repositories to process.
@@ -142,11 +139,11 @@ Usage: ${SCRIPT_NAME} [options]
 
 The --color and --description options apply to the operation that immediately
 precedes them, so several labels may be updated differently in a single run.
-For --move and --assign they describe the target label, which is created if
-it does not already exist.
+For --assign and --rename they describe the target label NEW, which --assign
+creates if it does not already exist.
 
-Commands are written in dependency order: unarchive, create, move,
-rename/update, assign, archive, strip, delete. That way a label can be
+Commands are written in dependency order: unarchive, create,
+rename/merge/update, assign, archive, strip, delete. That way a label can be
 created, assigned, and archived in a single run without the later steps
 failing.
 
@@ -274,13 +271,6 @@ while [[ $# -gt 0 ]]; do
         exit 1
       fi
       DELETE_LIST+=("$2"); LAST_OP=""; shift 2 ;;
-    -m|--move)
-      if [[ "$2" != *"=>"* ]]; then
-        echo "ERROR: ${SCRIPT_NAME} ... --move requires an \"OLD=>NEW\" argument."
-        exit 1
-      fi
-      MOVE_LIST+=("$2"); MOVE_COLOR+=("${UNSET}"); MOVE_DESC+=("${UNSET}")
-      LAST_OP="move"; shift 2 ;;
     -a|--assign)
       if [[ -z "$2" ]]; then
         echo "ERROR: ${SCRIPT_NAME} ... --assign requires a \"NEW\" or \"OLD=>NEW\" argument."
@@ -327,20 +317,18 @@ while [[ $# -gt 0 ]]; do
       COLOR=$(check_color "$2") || exit 1
       case "${LAST_OP}" in
         create) CREATE_COLOR[${#CREATE_COLOR[@]}-1]="${COLOR}" ;;
-        move)   MOVE_COLOR[${#MOVE_COLOR[@]}-1]="${COLOR}" ;;
         assign) ASSIGN_COLOR[${#ASSIGN_COLOR[@]}-1]="${COLOR}" ;;
         edit)   EDIT_COLOR[${#EDIT_COLOR[@]}-1]="${COLOR}" ;;
-        *)      echo "ERROR: ${SCRIPT_NAME} ... --color must follow a --create, --move, --assign, --rename, or --update option."
+        *)      echo "ERROR: ${SCRIPT_NAME} ... --color must follow a --create, --assign, --rename, or --update option."
                 exit 1 ;;
       esac
       shift 2 ;;
     -d|--description)
       case "${LAST_OP}" in
         create) CREATE_DESC[${#CREATE_DESC[@]}-1]="$2" ;;
-        move)   MOVE_DESC[${#MOVE_DESC[@]}-1]="$2" ;;
         assign) ASSIGN_DESC[${#ASSIGN_DESC[@]}-1]="$2" ;;
         edit)   EDIT_DESC[${#EDIT_DESC[@]}-1]="$2" ;;
-        *)      echo "ERROR: ${SCRIPT_NAME} ... --description must follow a --create, --move, --assign, --rename, or --update option."
+        *)      echo "ERROR: ${SCRIPT_NAME} ... --description must follow a --create, --assign, --rename, or --update option."
                 exit 1 ;;
       esac
       shift 2 ;;
@@ -360,10 +348,10 @@ if [[ ${PRUNE} -eq 1 && ${SYNC} -eq 0 ]]; then
 fi
 
 if [[ ${SYNC}               -eq 0 && ${#CREATE_LIST[@]}    -eq 0 && \
-      ${#MOVE_LIST[@]}      -eq 0 && ${#ASSIGN_LIST[@]}    -eq 0 && \
-      ${#EDIT_LIST[@]}      -eq 0 && ${#ARCHIVE_LIST[@]}   -eq 0 && \
-      ${#UNARCHIVE_LIST[@]} -eq 0 && ${#DELETE_LIST[@]}    -eq 0 && \
-      ${#UNASSIGN_LIST[@]}  -eq 0 && ${STRIP_ARCHIVED}     -eq 0 ]]; then
+      ${#ASSIGN_LIST[@]}    -eq 0 && ${#EDIT_LIST[@]}      -eq 0 && \
+      ${#ARCHIVE_LIST[@]}   -eq 0 && ${#UNARCHIVE_LIST[@]} -eq 0 && \
+      ${#DELETE_LIST[@]}    -eq 0 && ${#UNASSIGN_LIST[@]}  -eq 0 && \
+      ${STRIP_ARCHIVED}     -eq 0 ]]; then
   echo "ERROR: ${SCRIPT_NAME} ... must specify at least one label operation."
   usage
   exit 1
@@ -609,91 +597,9 @@ for REPO in ${REPO_LIST}; do
 
   done
 
-  # Reassign issues/PRs from one label to another and delete the old label
-  for (( i=0; i<${#MOVE_LIST[@]}; i++ )); do
-
-    OLD=$(split_old "${MOVE_LIST[$i]}")
-    NEW=$(split_new "${MOVE_LIST[$i]}")
-    COLOR="${MOVE_COLOR[$i]}"
-    DESC="${MOVE_DESC[$i]}"
-
-    OLD_REC=$(get_rec "${OLD}")
-    NEW_REC=$(get_rec "${NEW}")
-
-    if [[ -z "${OLD_REC}" ]]; then
-      log SKIP "no \"${OLD}\" label defined in ${SLUG}"
-      continue
-    fi
-
-    if [[ -z "${NEW_REC}" ]]; then
-
-      # Create the target label, defaulting to the color and description of
-      # the label being replaced
-      if [[ "${COLOR}" == "${UNSET}" ]]; then
-        COLOR=$(printf '%s' "${OLD_REC}" | cut -f2)
-      fi
-      if [[ "${DESC}" == "${UNSET}" ]]; then
-        DESC=$(printf '%s' "${OLD_REC}" | cut -f3)
-      fi
-
-      log CREATE "${SLUG} label ... ${NEW}"
-      echo "gh label create $(sq "${NEW}") -R $(sq "${SLUG}") \
---color $(sq "${COLOR}") --description $(sq "${DESC}")" >> ${CMD_FILE}
-      ((n_cmd+=1))
-      add_rec "${NEW}" "${COLOR}" "${DESC}"
-      note_new "${NEW}" "${COLOR}" "${DESC}"
-
-    else
-
-      # Archived labels cannot be added to issues or pull requests
-      if [[ -n "$(printf '%s' "${NEW_REC}" | cut -f4)" ]]; then
-        echo "  WARNING: ${SLUG} label \"${NEW}\" is archived and cannot be assigned."
-        echo "           Add --unarchive \"${NEW}\" to restore it first."
-        continue
-      fi
-
-      if [[ "${COLOR}" != "${UNSET}" || "${DESC}" != "${UNSET}" ]]; then
-
-        # The target label already exists, so update it in place
-        EDIT_CMD="gh label edit $(sq "${NEW}") -R $(sq "${SLUG}")"
-        if [[ "${COLOR}" != "${UNSET}" ]]; then
-          EDIT_CMD="${EDIT_CMD} --color $(sq "${COLOR}")"
-        fi
-        if [[ "${DESC}" != "${UNSET}" ]]; then
-          EDIT_CMD="${EDIT_CMD} --description $(sq "${DESC}")"
-        fi
-
-        log UPDATE "${SLUG} label ... ${NEW}"
-        echo "${EDIT_CMD}" >> ${CMD_FILE}
-        ((n_cmd+=1))
-
-      fi
-
-    fi
-
-    # The REST issues endpoint returns both issues and pull requests
-    NUMBERS=$(gh api "repos/${SLUG}/issues" --paginate -X GET \
-             -f state=all -f per_page=100 -f labels="${OLD}" \
-             --jq '.[].number' 2>/dev/null)
-
-    n_num=$(printf '%s' "${NUMBERS}" | grep -c '[0-9]')
-    log MOVE "${SLUG} ... ${n_num} issues/PRs from \"${OLD}\" to \"${NEW}\""
-
-    for NUM in ${NUMBERS}; do
-      echo "gh api --method POST $(sq "repos/${SLUG}/issues/${NUM}/labels") \
--f $(sq "labels[]=${NEW}") --silent" >> ${CMD_FILE}
-      ((n_cmd+=1))
-    done
-
-    # Deleting the old label removes it from every issue/PR
-    log DELETE "${SLUG} label ... ${OLD}"
-    echo "gh label delete $(sq "${OLD}") -R $(sq "${SLUG}") --yes" >> ${CMD_FILE}
-    ((n_cmd+=1))
-    drop_rec "${OLD}"
-
-  done
-
-  # Rename existing labels and/or update their color and description
+  # Rename existing labels and/or update their color and description. A
+  # label cannot be renamed to one that already exists, so in that case the
+  # old label is merged into the new one instead.
   for (( i=0; i<${#EDIT_LIST[@]}; i++ )); do
 
     OLD=$(split_old "${EDIT_LIST[$i]}")
@@ -717,9 +623,52 @@ for REPO in ${REPO_LIST}; do
       NEW_REC=$(get_rec "${NEW}")
 
       if [[ -n "${NEW_REC}" ]]; then
-        echo "  WARNING: ${SLUG} already defines a \"${NEW}\" label."
-        echo "           Use --move \"${OLD}=>${NEW}\" to merge them instead of renaming."
+
+        # Archived labels cannot be added to issues or pull requests
+        if [[ -n "$(printf '%s' "${NEW_REC}" | cut -f4)" ]]; then
+          echo "  WARNING: ${SLUG} label \"${NEW}\" is archived, so \"${OLD}\" cannot be merged into it."
+          echo "           Add --unarchive \"${NEW}\" to restore it first."
+          continue
+        fi
+
+        # Update the existing label in place
+        if [[ "${COLOR}" != "${UNSET}" || "${DESC}" != "${UNSET}" ]]; then
+          MERGE_CMD="gh label edit $(sq "${NEW}") -R $(sq "${SLUG}")"
+          if [[ "${COLOR}" != "${UNSET}" ]]; then
+            MERGE_CMD="${MERGE_CMD} --color $(sq "${COLOR}")"
+          fi
+          if [[ "${DESC}" != "${UNSET}" ]]; then
+            MERGE_CMD="${MERGE_CMD} --description $(sq "${DESC}")"
+          fi
+          log UPDATE "${SLUG} label ... ${NEW}"
+          echo "${MERGE_CMD}" >> ${CMD_FILE}
+          ((n_cmd+=1))
+        fi
+
+        # Add the existing label to every open and closed issue/PR labelled
+        # OLD, skipping any that already carry it. The REST issues endpoint
+        # returns both issues and pull requests.
+        JQ_FILTER=".[] | select([.labels[].name] | index(\"$(jq_str "${NEW}")\") | not) | .number"
+        NUMBERS=$(gh api "repos/${SLUG}/issues" --paginate -X GET \
+                 -f state=all -f per_page=100 -f labels="${OLD}" \
+                 --jq "${JQ_FILTER}" 2>/dev/null)
+
+        n_num=$(printf '%s' "${NUMBERS}" | grep -c '[0-9]')
+        log MERGE "${SLUG} ... \"${OLD}\" into existing \"${NEW}\" for ${n_num} issues/PRs"
+
+        for NUM in ${NUMBERS}; do
+          echo "gh api --method POST $(sq "repos/${SLUG}/issues/${NUM}/labels") \
+-f $(sq "labels[]=${NEW}") --silent" >> ${CMD_FILE}
+          ((n_cmd+=1))
+        done
+
+        # Deleting the old label removes it from every issue/PR
+        log DELETE "${SLUG} label ... ${OLD}"
+        echo "gh label delete $(sq "${OLD}") -R $(sq "${SLUG}") --yes" >> ${CMD_FILE}
+        ((n_cmd+=1))
+        drop_rec "${OLD}"
         continue
+
       fi
 
       EDIT_CMD="${EDIT_CMD} --name $(sq "${NEW}")"
@@ -785,7 +734,7 @@ for REPO in ${REPO_LIST}; do
     if [[ -z "${NEW_REC}" ]]; then
 
       # Default the color and description of the target label to those of
-      # the source label, as for --move
+      # the source label
       if [[ -n "${OLD}" ]]; then
         OLD_REC=$(get_rec "${OLD}")
         if [[ "${COLOR}" == "${UNSET}" ]]; then
