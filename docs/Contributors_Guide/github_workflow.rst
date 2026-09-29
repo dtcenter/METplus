@@ -334,6 +334,7 @@ statement. The options are summarized below:
 .. list-table::
    :header-rows: 1
    :widths: 30 70
+   :class: wrap-table
 
    * - Option
      - Description
