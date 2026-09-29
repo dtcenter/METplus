@@ -51,8 +51,8 @@
 {"name": "requestor: NCAR/RAL","color": "3101c1","description": "NCAR Research Applications Laboratory","archived": false}
 {"name": "requestor: NCAR/MMM","color": "3101c1","description": "NCAR Meso and Microscale Meteorology Laboratory","archived": false}
 {"name": "requestor: NCAR/SIMA","color": "3101c1","description": "NCAR System for Integrated Modeling of the Atmosphere","archived": false}
-{"name": "requestor: NOAA/CPC","color": "3101c1","description": "NOAA Climate Prediction Center","archived": true}
-{"name": "requestor: NOAA/EMC","color": "3101c1","description": "NOAA Environmental Modeling Center","archived": true}
+{"name": "requestor: NOAA/CPC","color": "3101c1","description": "NOAA Climate Prediction Center (Archived 10/2026: Updated to NOAA/WPC)","archived": true}
+{"name": "requestor: NOAA/EMC","color": "3101c1","description": "NOAA Environmental Modeling Center (Archived 10/2026: Updated to NOAA/OMD)","archived": true}
 {"name": "requestor: NOAA/EPIC","color": "3101c1","description": "NOAA Earth Prediction Innovation Center","archived": false}
 {"name": "requestor: NOAA/GSL","color": "3101c1","description": "NOAA Global Systems Laboratory","archived": false}
 {"name": "requestor: NOAA/HFIP","color": "3101c1","description": "NOAA Hurricane Forecast Improvement Project","archived": false}
@@ -61,7 +61,7 @@
 {"name": "requestor: NOAA/NSSL","color": "3101c1","description": "NOAA National Severe Storms Laboratory","archived": false}
 {"name": "requestor: NOAA/NWS","color": "3101c1","description": "NOAA National Weather Service","archived": false}
 {"name": "requestor: NOAA/OMD","color": "3101c1","description": "NOAA Office of Modeling and Development","archived": false}
-{"name": "requestor: NOAA/OPC","color": "3101c1","description": "NOAA Ocean Prediction Center","archived": true}
+{"name": "requestor: NOAA/OPC","color": "3101c1","description": "NOAA Ocean Prediction Center (Archived 10/2026: Updated to NOAA/OTC)","archived": true}
 {"name": "requestor: NOAA/OTC","color": "3101c1","description": "NOAA Ocean and Tsunami Center","archived": false}
 {"name": "requestor: NOAA/other","color": "3101c1","description": "NOAA Laboratory, not otherwise specified","archived": false}
 {"name": "requestor: NOAA/PSD","color": "3101c1","description": "NOAA Physical Sciences Laboratory","archived": false}
