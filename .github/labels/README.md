@@ -22,6 +22,8 @@ Run `update_labels.sh --help` for the full list of options. See the [Managing La
 * `description` is a short description of the label, which may be empty.
 * `archived` is `true` for labels that are retired but kept on existing issues and pull requests, and `false` otherwise.
 
+When archiving a label, append a note to its description recording when it was archived and which label replaced it, such as `(Archived 10/2026: Updated to NOAA/OMD)`. Note that GitHub limits label descriptions to 100 characters.
+
 ## Examples
 
 Run these commands from the top-level directory of the METplus repository. They require `gh auth login`.
@@ -50,10 +52,10 @@ Then generate the commands:
 
 ### 3. Replace an existing common label with a new one
 
-Edit `common_labels.txt` to mark the old label as archived and add a line to define the new one:
+Edit `common_labels.txt` to mark the old label as archived, note the archival in its description, and add a line to define the new one:
 
 ```
-{"name": "requestor: NOAA/PSD","color": "3101c1","description": "NOAA Physical Sciences Laboratory","archived": true}
+{"name": "requestor: NOAA/PSD","color": "3101c1","description": "NOAA Physical Sciences Laboratory (Archived 10/2026: Updated to NOAA/PSL)","archived": true}
 {"name": "requestor: NOAA/PSL","color": "3101c1","description": "NOAA Physical Sciences Laboratory","archived": false}
 ```
 
