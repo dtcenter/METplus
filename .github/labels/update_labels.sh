@@ -22,8 +22,8 @@
 # generated files and run them to apply the changes.
 #
 
-SCRIPT_NAME=`basename $0`
-SCRIPT_DIR=`dirname $0`
+SCRIPT_NAME=$(basename $0)
+SCRIPT_DIR=$(dirname $0)
 CMD_DIR="${SCRIPT_DIR}/commands"
 
 # Default GitHub organization
@@ -74,6 +74,12 @@ SYNC_COLOR=()
 SYNC_DESC=()
 SYNC_ARCH=()
 
+# Labels created by --create, --move, or --assign, listed at the end so that
+# they can be added to the common label definitions
+NEW_NAME=()
+NEW_COLOR=()
+NEW_DESC=()
+
 usage() {
   cat << EOF
 Usage: ${SCRIPT_NAME} [options]
@@ -100,9 +106,11 @@ Usage: ${SCRIPT_NAME} [options]
                            closed issues/PRs. May be used more than once.
   -a, --assign "NEW"       Add label NEW to every OPEN issue/PR.
       --assign "OLD=>NEW"  Add label NEW to every OPEN issue/PR currently
-                           labelled OLD, leaving OLD in place. Closed
-                           issues/PRs are never touched. Nothing is deleted.
-                           May be used more than once.
+                           labelled OLD, leaving OLD in place. If NEW does
+                           not exist, it is created with the color and
+                           description of OLD. Closed issues/PRs are never
+                           touched. Nothing is deleted. May be used more than
+                           once.
       --unassign "NAME"    Remove label NAME from every OPEN issue/PR. The
                            label itself is kept, as are its assignments on
                            closed issues/PRs. May be used more than once.
@@ -138,49 +146,18 @@ For --move and --assign they describe the target label, which is created if
 it does not already exist.
 
 Commands are written in dependency order: unarchive, create, move,
-rename/update, assign, archive, delete. That way a label can be created,
-assigned, and archived in a single run without the later steps failing.
+rename/update, assign, archive, strip, delete. That way a label can be
+created, assigned, and archived in a single run without the later steps
+failing.
 
-Examples:
-
-  # Reassign everything from one label to another and rename two labels,
-  # recoloring one of them along the way
-  ${SCRIPT_NAME} \\
-    --move   "priority: bold for release notes=>priority: release notes" \\
-    --rename "type: task=>type: chore" \\
-    --rename "component: testing=>component: test" \\
-      --color "#0e8a16" --description "Issues related to the test suite"
-
-  # Flag all open issues/PRs that need triage, creating the label as needed
-  ${SCRIPT_NAME} --assign "alert: NEEDS TRIAGE" \\
-    --color "#d93f0b" --description "Awaiting triage by the METplus team"
-
-  # Mark open work that carries a retiring label, then archive that label
-  ${SCRIPT_NAME} \\
-    --assign  "component: testing=>component: test" \\
-    --archive "component: testing"
-
-  # Roll out a new label everywhere and retire an obsolete one
-  ${SCRIPT_NAME} \\
-    --create "component: containers" --color "#1d76db" \\
-      --description "Issues related to containerization" \\
-    --delete "component: obsolete"
-
-  # Bring every repository in line with the common label definitions,
-  # removing any non-common labels that have crept in
-  ${SCRIPT_NAME} --sync --prune
-
-The label file holds one JSON object per line, as accepted by the GitHub
-labels API, with an added "archived" flag:
-
-  {"name": "type: bug","color": "d73a4a","description": "Fix me","archived": false}
+See ${SCRIPT_DIR}/README.md for examples and the format of the label file.
 
 EOF
 }
 
 # Single-quote a string for safe inclusion in the generated command files
 sq() {
-  printf "'%s'" "`printf '%s' "$1" | sed "s/'/'\\\\\\\\''/g"`"
+  printf "'%s'" "$(printf '%s' "$1" | sed "s/'/'\\\\''/g")"
 }
 
 # Escape a string for use inside a jq double-quoted string literal
@@ -196,7 +173,7 @@ urlenc() {
     chr="${str:i:1}"
     case "${chr}" in
       [a-zA-Z0-9.~_-]) out="${out}${chr}" ;;
-      *)               out="${out}`printf '%%%02X' "'${chr}"`" ;;
+      *)               out="${out}$(printf '%%%02X' "'${chr}")" ;;
     esac
   done
   printf '%s' "${out}"
@@ -205,6 +182,10 @@ urlenc() {
 # Split an "OLD=>NEW" argument
 split_old() { printf '%s' "${1%%=>*}"; }
 split_new() { printf '%s' "${1#*=>}"; }
+
+# Print a progress message, padding the action tag to a fixed width so that
+# the messages line up
+log() { printf '  %-11s %s\n' "[$1]" "$2"; }
 
 # Normalize and validate a hex color, stripping any leading "#". GitHub
 # stores colors in lowercase, so match that to avoid redundant updates.
@@ -251,6 +232,17 @@ archive_rec() {
   awk -F'\t' -v OFS='\t' -v n="$1" \
       '$1 == n && $4 == "" { $4 = "pending" } { print }' ${TMP_FILE} > ${TMP_FILE}.new \
     && mv ${TMP_FILE}.new ${TMP_FILE}
+}
+
+# Remember a newly created label, once, to suggest adding it to the label file
+note_new() {
+  local j
+  for (( j=0; j<${#NEW_NAME[@]}; j++ )); do
+    [[ "${NEW_NAME[$j]}" == "$1" ]] && return
+  done
+  NEW_NAME+=("$1")
+  NEW_COLOR+=("$2")
+  NEW_DESC+=("$3")
 }
 
 # Track which operation --color and --description apply to
@@ -332,7 +324,7 @@ while [[ $# -gt 0 ]]; do
       fi
       UNARCHIVE_LIST+=("$2"); LAST_OP=""; shift 2 ;;
     -c|--color)
-      COLOR=`check_color "$2"` || exit 1
+      COLOR=$(check_color "$2") || exit 1
       case "${LAST_OP}" in
         create) CREATE_COLOR[${#CREATE_COLOR[@]}-1]="${COLOR}" ;;
         move)   MOVE_COLOR[${#MOVE_COLOR[@]}-1]="${COLOR}" ;;
@@ -413,7 +405,7 @@ if [[ ${SYNC} -eq 1 ]]; then
     fi
 
     SYNC_NAME+=("${name}")
-    SYNC_COLOR+=("`printf '%s' "${color#\#}" | tr '[:upper:]' '[:lower:]'`")
+    SYNC_COLOR+=("$(printf '%s' "${color#\#}" | tr '[:upper:]' '[:lower:]')")
     SYNC_DESC+=("${desc}")
     SYNC_ARCH+=("${arch}")
 
@@ -452,7 +444,7 @@ ALL_CMD_FILE="${CMD_DIR}/update_labels_all_cmd.sh"
 echo '#!/bin/bash' > ${ALL_CMD_FILE}
 echo 'cd "$(dirname "$0")" || exit 1' >> ${ALL_CMD_FILE}
 
-TMP_FILE=`mktemp`
+TMP_FILE=$(mktemp)
 trap "rm -f ${TMP_FILE} ${TMP_FILE}.new" EXIT
 
 N_REPO_FILES=0
@@ -481,21 +473,21 @@ for REPO in ${REPO_LIST}; do
   # Unarchive labels first, so that they can be assigned further below
   for NAME in "${UNARCHIVE_LIST[@]}"; do
 
-    REC=`get_rec "${NAME}"`
+    REC=$(get_rec "${NAME}")
 
     if [[ -z "${REC}" ]]; then
       # Archived labels may be omitted from the label listing, so issue the
       # request anyway rather than assuming the label does not exist
-      echo "  [UNARCH] ${SLUG} label ... ${NAME} (not listed, attempting anyway)"
-    elif [[ -z "`printf '%s' "${REC}" | cut -f4`" ]]; then
-      echo "  [SKIP  ] ${SLUG} label ... ${NAME} is not archived"
+      log UNARCHIVE "${SLUG} label ... ${NAME} (not listed, attempting anyway)"
+    elif [[ -z "$(printf '%s' "${REC}" | cut -f4)" ]]; then
+      log SKIP "${SLUG} label ... ${NAME} is not archived"
       continue
     else
-      echo "  [UNARCH] ${SLUG} label ... ${NAME}"
+      log UNARCHIVE "${SLUG} label ... ${NAME}"
     fi
 
-    LABEL_PATH="repos/${SLUG}/labels/`urlenc "${NAME}"`"
-    echo "gh api --method PATCH `sq "${LABEL_PATH}"` \
+    LABEL_PATH="repos/${SLUG}/labels/$(urlenc "${NAME}")"
+    echo "gh api --method PATCH $(sq "${LABEL_PATH}") \
 -F archived=false --silent" >> ${CMD_FILE}
     ((n_cmd+=1))
 
@@ -518,49 +510,49 @@ for REPO in ${REPO_LIST}; do
     DESC="${SYNC_DESC[$i]}"
     WANT_ARCH="${SYNC_ARCH[$i]}"
 
-    REC=`get_rec "${NAME}"`
+    REC=$(get_rec "${NAME}")
 
     # Create a missing label. The GitHub API accepts "archived" only when
     # updating a label, so a label that should be archived is created first
     # and archived below.
     if [[ -z "${REC}" ]]; then
-      echo "  [CREATE] ${SLUG} label ... ${NAME}"
-      echo "gh label create `sq "${NAME}"` -R `sq "${SLUG}"` \
---color `sq "${COLOR}"` --description `sq "${DESC}"`" >> ${CMD_FILE}
+      log CREATE "${SLUG} label ... ${NAME}"
+      echo "gh label create $(sq "${NAME}") -R $(sq "${SLUG}") \
+--color $(sq "${COLOR}") --description $(sq "${DESC}")" >> ${CMD_FILE}
       ((n_cmd+=1))
       add_rec "${NAME}" "${COLOR}" "${DESC}"
       continue
     fi
 
-    CUR_COLOR=`printf '%s' "${REC}" | cut -f2`
-    CUR_DESC=`printf '%s' "${REC}" | cut -f3`
-    CUR_ARCH=`printf '%s' "${REC}" | cut -f4`
+    CUR_COLOR=$(printf '%s' "${REC}" | cut -f2)
+    CUR_DESC=$(printf '%s' "${REC}" | cut -f3)
+    CUR_ARCH=$(printf '%s' "${REC}" | cut -f4)
 
     # Correct the color and description
-    EDIT_CMD="gh label edit `sq "${NAME}"` -R `sq "${SLUG}"`"
+    EDIT_CMD="gh label edit $(sq "${NAME}") -R $(sq "${SLUG}")"
     ACTION=""
 
     if [[ "${COLOR}" != "${CUR_COLOR}" ]]; then
-      EDIT_CMD="${EDIT_CMD} --color `sq "${COLOR}"`"
+      EDIT_CMD="${EDIT_CMD} --color $(sq "${COLOR}")"
       ACTION="${ACTION} [color ${CUR_COLOR} -> ${COLOR}]"
     fi
 
     if [[ "${DESC}" != "${CUR_DESC}" ]]; then
-      EDIT_CMD="${EDIT_CMD} --description `sq "${DESC}"`"
+      EDIT_CMD="${EDIT_CMD} --description $(sq "${DESC}")"
       ACTION="${ACTION} [description]"
     fi
 
     if [[ -n "${ACTION}" ]]; then
-      echo "  [EDIT  ] ${SLUG} label ... ${NAME}${ACTION}"
+      log EDIT "${SLUG} label ... ${NAME}${ACTION}"
       echo "${EDIT_CMD}" >> ${CMD_FILE}
       ((n_cmd+=1))
     fi
 
     # Restore a label that should not be archived
     if [[ "${WANT_ARCH}" == "false" && -n "${CUR_ARCH}" ]]; then
-      LABEL_PATH="repos/${SLUG}/labels/`urlenc "${NAME}"`"
-      echo "  [UNARCH] ${SLUG} label ... ${NAME}"
-      echo "gh api --method PATCH `sq "${LABEL_PATH}"` \
+      LABEL_PATH="repos/${SLUG}/labels/$(urlenc "${NAME}")"
+      log UNARCHIVE "${SLUG} label ... ${NAME}"
+      echo "gh api --method PATCH $(sq "${LABEL_PATH}") \
 -F archived=false --silent" >> ${CMD_FILE}
       ((n_cmd+=1))
       unarchive_rec "${NAME}"
@@ -571,7 +563,7 @@ for REPO in ${REPO_LIST}; do
   done
 
   if [[ ${SYNC} -eq 1 ]]; then
-    echo "  [SYNC  ] ${SLUG} ... ${n_sync_ok} of ${#SYNC_NAME[@]} common labels already correct"
+    log SYNC "${SLUG} ... ${n_sync_ok} of ${#SYNC_NAME[@]} common labels already correct"
   fi
 
   # Create entirely new labels
@@ -581,27 +573,29 @@ for REPO in ${REPO_LIST}; do
     COLOR="${CREATE_COLOR[$i]}"
     DESC="${CREATE_DESC[$i]}"
 
-    REC=`get_rec "${NAME}"`
+    REC=$(get_rec "${NAME}")
 
     if [[ -n "${REC}" ]]; then
-      echo "  [SKIP  ] ${SLUG} already defines a \"${NAME}\" label"
-      echo "           Use --update \"${NAME}\" to change its color or description."
+      log SKIP "${SLUG} already defines a \"${NAME}\" label"
+      echo "              Use --update \"${NAME}\" to change its color or description."
       continue
     fi
 
-    CREATE_CMD="gh label create `sq "${NAME}"` -R `sq "${SLUG}"` --color `sq "${COLOR}"`"
+    CREATE_CMD="gh label create $(sq "${NAME}") -R $(sq "${SLUG}") --color $(sq "${COLOR}")"
     if [[ "${DESC}" != "${UNSET}" ]]; then
-      CREATE_CMD="${CREATE_CMD} --description `sq "${DESC}"`"
+      CREATE_CMD="${CREATE_CMD} --description $(sq "${DESC}")"
     fi
 
-    echo "  [CREATE] ${SLUG} label ... ${NAME}"
+    log CREATE "${SLUG} label ... ${NAME}"
     echo "${CREATE_CMD}" >> ${CMD_FILE}
     ((n_cmd+=1))
 
     if [[ "${DESC}" == "${UNSET}" ]]; then
       add_rec "${NAME}" "${COLOR}" ""
+      note_new "${NAME}" "${COLOR}" ""
     else
       add_rec "${NAME}" "${COLOR}" "${DESC}"
+      note_new "${NAME}" "${COLOR}" "${DESC}"
     fi
 
   done
@@ -609,16 +603,16 @@ for REPO in ${REPO_LIST}; do
   # Reassign issues/PRs from one label to another and delete the old label
   for (( i=0; i<${#MOVE_LIST[@]}; i++ )); do
 
-    OLD=`split_old "${MOVE_LIST[$i]}"`
-    NEW=`split_new "${MOVE_LIST[$i]}"`
+    OLD=$(split_old "${MOVE_LIST[$i]}")
+    NEW=$(split_new "${MOVE_LIST[$i]}")
     COLOR="${MOVE_COLOR[$i]}"
     DESC="${MOVE_DESC[$i]}"
 
-    OLD_REC=`get_rec "${OLD}"`
-    NEW_REC=`get_rec "${NEW}"`
+    OLD_REC=$(get_rec "${OLD}")
+    NEW_REC=$(get_rec "${NEW}")
 
     if [[ -z "${OLD_REC}" ]]; then
-      echo "  [SKIP  ] no \"${OLD}\" label defined in ${SLUG}"
+      log SKIP "no \"${OLD}\" label defined in ${SLUG}"
       continue
     fi
 
@@ -627,22 +621,23 @@ for REPO in ${REPO_LIST}; do
       # Create the target label, defaulting to the color and description of
       # the label being replaced
       if [[ "${COLOR}" == "${UNSET}" ]]; then
-        COLOR=`printf '%s' "${OLD_REC}" | cut -f2`
+        COLOR=$(printf '%s' "${OLD_REC}" | cut -f2)
       fi
       if [[ "${DESC}" == "${UNSET}" ]]; then
-        DESC=`printf '%s' "${OLD_REC}" | cut -f3`
+        DESC=$(printf '%s' "${OLD_REC}" | cut -f3)
       fi
 
-      echo "  [CREATE] ${SLUG} label ... ${NEW}"
-      echo "gh label create `sq "${NEW}"` -R `sq "${SLUG}"` \
---color `sq "${COLOR}"` --description `sq "${DESC}"`" >> ${CMD_FILE}
+      log CREATE "${SLUG} label ... ${NEW}"
+      echo "gh label create $(sq "${NEW}") -R $(sq "${SLUG}") \
+--color $(sq "${COLOR}") --description $(sq "${DESC}")" >> ${CMD_FILE}
       ((n_cmd+=1))
       add_rec "${NEW}" "${COLOR}" "${DESC}"
+      note_new "${NEW}" "${COLOR}" "${DESC}"
 
     else
 
       # Archived labels cannot be added to issues or pull requests
-      if [[ -n "`printf '%s' "${NEW_REC}" | cut -f4`" ]]; then
+      if [[ -n "$(printf '%s' "${NEW_REC}" | cut -f4)" ]]; then
         echo "  WARNING: ${SLUG} label \"${NEW}\" is archived and cannot be assigned."
         echo "           Add --unarchive \"${NEW}\" to restore it first."
         continue
@@ -651,15 +646,15 @@ for REPO in ${REPO_LIST}; do
       if [[ "${COLOR}" != "${UNSET}" || "${DESC}" != "${UNSET}" ]]; then
 
         # The target label already exists, so update it in place
-        EDIT_CMD="gh label edit `sq "${NEW}"` -R `sq "${SLUG}"`"
+        EDIT_CMD="gh label edit $(sq "${NEW}") -R $(sq "${SLUG}")"
         if [[ "${COLOR}" != "${UNSET}" ]]; then
-          EDIT_CMD="${EDIT_CMD} --color `sq "${COLOR}"`"
+          EDIT_CMD="${EDIT_CMD} --color $(sq "${COLOR}")"
         fi
         if [[ "${DESC}" != "${UNSET}" ]]; then
-          EDIT_CMD="${EDIT_CMD} --description `sq "${DESC}"`"
+          EDIT_CMD="${EDIT_CMD} --description $(sq "${DESC}")"
         fi
 
-        echo "  [UPDATE] ${SLUG} label ... ${NEW}"
+        log UPDATE "${SLUG} label ... ${NEW}"
         echo "${EDIT_CMD}" >> ${CMD_FILE}
         ((n_cmd+=1))
 
@@ -668,22 +663,22 @@ for REPO in ${REPO_LIST}; do
     fi
 
     # The REST issues endpoint returns both issues and pull requests
-    NUMBERS=`gh api "repos/${SLUG}/issues" --paginate -X GET \
+    NUMBERS=$(gh api "repos/${SLUG}/issues" --paginate -X GET \
              -f state=all -f per_page=100 -f labels="${OLD}" \
-             --jq '.[].number' 2>/dev/null`
+             --jq '.[].number' 2>/dev/null)
 
-    n_num=`printf '%s' "${NUMBERS}" | grep -c '[0-9]'`
-    echo "  [MOVE  ] ${SLUG} ... ${n_num} issues/PRs from \"${OLD}\" to \"${NEW}\""
+    n_num=$(printf '%s' "${NUMBERS}" | grep -c '[0-9]')
+    log MOVE "${SLUG} ... ${n_num} issues/PRs from \"${OLD}\" to \"${NEW}\""
 
     for NUM in ${NUMBERS}; do
-      echo "gh api --method POST `sq "repos/${SLUG}/issues/${NUM}/labels"` \
--f `sq "labels[]=${NEW}"` --silent" >> ${CMD_FILE}
+      echo "gh api --method POST $(sq "repos/${SLUG}/issues/${NUM}/labels") \
+-f $(sq "labels[]=${NEW}") --silent" >> ${CMD_FILE}
       ((n_cmd+=1))
     done
 
     # Deleting the old label removes it from every issue/PR
-    echo "  [DELETE] ${SLUG} label ... ${OLD}"
-    echo "gh label delete `sq "${OLD}"` -R `sq "${SLUG}"` --yes" >> ${CMD_FILE}
+    log DELETE "${SLUG} label ... ${OLD}"
+    echo "gh label delete $(sq "${OLD}") -R $(sq "${SLUG}") --yes" >> ${CMD_FILE}
     ((n_cmd+=1))
     drop_rec "${OLD}"
 
@@ -692,25 +687,25 @@ for REPO in ${REPO_LIST}; do
   # Rename existing labels and/or update their color and description
   for (( i=0; i<${#EDIT_LIST[@]}; i++ )); do
 
-    OLD=`split_old "${EDIT_LIST[$i]}"`
-    NEW=`split_new "${EDIT_LIST[$i]}"`
+    OLD=$(split_old "${EDIT_LIST[$i]}")
+    NEW=$(split_new "${EDIT_LIST[$i]}")
     COLOR="${EDIT_COLOR[$i]}"
     DESC="${EDIT_DESC[$i]}"
 
-    OLD_REC=`get_rec "${OLD}"`
+    OLD_REC=$(get_rec "${OLD}")
 
     if [[ -z "${OLD_REC}" ]]; then
-      echo "  [SKIP  ] no \"${OLD}\" label defined in ${SLUG}"
+      log SKIP "no \"${OLD}\" label defined in ${SLUG}"
       continue
     fi
 
     # Build the command, including only the attributes that are changing
-    EDIT_CMD="gh label edit `sq "${OLD}"` -R `sq "${SLUG}"`"
+    EDIT_CMD="gh label edit $(sq "${OLD}") -R $(sq "${SLUG}")"
     ACTION=""
 
     if [[ "${OLD}" != "${NEW}" ]]; then
 
-      NEW_REC=`get_rec "${NEW}"`
+      NEW_REC=$(get_rec "${NEW}")
 
       if [[ -n "${NEW_REC}" ]]; then
         echo "  WARNING: ${SLUG} already defines a \"${NEW}\" label."
@@ -718,22 +713,22 @@ for REPO in ${REPO_LIST}; do
         continue
       fi
 
-      EDIT_CMD="${EDIT_CMD} --name `sq "${NEW}"`"
+      EDIT_CMD="${EDIT_CMD} --name $(sq "${NEW}")"
       ACTION="${OLD} -> ${NEW}"
     else
       ACTION="${OLD}"
     fi
 
-    CUR_COLOR=`printf '%s' "${OLD_REC}" | cut -f2`
-    CUR_DESC=`printf '%s' "${OLD_REC}" | cut -f3`
+    CUR_COLOR=$(printf '%s' "${OLD_REC}" | cut -f2)
+    CUR_DESC=$(printf '%s' "${OLD_REC}" | cut -f3)
 
     if [[ "${COLOR}" != "${UNSET}" && "${COLOR}" != "${CUR_COLOR}" ]]; then
-      EDIT_CMD="${EDIT_CMD} --color `sq "${COLOR}"`"
+      EDIT_CMD="${EDIT_CMD} --color $(sq "${COLOR}")"
       ACTION="${ACTION} [color ${CUR_COLOR} -> ${COLOR}]"
     fi
 
     if [[ "${DESC}" != "${UNSET}" && "${DESC}" != "${CUR_DESC}" ]]; then
-      EDIT_CMD="${EDIT_CMD} --description `sq "${DESC}"`"
+      EDIT_CMD="${EDIT_CMD} --description $(sq "${DESC}")"
       ACTION="${ACTION} [description updated]"
     fi
 
@@ -741,11 +736,11 @@ for REPO in ${REPO_LIST}; do
     if [[ "${EDIT_CMD}" != *" --name "* && \
           "${EDIT_CMD}" != *" --color "* && \
           "${EDIT_CMD}" != *" --description "* ]]; then
-      echo "  [SKIP  ] ${SLUG} label ... ${OLD} already up to date"
+      log SKIP "${SLUG} label ... ${OLD} already up to date"
       continue
     fi
 
-    echo "  [EDIT  ] ${SLUG} label ... ${ACTION}"
+    log EDIT "${SLUG} label ... ${ACTION}"
     echo "${EDIT_CMD}" >> ${CMD_FILE}
     ((n_cmd+=1))
 
@@ -763,50 +758,61 @@ for REPO in ${REPO_LIST}; do
 
     # "OLD=>NEW" filters by a source label, "NEW" applies to all open items
     if [[ "${ASSIGN_LIST[$i]}" == *"=>"* ]]; then
-      OLD=`split_old "${ASSIGN_LIST[$i]}"`
-      NEW=`split_new "${ASSIGN_LIST[$i]}"`
+      OLD=$(split_old "${ASSIGN_LIST[$i]}")
+      NEW=$(split_new "${ASSIGN_LIST[$i]}")
     else
       OLD=""
       NEW="${ASSIGN_LIST[$i]}"
     fi
 
     # A source label that does not exist here matches nothing
-    if [[ -n "${OLD}" && -z "`get_rec "${OLD}"`" ]]; then
-      echo "  [SKIP  ] no \"${OLD}\" label defined in ${SLUG}"
+    if [[ -n "${OLD}" && -z "$(get_rec "${OLD}")" ]]; then
+      log SKIP "no \"${OLD}\" label defined in ${SLUG}"
       continue
     fi
 
-    NEW_REC=`get_rec "${NEW}"`
+    NEW_REC=$(get_rec "${NEW}")
 
     if [[ -z "${NEW_REC}" ]]; then
 
-      # Only create the target label when told how it should look, rather
-      # than letting the API invent a random color
+      # Default the color and description of the target label to those of
+      # the source label, as for --move
+      if [[ -n "${OLD}" ]]; then
+        OLD_REC=$(get_rec "${OLD}")
+        if [[ "${COLOR}" == "${UNSET}" ]]; then
+          COLOR=$(printf '%s' "${OLD_REC}" | cut -f2)
+        fi
+        if [[ "${DESC}" == "${UNSET}" ]]; then
+          DESC=$(printf '%s' "${OLD_REC}" | cut -f3)
+        fi
+      fi
+
+      # Otherwise, only create the target label when told how it should
+      # look, rather than letting the API invent a random color
       if [[ "${COLOR}" == "${UNSET}" && "${DESC}" == "${UNSET}" ]]; then
         echo "  WARNING: ${SLUG} has no \"${NEW}\" label to assign."
         echo "           Add --color and/or --description to create it."
         continue
       fi
 
-      CREATE_CMD="gh label create `sq "${NEW}"` -R `sq "${SLUG}"`"
+      CREATE_CMD="gh label create $(sq "${NEW}") -R $(sq "${SLUG}")"
       if [[ "${COLOR}" != "${UNSET}" ]]; then
-        CREATE_CMD="${CREATE_CMD} --color `sq "${COLOR}"`"
+        CREATE_CMD="${CREATE_CMD} --color $(sq "${COLOR}")"
       fi
       if [[ "${DESC}" != "${UNSET}" ]]; then
-        CREATE_CMD="${CREATE_CMD} --description `sq "${DESC}"`"
+        CREATE_CMD="${CREATE_CMD} --description $(sq "${DESC}")"
       fi
 
-      echo "  [CREATE] ${SLUG} label ... ${NEW}"
+      log CREATE "${SLUG} label ... ${NEW}"
       echo "${CREATE_CMD}" >> ${CMD_FILE}
       ((n_cmd+=1))
 
-      if [[ "${DESC}" == "${UNSET}" ]]; then
-        add_rec "${NEW}" "${COLOR}" ""
-      else
-        add_rec "${NEW}" "${COLOR}" "${DESC}"
-      fi
+      [[ "${COLOR}" == "${UNSET}" ]] && COLOR=""
+      [[ "${DESC}"  == "${UNSET}" ]] && DESC=""
+      add_rec  "${NEW}" "${COLOR}" "${DESC}"
+      note_new "${NEW}" "${COLOR}" "${DESC}"
 
-    elif [[ -n "`printf '%s' "${NEW_REC}" | cut -f4`" ]]; then
+    elif [[ -n "$(printf '%s' "${NEW_REC}" | cut -f4)" ]]; then
 
       echo "  WARNING: ${SLUG} label \"${NEW}\" is archived and cannot be assigned."
       echo "           Add --unarchive \"${NEW}\" to restore it first."
@@ -816,26 +822,26 @@ for REPO in ${REPO_LIST}; do
 
     # Query open issues/PRs, skipping any that already carry the target
     # label so that the generated commands stay idempotent
-    JQ_FILTER=".[] | select([.labels[].name] | index(\"`jq_str "${NEW}"`\") | not) | .number"
+    JQ_FILTER=".[] | select([.labels[].name] | index(\"$(jq_str "${NEW}")\") | not) | .number"
 
     if [[ -n "${OLD}" ]]; then
-      NUMBERS=`gh api "repos/${SLUG}/issues" --paginate -X GET \
+      NUMBERS=$(gh api "repos/${SLUG}/issues" --paginate -X GET \
                -f state=open -f per_page=100 -f labels="${OLD}" \
-               --jq "${JQ_FILTER}" 2>/dev/null`
+               --jq "${JQ_FILTER}" 2>/dev/null)
       LABEL_DESC="open issues/PRs labelled \"${OLD}\""
     else
-      NUMBERS=`gh api "repos/${SLUG}/issues" --paginate -X GET \
+      NUMBERS=$(gh api "repos/${SLUG}/issues" --paginate -X GET \
                -f state=open -f per_page=100 \
-               --jq "${JQ_FILTER}" 2>/dev/null`
+               --jq "${JQ_FILTER}" 2>/dev/null)
       LABEL_DESC="open issues/PRs"
     fi
 
-    n_num=`printf '%s' "${NUMBERS}" | grep -c '[0-9]'`
-    echo "  [ASSIGN] ${SLUG} ... \"${NEW}\" to ${n_num} ${LABEL_DESC}"
+    n_num=$(printf '%s' "${NUMBERS}" | grep -c '[0-9]')
+    log ASSIGN "${SLUG} ... \"${NEW}\" to ${n_num} ${LABEL_DESC}"
 
     for NUM in ${NUMBERS}; do
-      echo "gh api --method POST `sq "repos/${SLUG}/issues/${NUM}/labels"` \
--f `sq "labels[]=${NEW}"` --silent" >> ${CMD_FILE}
+      echo "gh api --method POST $(sq "repos/${SLUG}/issues/${NUM}/labels") \
+-f $(sq "labels[]=${NEW}") --silent" >> ${CMD_FILE}
       ((n_cmd+=1))
     done
 
@@ -847,14 +853,14 @@ for REPO in ${REPO_LIST}; do
     [[ "${SYNC_ARCH[$i]}" == "true" ]] || continue
 
     NAME="${SYNC_NAME[$i]}"
-    REC=`get_rec "${NAME}"`
+    REC=$(get_rec "${NAME}")
 
     # Already archived
-    [[ -z "`printf '%s' "${REC}" | cut -f4`" ]] || continue
+    [[ -z "$(printf '%s' "${REC}" | cut -f4)" ]] || continue
 
-    LABEL_PATH="repos/${SLUG}/labels/`urlenc "${NAME}"`"
-    echo "  [ARCHIV] ${SLUG} label ... ${NAME}"
-    echo "gh api --method PATCH `sq "${LABEL_PATH}"` \
+    LABEL_PATH="repos/${SLUG}/labels/$(urlenc "${NAME}")"
+    log ARCHIVE "${SLUG} label ... ${NAME}"
+    echo "gh api --method PATCH $(sq "${LABEL_PATH}") \
 -F archived=true --silent" >> ${CMD_FILE}
     ((n_cmd+=1))
     archive_rec "${NAME}"
@@ -864,21 +870,21 @@ for REPO in ${REPO_LIST}; do
   # Archive labels last, after any assignments that reference them
   for NAME in "${ARCHIVE_LIST[@]}"; do
 
-    REC=`get_rec "${NAME}"`
+    REC=$(get_rec "${NAME}")
 
     if [[ -z "${REC}" ]]; then
-      echo "  [SKIP  ] no \"${NAME}\" label defined in ${SLUG}"
+      log SKIP "no \"${NAME}\" label defined in ${SLUG}"
       continue
     fi
 
-    if [[ -n "`printf '%s' "${REC}" | cut -f4`" ]]; then
-      echo "  [SKIP  ] ${SLUG} label ... ${NAME} is already archived"
+    if [[ -n "$(printf '%s' "${REC}" | cut -f4)" ]]; then
+      log SKIP "${SLUG} label ... ${NAME} is already archived"
       continue
     fi
 
-    echo "  [ARCHIV] ${SLUG} label ... ${NAME}"
-    LABEL_PATH="repos/${SLUG}/labels/`urlenc "${NAME}"`"
-    echo "gh api --method PATCH `sq "${LABEL_PATH}"` \
+    log ARCHIVE "${SLUG} label ... ${NAME}"
+    LABEL_PATH="repos/${SLUG}/labels/$(urlenc "${NAME}")"
+    echo "gh api --method PATCH $(sq "${LABEL_PATH}") \
 -F archived=true --silent" >> ${CMD_FILE}
     ((n_cmd+=1))
     archive_rec "${NAME}"
@@ -904,27 +910,27 @@ for REPO in ${REPO_LIST}; do
 
   for NAME in "${STRIP_LIST[@]}"; do
 
-    if [[ -z "`get_rec "${NAME}"`" ]]; then
-      echo "  [SKIP  ] no \"${NAME}\" label defined in ${SLUG}"
+    if [[ -z "$(get_rec "${NAME}")" ]]; then
+      log SKIP "no \"${NAME}\" label defined in ${SLUG}"
       continue
     fi
 
-    NUMBERS=`gh api "repos/${SLUG}/issues" --paginate -X GET \
+    NUMBERS=$(gh api "repos/${SLUG}/issues" --paginate -X GET \
              -f state=open -f per_page=100 -f labels="${NAME}" \
-             --jq '.[].number' 2>/dev/null`
+             --jq '.[].number' 2>/dev/null)
 
-    n_num=`printf '%s' "${NUMBERS}" | grep -c '[0-9]'`
+    n_num=$(printf '%s' "${NUMBERS}" | grep -c '[0-9]')
 
     if [[ ${n_num} -eq 0 ]]; then
-      echo "  [SKIP  ] ${SLUG} ... no open issues/PRs labelled \"${NAME}\""
+      log SKIP "${SLUG} ... no open issues/PRs labelled \"${NAME}\""
       continue
     fi
 
-    echo "  [STRIP ] ${SLUG} ... \"${NAME}\" from ${n_num} open issues/PRs"
+    log STRIP "${SLUG} ... \"${NAME}\" from ${n_num} open issues/PRs"
 
-    ENC=`urlenc "${NAME}"`
+    ENC=$(urlenc "${NAME}")
     for NUM in ${NUMBERS}; do
-      echo "gh api --method DELETE `sq "repos/${SLUG}/issues/${NUM}/labels/${ENC}"` \
+      echo "gh api --method DELETE $(sq "repos/${SLUG}/issues/${NUM}/labels/${ENC}") \
 --silent" >> ${CMD_FILE}
       ((n_cmd+=1))
     done
@@ -934,23 +940,23 @@ for REPO in ${REPO_LIST}; do
   # Delete labels last, since this is the one step that cannot be undone
   for NAME in "${DELETE_LIST[@]}"; do
 
-    REC=`get_rec "${NAME}"`
+    REC=$(get_rec "${NAME}")
 
     if [[ -z "${REC}" ]]; then
-      echo "  [SKIP  ] no \"${NAME}\" label defined in ${SLUG}"
+      log SKIP "no \"${NAME}\" label defined in ${SLUG}"
       continue
     fi
 
     # Report how many issues/PRs would lose the label, so that the generated
     # commands can be reviewed with that in mind
-    NUMBERS=`gh api "repos/${SLUG}/issues" --paginate -X GET \
+    NUMBERS=$(gh api "repos/${SLUG}/issues" --paginate -X GET \
              -f state=all -f per_page=100 -f labels="${NAME}" \
-             --jq '.[].number' 2>/dev/null`
-    n_num=`printf '%s' "${NUMBERS}" | grep -c '[0-9]'`
+             --jq '.[].number' 2>/dev/null)
+    n_num=$(printf '%s' "${NUMBERS}" | grep -c '[0-9]')
 
-    echo "  [DELETE] ${SLUG} label ... ${NAME} (removes it from ${n_num} issues/PRs)"
+    log DELETE "${SLUG} label ... ${NAME} (removes it from ${n_num} issues/PRs)"
     echo "# Deletes \"${NAME}\" from ${n_num} issues/PRs in ${SLUG}. This cannot be undone." >> ${CMD_FILE}
-    echo "gh label delete `sq "${NAME}"` -R `sq "${SLUG}"` --yes" >> ${CMD_FILE}
+    echo "gh label delete $(sq "${NAME}") -R $(sq "${SLUG}") --yes" >> ${CMD_FILE}
     ((n_cmd+=1))
     drop_rec "${NAME}"
 
@@ -997,19 +1003,19 @@ for REPO in ${REPO_LIST}; do
         continue
       fi
 
-      NUMBERS=`gh api "repos/${SLUG}/issues" --paginate -X GET \
+      NUMBERS=$(gh api "repos/${SLUG}/issues" --paginate -X GET \
                -f state=all -f per_page=100 -f labels="${name}" \
-               --jq '.[].number' 2>/dev/null`
-      n_num=`printf '%s' "${NUMBERS}" | grep -c '[0-9]'`
+               --jq '.[].number' 2>/dev/null)
+      n_num=$(printf '%s' "${NUMBERS}" | grep -c '[0-9]')
 
-      echo "  [PRUNE ] ${SLUG} label ... ${name} (removes it from ${n_num} issues/PRs)"
+      log PRUNE "${SLUG} label ... ${name} (removes it from ${n_num} issues/PRs)"
       echo "# Prunes \"${name}\" from ${n_num} issues/PRs in ${SLUG}. This cannot be undone." >> ${CMD_FILE}
-      echo "gh label delete `sq "${name}"` -R `sq "${SLUG}"` --yes" >> ${CMD_FILE}
+      echo "gh label delete $(sq "${name}") -R $(sq "${SLUG}") --yes" >> ${CMD_FILE}
       ((n_cmd+=1))
 
     done < <(tr '\t' '\037' < ${TMP_FILE})
 
-    echo "  [PRUNE ] ${SLUG} ... kept ${n_keep} common and ${n_custom} custom labels"
+    log PRUNE "${SLUG} ... kept ${n_keep} common and ${n_custom} custom labels"
 
   fi
 
@@ -1021,7 +1027,7 @@ for REPO in ${REPO_LIST}; do
   fi
 
   chmod +x ${CMD_FILE}
-  echo "./`basename ${CMD_FILE}`" >> ${ALL_CMD_FILE}
+  echo "./$(basename ${CMD_FILE})" >> ${ALL_CMD_FILE}
   ((N_REPO_FILES+=1))
 
   echo "  Wrote ${n_cmd} commands to ${CMD_FILE}"
@@ -1041,3 +1047,26 @@ chmod +x ${ALL_CMD_FILE}
 echo "Wrote command files for ${N_REPO_FILES} repositories."
 echo "Review them and then apply all of the changes by running:"
 echo "  ${ALL_CMD_FILE}"
+
+# Suggest definitions for the new labels that are not already common, so
+# that they can be added to the label file and kept in sync
+n_new=0
+for (( j=0; j<${#NEW_NAME[@]}; j++ )); do
+
+  NAME=$(jq_str "${NEW_NAME[$j]}")
+  if grep -Fq "\"name\": \"${NAME}\"" "${SYNC_FILE}" 2>/dev/null; then
+    continue
+  fi
+
+  if [[ ${n_new} -eq 0 ]]; then
+    echo
+    echo "If the new labels should be common to all repositories, add these"
+    echo "lines to ${SYNC_FILE}:"
+    echo
+  fi
+
+  printf '{"name": "%s","color": "%s","description": "%s","archived": false}\n' \
+    "${NAME}" "${NEW_COLOR[$j]}" "$(jq_str "${NEW_DESC[$j]}")"
+  ((n_new+=1))
+
+done
