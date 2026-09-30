@@ -464,6 +464,7 @@ for REPO in ${REPO_LIST}; do
 
   CMD_FILE="${CMD_DIR}/update_labels_${REPO}_cmd.sh"
   echo "#!/bin/bash -v" > ${CMD_FILE}
+  echo "set -e" >> ${CMD_FILE}
 
   n_cmd=0
 
