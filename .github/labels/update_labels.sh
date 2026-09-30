@@ -220,6 +220,29 @@ unarchive_rec() {
     && mv ${TMP_FILE}.new ${TMP_FILE}
 }
 
+# List the numbers of the issues/PRs in the current repository with the given
+# state (open or all), optionally limited to those carrying a label and
+# filtered by a jq expression. The REST issues endpoint returns both issues
+# and pull requests. Returns non-zero if the query fails, in which case the
+# caller must skip the repository rather than write an incomplete set of
+# commands, such as archiving a label without first reassigning its issues.
+list_issues() {
+  local state="$1" label="$2" filter="${3:-.[].number}"
+  local args=(-f state="${state}" -f per_page=100)
+  if [[ -n "${label}" ]]; then
+    args+=(-f labels="${label}")
+  fi
+  gh api "repos/${SLUG}/issues" --paginate -X GET "${args[@]}" --jq "${filter}"
+}
+
+# Abandon the current repository after a failed query, discarding its
+# partial command file
+skip_repo() {
+  echo "  ERROR: unable to query ${SLUG}. Skipping it, so no commands were written for it."
+  rm -f "${CMD_FILE}"
+  SKIPPED_REPOS="${SKIPPED_REPOS} ${REPO}"
+}
+
 drop_rec() {
   awk -F'\t' -v n="$1" '$1 != n { print }' ${TMP_FILE} > ${TMP_FILE}.new \
     && mv ${TMP_FILE}.new ${TMP_FILE}
@@ -446,10 +469,14 @@ trap "rm -f ${TMP_FILE} ${TMP_FILE}.new" EXIT
 
 N_REPO_FILES=0
 
+# Repositories skipped because they could not be queried
+SKIPPED_REPOS=""
+
 # Process each repository
 for REPO in ${REPO_LIST}; do
 
   SLUG="${ORG}/${REPO}"
+  CMD_FILE="${CMD_DIR}/update_labels_${REPO}_cmd.sh"
 
   echo
   echo "Processing repository: ${SLUG}"
@@ -457,12 +484,11 @@ for REPO in ${REPO_LIST}; do
   # Get the current labels as name<TAB>color<TAB>description<TAB>archived_at
   if ! gh api "repos/${SLUG}/labels" --paginate \
        --jq '.[] | [.name, .color, (.description // ""), (.archived_at // "")] | @tsv' \
-       > ${TMP_FILE} 2>/dev/null; then
-    echo "  WARNING: unable to list labels for ${SLUG}, skipping."
+       > ${TMP_FILE}; then
+    skip_repo
     continue
   fi
 
-  CMD_FILE="${CMD_DIR}/update_labels_${REPO}_cmd.sh"
   echo "#!/bin/bash -v" > ${CMD_FILE}
   echo "set -e" >> ${CMD_FILE}
 
@@ -647,15 +673,9 @@ for REPO in ${REPO_LIST}; do
         fi
 
         # Add the existing label to every open and closed issue/PR labelled
-        # OLD, skipping any that already carry it. The REST issues endpoint
-        # returns both issues and pull requests.
+        # OLD, skipping any that already carry it
         JQ_FILTER=".[] | select([.labels[].name] | index(\"$(jq_str "${NEW}")\") | not) | .number"
-        if ! NUMBERS=$(gh api "repos/${SLUG}/issues" --paginate -X GET \
-                 -f state=all -f per_page=100 -f labels="${OLD}" \
-                 --jq "${JQ_FILTER}" 2>/dev/null); then
-          echo "  WARNING: unable to list issues for merge in ${SLUG}; leaving \"${OLD}\" intact."
-          continue
-        fi
+        NUMBERS=$(list_issues all "${OLD}" "${JQ_FILTER}") || { skip_repo; continue 2; }
 
         n_num=$(printf '%s' "${NUMBERS}" | grep -c '[0-9]')
         log MERGE "${SLUG} ... \"${OLD}\" into existing \"${NEW}\" for ${n_num} issues/PRs"
@@ -786,15 +806,11 @@ for REPO in ${REPO_LIST}; do
     # label so that the generated commands stay idempotent
     JQ_FILTER=".[] | select([.labels[].name] | index(\"$(jq_str "${NEW}")\") | not) | .number"
 
+    NUMBERS=$(list_issues open "${OLD}" "${JQ_FILTER}") || { skip_repo; continue 2; }
+
     if [[ -n "${OLD}" ]]; then
-      NUMBERS=$(gh api "repos/${SLUG}/issues" --paginate -X GET \
-               -f state=open -f per_page=100 -f labels="${OLD}" \
-               --jq "${JQ_FILTER}" 2>/dev/null)
       LABEL_DESC="open issues/PRs labelled \"${OLD}\""
     else
-      NUMBERS=$(gh api "repos/${SLUG}/issues" --paginate -X GET \
-               -f state=open -f per_page=100 \
-               --jq "${JQ_FILTER}" 2>/dev/null)
       LABEL_DESC="open issues/PRs"
     fi
 
@@ -877,9 +893,7 @@ for REPO in ${REPO_LIST}; do
       continue
     fi
 
-    NUMBERS=$(gh api "repos/${SLUG}/issues" --paginate -X GET \
-             -f state=open -f per_page=100 -f labels="${NAME}" \
-             --jq '.[].number' 2>/dev/null)
+    NUMBERS=$(list_issues open "${NAME}") || { skip_repo; continue 2; }
 
     n_num=$(printf '%s' "${NUMBERS}" | grep -c '[0-9]')
 
@@ -911,9 +925,7 @@ for REPO in ${REPO_LIST}; do
 
     # Report how many issues/PRs would lose the label, so that the generated
     # commands can be reviewed with that in mind
-    NUMBERS=$(gh api "repos/${SLUG}/issues" --paginate -X GET \
-             -f state=all -f per_page=100 -f labels="${NAME}" \
-             --jq '.[].number' 2>/dev/null)
+    NUMBERS=$(list_issues all "${NAME}") || { skip_repo; continue 2; }
     n_num=$(printf '%s' "${NUMBERS}" | grep -c '[0-9]')
 
     log DELETE "${SLUG} label ... ${NAME} (removes it from ${n_num} issues/PRs)"
@@ -965,9 +977,7 @@ for REPO in ${REPO_LIST}; do
         continue
       fi
 
-      NUMBERS=$(gh api "repos/${SLUG}/issues" --paginate -X GET \
-               -f state=all -f per_page=100 -f labels="${name}" \
-               --jq '.[].number' 2>/dev/null)
+      NUMBERS=$(list_issues all "${name}") || { skip_repo; continue 2; }
       n_num=$(printf '%s' "${NUMBERS}" | grep -c '[0-9]')
 
       log PRUNE "${SLUG} label ... ${name} (removes it from ${n_num} issues/PRs)"
@@ -998,10 +1008,18 @@ done
 
 echo
 
+if [[ -n "${SKIPPED_REPOS}" ]]; then
+  echo "WARNING: skipped repositories that could not be queried:${SKIPPED_REPOS}"
+  echo "         Check the errors above and re-run for them with:"
+  echo "         --repos \"${SKIPPED_REPOS# }\""
+  echo
+fi
+
 if [[ ${N_REPO_FILES} -eq 0 ]]; then
   echo "No label changes are required."
   rm -f ${ALL_CMD_FILE}
-  exit 0
+  [[ -z "${SKIPPED_REPOS}" ]]
+  exit
 fi
 
 chmod +x ${ALL_CMD_FILE}
@@ -1032,3 +1050,6 @@ for (( j=0; j<${#NEW_NAME[@]}; j++ )); do
   ((n_new+=1))
 
 done
+
+# Report failure when any repository could not be processed
+[[ -z "${SKIPPED_REPOS}" ]]

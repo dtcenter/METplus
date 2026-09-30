@@ -307,7 +307,13 @@ commands for the requested actions, and writes them to shell scripts in the
 
 Each run first removes the command files left over from any previous run, so
 the :code:`commands` sub-directory only contains the commands from the most
-recent one.
+recent one. Each generated command file stops at the first command that fails.
+
+If any GitHub query for a repository fails, no commands are written for that
+repository, since an incomplete set of commands could, for example, archive a
+label before its issues and pull requests are reassigned. The script reports
+the skipped repositories and exits with a non-zero status, so they can be
+processed again using the :code:`--repos` option.
 
 The user should carefully review the generated commands before running
 :code:`update_labels_all_cmd.sh` to apply them. The commands are written in
