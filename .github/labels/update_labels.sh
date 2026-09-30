@@ -649,9 +649,12 @@ for REPO in ${REPO_LIST}; do
         # OLD, skipping any that already carry it. The REST issues endpoint
         # returns both issues and pull requests.
         JQ_FILTER=".[] | select([.labels[].name] | index(\"$(jq_str "${NEW}")\") | not) | .number"
-        NUMBERS=$(gh api "repos/${SLUG}/issues" --paginate -X GET \
+        if ! NUMBERS=$(gh api "repos/${SLUG}/issues" --paginate -X GET \
                  -f state=all -f per_page=100 -f labels="${OLD}" \
-                 --jq "${JQ_FILTER}" 2>/dev/null)
+                 --jq "${JQ_FILTER}" 2>/dev/null); then
+          echo "  WARNING: unable to list issues for merge in ${SLUG}; leaving \"${OLD}\" intact."
+          continue
+        fi
 
         n_num=$(printf '%s' "${NUMBERS}" | grep -c '[0-9]')
         log MERGE "${SLUG} ... \"${OLD}\" into existing \"${NEW}\" for ${n_num} issues/PRs"
