@@ -19,7 +19,7 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 # is critical to ensuring that model upgrades are completed with minimal
 # downsides or degradation in verification statistics. This use case compares
 # a GFS HR run to SMOPS, a combination dataset of satellite measurements concerning
-# soil characteristics, and GLEAM, the Global Land Evaporation Amsterdam Model.i
+# soil characteristics, and GLEAM, the Global Land Evaporation Amsterdam Model.
 # By completing temporal and spatial verification measurements,
 # this use case serves as an excellent baseline for evaluating near surface model soil moisture.
 # In addition, GridDiag is used to compute histograms and information theory statistics
@@ -41,7 +41,7 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 # **Observation:** NOAA Soil Moisture Products System (SMOPS) 0.25 degree resolution, blended soil moisture and
 #                  Global Land Evaporation Amsterdam Model (GLEAM) version 4.3a
 #
-# **NOTE:** Retrieving observation data from CLASS and GLEAM requires user account
+# **NOTE:** Retrieving observation data from CLASS and GLEAM requires a user account.
 #
 # **Climatology:** None
 #
@@ -83,13 +83,14 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 # GridStat's settings, which is the first tool used. The forecast and observation
 # grid resolutions differ, so regridding is used to interpolate the higher
 # resolution forecast data to the lower resolution observation grid for
-# for verification, using a bilinear method. Note that for rigorous comparisons
+# verification, using a bilinear method. Note that for rigorous comparisons
 # of water budgets users may want to use conservative regridding rather than
 # bilinear as bilinear regridding does not conserve total water mass. A poly masking
 # for CONUS is used, with the mask being available from the MET installation. GridDiag
-# applies the same CONUS mask to the forecast and observation soil moisture fields.
-# It constructs individual and joint histograms of the input data and computes
-# information theory statistics describing the relationship between them.
+# processes all six forecast and observation fields, which include soil moisture,
+# sensible heat flux, and latent heat flux, and applies the same CONUS mask to each.
+# It computes an individual histogram for each input field, as well as joint
+# histograms and mutual information for all possible pairs of input fields.
 
 ##############################################################################
 # METplus Configuration
