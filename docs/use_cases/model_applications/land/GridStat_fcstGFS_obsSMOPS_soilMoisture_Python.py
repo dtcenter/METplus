@@ -89,6 +89,9 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 # for CONUS is used, with the mask being available from the MET installation. GridDiag
 # processes all six forecast and observation fields, which include soil moisture,
 # sensible heat flux, and latent heat flux, and applies the same CONUS mask to each.
+# Since GLEAM provides evaporation in mm/day rather than latent heat flux, it is
+# converted to W/m^2 by multiplying by the latent heat of vaporization
+# (approximately 28.4 W/m^2 per mm/day) for comparison with GFS latent heat flux.
 # It computes an individual histogram for each input field, as well as joint
 # histograms and mutual information for all possible pairs of input fields.
 
@@ -216,6 +219,8 @@ model_applications/land/GridStat_fcstGFS_obsSMOPS_soilMoisture_Python.conf
 #   * GridDiagToolUseCase
 #   * PythonEmbeddingFileUseCase
 #   * LandAppUseCase
+#   * VxDataSMOPS
+#   * VxDataGLEAM
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
