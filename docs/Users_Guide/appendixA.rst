@@ -20,12 +20,12 @@ Use Cases lists the required Python packages in the individual Use Cases
 documentation.
 	  
   * :ref:`METplus Python Package Requirements <python_package_requirements>`
-  * `MET Python Embedding Requirements <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#compiling-met-for-python-embedding>`_
-  * `METcalcpy Python Package Requirements <https://metcalcpy.readthedocs.io/en/latest/Users_Guide/installation.html#python-requirements>`_
-  * `METdataio Python Package Requirements <https://metdataio.readthedocs.io/en/latest/Users_Guide/installation.html#requirements>`_
-  * `METplotpy Python Package Requirements <https://metplotpy.readthedocs.io/en/latest/Users_Guide/installation.html#python-requirements>`_
-  * `METviewer Python Package Requirements <https://metviewer.readthedocs.io/en/latest/Users_Guide/installation.html#installing-metviewer>`_
-  * `METexpress Python Package Requirements <https://metexpress.readthedocs.io/en/latest/Users_Guide/installation.html#metexpress-system-requirements-installation-and-support>`_
+  * `MET Python Embedding Requirements <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/appendixF.html#compiling-met-for-python-embedding>`_
+  * `METcalcpy Python Package Requirements <https://metplus.readthedocs.io/projects/metcalcpy/en/latest/Users_Guide/installation.html#python-requirements>`_
+  * `METdataio Python Package Requirements <https://metplus.readthedocs.io/projects/metdataio/en/latest/Users_Guide/installation.html#requirements>`_
+  * `METplotpy Python Package Requirements <https://metplus.readthedocs.io/projects/metplotpy/en/latest/Users_Guide/installation.html#python-requirements>`_
+  * `METviewer Python Package Requirements <https://metplus.readthedocs.io/projects/metviewer/en/latest/Users_Guide/installation.html#installing-metviewer>`_
+  * `METexpress Python Package Requirements <https://metplus.readthedocs.io/projects/metexpress/en/latest/Users_Guide/installation.html#metexpress-system-requirements-installation-and-support>`_
 
 .. _metplus_components_python_packages:
 
@@ -148,7 +148,7 @@ METplus Components Python Packages
     | METplotpy
 
   Source:
-    https://pypi.org/project/imageio/
+    https://pypi.org/project/ImageIO/
 
   Description:
     Provides an easy interface to read and write a wide range of image data, including animated
@@ -388,7 +388,7 @@ METplus Components Python Packages
     Select METplus Use Cases
 
   Source:
-    https://github.com/pyproj4/pyproj/archive/v2.3.1rel.tar.gz
+    `https://github.com/pyproj4/pyproj/archive/v2.3.1rel.tar.gz <https://codeload.github.com/pyproj4/pyproj/tar.gz/refs/tags/v2.3.1rel>`_
 
   Description:
     Python interface to PROJ (cartographic projections and  coordinate transformations library)
@@ -421,7 +421,7 @@ METplus Components Python Packages
     | METdataio
 
   Source:
-    https://github.com/pytest-dev/pytest/archive/5.2.1.tar.gz
+    `https://github.com/pytest-dev/pytest/archive/5.2.1.tar.gz <https://codeload.github.com/pytest-dev/pytest/tar.gz/refs/tags/5.2.1>`_
 
   Description:
     A mature full-featured Python testing tool that helps to write better programs

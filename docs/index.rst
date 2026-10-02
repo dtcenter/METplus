@@ -72,20 +72,20 @@ follows:
    * **wrappers** - suite of Python-based wrappers that provide low-level automation of the METplus software components listed below
    * **use-cases** - example configuration files and sample data to demonstrate scientific applications of the METplus wrappers
 
-* **MET** (`repo <https://github.com/dtcenter/MET>`__, `docs <https://met.readthedocs.io/en/latest/>`__) - core statistical tool that matches up grids with either gridded
+* **MET** (`repo <https://github.com/dtcenter/MET>`__, `docs <https://metplus.readthedocs.io/projects/met/en/latest/>`__) - core statistical tool that matches up grids with either gridded
   analyses or point observations and applies configurable methods to compute
   statistics and diagnostics
-* **METviewer** (`repo <https://github.com/dtcenter/METviewer>`__, `docs <https://metviewer.readthedocs.io/en/latest/>`__) - core database and display system intended for deep analysis
+* **METviewer** (`repo <https://github.com/dtcenter/METviewer>`__, `docs <https://metplus.readthedocs.io/projects/metviewer/en/latest/>`__) - core database and display system intended for deep analysis
   of MET output
-* **METexpress** (`repo <https://github.com/dtcenter/METexpress>`__, `docs <https://metexpress.readthedocs.io/en/latest/>`__) - core database and display system intended for quick
+* **METexpress** (`repo <https://github.com/dtcenter/METexpress>`__, `docs <https://metplus.readthedocs.io/projects/metexpress/en/latest/>`__) - core database and display system intended for quick
   analysis via pre-defined queries of MET output
-* **METcalcpy** (`repo <https://github.com/dtcenter/METcalcpy>`__, `docs <https://metcalcpy.readthedocs.io/en/latest/>`__) - suite of Python-based scripts to be used by other
+* **METcalcpy** (`repo <https://github.com/dtcenter/METcalcpy>`__, `docs <https://metplus.readthedocs.io/projects/metcalcpy/en/latest/>`__) - suite of Python-based scripts to be used by other
   components of METplus tools for statistical aggregation, event
   equalization, and other analysis needs
-* **METplotpy** (`repo <https://github.com/dtcenter/METplotpy>`__, `docs <https://metplotpy.readthedocs.io/en/latest/>`__) - suite of Python-based scripts to plot MET output,
+* **METplotpy** (`repo <https://github.com/dtcenter/METplotpy>`__, `docs <https://metplus.readthedocs.io/projects/metplotpy/en/latest/>`__) - suite of Python-based scripts to plot MET output,
   and in come cases provide additional post-processing of output prior
   to plotting
-* **METdataio** (`repo <https://github.com/dtcenter/METdataio>`__, `docs <https://metdataio.readthedocs.io/en/latest/>`__) - database to store MET output and to be used by both
+* **METdataio** (`repo <https://github.com/dtcenter/METdataio>`__, `docs <https://metplus.readthedocs.io/projects/metdataio/en/latest/>`__) - database to store MET output and to be used by both
   METviewer and METexpress
 
 The umbrella repository will be brought together by using a software package
@@ -143,7 +143,7 @@ To cite this documentation in publications, please refer to the METplus User's G
 .. [#CIRA] `Cooperative Institute for Research in the Atmosphere at
        National Oceanic and Atmospheric Administration (NOAA) Earth
        System Research Laboratory <https://www.esrl.noaa.gov/>`_
-.. [#IMSG] `I.M. Systems Group at NOAA Environmental Modeling Center <https://imsg.com/>`_
+.. [#IMSG] `I.M. Systems Group at NOAA Environmental Modeling Center <https://www.imsg.com/>`_
 
 
 .. toctree::

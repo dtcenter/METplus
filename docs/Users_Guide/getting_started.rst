@@ -287,7 +287,7 @@ Where will METplus be run? Local machine, project machine, HPC system, in the cl
   * Running on HPC systems - check with the system admin to see if it
     has been configured as a module and how to load netCDF and Python
     modules.  For NOAA and NCAR HPCs systems, please refer to the
-    `Existing Builds <https://dtcenter.org/community-code/metplus/download>`_
+    `Existing Builds <https://metplus.readthedocs.io/en/latest/Users_Guide/release-notes.html#existing-builds>`_
     pages for the desired version for instructions on how to load the METplus
     related modules.
     

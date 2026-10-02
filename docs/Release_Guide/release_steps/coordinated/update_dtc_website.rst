@@ -9,7 +9,7 @@ Add or update information about software releases on the website.
   * Navigate to https://dtcenter.org and sign in to the Drupal interface.
 
   * Navigate to the METplus downloads page at
-    https://dtcenter.org/community-code/metplus/download
+    https://dtcenter.org/software-tools/metplus/download
 
   * Click on the **Edit** button to edit the Downloads page.
 
@@ -47,12 +47,12 @@ Add or update information about software releases on the website.
       * Add Link: Link text should be "Documentation" and the URL should be the top
         level directory of the main_vX.Y branch of the METplus User's Guide hosted on the web.
         For example, use
-        "https://metplus.readthedocs.io/en/main_vX.Y/Users_Guide/" and NOT
-        "https://metplus.readthedocs.io/en/vX.Y.Z/Users_Guide/"
+        :code:`https://metplus.readthedocs.io/en/main_vX.Y/Users_Guide/` and NOT
+        :code:`https://metplus.readthedocs.io/en/vX.Y.Z/Users_Guide/`
 
       * Add Link: Link text should be "Existing Builds and Docker" and the URL
         should be the latest Existing Builds page, i.e.
-        https://metplus.readthedocs.io/en/main_vX.Y/Users_Guide/release-notes.html#existing-builds
+        :code:`https://metplus.readthedocs.io/en/main_vX.Y/Users_Guide/release-notes.html#existing-builds`
 
     * In the **Release Notes** text box provide direct links to the *release-notes.html*
       files on the main_vX.Y branch of the User's Guide for each component.

@@ -237,10 +237,38 @@ linkcheck_timeout = 10
 linkcheck_retries = 2
 linkcheck_workers = 8
 
+# GitHub may return HTTP 400 to generic HTTP clients for some valid pages.
+# Use browser-like headers to prevent false positives during link checking.
+linkcheck_request_headers = {
+    "https://github.com/": {
+        "User-Agent": (
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/138.0.0.0 Safari/537.36"
+        ),
+        "Accept": "text/html",
+    },
+}
+
+# GitHub's /releases/latest URL intentionally redirects to the current release tag.
+# Allow these dynamic redirects so linkcheck does not flag valid latest-release links.
+linkcheck_allowed_redirects = {
+    r"https://github\.com/.*/releases/latest":
+        r"https://github\.com/.*/releases/tag/.*",
+}
+
 linkcheck_ignore = [
     # add regex patterns for URLs that should be skipped, e.g.:
     # r'https://dtcenter\.org/.*',   # verify first — some DTC pages may block
     # r'https://www\.weather\.gov/.*',      # NWS pages sometimes rate-limit or redirect oddly
+    r'^\.\./.*', # ignore URLs that start with ../ for relative paths
+    r"https://docutils\.sourceforge\.io/.*", # 403s linkcheck (bot/CI block); verified valid manually
+    r"https://[a-z0-9]+\.onlinelibrary\.wiley\.com/.*",  # 403s linkcheck (bot block); verified valid manually
+    r"https://hub\.docker\.com/repository/docker/dtcenter/met-dev/general", # Ignore Docker Hub MET-dev repository page
+    r"https://hub\.docker\.com/repository/docker/dtcenter/met/general", # Ignore Docker Hub MET repository page
+    r"https://hub\.docker\.com/repository/docker/dtcenter/metplus-data/tags", # Ignore Docker Hub METplus-data tags page
+    r"https://hub\.docker\.com/repository/docker/dtcenter/metplus/tags", # Ignore Docker Hub METplus tags page
+    r"https://nco\.sourceforge\.net/nco\.html",  # Ignore NCO documentation page
 ]
 
 linkcheck_allowed_redirects = {

@@ -63,7 +63,7 @@ It builds the documentation by running "make clean html" and
 makes the files available to download at the end of the workflow
 as a GitHub Actions artifact. This step is no longer mandatory because
 ReadTheDocs is configured to automatically generate the documentation for each
-branch/tag and publish it `online <https://metplus.readthedocs.io>`_.
+branch/tag and publish it `online <https://metplus.readthedocs.io/en/latest/>`_.
 
 The Makefile that runs sphinx-build was modified to write warnings and errors
 to a file called warnings.log using the -w argument. This file will be empty
@@ -1208,7 +1208,7 @@ will use the **pygrib** environment to run::
     user_env_vars.MET_PYTHON_EXE=/usr/local/envs/pygrib/bin/python3
 
 Please see the
-`MET User's Guide <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html>`_
+`MET User's Guide <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/appendixF.html>`_
 for more information on how to use Python Embedding.
 
 * **metviewer** - Used if METviewer should be made available to the use case.
@@ -1257,7 +1257,7 @@ environments, refer to the comments in the scripts found in
 If none of these environments contain the package requirements
 needed to run a new use case, a new environment must be added by a METplus developer.
 See the instructions below or create a new discussion on the
-`METplus GitHub Discussions <https://github.com/dtcenter/METplus/discussions/new/choose>`_
+`METplus GitHub Discussions <https://github.com/login?return_to=https%3A%2F%2Fgithub.com%2Fdtcenter%2FMETplus%2Fdiscussions%2Fnew%2Fchoose>`_
 forum.
 
 A **README.md** file can be found in *internal/scripts/docker_env* that
@@ -1523,7 +1523,7 @@ using the **\-\-volumes-from** argument to the **docker run** command.
 Build Docker Test Environment
 """""""""""""""""""""""""""""
 
-A `Docker multi-stage build <https://docs.docker.com/develop/develop-images/multistage-build>`_
+A `Docker multi-stage build <https://docs.docker.com/build/building/multi-stage/>`_
 is used to create the Docker environment to run the use cases.
 The Docker images that contain the :ref:`cg-ci-use-case-dependencies` are
 built and the relevant files (such as the Conda environment files) are

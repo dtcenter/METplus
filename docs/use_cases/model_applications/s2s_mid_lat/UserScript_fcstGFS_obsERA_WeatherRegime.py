@@ -26,7 +26,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.py
 #
 # The code for computing weather regimes comes from Douglas Miller.
 #
-# * Miller, D. E., Wang, Z., Trapp, R. J., &Harnos, D. S., 2020: Hybrid prediction of weekly tornado activity out to Week 3: Utilizing weather regimes. Geophysical Research Letters, 47, https://doi.org/10.1029/2020GL087253. 
+# * Miller, D. E., Wang, Z., Trapp, R. J., &Harnos, D. S., 2020: Hybrid prediction of weekly tornado activity out to Week 3: Utilizing weather regimes. Geophysical Research Letters, 47, `https://doi.org/10.1029/2020GL087253 <https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2020GL087253>`_.
 
 ##############################################################################
 # Version Added
