@@ -22,7 +22,7 @@ File format
   Binary sweep files
 
 Location of data
-  Amazon AWS: https://s3.amazonaws.com/noaa-nexrad-level2/index.html
+  Amazon AWS: https://registry.opendata.aws/noaa-nexrad/
   
   NCEI: https://www.ncdc.noaa.gov/nexradinv/choosesite.jsp
 
