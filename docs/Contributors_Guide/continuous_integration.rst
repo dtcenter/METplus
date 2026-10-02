@@ -816,12 +816,12 @@ The format of the value is <REPO>:<TAG>
 where the DockerHub repo used is dtcenter/<REPO> and the tag used is <TAG>.
 
 Stable releases of MET are found in the
-`dtcenter/met DockerHub repo <https://hub.docker.com/repository/docker/dtcenter/met/general>`_
+`dtcenter/met DockerHub repo <https://hub.docker.com/r/dtcenter/met>`_
 and are named using the X.Y.Z version of the release,
 so setting **SET_MET_IMAGE=met:11.1.0** will use dtcenter/met:11.1.0.
 
 Development versions of MET are found in the
-`dtcenter/met-dev DockerHub repo <https://hub.docker.com/repository/docker/dtcenter/met-dev/general>`_
+`dtcenter/met-dev DockerHub repo <https://hub.docker.com/r/dtcenter/met-dev>`_
 and are named using the branch name,
 so setting **SET_MET_IMAGE=met-dev:feature_XYZ_info** will use
 dtcenter/met-dev:feature_XYZ_info.
