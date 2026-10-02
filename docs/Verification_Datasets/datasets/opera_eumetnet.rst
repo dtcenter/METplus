@@ -7,7 +7,7 @@ OPERA EUMETNET
 Description
   Operational Program for Exchange of Weather Radar Information (OPERA) European National Meteorological Services (EUMETNET)
 
-  Project Website: https://www.eumetnet.eu/activities/observations-programme/current-activities/opera/
+  Project Website: https://www.eumetnet.eu/observations/opera-radar-animation/
  
   BAMS Paper: `https://doi.org/10.1175/BAMS-D-12-00216.1 <https://journals.ametsoc.org:443/view/journals/bams/95/6/bams-d-12-00216.1.xml>`_
 
@@ -23,7 +23,7 @@ File format
   HDF5 and BUFR
 
 Location of data
-  Web: http://dcpcodpi.meteo.fr/openwis-user-portal/srv/en/main.home
+  Web: https://eumetnet.github.io/openradardata-documentation/1-ORD-API-overview/
 
 Access restrictions
   Requires free research account/license: email info@eumetnet.eu
