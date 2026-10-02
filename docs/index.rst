@@ -21,7 +21,7 @@ whose verification libraries formed the basis of MET and
 whose mathematical brilliance, passion for maps, grid projections, and 
 graphics enriched and inspired new capabilities.
 
-To `Venita Hagerty <https://sites.gsl.noaa.gov/authors/365>`_, 
+To **Venita Hagerty**,
 for her pivotal expertise, support, and attention to 
 detail that ensured the success of METdataio and METexpress.
 
