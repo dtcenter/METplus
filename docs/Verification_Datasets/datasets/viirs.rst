@@ -25,7 +25,7 @@ File format
 Location of data
   VIIRS Atmosphere: https://nrt3.modaps.eosdis.nasa.gov/
 
-  VIIRS Land: `https://earthdata.nasa.gov/earth-observation-data/near-real-time/download-nrt-data/viirs-nrt <https://www.earthdata.nasa.gov/data/instruments/viirs/land-near-real-time-data>`_
+  VIIRS Land: https://nrt3.modaps.eosdis.nasa.gov/
 
 Access restrictions
   Requires a free Earthdata account
