@@ -9,7 +9,7 @@ Description
 
   Project Website: https://www.eumetnet.eu/observations/opera-radar-animation/
  
-  BAMS Paper: `https://doi.org/10.1175/BAMS-D-12-00216.1 <https://journals.ametsoc.org:443/view/journals/bams/95/6/bams-d-12-00216.1.xml>`_
+  BAMS Paper: `https://doi.org/10.1175/BAMS-D-12-00216.1 <https://doi.org/10.1175/BAMS-D-12-00216.1>`_
 
 Sample image
 
