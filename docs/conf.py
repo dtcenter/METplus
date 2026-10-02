@@ -258,15 +258,7 @@ linkcheck_allowed_redirects = {
 }
 
 linkcheck_ignore = [
-    # add regex patterns for URLs that should be skipped, e.g.:
-    # r'https://dtcenter\.org/.*',   # verify first — some DTC pages may block
-    # r'https://www\.weather\.gov/.*',      # NWS pages sometimes rate-limit or redirect oddly
     r"https://docutils\.sourceforge\.io/.*", # 403s linkcheck (bot/CI block); verified valid manually
-    r"https://[a-z0-9]+\.onlinelibrary\.wiley\.com/.*",  # 403s linkcheck (bot block); verified valid manually
-    r"https://hub\.docker\.com/repository/docker/dtcenter/met-dev/general", # Ignore Docker Hub MET-dev repository page
-    r"https://hub\.docker\.com/repository/docker/dtcenter/met/general", # Ignore Docker Hub MET repository page
-    r"https://hub\.docker\.com/repository/docker/dtcenter/metplus-data/tags", # Ignore Docker Hub METplus-data tags page
-    r"https://hub\.docker\.com/repository/docker/dtcenter/metplus/tags", # Ignore Docker Hub METplus tags page
     r"https://nco\.sourceforge\.net/nco\.html",  # Ignore NCO documentation page
     r"https://www\.gnu\.org/.*",  # often slow or unreachable, both from GitHub Actions runners and elsewhere; check by hand
     r"https://www\.nssl\.noaa\.gov/.*",  # server omits its intermediate TLS certificate, which browsers tolerate but Python does not; check by hand
