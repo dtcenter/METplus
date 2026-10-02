@@ -6,9 +6,9 @@ NEXRAD Level 2
 Description
   Next-Generation Radar (NEXRAD) Level 2, gridded radial
 
-  https://www.ncdc.noaa.gov/data-access/radar-data/nexrad-products
+  https://www.ncei.noaa.gov/products/radar/next-generation-weather-radar
 
-  Display/conversion: https://www.ncdc.noaa.gov/data-access/radar-data/radar-display-tools
+  Display/conversion: https://www.ncei.noaa.gov/products/weather-climate-toolkit
 
 Sample image
 

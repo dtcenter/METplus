@@ -847,7 +847,7 @@ A CSV (comma-separated values) file can be referenced in the RST file
 using the "csv-table" directive.
 
 For more information, see
-`CSV Files <https://sublime-and-sphinx-guide.readthedocs.io/en/latest/tables.html#csv-files>`_
+`CSV Files <https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#tables>`_
 and
 `CSV Table <https://docutils.sourceforge.io/docs/ref/rst/directives.html#csv-table>`_.
 
