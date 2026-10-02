@@ -1001,7 +1001,7 @@ via grid-like "ASCII art". Creating grid tables can be cumbersome to create,
 however the
 `Grid Tables <https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#grid-tables>`_
 documentation indicates that the
-`Emacs table mode <https://table.sourceforge.net/>`_ allows for easier editing
+`Emacs table mode <https://www.gnu.org/software/emacs/manual/html_node/emacs/Text-Based-Tables.html>`_ allows for easier editing
 of grid tables.
 
 An example of the use of a grid table can be found in the MET Installation Guide under the
