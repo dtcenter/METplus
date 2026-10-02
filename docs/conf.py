@@ -271,10 +271,6 @@ linkcheck_ignore = [
     r"https://nco\.sourceforge\.net/nco\.html",  # Ignore NCO documentation page
 ]
 
-linkcheck_allowed_redirects = {
-    # map of regex -> regex for redirects that are fine to follow
-}
-
 linkcheck_anchors = True
 linkcheck_anchors_ignore = ['^!']
 
