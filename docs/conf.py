@@ -269,6 +269,7 @@ linkcheck_ignore = [
     r"https://hub\.docker\.com/repository/docker/dtcenter/metplus/tags", # Ignore Docker Hub METplus tags page
     r"https://nco\.sourceforge\.net/nco\.html",  # Ignore NCO documentation page
     r"https://www\.gnu\.org/.*",  # often slow or unreachable, both from GitHub Actions runners and elsewhere; check by hand
+    r"https://www\.nssl\.noaa\.gov/.*",  # server omits its intermediate TLS certificate, which browsers tolerate but Python does not; check by hand
 ]
 
 linkcheck_anchors = True
