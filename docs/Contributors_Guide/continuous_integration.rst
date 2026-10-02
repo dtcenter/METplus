@@ -52,10 +52,13 @@ Documentation (documentation.yml)
 METplus documentation is written using Sphinx.
 The METplus components utilize ReadTheDocs to build and display documentation.
 However, ReadTheDocs will render the documentation when warnings occur.
-This GitHub Actions workflow is run to catch/report warnings and errors.
+This GitHub Actions workflow is run to catch/report warnings and errors,
+and to check the documentation for broken links
+(see :ref:`cg-ci-linkcheck`).
 
-This workflow is only triggered when changes are made to files under the
-**docs** directory of the METplus repository.
+This workflow is triggered by pushes that change files under the
+**docs** directory of the METplus repository, by every pull request,
+and manually with a **workflow_dispatch** event.
 It builds the documentation by running "make clean html" and
 makes the files available to download at the end of the workflow
 as a GitHub Actions artifact. This step is no longer mandatory because
@@ -80,39 +83,38 @@ at the bottom of the workflow summary page when the workflow has completed.
 
 .. _cg-ci-linkcheck:
 
-Check Documentation Links (linkcheck.yml)
------------------------------------------
+Checking Documentation Links
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 METplus documentation contains many links to external resources, such as
 academic papers, related software packages, and other websites. Over time,
-these external links can break as pages are moved or removed. This workflow
-runs Sphinx's ``linkcheck`` builder to identify broken links in the
+these external links can break as pages are moved or removed. After the
+documentation builds without warnings, the Documentation workflow runs
+Sphinx's ``linkcheck`` builder to identify broken links in the
 documentation.
 
-This workflow is defined in each of the METplus component repositories.
-It calls a :ref:`cg-ci-custom-actions` action,
+This step calls a :ref:`cg-ci-custom-actions` action,
 `dtcenter/metplus-action-linkcheck <https://github.com/dtcenter/metplus-action-linkcheck>`_,
 so that the logic to install documentation dependencies and run the
-``linkcheck`` builder does not need to be duplicated across repositories.
+``linkcheck`` builder does not need to be duplicated across the METplus
+component repositories. Each component runs it from its own
+Documentation workflow.
 
-This workflow is triggered by:
+Because it is part of the Documentation workflow, the link check runs
+whenever the Documentation workflow does.
 
-* A weekly **schedule**, so that link rot is caught even when
-  no documentation changes have been made
-* A **pull_request** event for changes to files under the **docs** directory,
-  so that new or edited links are checked before a pull request is merged
-* A manual **workflow_dispatch** event, so that a developer can run the check
-  on demand against any branch
-
-If broken links are found, the workflow job fails, as indicated by a red X,
-and the full ``linkcheck`` report is made available for download as a
-GitHub Actions artifact so it can be reviewed.
+Links that fail because of a temporary network problem are re-checked
+after a delay before they are reported as broken. If broken links are
+found, the workflow job fails, as indicated by a red X. The broken links
+are listed in the job summary, and the full ``linkcheck`` report is made
+available for download as a GitHub Actions artifact.
 
 Some links may be intentionally excluded from this check. For example, a link
 may be valid but block automated/non-browser requests, or may point to a
 resource that is only reachable from an internal network. These exclusions
 are configured per repository in the ``linkcheck_ignore`` variable in that
-repository's **docs/conf.py** file.
+repository's **docs/conf.py** file. Ignored links are listed in the job
+summary so they can be checked by hand.
 
 .. _cg-ci-sonarqube:
 
