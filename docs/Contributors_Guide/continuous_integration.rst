@@ -147,7 +147,7 @@ METcalcpy, and METdataio) run jobs to:
 * Run a SonarQube quality gate check job provided by SonarSource
  
 The quality gate check job pushes the scan results, including code coverage,
-to a [SonarQube server](https://needham.rap.ucar.edu/) hosted by the METplus
+to a `SonarQube server <https://dtc-sca.rap.ucar.edu/>`_ hosted by the METplus
 team. All memebers of the DTCenter GitHub organization can access this server
 by logging in with their GitHub credentials.
 
