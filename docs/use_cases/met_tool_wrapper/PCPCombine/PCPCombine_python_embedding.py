@@ -18,7 +18,7 @@ met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.conf
 #
 # | **Forecast:** IMERG HDF5 30 minute precipitation accumulation
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
+# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to go to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
 # | **Data Source:** IMERG
@@ -35,7 +35,7 @@ met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.conf
 #
 # If the version of Python used to compile MET did not have these libraries at the time of compilation, you will need to add these packages or create a new Python environment with these packages.
 #
-# If this it the case, you will need to set the MET_PYTHON_EXE environment variable to the path of the version of Python you want to use. If you want this version of Python to only apply to this use case, set it in the [user_env_vars] section of a METplus configuration file.:
+# If this is the case, you will need to set the MET_PYTHON_EXE environment variable to the path of the version of Python you want to use. If you want this version of Python to only apply to this use case, set it in the [user_env_vars] section of a METplus configuration file.:
 #
 #    [user_env_vars]
 #    MET_PYTHON_EXE = /path/to/python/with/h5-py/and/numpy/packages/bin/python
