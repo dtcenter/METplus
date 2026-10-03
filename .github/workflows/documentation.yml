@@ -10,6 +10,7 @@ on:
       - docs/**
   pull_request:
     types: [opened, reopened, synchronize]
+  workflow_dispatch:
 
 jobs:
   documentation:
@@ -37,3 +38,10 @@ jobs:
           name: documentation_warnings.log
           path: artifact/doc_warnings.log
           if-no-files-found: ignore
+      - name: Check links
+        uses: dtcenter/metplus-action-linkcheck@v1
+        with:
+          fail-on-broken-links: 'true'
+          upload-artifact: 'true'
+          install-package: 'true'
+          rtd-url: 'https://metplus.readthedocs.io/en/{version}/'

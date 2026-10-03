@@ -54,12 +54,12 @@ the answers.
   depending on the answer.  Here’s a matrix to help:
 
 .. role:: raw-html(raw)
-   :format: html	  
+   :format: html
 
 .. list-table:: METplus Tools Decision Matrix
   :widths: auto
   :header-rows: 1
-		
+
   * - 
     - Gridded Forecast
     - Point Forecast
@@ -254,7 +254,7 @@ evaluation, such as timing information and the process list. The METplus
 wrappers can be called with each desired combination.
 
 .. code-block:: ini
-		
+
   run_metplus.py forecastA.conf observationA.conf use_case_name.conf
   run_metplus.py forecastA.conf observationB.conf use_case_name.conf
   run_metplus.py forecastB.conf observationA.conf use_case_name.conf
@@ -287,7 +287,7 @@ Where will METplus be run? Local machine, project machine, HPC system, in the cl
   * Running on HPC systems - check with the system admin to see if it
     has been configured as a module and how to load netCDF and Python
     modules.  For NOAA and NCAR HPCs systems, please refer to the
-    `Existing Builds <https://dtcenter.org/community-code/metplus/download>`_
+    `Existing Builds <https://metplus.readthedocs.io/en/latest/Users_Guide/release-notes.html#existing-builds>`_
     pages for the desired version for instructions on how to load the METplus
     related modules.
     
@@ -396,7 +396,7 @@ version, e.g.::
 
 Tags for previous releases and development releases are also available.
 Refer to the list of
-`available tags <https://hub.docker.com/repository/docker/dtcenter/metplus/tags>`_
+`available tags <https://hub.docker.com/r/dtcenter/metplus/tags>`_
 on DockerHub.
 
 .. _docker-sample-input:
@@ -410,7 +410,7 @@ dtcenter/metplus-data DockerHub repository and are named with the X.Y version
 of the corresponding METplus Coordinated Release and the name of the use case category
 separated by a dash, e.g. 4.1-data_assimilation or 4.0-met_tool_wrapper.
 A list of
-`available tags for input data <https://hub.docker.com/repository/docker/dtcenter/metplus-data/tags>`_
+`available tags for input data <https://hub.docker.com/r/dtcenter/metplus-data/tags>`_
 can also be found on DockerHub.
 
 To make these data available in a METplus Docker container, first create a

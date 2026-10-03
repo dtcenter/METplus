@@ -237,15 +237,32 @@ linkcheck_timeout = 10
 linkcheck_retries = 2
 linkcheck_workers = 8
 
-linkcheck_ignore = [
-    # add regex patterns for URLs that should be skipped, e.g.:
-    # r'https://dtcenter\.org/.*',   # verify first — some DTC pages may block
-    # r'https://www\.weather\.gov/.*',      # NWS pages sometimes rate-limit or redirect oddly
-]
-
-linkcheck_allowed_redirects = {
-    # map of regex -> regex for redirects that are fine to follow
+# GitHub may return HTTP 400 to generic HTTP clients for some valid pages.
+# Use browser-like headers to prevent false positives during link checking.
+linkcheck_request_headers = {
+    "https://github.com/": {
+        "User-Agent": (
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/138.0.0.0 Safari/537.36"
+        ),
+        "Accept": "text/html",
+    },
 }
+
+# GitHub's /releases/latest URL intentionally redirects to the current release tag.
+# Allow these dynamic redirects so linkcheck does not flag valid latest-release links.
+linkcheck_allowed_redirects = {
+    r"https://github\.com/.*/releases/latest":
+        r"https://github\.com/.*/releases/tag/.*",
+}
+
+linkcheck_ignore = [
+    r"https://docutils\.sourceforge\.io/.*", # 403s linkcheck (bot/CI block); verified valid manually
+    r"https://nco\.sourceforge\.net/nco\.html",  # Ignore NCO documentation page
+    r"https://www\.gnu\.org/.*",  # often slow or unreachable, both from GitHub Actions runners and elsewhere; check by hand
+    r"https://www\.nssl\.noaa\.gov/.*",  # server omits its intermediate TLS certificate, which browsers tolerate but Python does not; check by hand
+]
 
 linkcheck_anchors = True
 linkcheck_anchors_ignore = ['^!']

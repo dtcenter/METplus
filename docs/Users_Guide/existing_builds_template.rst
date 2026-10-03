@@ -145,7 +145,7 @@ in the
 
         | **NOAA machines Dogwood and Cactus (WCOSS2 - Cray)**
         | *Last updated:*
-	| *Compiler and version:*
+        | *Compiler and version:*
 
           * **MET vX.Y.0-beta1 / METplus vX.Y.0-beta1 / METplus Analysis Tools vX.Y.0-beta1**
 
@@ -215,7 +215,7 @@ in the
                   module use /contrib/METdataio/modulefiles
                   module load metdataio/X.Y.Z-beta1
 
-		   
+
      .. dropdown:: HERA - Coming Soon!
 
         | **NOAA MACHINE HERA**
@@ -280,11 +280,11 @@ in the
 
         | **NOAA MACHINE HERCULES (MANAGED BY MSU)**
         | *Last updated:*
-	| *Compiler and version: Intel oneAPI 2025.3.1*
-	|
-	| **Before loading any of the modules below, it is necessary to load the following modules:**
+        | *Compiler and version: Intel oneAPI 2025.3.1*
+        |
+        | **Before loading any of the modules below, it is necessary to load the following modules:**
 
-	.. code-block:: ini
+        .. code-block:: ini
 
            module load spack-managed-x86-64_v3
            module load intel-oneapi-compilers/2025.3.1
@@ -299,17 +299,17 @@ in the
 
             * To use METplus run:
 
-	      .. code-block:: ini
+              .. code-block:: ini
 
                  module load metplus/X.Y.0-beta1
-		 
+
             * Users should create a file like /work/noaa/ovp/METplus/hercules.role-ovp.conf to set a personalized INPUT_BASE and OUTPUT_BASE.
 
           * **MET-X.Y.0-beta1**
 
             * MODULES:
 
-	      .. code-block:: ini
+              .. code-block:: ini
 
                 module load met/X.Y.0-beta1
 
@@ -317,14 +317,14 @@ in the
 
             * MODULES:
 
-	      .. code-block:: ini
+              .. code-block:: ini
 
                 module load metcalcpy/X.Y.0-beta1
                 module load metplotpy/X.Y.0-beta1
 
             * PIP INSTALL:
 
-	      .. code-block:: ini
+              .. code-block:: ini
 
                 python -m pip install --user tornado
                 python -m pip install --user plotly
@@ -337,7 +337,7 @@ in the
 
             * MODULES:
 
-	      .. code-block:: ini
+              .. code-block:: ini
 
                 module load metdataio/X.Y.0-beta1
 
@@ -346,7 +346,7 @@ in the
 
         | **NOAA MACHINE ORION (MANAGED BY MSU)**
         | *Last updated:*
-	| *Compiler and version: Intel oneAPI 2024.1.0*
+        | *Compiler and version: Intel oneAPI 2024.1.0*
 
           * **METplus-X.Y.0-beta1**
 
@@ -410,7 +410,7 @@ in the
 
         | **NOAA MACHINE GAEA**
         | *Last Updated:*
-	| *Compiler and version: Intel classic 2023.2.0*
+        | *Compiler and version: Intel classic 2023.2.0*
 
           * **METplus-X.Y.0-beta1**
 
@@ -475,7 +475,7 @@ in the
 
         | **TEXAS ADVANCED COMPUTING CENTER (TACC) FRONTERA**
         | *Last Updated:*
-	| *Compiler and version: Intel oneAPI 2023.1.0*
+        | *Compiler and version: Intel oneAPI 2023.1.0*
 
           * **METplus-X.Y.Z-beta1**
 

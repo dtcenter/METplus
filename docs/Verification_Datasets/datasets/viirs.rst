@@ -7,7 +7,7 @@ Description
   Visible Infrared Imaging Radiometer Suite (VIIRS)
   This instrument is on a polar-orbiting satellite providing global observations related to the atmosphere, oceans, and Earth's surface. This information is focused on aerosol optical thickness (other VIIRS products are available).
   
-  https://www.jpss.noaa.gov/viirs.html
+  https://www.nesdis.noaa.gov/our-satellites/currently-flying/joint-polar-satellite-system/visible-infrared-imaging-radiometer-suite-viirs
 
 Sample image
 
@@ -23,9 +23,9 @@ File format
   NetCDF
 
 Location of data
-  VIIRS Atmosphere: https://earthdata.nasa.gov/earth-observation-data/near-real-time/download-nrt-data/viirs-a-nrt
+  VIIRS Atmosphere: https://nrt3.modaps.eosdis.nasa.gov/
 
-  VIIRS Land: https://earthdata.nasa.gov/earth-observation-data/near-real-time/download-nrt-data/viirs-nrt
+  VIIRS Land: https://nrt3.modaps.eosdis.nasa.gov/
 
 Access restrictions
   Requires a free Earthdata account

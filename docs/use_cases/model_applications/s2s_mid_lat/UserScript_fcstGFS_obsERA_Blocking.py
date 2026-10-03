@@ -31,10 +31,10 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py
 # observations, and contingency table statistics are computed to compare model performance at 
 # identifying IBLs and blocks.  The original code for computing blocking came from Douglas Miller.
 #
-#  * Miller, D. E., and Z. Wang, 2019a: Skillful seasonal prediction of Eurasian winter blocking and extreme temperature frequency. Geophys. Res. Lett., 46, 11 530–11 538, https://doi.org/10.1029/2019GL085035.
-#  * Miller, D. E., and Z. Wang, 2022: Northern Hemisphere Winter Blocking: Differing Onset Mechanisms across regions. J. Atmos. Sci., 79, 1291-1309, https://doi.org/10.1175/JAS-D-21-0104.1.
-#  * Masato, G., B. J. Hoskins, and T. J. Woollings, 2013: Winter and summer Northern Hemisphere blocking in CMIP5 models. J. Climate, 26, 7044–7059, https://doi.org/10.1175/JCLI-D-12-00466.1.
-#  * Kitano, Y., and T. J. Yamada, 2016: Relationship between atmospheric blocking and cold day extremes in current and RCP8.5 future climate conditions over Japan and the surrounding area. Atmos. Sci. Lett., 17, 616–622, https://doi.org/10.1002/asl.711.
+#  * Miller, D. E., and Z. Wang, 2019a: Skillful seasonal prediction of Eurasian winter blocking and extreme temperature frequency. Geophys. Res. Lett., 46, 11 530–11 538, `https://doi.org/10.1029/2019GL085035 <https://doi.org/10.1029/2019GL085035>`_.
+#  * Miller, D. E., and Z. Wang, 2022: Northern Hemisphere Winter Blocking: Differing Onset Mechanisms across regions. J. Atmos. Sci., 79, 1291-1309, `https://doi.org/10.1175/JAS-D-21-0104.1 <https://doi.org/10.1175/JAS-D-21-0104.1>`_.
+#  * Masato, G., B. J. Hoskins, and T. J. Woollings, 2013: Winter and summer Northern Hemisphere blocking in CMIP5 models. J. Climate, 26, 7044–7059, `https://doi.org/10.1175/JCLI-D-12-00466.1 <https://doi.org/10.1175/JCLI-D-12-00466.1>`_.
+#  * Kitano, Y., and T. J. Yamada, 2016: Relationship between atmospheric blocking and cold day extremes in current and RCP8.5 future climate conditions over Japan and the surrounding area. Atmos. Sci. Lett., 17, 616–622, `https://doi.org/10.1002/asl.711 <https://doi.org/10.1002/asl.711>`_.
 
 ##############################################################################
 # Version Added

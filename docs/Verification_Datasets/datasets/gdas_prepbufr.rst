@@ -7,7 +7,7 @@ Description
   Global Data Assimilation System (GDAS) prepbufr files contain a variety of upper-air and surface weather observations from around the globe, including radiosonde, profiler and US radar derived winds, land and marine surface reports, aircraft reports, and more.
 
   NOAA/NCEI:
-  https://www.ncdc.noaa.gov/data-access/model-data/model-datasets/global-data-assimilation-system-gdas
+  https://www.ncei.noaa.gov/products/weather-climate-models/global-data-assimilation
 
   Note: GDAS prepbufr data is also available via other sources (e.g., NOMADS, NOAA HPSS, and NCAR/Research Data Archive); however, NOAA/NCEI does not require an account and provides a long archive period.
 
