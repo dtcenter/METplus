@@ -69,7 +69,7 @@ model_applications/clouds/GridStat_fcstMPAS_obsMERRA2_lowAndTotalCloudFrac.conf
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** 36
 #
-# Because instance names are used, GridStat will run 3 times for this 1 initalization time. Each of the
+# Because instance names are used, GridStat will run 3 times for this 1 initialization time. Each of the
 # instance names correspond to different regridding, neighborhood evaluations, thresholding, output line types, and output
 # prefix names. For the first GridStat instance, low and total cloud fractions are verified at 10 separate thresholds.
 # The observation and forecast datasets are provided via Python Embedding. Various output line types are requested
@@ -77,7 +77,7 @@ model_applications/clouds/GridStat_fcstMPAS_obsMERRA2_lowAndTotalCloudFrac.conf
 # All of the evaluation takes place within the masked region, read in via a poly line file.
 # For the nbr GridStat instance, the same variables are verified, but the thresholds are expanded to include forecast
 # and observation percentiles, ranging from 20 to 80. This instance also creates 4 neighborhoods of varying width using
-# a circle definition. The related neighborhood line types are requested as output and a new ouput prefix is used.
+# a circle definition. The related neighborhood line types are requested as output and a new output prefix is used.
 # Finally, the prob GridStat instance updates the forecast thresholds for the two variable fields to range from 0 to 1 and
 # changes the forecast field to probabilistic space via the FCST_IS_PROB setting. Neighborhoods using the same definitions
 # from the nbr instance are used, and the respective line types are requested with a new output prefix for output files

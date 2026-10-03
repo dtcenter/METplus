@@ -15,10 +15,10 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsJASON3_satelliteAl
 # Scientific Objective
 # --------------------
 #
-# Satellite data provides a wealth of information, especially over vast water bodies (eg. oceans)
+# Satellite data provides a wealth of information, especially over vast water bodies (e.g., oceans)
 # where traditional observation methods are sparse or unavailable. This use case shows how a satellite
 # dataset can be used as observations to verify against a model forecast. While the use case is set
-# up to verify using JASON-3 data, the Python script called on via Python Embedding is capabile
+# up to verify using JASON-3 data, the Python script called on via Python Embedding is capable
 # of processing SARAL and Sentinel-6a datasets as well.
 
 ##############################################################################

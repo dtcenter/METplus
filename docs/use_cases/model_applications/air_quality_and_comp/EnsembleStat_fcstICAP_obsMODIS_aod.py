@@ -17,7 +17,7 @@ model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf
 # --------------------
 #
 # To provide useful statistical information on the relationship between
-# observation data for aersol optical depth (AOD) to an ensemble forecast.
+# observation data for aerosol optical depth (AOD) to an ensemble forecast.
 # These values can be used to help correct ensemble member deviations from observed values.
 
 ##############################################################################

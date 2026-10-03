@@ -112,7 +112,7 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsAVISO_climHYCOM_s
 # which are all interrelated and cannot be currently performed within METplus. If any of the files are missing, an appropriate error
 # message will be provided and the script will exit. If all files are present, then the script proceeds to pull out the requested
 # forecast and observation fields, adjusting coordinate systems as necessary (not all of the inputs have the same
-# coordinate system). For the climatology data, the script's action is dependant on the valid date: if it's prior to or after the 15th,
+# coordinate system). For the climatology data, the script's action is dependent on the valid date: if it's prior to or after the 15th,
 # the offset is calculated and used to extract a second climatology file's data that extends over the date in use.
 # If the valid date is exactly the 15th, then a single file can be used. After that, the script processes the ice mask data, creates 
 # weights for the model data via kd-tree interpolation, creates a new interpolated model grid that matches the 

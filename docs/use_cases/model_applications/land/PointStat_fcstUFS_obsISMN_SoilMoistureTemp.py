@@ -17,7 +17,7 @@ model_applications/land/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
 #
 # This use case examines soil moisture and temperature biases in the UFS global forecast system (GFS).
 # The specific configuration is a GFSv17 pre-release version (HR1). Correct representation of land states 
-# are important for many processes, such as prediction of convection, near surface sensible weather 
+# is important for many processes, such as prediction of convection, near surface sensible weather 
 # (e.g. winds, humidity, temperature), and subsequent hydrological forecasting applications such as 
 # snowpack evolution and runoff generation. Here we use the International Soil Moisture Network (ISMN) 
 # soil moisture and temperature data to assess UFS forecast errors across CONUS for an example summer 

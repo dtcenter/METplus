@@ -28,7 +28,7 @@ model_applications/space_weather/GenVxMask_fcstGloTEC_solar_altitude.conf
 # Novel aspects of this use case:
 #   - First example use case to run gen_vx_mask on a space weather model (GloTEC)
 #   - Example of how to run gen_vx_mask on NetCDF input data which do not strictly conform to the
-#     Climate Forecasts (CF) conventions
+#     Climate and Forecast (CF) conventions
 #   - Example of constructing a mask based on the solar altitude angle.
 #   - Changing the mask condition to solar alt <= 0 will mask out the night region.
 #   - Changing the mask condition to solar alt > 0 will mask the day region.

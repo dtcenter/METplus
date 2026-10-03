@@ -25,7 +25,7 @@ model_applications/data_assimilation/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA
 # tropical cyclone as informed by a vortex tracker, in this case Tropical Storm Dorian. 
 #
 # In this case 100224 observations from 2019082418 are used. These were converted
-# from perpbufr files via a fortran ioda-converter provided by the Joint Center for
+# from prepbufr files via a fortran ioda-converter provided by the Joint Center for
 # Satellite Data Assimilation, which oversees the development of JEDI. The variables
 # used are t, q, u, and v.
 #

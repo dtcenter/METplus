@@ -54,7 +54,7 @@ model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 # METplus Components
 # ------------------
 #
-# This use cases uses PB2NC, GenVxMask, and PointStat along with Python embedding
+# This use case uses PB2NC, GenVxMask, and PointStat along with Python embedding
 # and user scripting. For each call to PointStat, Python embedding is used to calculate 
 # the CTP and Humidity Index diagnostics and pass those diagnostics to PointStat 
 # for verification.

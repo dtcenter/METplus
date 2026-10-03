@@ -160,7 +160,7 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsSMAP_climWOA_sss.
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for thisIce use case will be found in 20210503 (relative to **OUTPUT_BASE**)
+# Output for this ice use case will be found in 20210503 (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # * grid_stat_SSS_000000L_20210502_000000V.stat 
