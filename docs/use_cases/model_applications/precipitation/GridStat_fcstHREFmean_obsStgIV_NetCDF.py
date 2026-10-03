@@ -69,7 +69,7 @@ model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_Netcdf.conf
 # PCPCombine (observation) > RegridDataPlane (observation) > GridStat
 #
 # This example loops by initialization time.
-# There is only one initalization time in this example so the following will be run:
+# There is only one initialization time in this example so the following will be run:
 #
 # Run times:
 #

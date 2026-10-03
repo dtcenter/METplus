@@ -20,7 +20,7 @@ model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.py
 # diagram using sample data.
 #
 # The space time plot and cross spectra calculations were created by Maria Gehne 
-# at the Physical Sciences Labratory in NOAA. 
+# at the Physical Sciences Laboratory in NOAA. 
 
 ##############################################################################
 # Version Added

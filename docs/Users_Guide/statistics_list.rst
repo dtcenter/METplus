@@ -4,7 +4,7 @@ METplus Statistics & Diagnostics
 
 
 .. Number of characters per line:
-   Statistic Name - no more that 32 characters
+   Statistic Name - no more than 32 characters
    METplus Name - no more than 17 characters
    Statistic Type - no more than 19 characters
    Tools - approx 18 characters?
@@ -18,12 +18,12 @@ Statistics List A-B
 -------------------
 
 .. role:: raw-html(raw)
-   :format: html	  
+   :format: html
 
 .. list-table:: Statistics List A-B
   :widths: auto
   :header-rows: 1
-		
+
   * - Statistics  :raw-html:`<br />`
       Long Name
     - METplus Name
@@ -140,12 +140,12 @@ Statistics List C-E
 -------------------
       
 .. role:: raw-html(raw)
-   :format: html	  
+   :format: html
 
 .. list-table:: Statistics List C-E
   :widths: auto
   :header-rows: 1
-		
+
   * - Statistics  :raw-html:`<br />`
       Long Name
     - METplus Name
@@ -312,7 +312,7 @@ Statistics List F
 .. list-table:: Statistics List F
   :widths: auto
   :header-rows: 1
-		
+
   * - Statistics  :raw-html:`<br />`
       Long Name
     - METplus Name
@@ -531,12 +531,12 @@ Statistics List G-M
 -------------------
 
 .. role:: raw-html(raw)
-   :format: html	  
+   :format: html
 
 .. list-table:: Statistics List G-M
   :widths: auto
   :header-rows: 1
-		
+
   * - Statistics  :raw-html:`<br />`
       Long Name
     - METplus Name
@@ -737,12 +737,12 @@ Statistics List N-O
 -------------------
       
 .. role:: raw-html(raw)
-   :format: html	  
+   :format: html
 
 .. list-table:: Statistics List N-O
   :widths: auto
   :header-rows: 1
-		
+
   * - Statistics  :raw-html:`<br />`
       Long Name
     - METplus Name
@@ -913,12 +913,12 @@ Statistics List P-R
 
 
 .. role:: raw-html(raw)
-   :format: html	  
+   :format: html
 
 .. list-table:: Statistics List P-R
   :widths: auto
   :header-rows: 1
-		
+
   * - Statistics :raw-html:`<br />`
       Long Name
     - METplus Name
@@ -1134,12 +1134,12 @@ Statistics List S-T
 
 
 .. role:: raw-html(raw)
-   :format: html	  
+   :format: html
 
 .. list-table:: Statistics List S-T
   :widths: auto
   :header-rows: 1
-		
+
   * - Statistics  :raw-html:`<br />`
       Long Name
     - METplus Name
@@ -1249,12 +1249,12 @@ Statistics List U-Z
 -------------------
       
 .. role:: raw-html(raw)
-   :format: html	  
+   :format: html
 
 .. list-table:: Statistics List U-Z
   :widths: auto
   :header-rows: 1
-		
+
   * - Statistics  :raw-html:`<br />`
       Long Name
     - METplus Name
@@ -1427,7 +1427,7 @@ Diagnostics Database
 
 
 .. Number of characters per line:
-   Statistic Name - no more that 32 characters
+   Statistic Name - no more than 32 characters
    METplus Name - no more than 17 characters
    Statistic Type - no more than 19 characters
    METplus Line Type - currently unlimited (approx 33 characters)
@@ -1436,12 +1436,12 @@ Diagnostics List A-B
 --------------------
 
 .. role:: raw-html(raw)
-   :format: html	  
+   :format: html
 
 .. list-table:: Diagnostics List A-B
   :widths: auto
   :header-rows: 1
-		
+
   * - Statistics  :raw-html:`<br />`
       Long Name
     - METplus Name
@@ -1517,12 +1517,12 @@ Diagnostics List C-E
 --------------------
 
 .. role:: raw-html(raw)
-   :format: html	  
+   :format: html
 
 .. list-table:: Diagnostics List C-E
   :widths: auto
   :header-rows: 1
-		
+
   * - Statistics  :raw-html:`<br />`
       Long Name
     - METplus Name
@@ -1683,12 +1683,12 @@ Diagnostics List F
 ------------------
 
 .. role:: raw-html(raw)
-   :format: html	  
+   :format: html
 
 .. list-table:: Diagnostics List F
   :widths: auto
   :header-rows: 1
-		
+
   * - Statistics  :raw-html:`<br />`
       Long Name
     - METplus Name
@@ -1939,12 +1939,12 @@ Diagnostics List G-L
 --------------------
 
 .. role:: raw-html(raw)
-   :format: html	  
+   :format: html
 
 .. list-table:: Diagnostics List G-L
   :widths: auto
   :header-rows: 1
-		
+
   * - Statistics  :raw-html:`<br />`
       Long Name
     - METplus Name
@@ -2058,7 +2058,7 @@ Diagnostics List G-L
       Relationship
     - Diagnostic
     - Grid-Diag
-    - n/a	
+    - n/a
   * - Dimension of the latitude 
     - LAT
     - Diagnostic 
@@ -2081,12 +2081,12 @@ Diagnostics List M-O
 --------------------
 
 .. role:: raw-html(raw)
-   :format: html	  
+   :format: html
 
 .. list-table:: Diagnostics List M-O
   :widths: auto
   :header-rows: 1
-		
+
   * - Statistics  :raw-html:`<br />`
       Long Name
     - METplus Name
@@ -2256,12 +2256,12 @@ Diagnostics List P-Z
 --------------------
 
 .. role:: raw-html(raw)
-   :format: html	  
+   :format: html
 
 .. list-table:: Diagnostics List P-Z
   :widths: auto
   :header-rows: 1
-		
+
   * - Statistics  :raw-html:`<br />`
       Long Name
     - METplus Name

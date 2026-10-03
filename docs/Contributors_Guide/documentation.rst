@@ -6,7 +6,7 @@ Overview
 ========
 
 The METplus documentation (beginning with version 3.0) is available
-`online <https://metplus.readthedocs.io/>`_. The majority of the documentation 
+`online <https://metplus.readthedocs.io/en/latest/>`_. The majority of the documentation 
 is created using the Sphinx documentation generator tool, which was originally 
 created for Python documentation. The METplus documentation is created using 
 `reStructuredText (RST) <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html>`_. 
@@ -280,7 +280,7 @@ followed by indented body elements.
 
 Footnote labels are one of:
 
-  #. one of more digits (i.e. a number),
+  #. one or more digits (i.e. a number),
   #. a single "#" (denoting auto-numbered footnotes),
   #. a "#" followed by a simple reference name, or
   #. a single "*" (denoting auto-symbol footnotes)
@@ -305,7 +305,7 @@ resulting in the following displayed text:
   .. [#NCAR] National Center for Atmospheric Research
   .. [#UCAR] University Center for Atmospheric Research
 
-An example of the usage of footnotes in reStructured text can be seen in the
+An example of the usage of footnotes in reStructuredText can be seen in the
 `METplus docs/index.rst file <https://raw.githubusercontent.com/dtcenter/METplus/develop/docs/index.rst>`_
 and displayed in Read The Docs `here <https://metplus.readthedocs.io/en/develop/index.html>`_.
      
@@ -344,7 +344,7 @@ and
 `Math support in Sphinx <https://sphinx-rtd-trial.readthedocs.io/en/latest/ext/math.html>`_ for additional information.
 
 There are quite a few examples in
-`MET Appendix C <https://met.readthedocs.io/en/develop/Users_Guide/appendixC.html#appendix-c-verification-measures>`_.
+`MET Appendix C <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/appendixC.html#appendix-c-verification-measures>`_.
 
 
 Equations
@@ -374,7 +374,7 @@ Matrices
 Matrices are not frequently used in the METplus documentation, however there
 is an example in the
 `MET documentation for Stable Equitable Error in Probability Space (SEEPS)
-<https://met.readthedocs.io/en/develop/Users_Guide/appendixC.html#stable-equitable-error-in-probability-space-seeps>`_.
+<https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/appendixC.html#stable-equitable-error-in-probability-space-seeps>`_.
 Example::
 
   .. math:: \{S^{S}_{vf}\} = \frac{1}{2}
@@ -404,8 +404,8 @@ It is important to use a relative path (i.e. "../../") to get to the correct
 directory of the file being referenced in the literal include.  This will keep the 
 file linking to the correct version and branch.  
 
-As an example, refer to the METplus User's Guide.  See this 
-`line <https://github.com/dtcenter/METplus/blob/46f705fc2c1b861e3aa6314d030eb9b4c382d0b3/docs/use_cases/met_tool_wrapper/PointStat/PointStat.py#L55>`_ 
+As an example, refer to the METplus User's Guide.  See line 55 in
+`PointStat.py <https://github.com/dtcenter/METplus/blob/46f705fc2c1b861e3aa6314d030eb9b4c382d0b3/docs/use_cases/met_tool_wrapper/PointStat/PointStat.py>`_ 
 in the PointStat Wrapper Use Case documentation, which uses RST's :code:`.. literalinclude::` 
 and renders the text of the referenced file in this 
 `section <https://metplus.readthedocs.io/en/develop/generated/met_tool_wrapper/PointStat/PointStat.html#metplus-configuration>`_.
@@ -417,7 +417,7 @@ Literal blocks are usually used for showing command line syntax and are
 typically rendered in a monospaced font. Literal blocks are introduced
 by ending a paragraph with the special marker `::`.
      
-The literal block must be indented and separated by the surrounding text
+The literal block must be indented and separated from the surrounding text
 with a blank line above and below the text.  Example::
 
   Some text::
@@ -531,7 +531,7 @@ resulting in the following displayed text:
 
 See line blocks under 
 `Lists and Quote-like blocks <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html#lists-and-quote-like-blocks>`_
-and the `line blocks <http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html#line-blocks>`_
+and the `line blocks <https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#line-blocks>`_
 section from the reStructuredText Markup Specification for more information.
 
 Links
@@ -666,11 +666,6 @@ To make sure the web address is correct:
 
     `StatAnalysis: Basic Use Case <../generated/met_tool_wrapper/StatAnalysis/StatAnalysis.html>`_
 
-Examples of the links can be seen in this 
-`table <https://metplus.readthedocs.io/en/latest/Users_Guide/overview.html#metplus-components-python-requirements>`_ 
-in the far right column.  Please note, it may be necessary to scroll down to
-use the horizontal scroll bar to see the far right **Use Cases** column.
-
 
 Linking to a Table
 ^^^^^^^^^^^^^^^^^^
@@ -758,13 +753,13 @@ Below is an example::
 
   .. figure:: figure/1Issue-before-created.png
 
-   	(Return and tab over). This is the caption for the figure.
+        (Return and tab over). This is the caption for the figure.
 
 resulting in the following displayed text and image:
 
 .. figure:: figure/1Issue-before-created.png
 
-	This is the caption for the figure.
+        This is the caption for the figure.
 
 See 
 `Images and Figures <https://lpn-doc-sphinx-primer-devel.readthedocs.io/concepts/images.html>`_
@@ -837,7 +832,7 @@ Line Breaks in List Tables
 In some instances, the text in a column of a table needs to wrap to keep the
 text readable.  To create a line break use :code:`:raw-html:`<br />``. See
 Column Number 37-38 in the first column of 
-`Table 13.8 Format information for SSVAR <https://met.readthedocs.io/en/latest/Users_Guide/ensemble-stat.html#id8>`_ 
+`Table 14.8 Format information for SSVAR <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/ensemble-stat.html#id8>`_ 
 as an example. The raw RST for that cell is:
 
 .. code-block:: none
@@ -852,9 +847,9 @@ A CSV (comma-separated values) file can be referenced in the RST file
 using the "csv-table" directive.
 
 For more information, see
-`CSV Files <https://sublime-and-sphinx-guide.readthedocs.io/en/latest/tables.html#csv-files>`_
+`CSV Files <https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#tables>`_
 and
-`CSV Table <https://docutils.sourceforge.io/docs/ref/rst/directives.html#csv-table-1>`_.
+`CSV Table <https://docutils.sourceforge.io/docs/ref/rst/directives.html#csv-table>`_.
 
 As of 2023, using CSV files to create tables hasn't been used in the METplus
 documentation.
@@ -865,7 +860,7 @@ If a table already exists it can be converted into a Sphinx list table by
 copying the existing table into a Google Sheet and using formulas to
 restructure it into a list table format. An example of how to do this is
 described below. This
-`spreadsheet <https://docs.google.com/spreadsheets/d/1splypR5JLRLgokFwUcAXqkWGJvQkJ4IYX9IoD8niyyY/>`_
+`spreadsheet <https://docs.google.com/spreadsheets/d/1splypR5JLRLgokFwUcAXqkWGJvQkJ4IYX9IoD8niyyY/edit>`_
 is used as an example.
 
 The first step is to copy the table into the first cell (A1) of the
@@ -888,7 +883,7 @@ could be used), paste in the formula below to reformat the existing table::
 In the formula above, the following functions are used and documentation
 describing each function is linked below:
 
-  * `char <https://https://support.google.com/docs/answer/3094120?hl=en&ref_topic=3105625&sjid=11023572608666589922-NA>`_ -
+  * `char <https://support.google.com/docs/answer/3094120?hl=en&ref_topic=3105625&sjid=11023572608666589922-NA>`_ -
     Converts a number into a character according to the current Unicode table.
 
   * `split <https://support.google.com/docs/answer/3094136?sjid=11023572608666589922-NA>`_ -
@@ -1006,13 +1001,13 @@ via grid-like "ASCII art". Creating grid tables can be cumbersome to create,
 however the
 `Grid Tables <https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#grid-tables>`_
 documentation indicates that the
-`Emacs table mode <https://table.sourceforge.net/>`_ allows for easier editing
+`Emacs table mode <https://www.gnu.org/software/emacs/manual/html_node/emacs/Text-Based-Tables.html>`_ allows for easier editing
 of grid tables.
 
 An example of the use of a grid table can be found in the MET Installation Guide under the
 dropdown title **IF THE USER ALREADY HAS THE LIBRARY DEPENDENCIES INSTALLED** in
 the section 
-`External Library Handling in compile_MET_all.sh <https://met.readthedocs.io/en/latest/Users_Guide/installation.html#external-library-handling-in-compile-met-all-sh>`_.
+`External Library Handling in compile_MET_all.sh <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/installation.html#external-library-handling-in-compile-met-all-sh>`_.
 
 To force a grid table to use a line break inside of a cell so that the text will
 wrap, insert an empty line between the text to be wrapped.  The raw RST for this table
@@ -1106,7 +1101,7 @@ resulting in the following displayed table:
 Dropdown Menus
 --------------
 
-Dropdown menus, also known as accordions or collapsable lists are used
+Dropdown menus, also known as accordions or collapsible lists are used
 extensively in the :ref:`release-notes` to make the Release Notes easier
 to read.  An example of how to use a dropdown menu is shown below.
 
@@ -1270,7 +1265,7 @@ Example::
 
   run_program.py \-\-help
 
-resulting in the following displayed test:
+resulting in the following displayed text:
 
 run_program.py \-\-help 
 
@@ -1344,7 +1339,7 @@ Documentation for the use cases is found in the following directories:
     one MET *tool/METplus* wrapper.
 
 * *METplus/docs/use_cases/model_applications*
-	
+
   * This directory contains documentation pertaining to use cases that are
     based on model data, and utilize more than one MET *tool/METplus*
     wrapper.
@@ -1404,7 +1399,7 @@ Contributor's Guide:
   * **deprecation.rst** (What to do to deprecate a variable)
   * **documentation.rst** (Describing the documentation process and files)
   * **github_workflow.rst** (A description of how releases are made,
-    how to to obtain source code from the GitHub repository)
+    how to obtain source code from the GitHub repository)
   * **index.rst** (The page that shows all the 'chapters/sections'
     of the Contributor's Guide)
   * **testing.rst** (A description of how to set up testing the
@@ -1460,7 +1455,7 @@ Verification Datasets Guide:
 Read the Docs METplus Documentation
 ===================================
 
-The METplus components use `Read the Docs <https://docs.readthedocs.io/>`_ to
+The METplus components use `Read the Docs <https://docs.readthedocs.com/platform/stable/>`_ to
 build and display the documentation. Read the Docs simplifies the
 documentation process by building, versioning, and hosting the documentation.
 
@@ -1479,7 +1474,7 @@ branch is created with the prefix:
     
   * bugfix (e.g. bugfix_1716_develop_perc_thresh)
 
-The documentation of these "versions" are automatically hidden, however, the
+The documentation of these "versions" is automatically hidden, however, the
 documentation can be accessed by directly modifying the URL. For example, to
 view "feature_836_rtd_doc" for the METplus repository the URL would be:
 
@@ -1500,12 +1495,12 @@ branch and a bugfix branch when the branch is deleted.
 Documentation for each METplus component can be found at the links below:
 
 * `METplus <https://metplus.readthedocs.io/>`_
-* `MET <https://met.readthedocs.io/>`_  
-* `METcalcpy <https://metcalcpy.readthedocs.io/>`_
-* `METdataio <https://metdataio.readthedocs.io/>`_
-* `METexpress <https://metexpress.readthedocs.io/>`_
-* `METplotpy <https://metplotpy.readthedocs.io/>`_
-* `METviewer <https://metviewer.readthedocs.io/>`_
+* `MET <https://metplus.readthedocs.io/projects/met/en/latest/>`_  
+* `METcalcpy <https://metplus.readthedocs.io/projects/metcalcpy/en/latest/>`_
+* `METdataio <https://metplus.readthedocs.io/projects/metdataio/en/latest/>`_
+* `METexpress <https://metplus.readthedocs.io/projects/metexpress/en/latest//>`_
+* `METplotpy <https://metplus.readthedocs.io/projects/metplotpy/en/latest/>`_
+* `METviewer <https://metplus.readthedocs.io/projects/metviewer/en/latest/>`_
 
 
 Building Sphinx Documentation Manually
@@ -1545,7 +1540,7 @@ As the admin user, run the following commands:
 
 As the user, run the following commands:
 
-.. code-block::	none
+.. code-block:: none
 
   python3 -m ensurepip --default-pip
   python3 -m pip install sphinx_design sphinx_rtd_theme sphinx-gallery sphinx-copybutton
@@ -1564,14 +1559,14 @@ enter the following:
 
 .. code-block:: none
 
-	./build_docs.py
+        ./build_docs.py
 
 This script does the following:
 
 * Builds the Sphinx documentation
 * Builds the doxygen documentation
 * Removes unwanted text from use case documentation
-* Copies doxygen files into* _build/html* for easy deployment
+* Copies doxygen files into *_build/html* for easy deployment
 * Creates symbolic links under Users_Guide to the directories under
   "generated" to preserve old URL paths
 
@@ -1601,9 +1596,9 @@ do **NOT** need to be modified and should not be modified.
 
 
 For more information about Doxygen, please refer to this
-`Doxygen web page <http://doxygen.nl/>`_.
+`Doxygen web page <https://doxygen.nl/>`_.
 
-`Download and install Doxygen <http://doxygen.nl/download.html>`_
+`Download and install Doxygen <https://doxygen.nl/download.html>`_
 to create this documentation.
 
 **Note**: Doxygen version 1.8.9.1 or higher is required to create the
@@ -1617,10 +1612,10 @@ Create the Doxygen documentation by performing the following:
 * At the command line, enter the following:
 
   .. code-block:: none
-		  
+
        make clean
        make doc
-	  
+
 The first command cleans up any existing documentation, and the second
 generates new documentation based on the current source code.
 

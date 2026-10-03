@@ -29,7 +29,7 @@ GitHub Projects to Manage Development
 =====================================
 
 Software development for official METplus releases is organized into development cycles.
-While the length a development cycle can vary widely, they are nominally 6 weeks long.
+While the length of a development cycle can vary widely, they are nominally 6 weeks long.
 GitHub issues and pull requests assigned to each cycle are either completed during the
 time window for that cycle or reassigned to a future development cycle.
 
@@ -52,8 +52,8 @@ are required to perform the following steps.
 
 1. Create a **New project**.
 
-   - From the `DTCenter GitHub Projects <https://github.com/orgs/dtcenter/projects>`_
-     page, select the **New project** button.
+   - From the `DTCenter GitHub Projects page <https://github.com/orgs/dtcenter/projects?query=is%3Aopen>`_,
+     select the **New project** button.
 
    - In the **Create Project** popup window, select the
      **Project templates: From your organization** option on the left side,
@@ -73,7 +73,7 @@ are required to perform the following steps.
         for multiple repositories, such as METplus-Analysis, should list the target version number for
         each repository.
 
-      - Scroll down to the **Danger zone** and change **Visibilty** from its default value of **Private**
+      - Scroll down to the **Danger zone** and change **Visibility** from its default value of **Private**
         to **Public**.
 
       - Scroll up and click on the green **Save changes** button.
@@ -185,7 +185,7 @@ required to perform the following steps.
       - README: List the X.Y version number for each METplus component contained within
         the coordinated release.
 
-      - Scroll down to the **Danger zone** and change **Visibilty** from its default value
+      - Scroll down to the **Danger zone** and change **Visibility** from its default value
         of **Private** to **Public**.
 
       - Scroll up and click on the green **Save changes** button.
@@ -249,7 +249,7 @@ categories:
     requested the work.
 
   - **required** labels are colored pink and indicate whether the work is actually
-    required for the development cycle and/or official release to which is has been
+    required for the development cycle and/or official release to which it has been
     assigned.
 
   - **type** labels are colored tan and differentiate between, for example, bugfixes,
@@ -361,7 +361,7 @@ statement. The options are summarized below:
    * - :code:`--assign "NEW"`
      - Add label NEW to every *open* issue and pull request.
    * - :code:`--assign "OLD=>NEW"`
-     - Add label NEW to every *open* issue and pull request labelled OLD,
+     - Add label NEW to every *open* issue and pull request labeled OLD,
        leaving OLD in place. If NEW does not exist, it is created with the color
        and description of OLD.
    * - :code:`--unassign "NAME"`
@@ -373,7 +373,7 @@ statement. The options are summarized below:
    * - :code:`--rename "OLD=>NEW"`
      - Rename label OLD to NEW, preserving its existing assignments. If label
        NEW already exists, merge OLD into it instead by adding NEW to every open
-       and closed issue and pull request labelled OLD and then deleting label
+       and closed issue and pull request labeled OLD and then deleting label
        OLD.
    * - :code:`--update "NAME"`
      - Update the color and/or description of label NAME in place.
@@ -413,7 +413,7 @@ Sequence of Events - Contributing Code
 The user must set up a GitHub account if one does not already exist.
 Log into the account.  For more information about GitHub accounts, please refer
 to the GitHub Documentation on
-`GitHub accounts <https://help.github.com/en/github/getting-started-with-github/signing-up-for-a-new-github-account>`_.
+`GitHub accounts <https://docs.github.com/en/account-and-profile/how-tos/account-management/creating-an-account-on-github>`_.
 
 
 Workflow Overview
@@ -442,14 +442,14 @@ Find or Create a GitHub Issue
 * Search for an existing issue that describes the contribution.
   If one exists, take note of the issue number.
   If one cannot be found, create a
-  `new Discussion <https://github.com/dtcenter/METplus/discussions/new>`_ on
+  `new Discussion <https://github.com/login?return_to=https%3A%2F%2Fgithub.com%2Fdtcenter%2FMETplus%2Fdiscussions%2Fnew>`_ on
   the METplus GitHub Discussions page to ask if an issue should be created.
 
 * If creating a new issue, select the
-  `"New Issue" <https://github.com/dtcenter/METplus/issues/new/choose>`_ button
+  `"New Issue" <https://github.com/login?return_to=https%3A%2F%2Fgithub.com%2Fdtcenter%2FMETplus%2Fdiscussions%2Fnew%2Fchoose>`_ button
   and review the categories of issues (e.g. Bug report, enhancement request,
   New feature request, New use case, Sub-Issue, Task).  Find an appropriate
-  categories and click on "Get Started" next to the category.
+  category and click on "Get Started" next to the category.
 
   Create a short, but descriptive title. In the 'write' window, follow the
   directions and fill in the template.  Add any additional comments/details.
@@ -460,24 +460,24 @@ Find or Create a GitHub Issue
   option to select a cycle.
 
   .. image:: figure/1Issue-before-created.png
-    :width: 400	     
+    :width: 400
 
   After the issue is created, more options appear under the "Project" section.
 
   .. image:: figure/2Issue-after-created.png
     :width: 400
-	    
+
   Click the "Status" drop down and select "Todo".
 
   .. image:: figure/3Issue-set-status.png
     :width: 400
-	     
+
   Click on "+1 more" then under "Cycle", click "Choose an iteration" and
   select the current development cycle.
 
   .. image:: figure/4Issue-plus-one-set-cycle.png
     :width: 400
-	     
+
   After selecting the appropriate "Cycle", be sure to remove the
   **alert: NEED CYCLE ASSIGNMENT** label, which is added by default.
 
@@ -564,10 +564,10 @@ Set Upstream Remote
 
   .. code-block:: ini
 
-    origin	https://github.com/{github-username}/METplus (fetch)
-    origin	https://github.com/{github-username}/METplus (push)
-    upstream	https://github.com/dtcenter/METplus (fetch)
-    upstream	https://github.com/dtcenter/METplus (push)
+    origin      https://github.com/{github-username}/METplus (fetch)
+    origin      https://github.com/{github-username}/METplus (push)
+    upstream    https://github.com/dtcenter/METplus (fetch)
+    upstream    https://github.com/dtcenter/METplus (push)
 
   where *{github-username}* is the user's GitHub username.
 
@@ -694,7 +694,7 @@ local repository.
 * If the console output includes the text *CONFLICT*, then there are
   conflicts between the two branches that must be resolved manually.
   Refer to the GitHub documentation for help with
-  `Resolving a merge conflict using the command line <https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line>`_.
+  `Resolving a merge conflict using the command line <https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/resolving-a-merge-conflict-using-the-command-line>`_
 
 .. _wo-commit-changes:
 
@@ -904,15 +904,15 @@ Reviewing a Pull Request
        .. figure:: figure/insert_suggestion.png
     
          Click on the icon of a paper with +/- to “Insert a Suggestion”.
-	 The line
+         The line
          will be quoted and the reviewer can enter their suggestion below.
-	 Then, click on
+         Then, click on
          the “Add Single Comment” button, so that the requestor will get an
          email letting them know the reviewer has made a suggested change.
 
     b. Or, a reviewer can edit the file directly on the web by clicking on the
        “...” icon (three dots) in the right hand corner next to the
-       “Viewed” icon and selecting “Edit file”. 	
+       “Viewed” icon and selecting “Edit file”.
 
        .. figure:: figure/how_to_edit_file.png
 
@@ -936,12 +936,12 @@ Reviewing a Pull Request
 
      * **Request changes**: Submit feedback that must be addressed before the
        pull request can be merged.
-	    
+
      .. figure:: figure/review_approve_changes.png
 
          A reviewer should click on: "Review changes", add comments to
-	 the "Write box", and select either  "Comment", "Approve",
-	 or "Request Changes", and then click on "Submit Review".
+         the "Write box", and select either  "Comment", "Approve",
+         or "Request Changes", and then click on "Submit Review".
 
 12. Once the recommended testing is complete and any necessary changes have
     been made, approve the request.

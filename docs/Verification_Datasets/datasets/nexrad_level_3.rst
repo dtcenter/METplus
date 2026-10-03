@@ -6,9 +6,9 @@ NEXRAD Level 3
 Description
   Next-Generation Radar (NEXRAD) Level 3, gridded radial
   
-  https://www.ncdc.noaa.gov/data-access/radar-data/nexrad-products
+  https://www.ncei.noaa.gov/products/radar/next-generation-weather-radar
 
-  Display/conversion: https://www.ncdc.noaa.gov/data-access/radar-data/radar-display-tools
+  Display/conversion: https://www.ncei.noaa.gov/products/weather-climate-toolkit
 
 Sample image
 
@@ -22,17 +22,17 @@ File format
   Binary
 
 Location of data
-  Google Cloud: https://console.cloud.google.com/storage/browser/gcp-public-data-nexrad-l3/
+  `Google Cloud <https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fconsole.cloud.google.com%2Fstorage%2Fbrowser%2Fgcp-public-data-nexrad-l3%2F&dsh=S2014722085%3A1784845336985585&followup=https%3A%2F%2Fconsole.cloud.google.com%2Fstorage%2Fbrowser%2Fgcp-public-data-nexrad-l3%2F&osid=1&passive=1209600&service=cloudconsole&flowName=GlifWebSignIn&flowEntry=ServiceLogin&ifkv=Ac50bxuOrFPbtjTpLhgz0J6aIPHasAswS8WMo0cKVWgN_CH2YIbqBqSbfscjRxUOxPUM2UfhiO2V>`_
   
-  NCEI: https://www.ncdc.noaa.gov/nexradinv/choosesite.jsp
+  `NCEI <https://www.ncdc.noaa.gov/nexradinv/choosesite.jsp>`_
 
 Access restrictions
   None
 
 Spatial resolution, grid, or coverage
-  Radar sites over CONUS, Alaska (7), Hawaii (4), U.S territories
+  Radar sites over CONUS, Alaska (7), Hawaii (4), U.S. territories
 
-  Radial coverage of 0.5 degree azmuthal by 250m range gate resolution out to 230 km for most fields
+  Radial coverage of 0.5 degree azimuthal by 250m range gate resolution out to 230 km for most fields
 
 Temporal resolution
   4.5 - 10 mins depending on Volume Coverage Patterns (VCPs)

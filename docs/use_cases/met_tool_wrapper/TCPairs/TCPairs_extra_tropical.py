@@ -22,7 +22,7 @@ met_tool_wrapper/TCPairs/TCPairs_extra_tropical.conf
 # | **Observation:** Best Track - B Deck
 # |     track_data/201412/b??q201412*.gfso.*
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
+# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to go to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
 # | **Data Source:** GFS
@@ -85,7 +85,7 @@ met_tool_wrapper/TCPairs/TCPairs_extra_tropical.conf
 #
 #   run_metplus.py -c /path/to/TCPairs_extra_tropical.conf -c /path/to/user_system.conf
 #
-# The following METplus configuration variables must be set correctly to run this example.:
+# The following METplus configuration variables must be set correctly to run this example:
 #
 # * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs).
 # * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions

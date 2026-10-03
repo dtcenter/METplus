@@ -24,7 +24,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 # 
 # This use case uses outgoing longwave radiation (OLR) to compute the OLR based MJO Index (OMI), which is
 # a convective index of the MJO.  OMI is computed for the ERA observations and then displayed on a phase 
-# diagram to evaluate the model reprentation of this important oscillation.  The code for computing OMI 
+# diagram to evaluate the model representation of this important oscillation.  The code for computing OMI 
 # came from Maria Gehne at PSL.
 
 ##############################################################################
@@ -39,7 +39,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 #
 # **Forecast:** None
 #
-# **Observation:** ERA Reanlaysis Outgoing Longwave Radiation, 1979 - 2012
+# **Observation:** ERA Reanalysis Outgoing Longwave Radiation, 1979 - 2012
 #
 # **Climatology:** None
 #
@@ -59,7 +59,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 # ------------------
 #
 # This use case calls UserScript twice, first to create a list of EOF files and then to run
-# the OMI calculation.  In addition, there is one optional pre-processing steps, using
+# the OMI calculation.  In addition, there is one optional pre-processing step, using
 # Regrid-Data-Plane. 
 #
 # This use case requires METcalcpy, METplotpy, and METdataio to run. The METcalcpy scripts accessed include the following:
@@ -86,7 +86,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** 0 hour
 #
-# This use case does not loop, but the UserScript to create and EOF filelist is run once and the OMI driver script is 
+# This use case does not loop, but the UserScript to create an EOF filelist is run once and the OMI driver script is 
 # run once.  The EOF filelist is done separately since the EOF files are needed for each day of the year while the OMI 
 # calculation is on a separate time frame. The optional pre-processing step loops by valid time.  The optional 
 # pre-processing step uses Regrid-Data-Plane to cut the observation grid to only include -20 to 20 latitude.  This 
@@ -95,10 +95,10 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 # PROCESS_LIST = RegridDataPlane(regrid_obs_olr), UserScript(create_eof_filelist), UserScript(script_omi) 
 #
 # Settings for the optional pre-processing step can be found in the regrid_obs_olr section of the configuration. 
-# Data is not provided in the tarball to run this steps, but the configuration is provided for reference on 
+# Data is not provided in the tarball to run this step, but the configuration is provided for reference on 
 # how to set up this step.
 #
-# The Phase diagram plot is created over a different time frame than the calculation, 10-01-2012 to 03-30-2012. 
+# The Phase diagram plot is created over a different time frame than the calculation, 01-01-2012 to 03-30-2012. 
 
 ##############################################################################
 # METplus Configuration
@@ -166,7 +166,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use 
 # case will be found in {OUTPUT_BASE}/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI/plots.  
-# A Phase diagram plots will be generated::
+# A Phase diagram plot will be generated::
 #
 #  * obs_OMI_comp_phase.png
 #

@@ -28,7 +28,7 @@ model_applications/space_weather/GenVxMask_fcstGloTEC_solar_altitude.conf
 # Novel aspects of this use case:
 #   - First example use case to run gen_vx_mask on a space weather model (GloTEC)
 #   - Example of how to run gen_vx_mask on NetCDF input data which do not strictly conform to the
-#     Climate Forecasts (CF) conventions
+#     Climate and Forecast (CF) conventions
 #   - Example of constructing a mask based on the solar altitude angle.
 #   - Changing the mask condition to solar alt <= 0 will mask out the night region.
 #   - Changing the mask condition to solar alt > 0 will mask the day region.
@@ -36,7 +36,7 @@ model_applications/space_weather/GenVxMask_fcstGloTEC_solar_altitude.conf
 # Background: The solar altitude angle is the angle of the sun relative to the Earth's horizon,
 # and is measured in degrees. The altitude is zero at sunrise and sunset, and can reach a
 # maximum of 90 degrees (directly overhead) at noon at latitudes near the equator.
-# [Source: https://sciencing.com/solar-altitude-23364.html]
+# [Source: https://www.sciencing.com:443/solar-altitude-23364/]
 
 ##############################################################################
 # Scientific Objective

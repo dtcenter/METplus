@@ -50,8 +50,8 @@ model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf
 # METplus Components
 # ------------------
 #
-# The observations in the use case contains data mapped into Cartesian Grids with a horizontal grid spacing of 2 km and vertical grid spacing of 0.5 km. Hence the model output needs to be in height (km) (vertical coordinates) instead of pressure levels. Both observation and model output are available with the release. The instructions below tells how the input to the use case was prepared.  
-# The Hurricane Analysis and Forecast System (HAFS) (pressure levels in GRIB2 format) outputs are converted to height level (in NetCDF4 format) using METcalcpy vertical interpolation routine. Under METcalcpy/examples directory user can modify the vertical_interp_hwrf.sh or create a similar file for their own output. The $DATA_DIR is the top level output directory where the pressure level data resides. The --input and --output should point to the input and output file names resp. The --config points to a yaml file. Users should edit the yaml file, if needed. For this use case only zonal wind (u) at 4 (200m, 2000m, 4000m and 6000m) vertical levels are provided. The use case will compare the HAFS 2 km zonal wind (u) data against TDR's merged_zonal_wind at 2km. The user need to run the shell script to get the height level output in NetCDF4 format.    
+# The observations in the use case contain data mapped into Cartesian Grids with a horizontal grid spacing of 2 km and vertical grid spacing of 0.5 km. Hence the model output needs to be in height (km) (vertical coordinates) instead of pressure levels. Both observation and model output are available with the release. The instructions below tell how the input to the use case was prepared.  
+# The Hurricane Analysis and Forecast System (HAFS) (pressure levels in GRIB2 format) outputs are converted to height level (in NetCDF4 format) using METcalcpy vertical interpolation routine. Under METcalcpy/examples directory user can modify the vertical_interp_hwrf.sh or create a similar file for their own output. The $DATA_DIR is the top level output directory where the pressure level data resides. The --input and --output should point to the input and output file names resp. The --config points to a yaml file. Users should edit the yaml file, if needed. For this use case only zonal wind (u) at 4 (200m, 2000m, 4000m and 6000m) vertical levels are provided. The use case will compare the HAFS 2 km zonal wind (u) data against TDR's merged_zonal_wind at 2km. The user needs to run the shell script to get the height level output in NetCDF4 format.    
 # This use case utilizes the METplus python embedding to read the TDR data and compare them to gridded forecast data using GridStat.
 
 
@@ -166,7 +166,7 @@ model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf
 # * grid_stat_HAFS_vs_TDR_000000L_20190829_120000V_fho.txt  
 # * grid_stat_HAFS_vs_TDR_000000L_20190829_120000V_pairs.nc  
 # * grid_stat_HAFS_vs_TDR_000000L_20190829_120000V.stat
-# * The use case is run for 4 lead times valid at 2019081912, so four directories will be generated which contains similar files as above.
+# * The use case is run for 4 lead times valid at 2019082912, so four directories will be generated which contain similar files as above.
 
 ##############################################################################
 # Keywords

@@ -25,7 +25,7 @@ met_tool_wrapper/StatAnalysis/StatAnalysis_python_embedding.conf
 # |     ...met_test/new
 # |         point_stat_120000L_20050807_120000V.stat
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
+# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to go to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 # | **Data Source:** WRF
 # |
@@ -82,9 +82,9 @@ met_tool_wrapper/StatAnalysis/StatAnalysis_python_embedding.conf
 # ----------------
 #
 # This use case calls a Python script to read matched pair lines from an input source.
-# The Python script is stored in the MET repository: /path/to/MET/installation/share/met/python/read_ascii_mpr.py
+# The Python script is stored in the MET repository: /path/to/MET/installation/share/met/python/examples/read_ascii_mpr.py
 #
-# `read_ascii_mpr.py <https://github.com/dtcenter/MET/blob/develop/scripts/python/read_ascii_mpr.py>`_
+# `read_ascii_mpr.py <https://github.com/dtcenter/MET/blob/HEAD/scripts/python/examples/read_ascii_mpr.py>`_
 
 ##############################################################################
 # Running METplus
@@ -96,7 +96,7 @@ met_tool_wrapper/StatAnalysis/StatAnalysis_python_embedding.conf
 #
 #   run_metplus.py -c /path/to/StatAnalysis_python_embedding.conf -c /path/to/user_system.conf
 #
-# The following METplus configuration variables must be set correctly to run this example.:
+# The following METplus configuration variables must be set correctly to run this example:
 #
 # * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs).
 # * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions

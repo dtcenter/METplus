@@ -9,7 +9,7 @@ For rc1 development releases, create a new reference branch for the upcoming off
     this step. Specifically, a DockerHub tag on dtcenter/met-dev that is named
     main_v(X+6).Y must already exist. For example, for METplus 6.2.0-rc1,
     the MET-Dev DockerHub tag for main_v12.2 must be built.
-    See https://hub.docker.com/repository/docker/dtcenter/met-dev/general for
+    See https://hub.docker.com/r/dtcenter/met-dev/tags for
     a list of existing tags.
 
   * Create a branch from the develop branch for the reference branch for the
@@ -53,7 +53,7 @@ For rc1 development releases, create a new reference branch for the upcoming off
     * Pushing this branch to GitHub should trigger the GitHub Actions automation
       that runs all of the use cases and creates Docker data volumes with the output
       data. These data will be used to verify that any bugfixes applied to the
-      main_vX.Y branch does not break any of existing logic.
+      main_vX.Y branch do not break any of the existing logic.
 
   * Monitor GitHub Actions Workflow
 

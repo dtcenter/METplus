@@ -17,7 +17,7 @@ model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf
 # --------------------
 #
 # To provide useful statistical information on the relationship between
-# observation data for aersol optical depth (AOD) to an ensemble forecast.
+# observation data for aerosol optical depth (AOD) to an ensemble forecast.
 # These values can be used to help correct ensemble member deviations from observed values.
 
 ##############################################################################
@@ -130,7 +130,7 @@ model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf
 # verification via array and accompanying attribute dictionary.
 #
 # For more information on the basic requirements to utilize Python Embedding in METplus, 
-# please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_ 
+# please refer to the MET User’s Guide section on `Python embedding <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/appendixF.html>`_ 
 #
 #
 # .. dropdown:: parm/use_cases/model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod/forecast_embedded.py

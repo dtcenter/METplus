@@ -321,7 +321,7 @@ METplus Configuration Glossary
 
 
    OBS_REGRID_DATA_PLANE_VAR<n>_INPUT_FIELD_NAME
-     Specify the (optional) observation input field name that is created by RegridDataPlane. The name corresponds to :term:`OBS_VAR<n>_NAME`. This is used when using Python Embedding as input to the MET tool, because the :term:`OBS_VAR<n>_NAME` defines the python script to call.
+     Specify the (optional) observation input field name that is read by RegridDataPlane. The name corresponds to :term:`OBS_VAR<n>_NAME`. This is used when using Python Embedding as input to the MET tool, because the :term:`OBS_VAR<n>_NAME` defines the python script to call.
 
      | *Used by:* RegridDataPlane
 
@@ -332,7 +332,7 @@ METplus Configuration Glossary
 
 
    OBS_REGRID_DATA_PLANE_VAR<n>_INPUT_LEVEL
-     Specify the (optional) observation input field level that is created by RegridDataPlane. The name corresponds to :term:`OBS_VAR<n>_LEVELS`. This is used when using Python Embedding as input to the MET tool, because the :term:`OBS_VAR<n>_LEVELS` defines the python script to call.
+     Specify the (optional) observation input field level that is read by RegridDataPlane. The name corresponds to :term:`OBS_VAR<n>_LEVELS`. This is used when using Python Embedding as input to the MET tool, because the :term:`OBS_VAR<n>_LEVELS` defines the python script to call.
 
      | *Used by:* RegridDataPlane
 
@@ -442,7 +442,7 @@ METplus Configuration Glossary
      | *Used by:* PyEmbedIngest
 
    PY_EMBED_INGEST_<n>_OUTPUT_GRID
-     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the grid information that RegridDataPlane will use to generate a file that can be read by the MET tools. This can be a file path or a grid definition. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information. See also :term:`PY_EMBED_INGEST_<n>_TYPE`, :term:`PY_EMBED_INGEST_<n>_SCRIPT`, :term:`PY_EMBED_INGEST_<n>_OUTPUT_TEMPLATE`, and :term:`PY_EMBED_INGEST_<n>_OUTPUT_DIR`.
+     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the grid information that RegridDataPlane will use to generate a file that can be read by the MET tools. This can be a file path or a grid definition. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information. See also :term:`PY_EMBED_INGEST_<n>_TYPE`, :term:`PY_EMBED_INGEST_<n>_SCRIPT`, :term:`PY_EMBED_INGEST_<n>_OUTPUT_TEMPLATE`, and :term:`PY_EMBED_INGEST_<n>_OUTPUT_DIR`.
 
      | *Used by:* PyEmbedIngest
 
@@ -457,7 +457,7 @@ METplus Configuration Glossary
      | *Used by:* PyEmbedIngest
 
    PY_EMBED_INGEST_<n>_OUTPUT_DIR
-     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the output directory to write data. See also :term:`PY_EMBED_INGEST_<n>_TYPE`, :term:`PY_EMBED_INGEST_<n>_SCRIPT`, and :term:`PY_EMBED_INGEST_<n>_OUTPUT_GRID`, and :term:`PY_EMBED_INGEST_<n>_OUTPUT_TEMPLATE`.
+     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the output directory to write data. See also :term:`PY_EMBED_INGEST_<n>_TYPE`, :term:`PY_EMBED_INGEST_<n>_SCRIPT`, :term:`PY_EMBED_INGEST_<n>_OUTPUT_GRID`, and :term:`PY_EMBED_INGEST_<n>_OUTPUT_TEMPLATE`.
 
      | *Used by:* PyEmbedIngest
 
@@ -568,57 +568,57 @@ METplus Configuration Glossary
      | *Used by:* SeriesAnalysis
 
    ASCII2NC_TIME_SUMMARY_FLAG
-     Boolean value to turn on/off time summarization. Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration for more information.
+     Boolean value to turn on/off time summarization. Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration for more information.
 
      | *Used by:* ASCII2NC
 
    ASCII2NC_TIME_SUMMARY_RAW_DATA
-     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
+     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
 
      | *Used by:* ASCII2NC
 
    ASCII2NC_TIME_SUMMARY_BEG
-     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
+     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
 
      | *Used by:* ASCII2NC
 
    ASCII2NC_TIME_SUMMARY_END
-     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
+     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
 
      | *Used by:* ASCII2NC
 
    ASCII2NC_TIME_SUMMARY_STEP
-     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
+     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
 
      | *Used by:* ASCII2NC
 
    ASCII2NC_TIME_SUMMARY_WIDTH
-     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
+     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
 
      | *Used by:* ASCII2NC
 
    ASCII2NC_TIME_SUMMARY_GRIB_CODES
-     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
+     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
 
      | *Used by:* ASCII2NC
 
    ASCII2NC_TIME_SUMMARY_VAR_NAMES
-     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
+     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
 
      | *Used by:* ASCII2NC
 
    ASCII2NC_TIME_SUMMARY_TYPES
-     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
+     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
 
      | *Used by:* ASCII2NC
 
    ASCII2NC_TIME_SUMMARY_VALID_FREQ
-     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
+     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
 
      | *Used by:* ASCII2NC
 
    ASCII2NC_TIME_SUMMARY_VALID_THRESH
-     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
+     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
 
      | *Used by:* ASCII2NC
 
@@ -950,12 +950,12 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_REGRID_TO_GRID`.
 
    ENSEMBLE_STAT_REGRID_TO_GRID
-     Used to set the regrid dictionary item 'to_grid' in the MET EnsembleStat config file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Used to set the regrid dictionary item 'to_grid' in the MET EnsembleStat config file. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  EnsembleStat
 
    GRID_STAT_REGRID_TO_GRID
-     Used to set the regrid dictionary item 'to_grid' in the MET GridStat config file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Used to set the regrid dictionary item 'to_grid' in the MET GridStat config file. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  GridStat
 
@@ -965,7 +965,7 @@ METplus Configuration Glossary
      | *Used by:*  Point2Grid
 
    POINT_STAT_REGRID_TO_GRID
-     Used to set the regrid dictionary item 'to_grid' in the MET PointStat config file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Used to set the regrid dictionary item 'to_grid' in the MET PointStat config file. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PointStat
 
@@ -974,17 +974,17 @@ METplus Configuration Glossary
 
 
    MODE_REGRID_TO_GRID
-     Used to set the regrid dictionary item 'to_grid' in the MET MODE config file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Used to set the regrid dictionary item 'to_grid' in the MET MODE config file. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  MODE
 
    MTD_REGRID_TO_GRID
-     Used to set the regrid dictionary item 'to_grid' in the MET MTD config file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Used to set the regrid dictionary item 'to_grid' in the MET MTD config file. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  MTD
 
    SERIES_ANALYSIS_REGRID_TO_GRID
-     Used to set the regrid dictionary item 'to_grid' in the MET SeriesAnalysis config file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Used to set the regrid dictionary item 'to_grid' in the MET SeriesAnalysis config file. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:* SeriesAnalysis
 
@@ -1001,7 +1001,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_MET_OBS_ERR_TABLE` instead.
 
    ENSEMBLE_STAT_N_MEMBERS
-     Expected number of ensemble members found. This should correspond to the number of items in :term:`FCST_ENSEMBLE_STAT_INPUT_TEMPLATE`. If this number differs from the number of files are found for a given run, then ensemble_stat will not run for that time.
+     Expected number of ensemble members found. This should correspond to the number of items in :term:`FCST_ENSEMBLE_STAT_INPUT_TEMPLATE`. If this number differs from the number of files that are found for a given run, then ensemble_stat will not run for that time.
 
      | *Used by:*  EnsembleStat
 
@@ -1019,7 +1019,7 @@ METplus Configuration Glossary
      | *Used by:*  EnsembleStat
 
    ENS_VAR<n>_LEVELS
-     Define the levels for the <n>th ensemble variable to be used in the analysis where <n> is an integer >= 1. The value can be a single item or a comma separated list of items. You can define NetCDF levels, such as (0,*,*), but you will need to surround these values with quotation marks so that the commas in the item are not interpreted as an item delimeter. Some examples:
+     Define the levels for the <n>th ensemble variable to be used in the analysis where <n> is an integer >= 1. The value can be a single item or a comma separated list of items. You can define NetCDF levels, such as (0,*,*), but you will need to surround these values with quotation marks so that the commas in the item are not interpreted as an item delimiter. Some examples:
 
      | ENS_VAR1_LEVELS = A06, P500
      | ENS_VAR2_LEVELS ="(0,*,*)", "(1,*,*)"
@@ -1048,7 +1048,7 @@ METplus Configuration Glossary
      | *Used by:*  EnsembleStat
 
    ENS_VAR<n>_OPTIONS
-     Define the options for the <n>th ensemble variable to be used in the analysis where <n> is an integer >= 1. These addition options will be applied to every name/level/threshold combination for VAR<n>. There can be <n> number of these variables defined in configuration files, simply increment the VAR1 string to match the total number of variables being used, e.g.:
+     Define the options for the <n>th ensemble variable to be used in the analysis where <n> is an integer >= 1. These additional options will be applied to every name/level/threshold combination for VAR<n>. There can be <n> number of these variables defined in configuration files, simply increment the VAR1 string to match the total number of variables being used, e.g.:
 
      | ENS_VAR1_OPTIONS
      | ENS_VAR2_OPTIONS
@@ -1085,7 +1085,7 @@ METplus Configuration Glossary
      | *Used by:*  ExtractTiles
 
    EXTRACT_TILES_VAR_LIST
-     Control what variables the METplus extract_tiles utility runs on. Additional filtering by summary (via the MET tc_stat tool). Please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ (TC-STAT Tools) for all the available options for filtering by summary method in tc-stat. If no additional filtering is required, simply leave the value to :term:`EXTRACT_TILES_FILTER_OPTS` blank/empty in the METplus configuration file.
+     Control what variables the METplus extract_tiles utility runs on. Additional filtering by summary (via the MET tc_stat tool). Please refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ (TC-STAT Tools) for all the available options for filtering by summary method in tc-stat. If no additional filtering is required, simply leave the value to :term:`EXTRACT_TILES_FILTER_OPTS` blank/empty in the METplus configuration file.
 
      | *Used by:*  ExtractTiles
 
@@ -1112,7 +1112,7 @@ METplus Configuration Glossary
      | *Used by:*  EnsembleStat
 
    FCST_ENSEMBLE_STAT_INPUT_DIR
-     Input directory for forecast files to use with the MET tool ensemble_stat. Corresponding variable exist for point and grid observation data called :term:`OBS_ENSEMBLE_STAT_GRID_INPUT_DIR` and :term:`OBS_ENSEMBLE_STAT_POINT_INPUT_DIR`.
+     Input directory for forecast files to use with the MET tool ensemble_stat. Corresponding variables exist for point and grid observation data called :term:`OBS_ENSEMBLE_STAT_GRID_INPUT_DIR` and :term:`OBS_ENSEMBLE_STAT_POINT_INPUT_DIR`.
 
      | *Used by:*  EnsembleStat
 
@@ -1434,7 +1434,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:**
 
    FCST_PCP_COMBINE_METHOD
-     Specify the method to be used with the MET pcp_combine tool processing forecast data.Valid options are ADD, SUM, SUBTRACT, DERIVE, and USER_DEFINED. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_METHOD`.
+     Specify the method to be used with the MET pcp_combine tool processing forecast data. Valid options are ADD, SUM, SUBTRACT, DERIVE, and USER_DEFINED. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_METHOD`.
 
      | *Used by:*  PCPCombine
 
@@ -1468,12 +1468,12 @@ METplus Configuration Glossary
      | *Used by:*  PCPCombine
 
    FCST_PCP_COMBINE_RUN
-     Specify whether to run the MET pcp_combine tool on forecast data or not. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_RUN`.Acceptable values: true/false
+     Specify whether to run the MET pcp_combine tool on forecast data or not. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_RUN`. Acceptable values: true/false
 
      | *Used by:*  PCPCombine
 
    FCST_PCP_COMBINE_STAT_LIST
-     List of statistics to process when using the MET pcp_combine tool on forecast data in derive mode. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_STAT_LIST`.Acceptable values: sum, min, max, range, mean, stdev, vld_count
+     List of statistics to process when using the MET pcp_combine tool on forecast data in derive mode. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_STAT_LIST`. Acceptable values: sum, min, max, range, mean, stdev, vld_count
 
      | *Used by:*  PCPCombine
 
@@ -1536,17 +1536,17 @@ METplus Configuration Glossary
      | *Used by:*  RegridDataPlane
 
    FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE
-     Template used to specify input filenames for forecast data used by the MET regrid_data_plane tool. It not set, METplus will use :term:`FCST_REGRID_DATA_PLANE_TEMPLATE`. A corresponding variable exists for observation data called :term:`OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE`. To utilize Python Embedding as input to the MET tools, set this value to PYTHON_NUMPY or PYTHON_XARRAY.
+     Template used to specify input filenames for forecast data used by the MET regrid_data_plane tool. If not set, METplus will use :term:`FCST_REGRID_DATA_PLANE_TEMPLATE`. A corresponding variable exists for observation data called :term:`OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE`. To utilize Python Embedding as input to the MET tools, set this value to PYTHON_NUMPY or PYTHON_XARRAY.
 
      | *Used by:*  RegridDataPlane
 
    FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE
-     Template used to specify output filenames for forecast data used by the MET regrid_data_plane tool. It not set, METplus will use :term:`FCST_REGRID_DATA_PLANE_TEMPLATE`. A corresponding variable exists for observation data called :term:`OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE`.
+     Template used to specify output filenames for forecast data used by the MET regrid_data_plane tool. If not set, METplus will use :term:`FCST_REGRID_DATA_PLANE_TEMPLATE`. A corresponding variable exists for observation data called :term:`OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE`.
 
      | *Used by:*  RegridDataPlane
 
    FCST_REGRID_DATA_PLANE_TEMPLATE
-     Template used to specify filenames for forecast data used by the MET regrid_data_plane tool. To specify different templates for input and output files , use :term:`FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE` and :term:`FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE`. A corresponding variable exists for observation data called :term:`OBS_REGRID_DATA_PLANE_TEMPLATE`.
+     Template used to specify filenames for forecast data used by the MET regrid_data_plane tool. To specify different templates for input and output files, use :term:`FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE` and :term:`FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE`. A corresponding variable exists for observation data called :term:`OBS_REGRID_DATA_PLANE_TEMPLATE`.
 
      | *Used by:*  RegridDataPlane
 
@@ -1624,7 +1624,7 @@ METplus Configuration Glossary
      | *Used by:*  StatAnalysis
 
    FCST_VAR<n>_LEVELS
-     Define the levels for the <n>th forecast variable to be used in the analysis where <n> is an integer >= 1. The value can be a single item or a comma separated list of items. You can define NetCDF levels, such as (0,*,*), but you will need to surround these values with quotation marks so that the commas in the item are not interpreted as an item delimeter. Some examples:
+     Define the levels for the <n>th forecast variable to be used in the analysis where <n> is an integer >= 1. The value can be a single item or a comma separated list of items. You can define NetCDF levels, such as (0,*,*), but you will need to surround these values with quotation marks so that the commas in the item are not interpreted as an item delimiter. Some examples:
 
      | FCST_VAR1_LEVELS = A06, P500
      | FCST_VAR2_LEVELS ="(0,*,*),(1,*,*)"
@@ -1643,7 +1643,7 @@ METplus Configuration Glossary
      | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
 
    FCST_VAR<n>_NAME
-     Define the name for the <n>th forecast variable to be used in the analysis where <n> is an integer >= 1. If :term:`FCST_VAR<n>_NAME` is set, then :term:`OBS_VAR<n>_NAME` must be set. If the same value applies to both forecast and observation data, use :term:`BOTH_VAR<n>_NAME`. There can be s<n> number of these variables defined in configuration files, simply increment the VAR1 string to match the total number of variables being used, e.g.:
+     Define the name for the <n>th forecast variable to be used in the analysis where <n> is an integer >= 1. If :term:`FCST_VAR<n>_NAME` is set, then :term:`OBS_VAR<n>_NAME` must be set. If the same value applies to both forecast and observation data, use :term:`BOTH_VAR<n>_NAME`. There can be <n> number of these variables defined in configuration files, simply increment the VAR1 string to match the total number of variables being used, e.g.:
 
      | FCST_VAR1_NAME
      | FCST_VAR2_NAME
@@ -1652,12 +1652,12 @@ METplus Configuration Glossary
 
      See :ref:`Field_Info` for more information.
 
-     This value can be set to a call to a python script with arguments to supply data to the MET tools via Python Embedding. Filename template syntax can be used here to specify time information of an input file, i.e. {valid?fmt=%Y%m%d%H}. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information about Python Embedding in the MET tools.
+     This value can be set to a call to a python script with arguments to supply data to the MET tools via Python Embedding. Filename template syntax can be used here to specify time information of an input file, i.e. {valid?fmt=%Y%m%d%H}. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information about Python Embedding in the MET tools.
 
      | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
 
    FCST_VAR<n>_OPTIONS
-     Define the options for the <n>th forecast variable to be used in the analysis where <n> is an integer >= 1. These addition options will be applied to every name/level/threshold combination for VAR<n>. There can be <n> number of these variables defined in configuration files, simply increment the VAR1  string to match the total number of variables being used, e.g.:
+     Define the options for the <n>th forecast variable to be used in the analysis where <n> is an integer >= 1. These additional options will be applied to every name/level/threshold combination for VAR<n>. There can be <n> number of these variables defined in configuration files, simply increment the VAR1  string to match the total number of variables being used, e.g.:
 
      | FCST_VAR1_OPTIONS
      | FCST_VAR2_OPTIONS
@@ -2017,32 +2017,32 @@ METplus Configuration Glossary
      | *Used by:*  GridStat
 
    GRID_STAT_ONCE_PER_FIELD
-     True/False. If True, grid_stat will run once to process all name/level/threshold combinations specified. If False, it will run once for each name/level. Some cases require this to be set to False, for example processing probablistic forecasts or precipitation accumulations.
+     True/False. If True, grid_stat will run once to process all name/level/threshold combinations specified. If False, it will run once for each name/level. Some cases require this to be set to False, for example processing probabilistic forecasts or precipitation accumulations.
 
      | *Used by:*  GridStat
 
    GRID_STAT_NEIGHBORHOOD_WIDTH
-     Sets the neighborhood width used by GridStat. See `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Sets the neighborhood width used by GridStat. See `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  GridStat
 
    GRID_STAT_NEIGHBORHOOD_SHAPE
-     Sets the neighborhood shape used by GridStat. See `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Sets the neighborhood shape used by GridStat. See `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  GridStat
 
    GRID_STAT_NEIGHBORHOOD_COV_THRESH
-     Sets the neighborhood cov_thresh list used by GridStat. See `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Sets the neighborhood cov_thresh list used by GridStat. See `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  GridStat
 
    POINT_STAT_NEIGHBORHOOD_WIDTH
-     Sets the neighborhood width used by PointStat. See `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Sets the neighborhood width used by PointStat. See `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PointStat
 
    POINT_STAT_NEIGHBORHOOD_SHAPE
-     Sets the neighborhood shape used by PointStat. See `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Sets the neighborhood shape used by PointStat. See `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PointStat
 
@@ -2188,7 +2188,7 @@ METplus Configuration Glossary
 
    STAT_ANALYSIS_JOB<n>
      Specify StatAnalysis job arguments to run. Include the full set of job
-     arguments including the -job argument. Multiple jobs can be defined by
+     arguments including the -job argument. Multiple jobs can be defined
      with STAT_ANALYSIS_JOB1, STAT_ANALYSIS_JOB2, etc.
      Filename template tags can be used to insert values from a given run into
      the job arguments. The keywords [dump_row_file] and [out_stat_file] can
@@ -2266,7 +2266,7 @@ METplus Configuration Glossary
      | *Used by:*  All
 
    LEAD_SEQ_GROUP_LABEL
-     Defines the label to apply for each forecast lead group that are created
+     Defines the label to apply for each forecast lead group that is created
      using :term:`LEAD_SEQ` and :term:`LEAD_SEQ_GROUP_SIZE`.
      See :ref:`grouping_forecast_leads` for more information.
 
@@ -2432,7 +2432,7 @@ METplus Configuration Glossary
      | *Used by:*  EnsembleStat, GridStat, PointStat, PCPCombine, TCPairs, GridDiag, TCRMW, PairStat
 
    MODEL_LIST
-     List of the specified the model names.
+     List of the specified model names.
      If this is left unset, then values from :term:`MODEL\<n\>` will be used.
 
      Groups of values can be looped over by setting MODEL_LIST<n> and
@@ -2445,7 +2445,7 @@ METplus Configuration Glossary
         .. warning:: **DEPRECATED:** Please use :term:`MODEL\<n\>`.
 
    MODEL<n>
-     Define the model name for the first model to be used in the analysis. This is the model name listed in the MET .stat files.There can be <n> number of models defined in configuration files, simply increment the "MODEL1" string to match the total number of models being used, e.g.:
+     Define the model name for the first model to be used in the analysis. This is the model name listed in the MET .stat files. There can be <n> number of models defined in configuration files, simply increment the "MODEL1" string to match the total number of models being used, e.g.:
 
      | MODEL1
      | MODEL2
@@ -2461,7 +2461,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`MODEL<n>_OBTYPE` instead.
 
    MODEL<n>_OBTYPE
-     Define the observation name that was used to compare the first model to be. This is the observation name listed in the MET .stat files. There can be <n> number of observation names defined in configuration files, simply increment the "MODEL1" string to match the total number of models being used, e.g.:
+     Define the observation name that was used to verify the first model. This is the observation name listed in the MET .stat files. There can be <n> number of observation names defined in configuration files, simply increment the "MODEL1" string to match the total number of models being used, e.g.:
 
      | MODEL1_OBTYPE
      | MODEL2_OBTYPE
@@ -2582,7 +2582,7 @@ METplus Configuration Glossary
      | *Used by:*  MODE
 
    MODE_OBS_CONV_RADIUS
-     .. warning:: **DEPRECATED:** Please see `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ instead.
+     .. warning:: **DEPRECATED:** Please see `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ instead.
 
    MODE_OBS_CONV_THRESH
      .. warning:: **DEPRECATED:** Please use :term:`OBS_MODE_CONV_THRESH` instead.
@@ -2636,7 +2636,7 @@ METplus Configuration Glossary
      | *Used by:* MTD
 
    MTD_MIN_VOLUME
-     Sets min_volume in the MET MODE-TD config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Sets min_volume in the MET MODE-TD config file. Refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:* MTD
 
@@ -2667,7 +2667,7 @@ METplus Configuration Glossary
      | *Used by:* MTD
 
    NCDUMP
-     Path to thencdump executable.
+     Path to the ncdump executable.
 
      | *Used by:*  PB2NC, PointStat
 
@@ -2711,7 +2711,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:**
 
    FCST_ENSEMBLE_STAT_INPUT_DATATYPE
-     Specify the data type of the input directory for forecast files used with the MET ensemble_stat tool. Currently valid options are NETCDF, GRIB, and GEMPAK. If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF. Similar variables exists for observation grid and point data called :term:`OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE` and :term:`OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE`.
+     Specify the data type of the input directory for forecast files used with the MET ensemble_stat tool. Currently valid options are NETCDF, GRIB, and GEMPAK. If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF. Similar variables exist for observation grid and point data called :term:`OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE` and :term:`OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE`.
 
      | *Used by:*  EnsembleStat
 
@@ -2756,12 +2756,12 @@ METplus Configuration Glossary
      | *Used by:*  EnsembleStat
 
    OBS_FILE_WINDOW_BEGIN
-     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds.This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_GRID_STAT_FILE_WINDOW_BEGIN` is set, the GridStat wrapper will use that value. If :term:`PB2NC_FILE_WINDOW_BEGIN` is not set, then the PB2NC wrapper will use :term:`OBS_FILE_WINDOW_BEGIN`.A corresponding variable exists for forecast data called :term:`FCST_FILE_WINDOW_BEGIN`.
+     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds. This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_GRID_STAT_FILE_WINDOW_BEGIN` is set, the GridStat wrapper will use that value. If :term:`PB2NC_FILE_WINDOW_BEGIN` is not set, then the PB2NC wrapper will use :term:`OBS_FILE_WINDOW_BEGIN`.A corresponding variable exists for forecast data called :term:`FCST_FILE_WINDOW_BEGIN`.
 
      | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PB2NC, PointStat
 
    OBS_FILE_WINDOW_END
-     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds.This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_GRID_STAT_FILE_WINDOW_END` is set, the GridStat wrapper will use that value. If :term:`PB2NC_FILE_WINDOW_END` is not set, then the PB2NC wrapper will use :term:`OBS_FILE_WINDOW_END`. A corresponding variable exists for forecast data called :term:`FCST_FILE_WINDOW_END`.
+     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds. This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_GRID_STAT_FILE_WINDOW_END` is set, the GridStat wrapper will use that value. If :term:`PB2NC_FILE_WINDOW_END` is not set, then the PB2NC wrapper will use :term:`OBS_FILE_WINDOW_END`. A corresponding variable exists for forecast data called :term:`FCST_FILE_WINDOW_END`.
 
      | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PB2NC, PointStat
 
@@ -3183,7 +3183,7 @@ METplus Configuration Glossary
      | *Used by:*  StatAnalysis
 
    OBS_VAR<n>_LEVELS
-     Define the levels for the <n>th observation variable to be used in the analysis where <n> is an integer >= 1. The value can be a single item or a comma separated list of items. You can define NetCDF levels, such as (0,*,*), but you will need to surround these values with quotation marks so that the commas in the item are not interpreted as an item delimeter. Some examples:
+     Define the levels for the <n>th observation variable to be used in the analysis where <n> is an integer >= 1. The value can be a single item or a comma separated list of items. You can define NetCDF levels, such as (0,*,*), but you will need to surround these values with quotation marks so that the commas in the item are not interpreted as an item delimiter. Some examples:
 
      | OBS_VAR1_LEVELS = A06, P500
      | OBS_VAR2_LEVELS = "(0,*,*)", "(1,*,*)"
@@ -3209,12 +3209,12 @@ METplus Configuration Glossary
      | ...
      | OBS_VAR<n>_NAME
 
-     This value can be set to a call to a python script with arguments to supply data to the MET tools via Python Embedding. Filename template syntax can be used here to specify time information of an input file, i.e. {valid?fmt=%Y%m%d%H}. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information about Python Embedding in the MET tools.
+     This value can be set to a call to a python script with arguments to supply data to the MET tools via Python Embedding. Filename template syntax can be used here to specify time information of an input file, i.e. {valid?fmt=%Y%m%d%H}. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information about Python Embedding in the MET tools.
 
      | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
 
    OBS_VAR<n>_OPTIONS
-     Define the options for the <n>th observation variable to be used in the analysis where <n> is an integer >= 1. These addition options will be applied to every name/level/threshold combination for VAR<n>. If OBS_VAR<n>_OPTIONS is not set but :term:`FCST_VAR<n>_OPTIONS` is, the same information will be used for both variables. There can be <n> number of these variables defined in configuration files, simply increment the VAR1 string to match the total number of variables being used, e.g.:
+     Define the options for the <n>th observation variable to be used in the analysis where <n> is an integer >= 1. These additional options will be applied to every name/level/threshold combination for VAR<n>. If OBS_VAR<n>_OPTIONS is not set but :term:`FCST_VAR<n>_OPTIONS` is, the same information will be used for both variables. There can be <n> number of these variables defined in configuration files, simply increment the VAR1 string to match the total number of variables being used, e.g.:
 
      | OBS_VAR1_OPTIONS
      | OBS_VAR2_OPTIONS
@@ -3241,17 +3241,17 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`OBS_WINDOW_BEGIN`.
 
    OBS_WINDOW_BEGIN
-     Passed to the MET config file to determine the range of data within a file that should be used for processing.Units are seconds. This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_POINT_STAT_WINDOW_BEGIN` is set, the PointStat wrapper will use that value. If :term:`PB2NC_OBS_WINDOW_BEGIN` is not set, then the PB2NC wrapper will use :term:`OBS_WINDOW_BEGIN`. A corresponding variable exists for forecast data called :term:`FCST_WINDOW_BEGIN`.
+     Passed to the MET config file to determine the range of data within a file that should be used for processing. Units are seconds. This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_POINT_STAT_WINDOW_BEGIN` is set, the PointStat wrapper will use that value. If :term:`PB2NC_OBS_WINDOW_BEGIN` is not set, then the PB2NC wrapper will use :term:`OBS_WINDOW_BEGIN`. A corresponding variable exists for forecast data called :term:`FCST_WINDOW_BEGIN`.
 
      | *Used by:*  PB2NC, PointStat
 
    OBS_WINDOW_END
-     Passed to the MET config file to determine the range of data within a file that should be used for processing.Units are seconds. This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_POINT_STAT_WINDOW_END` is set, the PointStat wrapper will use that value. If :term:`PB2NC_OBS_WINDOW_END` is not set, then the PB2NC wrapper will use :term:`OBS_WINDOW_END`. A corresponding variable exists for forecast data called :term:`FCST_WINDOW_END`.
+     Passed to the MET config file to determine the range of data within a file that should be used for processing. Units are seconds. This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_POINT_STAT_WINDOW_END` is set, the PointStat wrapper will use that value. If :term:`PB2NC_OBS_WINDOW_END` is not set, then the PB2NC wrapper will use :term:`OBS_WINDOW_END`. A corresponding variable exists for forecast data called :term:`FCST_WINDOW_END`.
 
      | *Used by:*  PB2NC, PointStat
 
    OBTYPE
-     Provide a string to represent the type of observation data used in the analysis. This is the observation time listed in the MET .stat files and is used in setting output filename.
+     Provide a string to represent the type of observation data used in the analysis. This is the observation type listed in the MET .stat files and is used in setting output filename.
 
      | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PointStat
 
@@ -3279,7 +3279,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`EXTRACT_TILES_SKIP_IF_OUTPUT_EXISTS` instead.
 
    PARM_BASE
-     This variable will automatically be set by METplus when it is started. Specifies the top level METplus parameter file directory. You can override this value by setting the environment variable METPLUS_PARM_BASE to another directory containing a copy of the METPlus parameter file directory. If the environment variable is not set, the parm directory corresponding to the calling script is used. It is recommended that this variable is not set by the user. If it is set and is not equivalent to the value determined by METplus, execution will fail.
+     This variable will automatically be set by METplus when it is started. Specifies the top level METplus parameter file directory. You can override this value by setting the environment variable METPLUS_PARM_BASE to another directory containing a copy of the METplus parameter file directory. If the environment variable is not set, the parm directory corresponding to the calling script is used. It is recommended that this variable is not set by the user. If it is set and is not equivalent to the value determined by METplus, execution will fail.
 
      | *Used by:*  All
 
@@ -3335,12 +3335,12 @@ METplus Configuration Glossary
      | *Used by:*  PB2NC
 
    PB2NC_OFFSETS
-     A list of potential offsets (in hours) that can be found in the :term:`PB2NC_INPUT_TEMPLATE`. METplus will check if a file with a given offset exists in the order specified in this list, to be sure to put favored offset values first.
+     A list of potential offsets (in hours) that can be found in the :term:`PB2NC_INPUT_TEMPLATE`. METplus will check if a file with a given offset exists in the order specified in this list, so be sure to put favored offset values first.
 
      | *Used by:*  PB2NC
 
    POINT_STAT_OFFSETS
-     A list of potential offsets (in hours) that can be found in the :term:`OBS_POINT_STAT_INPUT_TEMPLATE` and  :term:`FCST_POINT_STAT_INPUT_TEMPLATE`. METplus will check if a file with a given offset exists in the order specified in this list, to be sure to put favored offset values first.
+     A list of potential offsets (in hours) that can be found in the :term:`OBS_POINT_STAT_INPUT_TEMPLATE` and  :term:`FCST_POINT_STAT_INPUT_TEMPLATE`. METplus will check if a file with a given offset exists in the order specified in this list, so be sure to put favored offset values first.
 
      | *Used by:*  PointStat
 
@@ -3360,22 +3360,22 @@ METplus Configuration Glossary
      | *Used by:*  PB2NC
 
    PB2NC_TIME_SUMMARY_FLAG
-     Specify the time summary flag item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Specify the time summary flag item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PB2NC
 
    PB2NC_TIME_SUMMARY_BEG
-     Specify the time summary beg item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Specify the time summary beg item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PB2NC
 
    PB2NC_TIME_SUMMARY_END
-     Specify the time summary end item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Specify the time summary end item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PB2NC
 
    PB2NC_TIME_SUMMARY_VAR_NAMES
-     Specify the time summary obs_var list item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Specify the time summary obs_var list item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PB2NC
 
@@ -3386,12 +3386,12 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`PB2NC_TIME_SUMMARY_TYPES` instead.
 
    PB2NC_TIME_SUMMARY_TYPES
-     Specify the time summary type list item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Specify the time summary type list item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PB2NC
 
    PB2NC_OBS_WINDOW_BEGIN
-     Passed to the pb2nc MET config file to determine the range of data within a file that should be used for processing.Units are seconds. If the variable is not set, pb2nc will use :term:`OBS_WINDOW_BEGIN`.
+     Passed to the pb2nc MET config file to determine the range of data within a file that should be used for processing. Units are seconds. If the variable is not set, pb2nc will use :term:`OBS_WINDOW_BEGIN`.
 
      | *Used by:*  PB2NC
 
@@ -3487,7 +3487,7 @@ METplus Configuration Glossary
      | *Used by:*  All
 
    INPUT_BASE
-     Provide a path to the top level output directory for METplus.  It is required and must be set correctly to run any of the use cases. This can be the location of sample input data to run use cases found in the METplus repository.  Each of the sample data tarballs attached to the METplus release should be untarred in this directory. If done correctly, this directory should contain a directory named 'met_test' and a directory named 'model_applications.'
+     Provide a path to the top level input directory for METplus.  It is required and must be set correctly to run any of the use cases. This can be the location of sample input data to run use cases found in the METplus repository.  Each of the sample data tarballs attached to the METplus release should be untarred in this directory. If done correctly, this directory should contain a directory named 'met_test' and a directory named 'model_applications.'
 
      | *Used by:*  All
 
@@ -3519,7 +3519,7 @@ METplus Configuration Glossary
      | *Used by:*  Point2Grid
 
    REGRID_DATA_PLANE_METHOD
-     Sets the method used by regrid_data_plane. See `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Sets the method used by regrid_data_plane. See `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  RegridDataPlane
 
@@ -3529,7 +3529,7 @@ METplus Configuration Glossary
      | *Used by:*  RegridDataPlane
 
    REGRID_DATA_PLANE_WIDTH
-     Sets the width used by regrid_data_plane. See `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Sets the width used by regrid_data_plane. See `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  RegridDataPlane
 
@@ -3712,7 +3712,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`MODEL<n>_STAT_ANALYSIS_OUT_STAT_TEMPLATE` instead.
 
    MODEL<n>_STAT_ANALYSIS_OUT_STAT_TEMPLATE
-     Specify the template to use for the stat_analysis out_stat file. A user customized template to use for the out_stat file. If left blank and a out_stat file is requested, a default version will be used.
+     Specify the template to use for the stat_analysis out_stat file. A user customized template to use for the out_stat file. If left blank and an out_stat file is requested, a default version will be used.
 
      | *Used by:*  StatAnalysis
 
@@ -3759,7 +3759,7 @@ METplus Configuration Glossary
      | *Used by:*  TCPairs
 
    TC_PAIRS_BASIN
-     Control what basins are desired for tropical cyclone analysis. Per the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ acceptable basin ID's are:WP = Western Northern PacificIO = Northern Indian OceanSH = Southern HemisphereCP = Central Northern PacificEP = Eastern Northern PacificAL = Northern AtlanticSL = Southern Atlantic
+     Control what basins are desired for tropical cyclone analysis. Per the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ acceptable basin ID's are:WP = Western Northern PacificIO = Northern Indian OceanSH = Southern HemisphereCP = Central Northern PacificEP = Eastern Northern PacificAL = Northern AtlanticSL = Southern Atlantic
 
      | *Used by:*  TCPairs
 
@@ -3780,12 +3780,12 @@ METplus Configuration Glossary
      | *Used by:*  TCPairs
 
    TC_PAIRS_CYCLONE
-     Specify which cyclone numbers to include in the tropical cyclone analysis. Per the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_, this can be any number 01-99 (HH format). Use a space or comma separated list, or leave unset if all cyclones are desired.
+     Specify which cyclone numbers to include in the tropical cyclone analysis. Per the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_, this can be any number 01-99 (HH format). Use a space or comma separated list, or leave unset if all cyclones are desired.
 
      | *Used by:*  TCPairs
 
    TC_PAIRS_DLAND_FILE
-     The file generated by the MET tool tc_dland, containing the gridded representation of the minimum distance to land. Please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information about the tc_dland tool.
+     The file generated by the MET tool tc_dland, containing the gridded representation of the minimum distance to land. Please refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information about the tc_dland tool.
 
      | *Used by:*  TCPairs
 
@@ -3887,7 +3887,7 @@ METplus Configuration Glossary
    TC_STAT_CMD_LINE_JOB
      .. warning:: **DEPRECATED:** Please set :term:`TC_STAT_CONFIG_FILE` to run using a config file and leave it unset to run via the command line.
 
-     Old: Specify expression(s) that will be passed to the MET tc_stat tool via the command line. Only specify if TC_STAT_RUN_VIA=CLI. Please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ chapter for tc-stat for the details on performing job summaries and job filters.
+     Old: Specify expression(s) that will be passed to the MET tc_stat tool via the command line. Only specify if TC_STAT_RUN_VIA=CLI. Please refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ chapter for tc-stat for the details on performing job summaries and job filters.
 
      | *Used by:*  TCStat
 
@@ -3942,7 +3942,7 @@ METplus Configuration Glossary
      | *Used by:*  TCStat
 
    TC_STAT_INIT_EXCLUDE
-     Specify the initialization times to exclude when using the MET tc_stat tool, via a comma separated list e.g.:20141220_18, 20141221_00Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
+     Specify the initialization times to exclude when using the MET tc_stat tool, via a comma separated list e.g.:20141220_18, 20141221_00. Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 
      | *Used by:*  TCStat
 
@@ -3952,22 +3952,22 @@ METplus Configuration Glossary
      | *Used by:*  TCStat
 
    TC_STAT_INIT_INCLUDE
-     Specify the initialization times to include when using the MET tc_stat tool, via a comma separated list e.g.:20141220_00, 20141220_06, 20141220_12Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
+     Specify the initialization times to include when using the MET tc_stat tool, via a comma separated list e.g.:20141220_00, 20141220_06, 20141220_12. Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 
      | *Used by:*  TCStat
 
    TC_STAT_INIT_MASK
-     This corresponds to the INIT_MASK keyword in the MET tc_stat config file. For more information, please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ .
+     This corresponds to the INIT_MASK keyword in the MET tc_stat config file. For more information, please refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ .
 
      | *Used by:*  TCStat
 
    TC_STAT_INIT_STR_NAME
-     This corresponds to the INIT_STR_NAME keyword in the MET tc_stat config file. Please refer to  the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more details.
+     This corresponds to the INIT_STR_NAME keyword in the MET tc_stat config file. Please refer to  the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more details.
 
      | *Used by:*  TCStat
 
    TC_STAT_INIT_STR_VAL
-     This corresponds to the INIT_STR_VAL keyword in the MET tc_stat config file. Please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     This corresponds to the INIT_STR_VAL keyword in the MET tc_stat config file. Please refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  TCStat
 
@@ -4063,7 +4063,7 @@ METplus Configuration Glossary
      | *Used by:*  TCStat
 
    TC_STAT_TRACK_WATCH_WARN
-     Specify which watches and warnings to stratify over when using the MET tc_stat tool. Acceptable values: HUWARN, HUWATCH, TSWARN, TSWATCH, ALLIf left blank (unset), no stratification will be done.
+     Specify which watches and warnings to stratify over when using the MET tc_stat tool. Acceptable values: HUWARN, HUWATCH, TSWARN, TSWATCH, ALL. If left blank (unset), no stratification will be done.
 
      | *Used by:*  TCStat
 
@@ -4083,7 +4083,7 @@ METplus Configuration Glossary
      | *Used by:*  TCStat
 
    TC_STAT_VALID_HOUR
-     This corresponds to the VALID_HOUR keyword in the MET tc_stat config file. For more information, please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_.
+     This corresponds to the VALID_HOUR keyword in the MET tc_stat config file. For more information, please refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_.
 
      | *Used by:*  TCStat
 
@@ -4093,12 +4093,12 @@ METplus Configuration Glossary
      | *Used by:*  TCStat
 
    TC_STAT_VALID_MASK
-     This corresponds to the VALID_MASK in the MET tc_stat config file. Please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     This corresponds to the VALID_MASK in the MET tc_stat config file. Please refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  TCStat
 
    TC_STAT_WATER_ONLY
-     Specify whether to exclude points where the distance to land is <= 0. If set to TRUE, once land is encountered the remainder of the forecast track is not used for the verification, even if the track moves back over water.Acceptable values: true/false
+     Specify whether to exclude points where the distance to land is <= 0. If set to TRUE, once land is encountered the remainder of the forecast track is not used for the verification, even if the track moves back over water. Acceptable values: true/false
 
      | *Used by:*  TCStat
 
@@ -4201,7 +4201,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`FCST_VAR<n>_NAME` and :term:`OBS_VAR<n>_NAME` instead.
 
    VAR<n>_FOURIER_DECOMP
-     Specify if Fourier decomposition is to be considered (True) or not (False). If this is set to True, data stratification will be done for the Fourier decomposition of FCS_VAR<n>_NAME. This should have been previously run in grid_stat_wrapper. The default value is set to False.
+     Specify if Fourier decomposition is to be considered (True) or not (False). If this is set to True, data stratification will be done for the Fourier decomposition of :term:`FCST_VAR<n>_NAME`. This should have been previously run in grid_stat_wrapper. The default value is set to False.
 
      | *Used by:*  StatAnalysis
 
@@ -4217,9 +4217,9 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Specify the vertical location desired when using the MET pb2nc tool.
 
    FCST_PCP_COMBINE_INPUT_ACCUMS
-     Specify what accumulation levels should be used from the forecast data for the analysis. This is a list of input accumulations in the order of preference to use to build the desired accumulation. If an accumulation cannot be used (i.e. it is larger than the remaining accumulation that needs to be built) then the next value in the list is tried. Units are assumed to be hours unless a time identifier such as Y, m, d, H, M, S is specifed at the end of the value, i.e. 30M or 1m.
+     Specify what accumulation levels should be used from the forecast data for the analysis. This is a list of input accumulations in the order of preference to use to build the desired accumulation. If an accumulation cannot be used (i.e. it is larger than the remaining accumulation that needs to be built) then the next value in the list is tried. Units are assumed to be hours unless a time identifier such as Y, m, d, H, M, S is specified at the end of the value, i.e. 30M or 1m.
 
-     If the name and/or level of the accumulation value must be specified for the data, then a list of equal length to this variable must be set for :term:`FCST_PCP_COMBINE_INPUT_NAMES` and :term:`FCST_PCP_COMBINE_INPUT_LEVELS`. See this sections for more information.
+     If the name and/or level of the accumulation value must be specified for the data, then a list of equal length to this variable must be set for :term:`FCST_PCP_COMBINE_INPUT_NAMES` and :term:`FCST_PCP_COMBINE_INPUT_LEVELS`. See these sections for more information.
 
      This variable can be set to {lead} if the accumulation found in a given file corresponds to the forecast lead of the data. If this is the case, :term:`FCST_PCP_COMBINE_BUCKET_INTERVAL` can be used to reset the accumulation at a given interval.
 
@@ -4249,7 +4249,7 @@ METplus Configuration Glossary
      | *Used by:*  PCPCombine
 
    FCST_PCP_COMBINE_INPUT_NAMES
-     Specify which field names correspond to each accumulation specifed in FCST_PCP_COMBINE_INPUT_ACCUMS for the forecast data for the analysis. See :term:`FCST_PCP_COMBINE_INPUT_ACCUMS` for more information. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_INPUT_NAMES`. Examples:
+     Specify which field names correspond to each accumulation specified in FCST_PCP_COMBINE_INPUT_ACCUMS for the forecast data for the analysis. See :term:`FCST_PCP_COMBINE_INPUT_ACCUMS` for more information. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_INPUT_NAMES`. Examples:
 
      | FCST_PCP_COMBINE_INPUT_ACCUMS = 6, 1
      | FCST_PCP_COMBINE_INPUT_NAMES = P06M_NONE, P01M_NONE
@@ -4266,7 +4266,7 @@ METplus Configuration Glossary
      | *Used by:*  PCPCombine
 
    FCST_PCP_COMBINE_INPUT_LEVELS
-     Specify which levels correspond to each accumulation specifed in FCST_PCP_COMBINE_INPUT_ACCUMS for the forecast data for the analysis. See :term:`FCST_PCP_COMBINE_INPUT_ACCUMS` for more information. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_INPUT_LEVELS`. Examples:
+     Specify which levels correspond to each accumulation specified in FCST_PCP_COMBINE_INPUT_ACCUMS for the forecast data for the analysis. See :term:`FCST_PCP_COMBINE_INPUT_ACCUMS` for more information. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_INPUT_LEVELS`. Examples:
 
      | FCST_PCP_COMBINE_INPUT_ACCUMS = 1
      | FCST_PCP_COMBINE_INPUT_NAMES = P01M_NONE
@@ -4282,7 +4282,7 @@ METplus Configuration Glossary
      | *Used by:*  PCPCombine
 
    FCST_PCP_COMBINE_INPUT_OPTIONS
-     Specify optional additional options that correspond to each accumulation specifed in FCST_PCP_COMBINE_INPUT_ACCUMS for the forecast data for the analysis. See :term:`FCST_PCP_COMBINE_INPUT_ACCUMS` for more information. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_INPUT_OPTIONS`. Examples:
+     Specify optional additional options that correspond to each accumulation specified in FCST_PCP_COMBINE_INPUT_ACCUMS for the forecast data for the analysis. See :term:`FCST_PCP_COMBINE_INPUT_ACCUMS` for more information. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_INPUT_OPTIONS`. Examples:
 
      | FCST_PCP_COMBINE_INPUT_ACCUMS = 6, 1
      | FCST_PCP_COMBINE_INPUT_NAMES = P06M_NONE, P01M_NONE
@@ -4349,7 +4349,7 @@ METplus Configuration Glossary
      Filename template of the mask files used by GenVxMask. This can be a list of files or grids separated
      by commas to apply to the input grid. The wrapper will call GenVxMask once for each item in the list, passing
      its output to temporary files until the final command, which will write to the file specified by
-     :term:`GEN_VX_MASK_OUTPUT_TEMPLATE` (and optionally :term:`GEN_VX_MASK_OUTPUT_DIR`. The length of this
+     :term:`GEN_VX_MASK_OUTPUT_TEMPLATE` (and optionally :term:`GEN_VX_MASK_OUTPUT_DIR`). The length of this
      list must be the same length as :term:`GEN_VX_MASK_OPTIONS`. When "-type lat" or "-type lon" is set in
      :term:`GEN_VX_MASK_OPTIONS`, the corresponding mask template is ignored, but must be set to a placeholder
      string. See also :term:`GEN_VX_MASK_INPUT_MASK_DIR`.
@@ -4365,7 +4365,7 @@ METplus Configuration Glossary
 
    GEN_VX_MASK_OUTPUT_DIR
      Directory to write output data generated by GenVxMask. This variable is optional because you can
-     specify the full path to the input files using :term:`GEN_VX_MASK_OUTPUT_TEMPLATE`.
+     specify the full path to the output files using :term:`GEN_VX_MASK_OUTPUT_TEMPLATE`.
 
      | *Used by:* GenVxMask
 
@@ -4400,7 +4400,7 @@ METplus Configuration Glossary
      | *Used by:* GenVxMask
 
    GEN_VX_MASK_FILE_WINDOW_END
-     Used to control the upper bound of the window around the valid time to determine if an GenVxMask input file should
+     Used to control the upper bound of the window around the valid time to determine if a GenVxMask input file should
      be used for processing. Applies to both the input file and the mask file(s).
      Set :term:`GEN_VX_MASK_INPUT_FILE_WINDOW_END` or
      :term:`GEN_VX_MASK_MASK_FILE_WINDOW_END` to set them separately.
@@ -4541,7 +4541,7 @@ METplus Configuration Glossary
      | *Used by:* TCRMW
 
    TC_RMW_OUTPUT_TEMPLATE
-     Filename template of write the output data generated by TCRMW. See also :term:`TC_RMW_OUTPUT_DIR`.
+     Filename template of the output data generated by TCRMW. See also :term:`TC_RMW_OUTPUT_DIR`.
 
      | *Used by:* TCRMW
 
@@ -4626,12 +4626,12 @@ METplus Configuration Glossary
      | *Used by:*  GridDiag
 
    GRID_DIAG_INPUT_TEMPLATE
-     Template used to specify input filenames for the MET tool grid_diag. This can be a comma-separated list. If there are more than one template, the number of fields specified must match the number of templates.
+     Template used to specify input filenames for the MET tool grid_diag. This can be a comma-separated list. If there is more than one template, the number of fields specified must match the number of templates.
 
      | *Used by:*  GridDiag
 
    GRID_DIAG_OUTPUT_DIR
-     Output directory for write files with the MET tool grid_diag.
+     Output directory to write files with the MET tool grid_diag.
 
      | *Used by:*  GridDiag
 
@@ -4695,13 +4695,13 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`SKIP_VALID_TIMES`.
 
    SKIP_VALID_TIMES
-     List of valid times to skip processing. Each value be surrounded by
+     List of valid times to skip processing. Each value must be surrounded by
      quotation marks and must contain a datetime format followed by a list of
      matching times to skip. Multiple items can be defined separated by commas.
      begin_end_incr syntax can be used to define a list as well.
      Values can be set for a specific wrapper by using the appropriate
      wrapper-specific variable, e.g. :term:`GRID_STAT_SKIP_VALID_TIMES`.
-     See also: :term:`INC_VALID_TIMES`, :term:`SKIP_INIT_TIMES` , and
+     See also: :term:`INC_VALID_TIMES`, :term:`SKIP_INIT_TIMES`, and
      :term:`INC_INIT_TIMES`.
 
      Examples:
@@ -6081,32 +6081,32 @@ METplus Configuration Glossary
      | *Used by:*  GridDiag
 
    PB2NC_TIME_SUMMARY_RAW_DATA
-     Specify the time summary raw_data item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Specify the time summary raw_data item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PB2NC
 
    PB2NC_TIME_SUMMARY_STEP
-     Specify the time summary step item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Specify the time summary step item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PB2NC
 
    PB2NC_TIME_SUMMARY_WIDTH
-     Specify the time summary width item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Specify the time summary width item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PB2NC
 
    PB2NC_TIME_SUMMARY_GRIB_CODES
-     Specify the time summary grib_code item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Specify the time summary grib_code item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PB2NC
 
    PB2NC_TIME_SUMMARY_VALID_FREQ
-     Specify the time summary valid_freq item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Specify the time summary valid_freq item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PB2NC
 
    PB2NC_TIME_SUMMARY_VALID_THRESH
-     Specify the time summary valid_thresh item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Specify the time summary valid_thresh item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PN2NC
 
@@ -6146,12 +6146,12 @@ METplus Configuration Glossary
      | *Used by:*  MODE
 
    TC_PAIRS_INIT_BEG
-     Set the initialization begin time for TCpairs.
+     Set the initialization begin time for TCPairs.
 
      | *Used by:*  TCPairs
 
    TC_PAIRS_INIT_END
-     Set the initialization end time for TCpairs.
+     Set the initialization end time for TCPairs.
 
      | *Used by:*  TCPairs
 
@@ -6161,9 +6161,9 @@ METplus Configuration Glossary
      | *Used by:*  TCPairs
 
    TC_PAIRS_VALID_END
-     Set the valid end time for TCpairs.
+     Set the valid end time for TCPairs.
 
-     | *Used by:*  TCpairs
+     | *Used by:*  TCPairs
 
    ENS_ENSEMBLE_STAT_INPUT_DATATYPE
      .. warning:: **DEPRECATED:** Please use :term:`GEN_ENS_PROD_INPUT_DATATYPE` in :ref:`gen_ens_prod_wrapper` instead.
@@ -6178,7 +6178,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_OBS_FILE_TYPE` instead.
 
    MET_DATA_DB_DIR
-     Set this the location of the dtcenter/METdataio repository.
+     Set this to the location of the dtcenter/METdataio repository.
 
      | *Used by:*  METdbLoad
 
@@ -7463,7 +7463,7 @@ METplus Configuration Glossary
      of the file path. Each file list text file will be named after the current
      init/valid/lead values for that run and a label named input<n> where <n>
      is a zero-based index of the template, i.e. a single template will be
-     labelled input0, two templates will be labelled input0 and input1, etc.
+     labeled input0, two templates will be labeled input0 and input1, etc.
      Custom labels can be defined with
      :term:`USER_SCRIPT_INPUT_TEMPLATE_LABELS`. For each template, an
      environment variable named METPLUS_FILELIST_<label> will be set to the
@@ -10195,7 +10195,7 @@ METplus Configuration Glossary
      | *Used by:* TCDiag
 
    TC_DIAG_OUTPUT_TEMPLATE
-     Filename template of write the output data generated by TCDiag. See also :term:`TC_DIAG_OUTPUT_DIR`.
+     Filename template of the output data generated by TCDiag. See also :term:`TC_DIAG_OUTPUT_DIR`.
 
      | *Used by:* TCDiag
 
@@ -10365,7 +10365,7 @@ METplus Configuration Glossary
      | *Used by:* TCDiag
 
    TC_DIAG_COMPUTE_TANGENTIAL_AND_RADIAL_WINDS
-     Specify the value for 'compute_tangential_and_radial_winds' in the MET configuration file for TCDiag                              .
+     Specify the value for 'compute_tangential_and_radial_winds' in the MET configuration file for TCDiag.
 
      | *Used by:* TCDiag
 
@@ -10385,7 +10385,7 @@ METplus Configuration Glossary
      | *Used by:* TCDiag
 
    TC_DIAG_TANGENTIAL_VELOCITY_LONG_FIELD_NAME
-     Specify the value for 'tangential_velocity_long_field_name' in the MET configuration file for TCDiag                              .
+     Specify the value for 'tangential_velocity_long_field_name' in the MET configuration file for TCDiag.
 
      | *Used by:* TCDiag
 
@@ -11372,7 +11372,7 @@ METplus Configuration Glossary
    WAVELET_STAT_ONCE_PER_FIELD
      True/False. If True, wavelet_stat will run once to process all name/level/threshold combinations specified.
      If False, it will run once for each name/level. Some cases require this to be set to False,
-     for example processing probablistic forecasts or precipitation accumulations.
+     for example processing probabilistic forecasts or precipitation accumulations.
 
      | *Used by:*  WaveletStat
 
@@ -13337,7 +13337,7 @@ METplus Configuration Glossary
      A list of potential offsets (in hours) that can be found in the
      :term:`PAIR_STAT_PAIRS_INPUT_TEMPLATE`.
      METplus will check if a file with a given offset exists in the order
-     specified in this list, to be sure to put favored offset values first.
+     specified in this list, so be sure to put favored offset values first.
 
      | *Used by:*  PairStat
 
@@ -14216,7 +14216,7 @@ METplus Configuration Glossary
      | *Used by:* RMWAnalysis
 
    RMW_ANALYSIS_OUTPUT_TEMPLATE
-     Filename template of write the output data generated by RMWAnalysis.
+     Filename template of the output data generated by RMWAnalysis.
      See also :term:`RMW_ANALYSIS_OUTPUT_DIR`.
 
      | *Used by:* RMWAnalysis
@@ -14957,7 +14957,7 @@ METplus Configuration Glossary
      Expected number of ensemble members found.
      This should correspond to the number of items in
      :term:`GEN_ENS_PROD_INPUT_TEMPLATE`.
-     This number should not include the control member is specified with
+     This number should not include the control member if specified with
      :term:`GEN_ENS_PROD_CTRL_INPUT_TEMPLATE`.
      If this number differs from the number of files found for a given run,
      then gen_ens_prod will not run for that time.

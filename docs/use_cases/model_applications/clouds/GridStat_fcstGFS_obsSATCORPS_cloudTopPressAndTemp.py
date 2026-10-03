@@ -36,7 +36,7 @@ model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp.conf
 # **Grid:** GPP 17km masking region
 #
 # **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. 
-# Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
+# Click here to go to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 
 ##############################################################################
@@ -62,7 +62,7 @@ model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp.conf
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** 36
 #
-# Because instance names are used, GridStat will run 2 times for this 1 initalization time. Each of the 
+# Because instance names are used, GridStat will run 2 times for this 1 initialization time. Each of the 
 # instance names correspond to different regridding, neighborhood evaluations, thresholding, output line types, and output
 # prefix names. For the first GridStat instance, high cloud temperature and pressure are verified at 12 and 10 separate thresholds, 
 # respectively. The observation dataset is provided via Python Embedding. Various output line types are requested
@@ -70,7 +70,7 @@ model_applications/clouds/GridStat_fcstGFS_obsSATCORPS_cloudTopPressAndTemp.conf
 # line types are also placed in text files. All of the evaluation takes place within the masked region, read in via a poly line file.
 # For the nbr GridStat instance, the same variables are verified, but the thresholds are expanded to include forecast 
 # and observation percentiles, ranging from 20 to 80. This instance also creates 4 neighborhoods of varying width using
-# a circle definition. The related neighborhood line types are requested as output and a new ouput prefix is used.
+# a circle definition. The related neighborhood line types are requested as output and a new output prefix is used.
 
 ##############################################################################
 # METplus Configuration

@@ -13,13 +13,13 @@ Sample image
    :width: 600
 
 Recommended use
-  "Place observations into a gridded model space for the purpose of starting, or initializing, weather forecasts with observed data” from NOAA NCEI
+  "Place observations into a gridded model space for the purpose of starting, or initializing, weather forecasts with observed data" from NOAA NCEI
 
 File format
   * Grib2
 
 Location of data
-  NCDC/NCEI: https://www.ncdc.noaa.gov/data-access/model-data/model-datasets/global-data-assimilation-system-gdas
+  NCDC/NCEI: https://www.ncei.noaa.gov/products/weather-climate-models/global-data-assimilation
   
   Ice data is in the first two rows in the "Product Types" table. 
 

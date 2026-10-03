@@ -12,7 +12,7 @@ met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf
 # --------------------
 #
 #
-# Provide visualization of cyclone tracks on a global map (PlateCaree projection)
+# Provide visualization of cyclone tracks on a global map (PlateCarree projection)
 
 ##############################################################################
 # Datasets

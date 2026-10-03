@@ -174,7 +174,7 @@ Example::
 
     class NewToolWrapper(RuntimeFreqWrapper)
 
-The text *RuntimeFreqWrapper* in parenthesis makes NewToolWrapper a subclass
+The text *RuntimeFreqWrapper* in parentheses makes NewToolWrapper a subclass
 of RuntimeFreqWrapper.
 
 Find and replace can be used to rename all instances of the wrapper name in
@@ -389,7 +389,7 @@ Basic Use Case Example
 The new wrapper should include a basic use case under the
 *parm/use_cases/met_tool_wrapper* directory to demonstrate how to configure it.
 
-Following the instructions in :ref:`adding-use-cases` and refer to an existing
+Follow the instructions in :ref:`adding-use-cases` and refer to an existing
 use case for a similar wrapper.
 
 Refer to the :ref:`basic_components_of_wrappers` chapter of the Contributor's

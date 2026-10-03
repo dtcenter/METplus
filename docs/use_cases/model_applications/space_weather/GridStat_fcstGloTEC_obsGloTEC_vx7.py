@@ -28,7 +28,7 @@ GridStat_fcstGloTEC_obsGloTEC_vx7.conf
 # Novel aspects of this use case:
 #
 # * This is the first example use case to run grid_stat on a space weather model (GloTEC)
-# * Example of how to run with NetCDF input data which do not strictly conform to the Climate Forecasts (CF) conventions
+# * Example of how to run with NetCDF input data which do not strictly conform to the Climate and Forecast (CF) conventions
 # * Example of using masks covering latitudinal bands of interest to the space weather community: equatorial region, mid-latitude region, and polar region
 # * Example of masking using the values of a quality flag which vary at each time step and grid point
 

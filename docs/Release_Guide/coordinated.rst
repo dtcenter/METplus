@@ -13,7 +13,7 @@ recent bugfix version.
 
 The following instructions assume that all of the official or
 bugfix component releases have already been created. Note, however, that
-some of these steps can be started prior the completion of the
+some of these steps can be started prior to the completion of the
 component releases.
 
 .. include:: release_steps/coordinated/update_dtc_website.rst

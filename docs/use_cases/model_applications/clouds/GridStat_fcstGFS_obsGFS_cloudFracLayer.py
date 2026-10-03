@@ -52,14 +52,14 @@ model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 #
 # This use case calls GenVxMask once, GridStat once, MODE three times, StatAnalysis
 # once, and UserScript twice.  MODE has three entries to facilitate calling MODE
-# for three separate variables without invoking Muli-variate MODE, while GridStat is able
+# for three separate variables without invoking Multi-variate MODE, while GridStat is able
 # to run for three separate variables with only one process list entry.
 # Additionally, METcalcpy, METplotpy, and METdataio are required to run this use case.  
 # The METcalcpy scripts accessed include the following:
 #
 # * metcalcpy/util/read_env_vars_in_config.py
 #
-# The METplopty scrips accessed include the following:
+# The METplotpy scripts accessed include the following:
 #
 # * metplotpy/plots/line/line.py
 #
@@ -84,9 +84,9 @@ model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** 0, 6, 12, 18
 #
-# GenVxMask is run once.  The Grid-Stat, MODE, and Stat-Analysis tools run for each time. 
+# GenVxMask is run once.  The Grid-Stat and MODE tools run for each time, and Stat-Analysis is run once. 
 # This example loops by model initialization time.  It processes one initialization time and 
-# three lead times for a total of 3 valid times, listed below.
+# four lead times for a total of 4 valid times, listed below.
 #
 # | **Valid:** 2024-03-07_00Z
 # | **Forecast lead:** 00
@@ -94,10 +94,10 @@ model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 # | **Valid:** 2024-03-07_06Z
 # | **Forecast lead:** 06
 #
-# | **Init:** 2024-03-07_12Z
+# | **Valid:** 2024-03-07_12Z
 # | **Forecast lead:** 12
 #
-# | **Init:** 2024-03-07_18Z
+# | **Valid:** 2024-03-07_18Z
 # | **Forecast lead:** 18
 #
 # Both UserScripts are each run once.  The first UserScript reformats the GridStat CTS
@@ -166,7 +166,7 @@ model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 #
 # The second Python script is plot_line_stats.py.  This script creates line plots for low
 # and high clouds for GSS, CSI, and Frequency bias with lead time, using the YAML files
-# custom_line_CSI.yaml, custom_line_FBIAS.yaml, and custom_line_GSS.yaml  Input variables to both 
+# custom_line_CSI.yaml, custom_line_FBIAS.yaml, and custom_line_GSS.yaml.  Input variables to both 
 # scripts are set in the [user_env_vars] section of the 
 # GridStat_fcstGFS_obsGFS_cloudFracLayer.conf file.
 #
@@ -214,7 +214,7 @@ model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 #
 # * West_Pacific.nc
 #
-# The grid_stat directory will contain 4 .stat file sand 4 .nc files::
+# The grid_stat directory will contain 4 .stat files and 4 .nc files::
 #
 # * grid_stat_GFS_cloud_000000L_20240307_000000V_pairs.nc
 # * grid_stat_GFS_cloud_000000L_20240307_000000V.stat

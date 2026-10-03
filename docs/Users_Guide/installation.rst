@@ -14,7 +14,7 @@ Supported Architectures
 
 METplus Wrappers was developed on Debian Linux and is supported on this
 platform. Each release listed on the
-`METplus Downloads <https://dtcenter.org/community-code/metplus/download>`_
+`METplus Downloads <https://dtcenter.org/software-tools/metplus/download>`_
 page includes a link to the **Existing Builds and Docker** for that version.
 The METplus team supports the installation of the METplus components on
 several operational and research high performance computing platforms,
@@ -211,7 +211,7 @@ the example use cases, which illustrate how the wrappers work.
   install, i.e. v4.0 directory for the v4.0.0 release.
 
 - Click on the sample data tgz file for the desired use case category or
-  categories run and when prompted, save the file to the directory created
+  categories to run and when prompted, save the file to the directory created
   above.
 
 .. note::
@@ -274,14 +274,14 @@ GFDL Tracker (Optional)
   estimate of the vortex center position (latitude and longitude),
   and track the storm for the duration of the forecast.
 
-- Visit https://dtcenter.org/community-code/gfdl-vortex-tracker for
+- Visit https://dtcenter.org/community-code-legacy-tools for
   more information
 
     - See the manage externals section of this documentation to download
       the GFDL vortex tracker automatically as part of the system.
 
     - To download and install the tracker locally, get
-      http://dtcenter.org/sites/default/files/community-code/gfdl/standalone_gfdl-vortextracker_v3.9a.tar.gz
+      https://dtcenter.org/sites/default/files/community-code/gfdl/standalone_gfdl-vortextracker_v3.9a.tar.gz
       and follow the instructions listed in that archive to build on
       a local system.
 

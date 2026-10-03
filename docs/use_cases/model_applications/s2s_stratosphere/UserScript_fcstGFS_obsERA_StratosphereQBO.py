@@ -148,7 +148,7 @@ model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereQBO.py
 # Variables input to this script are given in the [user_env_vars] section of the configuration
 # file.  As mentioned above, the option exists to compute EOFs inside the script.  To do this, 
 # the COMPUTE_EOF_ZONAL_MERIDIONAL_MEAN variable should be set to true, and an input file list
-# provided by turning on the UserScipt call for [create_eof_filelist].
+# provided by turning on the UserScript call for [create_eof_filelist].
 #
 # .. dropdown:: parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereQBO/stratosphere_qbo_driver.py
 # 

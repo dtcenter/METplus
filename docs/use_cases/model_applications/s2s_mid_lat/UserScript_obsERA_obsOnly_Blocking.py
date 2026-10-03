@@ -25,7 +25,7 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking.py
 # The methodology in Miller & Wang (2019, 2022) first computes the Central Blocking Latitude 
 # (CBL) or storm track.  Allowing for an offset north and south of the storm track, reversals 
 # in geopotential height are then identified as Instantaneously Blocked Longitudes (IBLs).  These 
-# IBLs are grouped when consective longitudes are blocked (GIBLs) and then blocks are identified 
+# IBLs are grouped when consecutive longitudes are blocked (GIBLs) and then blocks are identified 
 # by applying thresholds to ensure the large-scale, quasi-stationary characteristics of blocking 
 # anticyclones are met.
 #
@@ -36,8 +36,8 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking.py
 # came from Douglas Miller.
 #
 #  * Miller, D. E., and Z. Wang, 2019a: Skillful seasonal prediction of Eurasian winter blocking and extreme temperature frequency. Geophys. Res. Lett., 46, 11 530–11 538, https://doi.org/10.1029/2019GL085035.
-#  * Miller, D. E., and Z. Wang, 2022: Northern Hemisphere Winter Blocking: Differing Onset Mechanisms across regions. J. Atmos. Sci., 79, 1291-1309, https://doi.org/10.1175/JAS-D-21-0104.1.
-#  * Masato, G., B. J. Hoskins, and T. J. Woollings, 2013: Winter and summer Northern Hemisphere blocking in CMIP5 models. J. Climate, 26, 7044–7059, https://doi.org/10.1175/JCLI-D-12-00466.1.
+#  * Miller, D. E., and Z. Wang, 2022: Northern Hemisphere Winter Blocking: Differing Onset Mechanisms across regions. J. Atmos. Sci., 79, 1291-1309, `https://doi.org/10.1175/JAS-D-21-0104.1 <https://doi.org/10.1175/JAS-D-21-0104.1>`_.
+#  * Masato, G., B. J. Hoskins, and T. J. Woollings, 2013: Winter and summer Northern Hemisphere blocking in CMIP5 models. J. Climate, 26, 7044–7059, `https://doi.org/10.1175/JCLI-D-12-00466.1 <https://doi.org/10.1175/JCLI-D-12-00466.1>`_.
 #  * Kitano, Y., and T. J. Yamada, 2016: Relationship between atmospheric blocking and cold day extremes in current and RCP8.5 future climate conditions over Japan and the surrounding area. Atmos. Sci. Lett., 17, 616–622, https://doi.org/10.1002/asl.711.
 
 ##############################################################################
@@ -52,7 +52,7 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking.py
 #
 # **Forecast:** None
 #
-# **Observation:** ERA Reanlaysis 500 mb height for DJF 1979 - 2017
+# **Observation:** ERA Reanalysis 500 mb height for DJF 1979 - 2017
 #
 # **Climatology:** None
 #
@@ -81,7 +81,7 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking.py
 #
 # * metcalcpy/contributed/blocking_weather_regime/Blocking_WeatherRegime_util.py
 #
-# The METplopty scrips accessed include the following:
+# The METplotpy scripts accessed include the following:
 #
 # * metplotpy/contributed/blocking_s2s/CBL_plot.py
 #
@@ -105,8 +105,8 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking.py
 # the [user_env_vars] section of the configuration.  More information on the steps and 
 # how the calculation proceeds is given in the User Scripting section below.
 #
-# The four optional pre-processings steps loop by valid time with different timing settings 
-# needed used for the different steps.  These steps are turned off due to data size and processing 
+# The four optional pre-processing steps loop by valid time with different timing settings 
+# needed for the different steps.  These steps are turned off due to data size and processing 
 # time.  The first optional step calls Regrid-Data-Plane to regrid the data to a 1 degree 
 # latitude/longitude grid.  The second calls PCP-Combine to compute daily means of 500 mb height. 
 # The third calls PCP-Combine to compute a 5 day running mean, while the last uses PCP-Combine
@@ -149,7 +149,7 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking.py
 #
 # This use case runs the blocking driver.  The blocking driver runs the user selected steps
 # of the blocking calculation.  These steps are specified in OBS_STEPS in the [user_env_vars]
-# section fo the configuration file in the following format:
+# section of the configuration file in the following format:
 #
 #  | OBS_STEPS = CBL+PLOTCBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
 #
@@ -203,7 +203,7 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking.py
 #  * obs_Block_Freq_DJF.pdf
 # 
 # If the pre-processing steps are turned on, regridded data, daily averaged files, running mean files, 
-# and anomaly files will also be output to Regrid, Daily,Rmean5d, and Anomaly directories in the 
+# and anomaly files will also be output to Regrid, Daily, Rmean5d, and Anomaly directories in the 
 # ERA directory.
 
 ##############################################################################

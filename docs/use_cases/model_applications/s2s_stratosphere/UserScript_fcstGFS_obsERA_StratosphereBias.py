@@ -86,7 +86,7 @@ model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.p
 # This use case does not loop.  The two calls to UserScript are run once.  Series-
 # Analysis is also run once.  The first call to UserScript runs zonal_mean_driver.py.  
 # This script computes zonal and meridional mean data from the directional_means program in 
-# METplotpy.  Then, Series-Analysis is run on the zonal mean output to compute
+# METcalcpy.  Then, Series-Analysis is run on the zonal mean output to compute
 # continuous statistics.  Finally, the second call to UserScript runs bias_plot_driver.py
 # which creates bias plots for temperature and wind.
 #

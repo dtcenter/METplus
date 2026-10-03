@@ -18,7 +18,7 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 # To plot tendencies of temperature, moisture, and wind components averaged over 
 # a time window and spatial domain.  Tendencies are partitioned into physics 
 # parameterizations and dynamics.  Physics parameterizations include schemes like 
-# deep convection, convective gravity wave drag, short wave radiation, plantetary
+# deep convection, convective gravity wave drag, short wave radiation, planetary
 # boundary layer, microphysics, and others.  Non-physics tendencies (or dynamics)
 # are due to horizontal and vertical motion.  The residual (which should be zero)
 # is the difference between the actual change in the state variable over the requested
@@ -62,7 +62,7 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 ##############################################################################
 # External Dependencies 
 # ---------------------
-# You will need to use a versio of Python 3.86 that has the following packages
+# You will need to use a version of Python 3.8.6 that has the following packages
 # installed:
 #
 #  * cartopy (0.20.3 only)
@@ -150,7 +150,7 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #   based on the variable name and specified min and max coordinates.  The resulting .png file is written to the directory where the
 #   *cross_section_vert.py* script was invoked.
 #
-# The following file will be created in the directory from where the use command was issued:
+# The following file will be created in the directory from where the use case command was issued:
 #
 # ugrd_28N-120E-26N-75E.png
 #

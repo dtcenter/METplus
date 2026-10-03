@@ -15,7 +15,7 @@ model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicE
 # Scientific Objective
 # --------------------
 #
-# This use case run TC-Pairs to produce produce matched pairs of forecast model 
+# This use case runs TC-Pairs to produce matched pairs of forecast model 
 # output and an observation dataset. TC-Pairs produces matched pairs for position 
 # errors, as well as wind, sea level pressure, and distance to land values for 
 # each input dataset. Then TC-stat will filter TC-pairs output based on user criteria.

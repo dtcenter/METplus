@@ -15,7 +15,7 @@ model_applications/short_range/MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf
 # Scientific Objective
 # --------------------
 #
-# To provide statistical inforation on regions of low brightness temperatures, 
+# To provide statistical information on regions of low brightness temperatures, 
 # defined by creating objects, in the FV3 ensemble members compared to GOES satellite. 
 # In addition, distance map information is computed for both the model and observation
 # using object based brightness temperatures

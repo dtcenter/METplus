@@ -62,7 +62,7 @@ model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.py
 #
 # * metcalcpy/util/read_env_vars_in_config.py
 #
-# The METplopty scrips accessed include the following:
+# The METplotpy scripts accessed include the following:
 #
 # * metplotpy/plots/performance_diagram/performance_diagram.py
 #
@@ -232,7 +232,7 @@ model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.py
 #
 #  * Hanford_CWA_mask.nc
 #
-# It also contains the relative humidity masks using thresholds of 10% and 15% these are in directories
+# It also contains the relative humidity masks using thresholds of 10% and 15%; these are in directories
 # RH_10 and RH_15.  There is one mask for each time run, with the following format::
 # 
 #  * RH_mask_YYYYMMDDHH_fHHH.nc
@@ -240,8 +240,8 @@ model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.py
 # Where the YYYYMMDDHH is the year, month, day, and hour of the model initialization time, and HHH is the 
 # forecast lead time.  There should be 20 files in both the RH_10 and RH_15 directories.
 #
-# The output from Point-Stat will contain 3 directories, Individual_Variables, RH_10, and RH_16.  Each 
-# of these directories will contain sub-directories labeled with the model initializaiton time in 
+# The output from Point-Stat will contain 3 directories, Individual_Variables, RH_10, and RH_15.  Each 
+# of these directories will contain sub-directories labeled with the model initialization time in 
 # YYYYMMDDHH.  There should be 20 files total output for each Point-Stat directory.  The files have 
 # the following format::
 #
