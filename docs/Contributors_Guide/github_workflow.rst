@@ -29,7 +29,7 @@ GitHub Projects to Manage Development
 =====================================
 
 Software development for official METplus releases is organized into development cycles.
-While the length a development cycle can vary widely, they are nominally 6 weeks long.
+While the length of a development cycle can vary widely, they are nominally 6 weeks long.
 GitHub issues and pull requests assigned to each cycle are either completed during the
 time window for that cycle or reassigned to a future development cycle.
 
@@ -73,7 +73,7 @@ are required to perform the following steps.
         for multiple repositories, such as METplus-Analysis, should list the target version number for
         each repository.
 
-      - Scroll down to the **Danger zone** and change **Visibilty** from its default value of **Private**
+      - Scroll down to the **Danger zone** and change **Visibility** from its default value of **Private**
         to **Public**.
 
       - Scroll up and click on the green **Save changes** button.
@@ -185,7 +185,7 @@ required to perform the following steps.
       - README: List the X.Y version number for each METplus component contained within
         the coordinated release.
 
-      - Scroll down to the **Danger zone** and change **Visibilty** from its default value
+      - Scroll down to the **Danger zone** and change **Visibility** from its default value
         of **Private** to **Public**.
 
       - Scroll up and click on the green **Save changes** button.
@@ -249,7 +249,7 @@ categories:
     requested the work.
 
   - **required** labels are colored pink and indicate whether the work is actually
-    required for the development cycle and/or official release to which is has been
+    required for the development cycle and/or official release to which it has been
     assigned.
 
   - **type** labels are colored tan and differentiate between, for example, bugfixes,
@@ -361,7 +361,7 @@ statement. The options are summarized below:
    * - :code:`--assign "NEW"`
      - Add label NEW to every *open* issue and pull request.
    * - :code:`--assign "OLD=>NEW"`
-     - Add label NEW to every *open* issue and pull request labelled OLD,
+     - Add label NEW to every *open* issue and pull request labeled OLD,
        leaving OLD in place. If NEW does not exist, it is created with the color
        and description of OLD.
    * - :code:`--unassign "NAME"`
@@ -373,7 +373,7 @@ statement. The options are summarized below:
    * - :code:`--rename "OLD=>NEW"`
      - Rename label OLD to NEW, preserving its existing assignments. If label
        NEW already exists, merge OLD into it instead by adding NEW to every open
-       and closed issue and pull request labelled OLD and then deleting label
+       and closed issue and pull request labeled OLD and then deleting label
        OLD.
    * - :code:`--update "NAME"`
      - Update the color and/or description of label NAME in place.
@@ -449,7 +449,7 @@ Find or Create a GitHub Issue
   `"New Issue" <https://github.com/dtcenter/METplus/issues/new/choose>`_ button
   and review the categories of issues (e.g. Bug report, enhancement request,
   New feature request, New use case, Sub-Issue, Task).  Find an appropriate
-  categories and click on "Get Started" next to the category.
+  category and click on "Get Started" next to the category.
 
   Create a short, but descriptive title. In the 'write' window, follow the
   directions and fill in the template.  Add any additional comments/details.

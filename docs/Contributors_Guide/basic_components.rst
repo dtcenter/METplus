@@ -34,7 +34,7 @@ and observation (OBS) data. Subclasses of this wrapper include
 **GridStatWrapper**, **PointStatWrapper**, **EnsembleStatWrapper**,
 **MODEWrapper**, and **MTDWrapper**.
 
-**MTDWrapper** in an exception from the rest of the **CompareGriddeWrapper**
+**MTDWrapper** is an exception from the rest of the **CompareGriddedWrapper**
 subclasses because it typically runs once for each init or valid time and
 reads and processes all forecast leads at once. This wrapper inherits from
 **CompareGriddedWrapper** because it still uses many of its functions.
@@ -105,7 +105,7 @@ previously set by the wrapper and referenced in an old version of the
 wrapped MET config file.
 This list serves as a developer reference of the variables that were
 previously used but are now deprecated. When support for setting these
-variables are eventually removed, then the values in this list should also
+variables is eventually removed, then the values in this list should also
 be removed.
 
 Flags
@@ -156,11 +156,11 @@ wrappers. The wrapper implementations start off by calling the parent's
 version of create_c_dict using super(), then adding additional dictionary
 items that are specific to that wrapper and finally returning the dictionary
 that was created. If possible, all of the calls to the 'get' functions of the
-cMETplusConfig object should be found in the create_c_dict function. This
+METplusConfig object should be found in the create_c_dict function. This
 allows the configuration values to be referenced throughout the wrapper
-without the redundantly referencing the wrapper name (i.e. ASCII2NC_INPUT_DIR
+without redundantly referencing the wrapper name (i.e. ASCII2NC_INPUT_DIR
 can be referenced as INPUT_DIR in ASCII2NC since it already pertains to
-ASCII2NC) It also makes it easier to see which configuration variables are
+ASCII2NC). It also makes it easier to see which configuration variables are
 used in each wrapper.
 
 create_c_dict (ExampleWrapper)::
@@ -343,7 +343,7 @@ This function is called when the wrapper is called.
 find_data/find_model/find_obs functions (in CommandBuilder)
 ===========================================================
 
-These find_* functions use the c_dict directory templates, queries
+These find_* functions use the c_dict directory templates, query
 the file system to find files, and use c_dict dictionary items
 like [FCST/OBS]_FILE_WINDOW_[BEGIN/END], [FCST/OBS]_INPUT_[DIR/TEMPLATE],
 etc.
@@ -354,7 +354,7 @@ within the file window range should be used. Some tools allow multiple
 files to be selected. If a tool does not allow multiple files, the file
 closest to the valid time is returned. If multiple files are the same
 distance from the valid time, the first file that was found is used.
-If a wrapper can be read in multiple files, the c_dict item
+If a wrapper can read in multiple files, the c_dict item
 'ALLOW_MULTIPLE_FILES' should be set to True.
 
 do_string_sub function
@@ -442,7 +442,7 @@ each dictionary variable::
 
 This command will provide guidance for adding support for the distance_map
 dictionary found in the GridStatConfig file. The list of variables found inside
-the distance_map variable follow the dictionary variable name.
+the distance_map variable follows the dictionary variable name.
 
 **PLEASE NOTE** that the information output from this script is intended to
 assist a developer with adding support, but it cannot be assumed that every
@@ -565,7 +565,7 @@ GRID_STAT_CLIMO_CDF_BINS instead.
 
 There are many MET config dictionaries that only contain beg and end to define
 a window. A function in CommandBuilder called add_met_config_window can be
-used to easily set these variable by only supplying the name of the MET
+used to easily set these variables by only supplying the name of the MET
 dictionary variable.
 
 ::

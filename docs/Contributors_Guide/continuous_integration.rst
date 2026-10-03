@@ -132,7 +132,7 @@ specific infrastructure directories do not trigger this workflow.
 A **sonar-project.properties** file within each repository defines the
 configuration of the SonarQube scans for that code base. The SonarQube
 workflows for the Python-based METplus components are all very similar while
-the logic for the repositories with compiled code differ.
+the logic for the repositories with compiled code differs.
 
 The SonarQube workflows for the Python-based components (METplus, METplotpy,
 METcalcpy, and METdataio) run jobs to:
@@ -196,7 +196,7 @@ total number of **Code Smells** in the **Overall Code**. While a pull request
 can add new **Code Smells** that are not easily fixed, the overall number
 should be reduced.
 
-Developers are encouaraged to manually run the SonarQube workflow with the
+Developers are encouraged to manually run the SonarQube workflow with the
 GitHub **workflow_dispatch** option and check the results to confirm the
 quality of their code before submitting a pull request for review. Developers
 are encouraged to describe the SonarQube status of their proposed code changes
@@ -290,7 +290,7 @@ This automatically happens as part of the :ref:`cg-ci-testing-workflow` when
 a push event occurs on a dtcenter/METplus branch.
 This step can be forced by using the **Update Input Test Data** workflow.
 
-This is workflow is typically used when a new use case is being provided by
+This workflow is typically used when a new use case is being provided by
 an external contributor and their pull request is coming from a forked
 repository.
 Only dtcenter/METplus workflows have permission to update the input test data.
@@ -318,7 +318,7 @@ This workflow is triggered by pushes to reference branches (e.g. **develop-ref**
 or **main_vX.Y-ref**). It locates the most recent testing workflow run from the
 corresponding base branch (e.g. **develop** or **main_vX.Y**). For each use case
 group in which differences were flagged, rerun those use cases to generate
-update output files, save that output as the new truth dataset, and push
+updated output files, save that output as the new truth dataset, and push
 the new truth Docker data volume to DockerHub.
 
 .. _cg-ci-create-conda-envs:
@@ -354,7 +354,7 @@ Create Release Docker Images (release-docker-images.yml)
 The METplus components build and push Docker images to DockerHub for each release.
 However, as time passes, those images can grow stale and vulnerabilities can
 accumulate in the packages and libraries they contain. Rebuilding these images
-periodically ensures the lastest patches are applied. This workflow is automatically
+periodically ensures the latest patches are applied. This workflow is automatically
 run on a schedule from the default branch of the METplus repositories to recreate
 Docker images for the currently supported versions of that component.
 By default, the most recent bugfix version of each supported 'vX.Y' release is
@@ -385,7 +385,7 @@ disabled via the Actions tab of the METplus GitHub webpage.
 This workflow is triggered when a release is published on GitHub.
 It uses cURL to trigger a Slack message on the DTC-METplus announcements
 channel that lists information about the release. A Slack bot was created
-through the Slack API and the webhook that generated for the Slack channel
+through the Slack API and the webhook that was generated for the Slack channel
 was saved as a GitHub Secret.
 
 .. _cg-ci-testing-workflow:
@@ -884,7 +884,7 @@ Unit Tests
 
 Unit tests are run via pytest.
 Groups of pytests are run in the 'pytests' job.
-The list of groups that will be run in the automated tests are found in
+The list of groups that will be run in the automated tests is found in
 .github/parm/pytest_groups.txt.
 See :ref:`cg-unit-tests` for more information on pytest groups.
 
@@ -922,14 +922,14 @@ All Use Cases
 All of the existing use cases are listed in **all_use_cases.txt**,
 found in *internal/tests/use_cases*.
 
-The file is organized by use case category. Each category starts
-a line that following the format::
+The file is organized by use case category. Each category starts with
+a line that follows the format::
 
   Category: <category>
 
 where *<category>* is the name of the use case category.
 See :ref:`use_case_categories` for more information. If a use case
-is being added will go into a new category, 
+being added will go into a new category, 
 a new category definition line will have to be added
 to this file and the new use case added under it. Each use case
 in that category will be found on its own line after this line.
@@ -1156,7 +1156,7 @@ Example::
 
 The above example uses the Conda environment
 in *dtcenter/metplus-envs*:**mp_analysis**.vX.Y to run a user script
-where X.Y is the version of METplus when the environment was lasted updated,
+where X.Y is the version of METplus when the environment was last updated,
 e.g. 5.1.
 Note that only one dependency that contains the **_env** suffix can be supplied
 to a given use case.
@@ -1535,7 +1535,7 @@ Before **run_metplus.py** is called to run the use case,
 some other commands are run in the Docker container.
 For example, if another METplus Python component such as
 METcalcpy, METplotpy, or METdataio are required for the use case,
-the **develop** branch of those repositories are obtained the Python code
+the **develop** branch of those repositories is obtained and the Python code
 is installed in the Python (Conda) environment that will be used to
 run the use case.
 

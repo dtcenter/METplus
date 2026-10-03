@@ -280,7 +280,7 @@ followed by indented body elements.
 
 Footnote labels are one of:
 
-  #. one of more digits (i.e. a number),
+  #. one or more digits (i.e. a number),
   #. a single "#" (denoting auto-numbered footnotes),
   #. a "#" followed by a simple reference name, or
   #. a single "*" (denoting auto-symbol footnotes)
@@ -305,7 +305,7 @@ resulting in the following displayed text:
   .. [#NCAR] National Center for Atmospheric Research
   .. [#UCAR] University Center for Atmospheric Research
 
-An example of the usage of footnotes in reStructured text can be seen in the
+An example of the usage of footnotes in reStructuredText can be seen in the
 `METplus docs/index.rst file <https://raw.githubusercontent.com/dtcenter/METplus/develop/docs/index.rst>`_
 and displayed in Read The Docs `here <https://metplus.readthedocs.io/en/develop/index.html>`_.
      
@@ -417,7 +417,7 @@ Literal blocks are usually used for showing command line syntax and are
 typically rendered in a monospaced font. Literal blocks are introduced
 by ending a paragraph with the special marker `::`.
      
-The literal block must be indented and separated by the surrounding text
+The literal block must be indented and separated from the surrounding text
 with a blank line above and below the text.  Example::
 
   Some text::
@@ -1106,7 +1106,7 @@ resulting in the following displayed table:
 Dropdown Menus
 --------------
 
-Dropdown menus, also known as accordions or collapsable lists are used
+Dropdown menus, also known as accordions or collapsible lists are used
 extensively in the :ref:`release-notes` to make the Release Notes easier
 to read.  An example of how to use a dropdown menu is shown below.
 
@@ -1270,7 +1270,7 @@ Example::
 
   run_program.py \-\-help
 
-resulting in the following displayed test:
+resulting in the following displayed text:
 
 run_program.py \-\-help 
 
@@ -1404,7 +1404,7 @@ Contributor's Guide:
   * **deprecation.rst** (What to do to deprecate a variable)
   * **documentation.rst** (Describing the documentation process and files)
   * **github_workflow.rst** (A description of how releases are made,
-    how to to obtain source code from the GitHub repository)
+    how to obtain source code from the GitHub repository)
   * **index.rst** (The page that shows all the 'chapters/sections'
     of the Contributor's Guide)
   * **testing.rst** (A description of how to set up testing the
@@ -1479,7 +1479,7 @@ branch is created with the prefix:
     
   * bugfix (e.g. bugfix_1716_develop_perc_thresh)
 
-The documentation of these "versions" are automatically hidden, however, the
+The documentation of these "versions" is automatically hidden, however, the
 documentation can be accessed by directly modifying the URL. For example, to
 view "feature_836_rtd_doc" for the METplus repository the URL would be:
 
@@ -1571,7 +1571,7 @@ This script does the following:
 * Builds the Sphinx documentation
 * Builds the doxygen documentation
 * Removes unwanted text from use case documentation
-* Copies doxygen files into* _build/html* for easy deployment
+* Copies doxygen files into *_build/html* for easy deployment
 * Creates symbolic links under Users_Guide to the directories under
   "generated" to preserve old URL paths
 
