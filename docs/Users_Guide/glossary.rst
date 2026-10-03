@@ -2461,7 +2461,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`MODEL<n>_OBTYPE` instead.
 
    MODEL<n>_OBTYPE
-     Define the observation name that was used to compare the first model to be. This is the observation name listed in the MET .stat files. There can be <n> number of observation names defined in configuration files, simply increment the "MODEL1" string to match the total number of models being used, e.g.:
+     Define the observation name that was used to verify the first model. This is the observation name listed in the MET .stat files. There can be <n> number of observation names defined in configuration files, simply increment the "MODEL1" string to match the total number of models being used, e.g.:
 
      | MODEL1_OBTYPE
      | MODEL2_OBTYPE
@@ -3487,7 +3487,7 @@ METplus Configuration Glossary
      | *Used by:*  All
 
    INPUT_BASE
-     Provide a path to the top level output directory for METplus.  It is required and must be set correctly to run any of the use cases. This can be the location of sample input data to run use cases found in the METplus repository.  Each of the sample data tarballs attached to the METplus release should be untarred in this directory. If done correctly, this directory should contain a directory named 'met_test' and a directory named 'model_applications.'
+     Provide a path to the top level input directory for METplus.  It is required and must be set correctly to run any of the use cases. This can be the location of sample input data to run use cases found in the METplus repository.  Each of the sample data tarballs attached to the METplus release should be untarred in this directory. If done correctly, this directory should contain a directory named 'met_test' and a directory named 'model_applications.'
 
      | *Used by:*  All
 
@@ -4201,7 +4201,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`FCST_VAR<n>_NAME` and :term:`OBS_VAR<n>_NAME` instead.
 
    VAR<n>_FOURIER_DECOMP
-     Specify if Fourier decomposition is to be considered (True) or not (False). If this is set to True, data stratification will be done for the Fourier decomposition of FCS_VAR<n>_NAME. This should have been previously run in grid_stat_wrapper. The default value is set to False.
+     Specify if Fourier decomposition is to be considered (True) or not (False). If this is set to True, data stratification will be done for the Fourier decomposition of :term:`FCST_VAR<n>_NAME`. This should have been previously run in grid_stat_wrapper. The default value is set to False.
 
      | *Used by:*  StatAnalysis
 
