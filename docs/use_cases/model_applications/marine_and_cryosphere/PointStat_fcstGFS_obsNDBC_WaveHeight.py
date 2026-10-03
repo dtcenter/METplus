@@ -16,7 +16,7 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.co
 # --------------------
 #
 # This use case utilizes the new ASCII2NC method to natively read in NDBC ASCII files, a common source of sea surface data
-# for operational entities. These values are then compared to GFS' new wave height output, which it incorporated from Wave Watch III.
+# for operational entities. These values are then compared to GFS' new wave height output, which it incorporated from WAVEWATCH III.
 
 ##############################################################################
 # Version Added

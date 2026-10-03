@@ -63,8 +63,8 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** 6
 #
-# PointStat kicks off a Python script execution, which reads in the entire directory passed as an arguement. 
-# In the script, the directory's files are included only if they are between the times that are also passed as an arguement.
+# PointStat kicks off a Python script execution, which reads in the entire directory passed as an argument. 
+# In the script, the directory's files are included only if they are between the times that are also passed as an argument.
 # After these points are passed back to PointStat as the point observation dataset, they are compared to gridded forecast data
 # in pre-created masking regions. MCTC and MCTS line types are output, using thresholds of relevant wind speeds.
 # The use case processes the following run time:
@@ -106,7 +106,7 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWin
 # The script needs 5 inputs in the following order: a path to a directory that contains only ASCAT data of the "ascat_YYYYMMDDHHMMSS_*" string, a start time in YYYYMMDDHHMMSS,
 # an end time in the same format, a message type to code the variables as (currently set for SATWND), and
 # a variable name to read in. Currently the script puts the same station ID to each observation, but there is space
-# in the code describing an alternate method that may be improved upon to allow different sattellites to have their own station IDs.
+# in the code describing an alternate method that may be improved upon to allow different satellites to have their own station IDs.
 #
 # .. dropdown:: parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsASCAT_satelliteWinds/read_ASCAT_data.py
 #

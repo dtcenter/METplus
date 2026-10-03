@@ -51,7 +51,7 @@ model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # METplus Components
 # ------------------
 #
-# This use case uses the UserScript wrapper to run a Python script to that
+# This use case uses the UserScript wrapper to run a Python script that
 # converts KML fire perimeter files to the poly line format that can be read by
 # MET. Then it runs GenVxMask to create gridded MET NetCDF files from the poly
 # files. Then it runs GridStat to process the WRF fire forecast files and the
@@ -128,7 +128,7 @@ model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 # This use case calls a Python script to read MMA fire perimeter .kml files and convert them 
 # into a poly line file that can be read by GenVxMask. The script hard codes the filename template 
 # for the .kml files and a valid time format. This valid time format is provided by the METplus configuration file. 
-# The script the sets up a variable for the previous valid time and an output file path. 
+# The script then sets up a variable for the previous valid time and an output file path. 
 # If a .kml file is not found for the current valid time, the script searches for a .kml file 
 # from the previous hours. Once a file is found, the Python script parses the input file to find 
 # the set of coordinates that define the fire perimeter. These coordinates are then written to 

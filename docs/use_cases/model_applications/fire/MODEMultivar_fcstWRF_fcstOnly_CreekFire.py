@@ -15,7 +15,7 @@ model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf
 # Scientific Objective
 # --------------------
 #
-# This use case runs Multivatiate MODE using the red flag criteria for fire weather 
+# This use case runs Multivariate MODE using the red flag criteria for fire weather 
 # (relative humidity less than 10% and wind speed greater than 15 miles per hour or 
 # wind gusts greater than 25 miles per hour, or relative humidity less than 15% and 
 # wind speed greater than 25 miles per hour or wind gusts greater than 35 miles per 
@@ -146,7 +146,7 @@ model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf
 #  * Hanford_CWA_mask.nc
 # 
 # The mv_mode_rh_wind directory will contain 16 output files for each timestep, 8 for relative
-# humidity and 8 for wind.  The files fill have the following format::
+# humidity and 8 for wind.  The files will have the following format::
 #
 #  * mode_Fcst_RH_Z2_Obs_RH_Z2_HRRR_Fire_Creek_rh_wind_HHMMSSL_YYYYMMDD_HHMMSSV_000000A_R1_T1_cts.txt
 #  * mode_Fcst_RH_Z2_Obs_RH_Z2_HRRR_Fire_Creek_rh_wind_HHMMSSL_YYYYMMDD_HHMMSSV_000000A_R1_T1_obj.nc
@@ -168,10 +168,10 @@ model_applications/fire/MODEMultivar_fcstHRRR_fcstOnly_CreekFire.conf
 # Here, HHMMSSL is the hour, minute, and second of the forecast lead time, YYYYMMDD is the year, month
 # and day of the valid time, and HHMMSSV is the hour, minute, and second of the valid time.  R1_T1
 # indicates the first convolution radius and threshold (radius of 3, threshold of <=10% for relative 
-# humidity and >=15 miles per hour for wind speed).  R2_T2 is the second radius and threhsold (radius 
+# humidity and >=15 miles per hour for wind speed).  R2_T2 is the second radius and threshold (radius 
 # of 3, threshold of <=15% for relative humidity and >=25 miles per hour for wind speed).
 #
-# The mv_mode_rh_gust directory also contains 16 output fiels for each timestep, 8 for relative humidity
+# The mv_mode_rh_gust directory also contains 16 output files for each timestep, 8 for relative humidity
 # and 8 for wind gust.  The files have the same format as above, but the thresholds for wind gusts are
 # >=25 miles per hour for R1 and >=35 miles per hour for R2.  These files have the following format::
 #
