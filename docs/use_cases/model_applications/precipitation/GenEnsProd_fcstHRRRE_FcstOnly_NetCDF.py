@@ -2,7 +2,7 @@
 Gen-Ens-Prod: Basic Post-Processing only
 ========================================
 
-model_application/precipitation/GenEnsProd_fcstHRRRE_FcstOnly_NetCDF.conf
+model_applications/precipitation/GenEnsProd_fcstHRRRE_FcstOnly_NetCDF.conf
 
 """
 ##############################################################################

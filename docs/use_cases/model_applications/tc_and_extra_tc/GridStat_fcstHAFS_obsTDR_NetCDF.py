@@ -166,7 +166,7 @@ model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf
 # * grid_stat_HAFS_vs_TDR_000000L_20190829_120000V_fho.txt  
 # * grid_stat_HAFS_vs_TDR_000000L_20190829_120000V_pairs.nc  
 # * grid_stat_HAFS_vs_TDR_000000L_20190829_120000V.stat
-# * The use case is run for 4 lead times valid at 2019081912, so four directories will be generated which contain similar files as above.
+# * The use case is run for 4 lead times valid at 2019082912, so four directories will be generated which contain similar files as above.
 
 ##############################################################################
 # Keywords

@@ -2,7 +2,7 @@
 PCPCombine: SUBTRACT Use Case
 =============================================================================
 
-met_tools_wrapper/PCPCombine/PCPCombine_subtract.conf
+met_tool_wrapper/PCPCombine/PCPCombine_subtract.conf
 
 """
 ##############################################################################

@@ -98,7 +98,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.py
 # Data is not provided in the tarball to run this step, but the configuration is provided for reference on 
 # how to set up this step.
 #
-# The Phase diagram plot is created over a different time frame than the calculation, 10-01-2012 to 03-30-2012. 
+# The Phase diagram plot is created over a different time frame than the calculation, 01-01-2012 to 03-30-2012. 
 
 ##############################################################################
 # METplus Configuration

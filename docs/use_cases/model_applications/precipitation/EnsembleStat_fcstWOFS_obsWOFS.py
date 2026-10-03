@@ -2,7 +2,7 @@
 Ensemble-Stat: WoFS
 ===================
 
-model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
+model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 
 """
 ##############################################################################

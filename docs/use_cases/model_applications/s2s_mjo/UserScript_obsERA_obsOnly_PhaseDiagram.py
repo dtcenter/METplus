@@ -15,9 +15,9 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_PhaseDiagram.py
 # Scientific Objective
 # --------------------
 #
-# Phase diagrams are used to Indices for MJO and QBO.  This use case produces a 
+# Phase diagrams are used to display indices for the MJO and QBO.  This use case produces a 
 # phase diagram using either OLR based MJO Index (OMI) or the Real-time Multivariate 
-# MJO index (RMM)
+# MJO index (RMM).
 
 ##############################################################################
 # Version Added

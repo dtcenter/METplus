@@ -2,7 +2,7 @@
 Point-Stat: Investigating Precipitation Types
 ==============================================
 
-model_application/precipitation/PointStat_fcstMULTI_obsMETAR_PtypeComparisons.conf
+model_applications/precipitation/PointStat_fcstMULTI_obsMETAR_PtypeComparisons.conf
 
 """
 ##############################################################################

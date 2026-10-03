@@ -90,9 +90,9 @@ model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.con
 #
 # **Increment between beginning and end times (VALID_INCREMENT):** 6 hours
 #
-# **Sequence of forecast leads to process (LEAD_SEQ):** 0 - 120 in 6 hour intervals
+# **Sequence of forecast leads to process (LEAD_SEQ):** 6 - 120 in 6 hour intervals
 #
-# DataIngest, PointStat, and StatAnalysis tools are run for each time, whereas StatAnalysis is
+# DataIngest, PB2NC, and PointStat tools are run for each time, whereas StatAnalysis is
 # run once.  This example loops by valid times. It processes 20 lead times for 1 valid
 # time for a total of 20 runs.  All 4 UserScripts are each run once.  The first UserScript reformats
 # the PointStat CNT output while the second reformats the PointStat CTS output so that they can be 
@@ -208,7 +208,7 @@ model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.con
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 # Output for this use case will be found in 
 # {OUTPUT_BASE}/model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.  There will
-# be 6 directories, data_ingest, GDAS, plots, point_stat, reformatted, and StatAnalaysis.  The 
+# be 6 directories, data_ingest, GDAS, plots, point_stat, reformatted, and StatAnalysis.  The 
 # data_ingest directory contains the observation data that has been downloaded
 # and contains 2 subdirectories, GDAS and GFS.  The GDAS directory contains 1 subdirectory, 20250924, 
 # with 2 files:

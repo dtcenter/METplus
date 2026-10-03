@@ -121,7 +121,7 @@ model_applications/tc_and_extra_tc/TCGen_fcstGFS_obsBDECK_2021season.conf
 # Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired::
 #
-#   run_metplus.py /path/to/METplus/parm/model_applications/tc_and_extra_tc/TCGen_fcstGFS_obsBDECK_2021season.conf /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/TCGen_fcstGFS_obsBDECK_2021season.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 
