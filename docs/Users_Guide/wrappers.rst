@@ -5978,7 +5978,7 @@ MTD
 Description
 -----------
 
-Used to configure the MET MODE Time Domain tool mtd.  This tools follows objects through time and can also be used to track objects.
+Used to configure the MET MODE Time Domain tool mtd.  This tool follows objects through time and can also be used to track objects.
 
 METplus Configuration
 ---------------------
@@ -10727,7 +10727,7 @@ calculate filtering criteria.
 Prior to v5.0.0, only the year, month, and day (YYYYMMDD) of the init/valid
 begin and end times were read by the wrapper. The hours, minutes, and seconds
 were ignored to be filtered using FCST_HOUR_LIST and OBS_HOUR_LIST.
-Now the full time information is read and to enable users to process a more
+Now the full time information is read to enable users to process a more
 specific range of time. To preserve the original behavior, end times that
 do not include hours, minutes, or seconds will process up to 23:59:59 on that
 day unless specific hours are defined with FCST_HOUR_LIST or OBS_HOUR_LIST.
@@ -10742,7 +10742,7 @@ Optional MET Configuration File
 The wrapped MET config file specified with :term:`STAT_ANALYSIS_CONFIG_FILE` is
 optional in the StatAnalysis wrapper. Excluding this option will result in a
 call to stat_analysis with the job arguments added via the command line.
-Only 1 job can be defined in no wrapped MET configuration file is used.
+Only 1 job can be defined if no wrapped MET configuration file is used.
 To use a configuration file, set the following in the METplus config file::
 
     STAT_ANALYSIS_CONFIG_FILE = {PARM_BASE}/met_config/STATAnalysisConfig_wrapped
@@ -10814,7 +10814,7 @@ to set the fcst_valid_beg value::
 
 This will set fcst_valid_beg = "20221014_000000"; in the MET config file.
 
-Prior to v5.0.0, settings hour values in [FCST/OBS]_[INIT/VALID]_HOUR_LIST
+Prior to v5.0.0, setting hour values in [FCST/OBS]_[INIT/VALID]_HOUR_LIST
 would result in the corresponding _beg and _end values in the wrapped MET
 config file to be set based on the hours and the [INIT/VALID]_[BEG/END] values.
 
@@ -11517,7 +11517,7 @@ TCDiag
 Description
 -----------
 
-The TC-Diag wrapper encapsulates the behavior of the MET `tc_diag <https://met.readthedocs.io/en/develop/Users_Guide/tc-diag.html>`_ tool. It provides the infrastructure to compute diagnostics from model fields and tracks. It can be configured to run over a single intialization time, all of the initialization times for a given storm, or over many storms. Configuration also allows a user to select which domain(s) of the input model data to use in the diagnostics calculations, set which levels and variables will be used as well as details about the azimuth-range grid used for the calculations, and to control which output files are generated. Future functionality of the tc_diag tool, such as vortex removal, will also be configurable from this wrapper.
+The TC-Diag wrapper encapsulates the behavior of the MET `tc_diag <https://met.readthedocs.io/en/develop/Users_Guide/tc-diag.html>`_ tool. It provides the infrastructure to compute diagnostics from model fields and tracks. It can be configured to run over a single initialization time, all of the initialization times for a given storm, or over many storms. Configuration also allows a user to select which domain(s) of the input model data to use in the diagnostics calculations, set which levels and variables will be used as well as details about the azimuth-range grid used for the calculations, and to control which output files are generated. Future functionality of the tc_diag tool, such as vortex removal, will also be configurable from this wrapper.
 
 METplus Configuration
 ---------------------
@@ -14271,7 +14271,7 @@ Used to generate user-defined commands to run in the process list. Commands
 can be run once, run once for each runtime (init/valid/lead combination) or
 once for init, valid, or lead only. The command to run is specified with the
 :term:`USER_SCRIPT_COMMAND` variable. The command should include a script or
-executable and any desired arguments. The variable support filename template
+executable and any desired arguments. The variable supports filename template
 substitution to send information like the current initialization or forecast
 lead time. See :ref:`Runtime_Freq` for more information on how the value of
 :term:`USER_SCRIPT_RUNTIME_FREQ` can control how the commands are called.

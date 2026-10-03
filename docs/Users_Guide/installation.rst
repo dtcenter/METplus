@@ -211,7 +211,7 @@ the example use cases, which illustrate how the wrappers work.
   install, i.e. v4.0 directory for the v4.0.0 release.
 
 - Click on the sample data tgz file for the desired use case category or
-  categories run and when prompted, save the file to the directory created
+  categories to run and when prompted, save the file to the directory created
   above.
 
 .. note::

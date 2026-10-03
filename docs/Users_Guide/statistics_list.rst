@@ -4,7 +4,7 @@ METplus Statistics & Diagnostics
 
 
 .. Number of characters per line:
-   Statistic Name - no more that 32 characters
+   Statistic Name - no more than 32 characters
    METplus Name - no more than 17 characters
    Statistic Type - no more than 19 characters
    Tools - approx 18 characters?
@@ -1427,7 +1427,7 @@ Diagnostics Database
 
 
 .. Number of characters per line:
-   Statistic Name - no more that 32 characters
+   Statistic Name - no more than 32 characters
    METplus Name - no more than 17 characters
    Statistic Type - no more than 19 characters
    METplus Line Type - currently unlimited (approx 33 characters)
