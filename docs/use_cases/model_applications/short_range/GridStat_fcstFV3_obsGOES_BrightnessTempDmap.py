@@ -15,7 +15,7 @@ model_applications/short_range/GridStat_fcstFV3_obsGOES_BrightnessTempDmap.conf
 # Scientific Objective
 # --------------------
 #
-# To provide statistical inforation on regions of low brightness temperatures,
+# To provide statistical information on regions of low brightness temperatures,
 # defined by creating distance maps on the FV3 ensemble members compared to GOES
 # channel 13 brightness temperature satellite data.
 
@@ -48,7 +48,7 @@ model_applications/short_range/GridStat_fcstFV3_obsGOES_BrightnessTempDmap.conf
 # METplus Components
 # ------------------
 #
-# This use case runs runs grid_stat to compute distance maps using a brightness
+# This use case runs grid_stat to compute distance maps using a brightness
 # temperature less than 235 K for the forecast and observations.
 
 ##############################################################################

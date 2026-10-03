@@ -16,7 +16,7 @@ model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevereP
 # --------------------
 #
 # To evaluate the surrogate severe forecasts at predicting Severe weather
-# using the (12Z - 12Z) practically perfect storm reports an obtain 
+# using the (12Z - 12Z) practically perfect storm reports and obtain 
 # probabilistic output statistics.
 
 ##############################################################################
@@ -49,7 +49,7 @@ model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevereP
 # ------------------
 #
 # This use case runs grid_stat to create probabilistic statistics on 
-# surrogate severe from the HRRR model and Practially Perfect observations 
+# surrogate severe from the HRRR model and Practically Perfect observations 
 # computed from local storm reports.  
 
 ##############################################################################

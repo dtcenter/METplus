@@ -39,7 +39,7 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 #
 # This use case compares the Global Forecast System (GFS) forecast to the GFS analysis for
 # hurricane Dorian. It is based on three user provided python scripts that calculate the diagnostic 
-# integrated vaport transport (IVT) baroclinic potential vorticity (PV), and saturation equivalent potential temperature (SEPT), respectively. 
+# integrated vapor transport (IVT) baroclinic potential vorticity (PV), and saturation equivalent potential temperature (SEPT), respectively. 
 
 ##############################################################################
 # Version Added
@@ -57,16 +57,16 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 # #. Temperature
 # #. v- component of wind
 # #. u- component of wind
-# #. Geoopotential height
+# #. Geopotential height
 # #. Specific Humidity OR Relative Humidity 
 #
 # **Observation:** Automated Tropical Cyclone Forecasting System (ATCF) ADeck and BDeck data
-# and NOAA Global Forecast System (GFS) with the reaquired variables at all levels >= 100 hPa:
+# and NOAA Global Forecast System (GFS) with the required variables at all levels >= 100 hPa:
 #
 # #. Temperature
 # #. v- component of wind
 # #. u- component of wind
-# #. Geoopotential height
+# #. Geopotential height
 # #. Specific Humidity OR Relative Humidity 
 #
 # **Climatology:** None
@@ -105,7 +105,7 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 #
 # This use case first runs PyEmbedIngest to run the user provided python scripts to calculate the
 # desired diagnostics (in this example, IVT, PV and SEPT). PyEmbedIngest runs the RegridDataPlane tool 
-# to write IVT, PV, and SEPTto a MET readable netCDF file. Then TCPairs and ExtractTiles are run to 
+# to write IVT, PV, and SEPT to a MET readable netCDF file. Then TCPairs and ExtractTiles are run to 
 # generate matched tropical cyclone data and regrid them into appropriately-sized tiles
 # along a storm track. The MET tc-stat tool is used to filter the track data and the MET 
 # regrid-dataplane tool is used to regrid the data (GRIB1 or GRIB2 into netCDF). 
@@ -113,7 +113,7 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 # generated for all variable-level-stat combinations from the specified variables, levels, 
 # and requested statistics. If lead grouping is turned on, the final results are aggregated into 
 # forecast hour groupings as specified by the start, end and increment in the METplus configuration 
-# file, as well as labels to identify each forecast hour grouping. If lead grouping is not turned out
+# file, as well as labels to identify each forecast hour grouping. If lead grouping is not turned on
 # the final results will be written out for each requested lead time.
 
 ##############################################################################
@@ -266,7 +266,7 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 #
 #    series_animate_<varname>_<level>_<stat>.gif
 #
-# | The series_FHHH directories contains files that have the following format:
+# | The series_FHHH directories contain files that have the following format:
 # 
 #   ANLY_FILES_FHHH
 #

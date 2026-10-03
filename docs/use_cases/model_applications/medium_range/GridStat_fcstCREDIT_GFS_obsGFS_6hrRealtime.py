@@ -137,7 +137,7 @@ model_applications/medium_range/GridStat_fcstCREDIT_GFS_obsGFS_6hrRealtime.conf
 # User Scripting
 # --------------
 #
-# This user case does not call a user-defined script.
+# This use case does not call a user-defined script.
 
 ##############################################################################
 # Running METplus
@@ -165,7 +165,7 @@ model_applications/medium_range/GridStat_fcstCREDIT_GFS_obsGFS_6hrRealtime.conf
 # statistics, and StatAnalysis which contains the aggregated statistics.  The data_ingest directory 
 # will contain 2 subdirectories, GFS and GFS_analysis, each with the downloaded data. The data inside 
 # the GFS directory is sorted by model initialization time and contains both surface and upper air data.  
-# These files have the format, where II is the model initialzation hours and HHH is the lead time in 
+# These files have the format, where II is the model initialization hours and HHH is the lead time in 
 # hours:
 #
 # * gfs.tIIz.pgrb2.0p25.fHHH 

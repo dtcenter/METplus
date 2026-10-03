@@ -72,7 +72,7 @@ model_applications/short_range/GenEnsProd_fcstHRRR_fcstOnly_SurrogateSevere.conf
 # **Sequence of forecast leads to process (LEAD_SEQ):** 36
 #
 # This workflow loops over the data by process, meaning that each MET tool will run over all times
-# before moving onto the tool. PCPCombine is called first, followed by GenEnsProd,
+# before moving onto the next tool. PCPCombine is called first, followed by GenEnsProd,
 # and then, finally, RegridDataPlane. Data for two dates is available, either 20200205 or 20190518.
 
 ###################################################################################################
@@ -131,7 +131,7 @@ model_applications/short_range/GenEnsProd_fcstHRRR_fcstOnly_SurrogateSevere.conf
 
 # A successful run of this use case will output the following to the screen and logfile::
 #  
-#    INFO: METplus has successfully finished runing.
+#    INFO: METplus has successfully finished running.
 #
 # A successful run will have the following output files in the location defined by {OUTPUT_BASE}, which
 # is located in the metplus_system.conf configuration file located in /path/to/METplus/parm/metplus_config.

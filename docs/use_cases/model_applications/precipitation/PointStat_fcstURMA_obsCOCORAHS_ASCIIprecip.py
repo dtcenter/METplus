@@ -65,13 +65,13 @@ model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
 # **Sequence of forecast leads to process (LEAD_SEQ):** 24H
 #
 # 1 csv file of multiple valid observation times is passed to ASCII2NC via Python embedding, resulting in a netCDF output.
-# 24 forecast files, each composed of 1 hour precipitation accumulation forecasts, is summarized via PCPCombine.
+# 24 forecast files, each composed of 1 hour precipitation accumulation forecasts, are summarized via PCPCombine.
 # The following boundary times are used for the forecast summation times:
 #
 # | **Valid Beg:** 2022-09-14 at 00z
 # | **Valid End:** 2022-09-14 at 23z
 # 
-# The observation data point span the same times as the 24 hour forecast accumulation summation.
+# The observation data points span the same times as the 24 hour forecast accumulation summation.
 # Finally, PointStat is used to compare the two new fields (point data in netCDF and precipitation accumulation over 24 hours).
 # Because the Valid Time used in configuration file is set to one time (2022-09-14 at 23z) and the precipitation accumulation valid time is set to this same time, 
 # the observation window spans across the entire 2022-09-14 24 hour timeframe.

@@ -14,12 +14,12 @@ model_applications/medium_range/GridStat_fcstGEFS_obsCADB_BinaryObsPOE.conf
 ##############################################################################
 # Scientific Objective
 # --------------------
-# Evaluation of a Probability of Exceedence (POE) field presents several difficulties. Some of these include a fitting verification statistic to report on,
+# Evaluation of a Probability of Exceedance (POE) field presents several difficulties. Some of these include a fitting verification statistic to report on,
 # choosing a meaningful percentile field, and more. This use case was the culmination of attempting to verify a POE field for extreme temperature (defined
 # as the 85th percentile) in METplus. In order to provide a streamlined process that didn't require vast reworkings of the MET tools, the observation
 # field was converted to binary: 0s indicating a non-85th percentile temperature was observed, and a 1 indicating the opposite.
 # Those observations are compared to the chosen forecast percentile and the HSS_EC becomes the main statistical focus, as the new hss_ec_value feature
-# allowed the use case to more closely replicate in-house verificaiton that already existed.
+# allowed the use case to more closely replicate in-house verification that already existed.
 # A final note that because the POE forecast file is a non-standard netCDF, Python Embedding was used to extract the desired field
 
 ##############################################################################
