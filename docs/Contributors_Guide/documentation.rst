@@ -753,13 +753,13 @@ Below is an example::
 
   .. figure:: figure/1Issue-before-created.png
 
-   	(Return and tab over). This is the caption for the figure.
+        (Return and tab over). This is the caption for the figure.
 
 resulting in the following displayed text and image:
 
 .. figure:: figure/1Issue-before-created.png
 
-	This is the caption for the figure.
+        This is the caption for the figure.
 
 See 
 `Images and Figures <https://lpn-doc-sphinx-primer-devel.readthedocs.io/concepts/images.html>`_
@@ -1339,7 +1339,7 @@ Documentation for the use cases is found in the following directories:
     one MET *tool/METplus* wrapper.
 
 * *METplus/docs/use_cases/model_applications*
-	
+
   * This directory contains documentation pertaining to use cases that are
     based on model data, and utilize more than one MET *tool/METplus*
     wrapper.
@@ -1540,7 +1540,7 @@ As the admin user, run the following commands:
 
 As the user, run the following commands:
 
-.. code-block::	none
+.. code-block:: none
 
   python3 -m ensurepip --default-pip
   python3 -m pip install sphinx_design sphinx_rtd_theme sphinx-gallery sphinx-copybutton
@@ -1559,7 +1559,7 @@ enter the following:
 
 .. code-block:: none
 
-	./build_docs.py
+        ./build_docs.py
 
 This script does the following:
 
@@ -1612,10 +1612,10 @@ Create the Doxygen documentation by performing the following:
 * At the command line, enter the following:
 
   .. code-block:: none
-		  
+
        make clean
        make doc
-	  
+
 The first command cleans up any existing documentation, and the second
 generates new documentation based on the current source code.
 

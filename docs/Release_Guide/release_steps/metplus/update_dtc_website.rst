@@ -1,5 +1,5 @@
 .. include:: release_steps/common/update_dtc_website.rst
-	
+
 .. |projectName| replace:: METplus Wrappers
 
 .. |downloadURL| replace:: https://dtcenter.org/software-tools/metplus/download

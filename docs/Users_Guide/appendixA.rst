@@ -18,7 +18,7 @@ METplus components, see the documentation links below for the desired
 METplus component. Please note that the documentation for the METplus
 Use Cases lists the required Python packages in the individual Use Cases
 documentation.
-	  
+
   * :ref:`METplus Python Package Requirements <python_package_requirements>`
   * `MET Python Embedding Requirements <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/appendixF.html#compiling-met-for-python-embedding>`_
   * `METcalcpy Python Package Requirements <https://metplus.readthedocs.io/projects/metcalcpy/en/latest/Users_Guide/installation.html#python-requirements>`_

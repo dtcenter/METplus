@@ -5633,7 +5633,7 @@ ${METPLUS_OBS_CENSOR_VAL}
      - MET Config File
    * - :term:`MODE_OBS_CENSOR_VAL`
      - obs.censor_val
-	  
+
 ${METPLUS_OBS_CONV_RADIUS}
 """"""""""""""""""""""""""
 

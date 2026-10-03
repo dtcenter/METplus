@@ -54,12 +54,12 @@ the answers.
   depending on the answer.  Here’s a matrix to help:
 
 .. role:: raw-html(raw)
-   :format: html	  
+   :format: html
 
 .. list-table:: METplus Tools Decision Matrix
   :widths: auto
   :header-rows: 1
-		
+
   * - 
     - Gridded Forecast
     - Point Forecast
@@ -254,7 +254,7 @@ evaluation, such as timing information and the process list. The METplus
 wrappers can be called with each desired combination.
 
 .. code-block:: ini
-		
+
   run_metplus.py forecastA.conf observationA.conf use_case_name.conf
   run_metplus.py forecastA.conf observationB.conf use_case_name.conf
   run_metplus.py forecastB.conf observationA.conf use_case_name.conf

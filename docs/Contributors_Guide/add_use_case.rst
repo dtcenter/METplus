@@ -115,7 +115,7 @@ configuration file name excluding the .conf suffix.
 .. figure:: figure/model_applications_example.png
 
 .. figure:: figure/model_applications_subdir.png
-	    
+
 Use Case Rules
 --------------
 
@@ -1121,7 +1121,7 @@ and the data cannot be further pared down, please take the following steps.
   Change the number in front of the new use case to an 'X', preceded 
   by the ‘#’ character::
 
-	#X::GridStat_fcstRTOFS_obsGHRSST_climWOA_sst::model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf:: icecover_env, py_embed
+        #X::GridStat_fcstRTOFS_obsGHRSST_climWOA_sst::model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf:: icecover_env, py_embed
 
 - In the *.github/parm/use_case_groups.json* file, remove the entry that 
   was added during the :ref:`add_new_category_to_test_runs` 

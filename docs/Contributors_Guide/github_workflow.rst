@@ -460,24 +460,24 @@ Find or Create a GitHub Issue
   option to select a cycle.
 
   .. image:: figure/1Issue-before-created.png
-    :width: 400	     
+    :width: 400
 
   After the issue is created, more options appear under the "Project" section.
 
   .. image:: figure/2Issue-after-created.png
     :width: 400
-	    
+
   Click the "Status" drop down and select "Todo".
 
   .. image:: figure/3Issue-set-status.png
     :width: 400
-	     
+
   Click on "+1 more" then under "Cycle", click "Choose an iteration" and
   select the current development cycle.
 
   .. image:: figure/4Issue-plus-one-set-cycle.png
     :width: 400
-	     
+
   After selecting the appropriate "Cycle", be sure to remove the
   **alert: NEED CYCLE ASSIGNMENT** label, which is added by default.
 
@@ -564,10 +564,10 @@ Set Upstream Remote
 
   .. code-block:: ini
 
-    origin	https://github.com/{github-username}/METplus (fetch)
-    origin	https://github.com/{github-username}/METplus (push)
-    upstream	https://github.com/dtcenter/METplus (fetch)
-    upstream	https://github.com/dtcenter/METplus (push)
+    origin      https://github.com/{github-username}/METplus (fetch)
+    origin      https://github.com/{github-username}/METplus (push)
+    upstream    https://github.com/dtcenter/METplus (fetch)
+    upstream    https://github.com/dtcenter/METplus (push)
 
   where *{github-username}* is the user's GitHub username.
 
@@ -904,15 +904,15 @@ Reviewing a Pull Request
        .. figure:: figure/insert_suggestion.png
     
          Click on the icon of a paper with +/- to “Insert a Suggestion”.
-	 The line
+         The line
          will be quoted and the reviewer can enter their suggestion below.
-	 Then, click on
+         Then, click on
          the “Add Single Comment” button, so that the requestor will get an
          email letting them know the reviewer has made a suggested change.
 
     b. Or, a reviewer can edit the file directly on the web by clicking on the
        “...” icon (three dots) in the right hand corner next to the
-       “Viewed” icon and selecting “Edit file”. 	
+       “Viewed” icon and selecting “Edit file”.
 
        .. figure:: figure/how_to_edit_file.png
 
@@ -936,12 +936,12 @@ Reviewing a Pull Request
 
      * **Request changes**: Submit feedback that must be addressed before the
        pull request can be merged.
-	    
+
      .. figure:: figure/review_approve_changes.png
 
          A reviewer should click on: "Review changes", add comments to
-	 the "Write box", and select either  "Comment", "Approve",
-	 or "Request Changes", and then click on "Submit Review".
+         the "Write box", and select either  "Comment", "Approve",
+         or "Request Changes", and then click on "Submit Review".
 
 12. Once the recommended testing is complete and any necessary changes have
     been made, approve the request.
