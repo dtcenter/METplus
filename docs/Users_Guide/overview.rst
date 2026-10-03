@@ -109,7 +109,7 @@ User Support
 ============
 
 The `METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_
-is a place for questions, answers, and discussion about the Model Evaluation Tools (METplus)
+is a place for questions, answers, and discussion about the METplus
 verification system, which consists of code repositories for
 `METplus <https://github.com/dtcenter/METplus>`_,
 `MET <https://github.com/dtcenter/MET>`_,
