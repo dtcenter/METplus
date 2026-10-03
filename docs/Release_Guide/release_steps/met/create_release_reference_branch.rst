@@ -33,7 +33,7 @@ For rc1 development releases, create a new reference branch for the upcoming off
       'Create Output Docker Data Volumes' should create Docker data volumes for
       each use case category on DockerHub (dtcenter/met-data-output).
       These data will be used to verify that any bugfixes applied to the
-      'main_vX.Y' branch does not break any of existing logic.
+      'main_vX.Y' branch do not break any of the existing logic.
 
 .. dropdown:: If creating a betaN or rc2+ release
 

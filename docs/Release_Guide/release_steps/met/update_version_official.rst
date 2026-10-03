@@ -29,7 +29,7 @@ Update the version number in the code and documentation.
 
     * Test configuration files, searching recursively, in 'internal/test_unit/config'.
 
-  * If necessary, add a new 'data/table_files/met_header_columns_VX.Y.txt' defining the columns names for this version.
+  * If necessary, add a new 'data/table_files/met_header_columns_VX.Y.txt' defining the column names for this version.
 
     * Add that new file name to the list in 'Makefile.am'.
 

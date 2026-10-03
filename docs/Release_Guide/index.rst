@@ -92,7 +92,7 @@ larger group of users the opportunity to test the recently incorporated new
 features, enhancements, and bug fixes.  Beta releases allow for continued
 development and bug fixes before an official release.  There are many
 possible configurations of hardware and software that exist and installation
-of beta releases allow for testing of potential conflicts.
+of beta releases allows for testing of potential conflicts.
 
 Release Candidate (rc)
 ----------------------
