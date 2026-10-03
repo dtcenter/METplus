@@ -15,7 +15,7 @@ model_applications/short_range/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
 # Scientific Objective
 # --------------------
 #
-# To provide statistical inforation on the forecast hail size compared to the 
+# To provide statistical information on the forecast hail size compared to the 
 # observed hail size from MRMS MESH data.  Using objects to verify hail size
 # avoids the "unfair penalty" issue, where a CAM must first generate convection
 # to have any chance of accurately predicting the hail size.  In addition,

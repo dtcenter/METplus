@@ -16,7 +16,7 @@ model_applications/medium_range/PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr
 # --------------------
 # To provide useful statistical information on the relationship between observation data
 # in point format to a gridded forecast. These values can be used to assess the skill 
-# of the prediction. Statistics are store as partial sums to save space and Stat-Analysis
+# of the prediction. Statistics are stored as partial sums to save space and Stat-Analysis
 # must be used to compute Continuous statistics.
 
 ##############################################################################

@@ -18,7 +18,7 @@ model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.con
 # This use case is an example for verification within RAL to illustrate how to 
 # compare two models and also how to download data automatically.  The use case was 
 # originally set up to be run in real-time using the now keyword in VALID_BEG and 
-# VALID_END.  However, a specified date is provided used here for our automated 
+# VALID_END.  However, a specified date is used here for our automated 
 # testing.  The case demonstrates how to run statistics for two models, 
 # NSF NCAR Community Research Earth Digital Intelligence Twin (CREDIT) and GFS, 
 # and how to make plots of continuous statistics (ME, MAE and RMSE) and categorical
@@ -67,7 +67,7 @@ model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.con
 #
 # * metcalcpy/util/read_env_vars_in_config.py
 #
-# The METplopty scrips accessed include the following:
+# The METplotpy scripts accessed include the following:
 #
 # * metplotpy/plots/line/line.py
 #
@@ -96,7 +96,7 @@ model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.con
 # run once.  This example loops by valid times. It processes 20 lead times for 1 valid
 # time for a total of 20 runs.  All 4 UserScripts are each run once.  The first UserScript reformats
 # the PointStat CNT output while the second reformats the PointStat CTS output so that they can be 
-# used for plotting.  The third and fourth UserScript calls creates plots, one for the CNT output
+# used for plotting.  The third and fourth UserScript calls create plots, one for the CNT output
 # and the other for the CTS output.
 
 ##############################################################################
@@ -217,7 +217,7 @@ model_applications/medium_range/PointStat_fcstCREDIT_GFS_obsGDAS_6hrRealtime.con
 # * 20250924_0600.prepbufr.nr
 #
 # The data inside the GFS directory is sorted by model initialization time and contains both surface 
-# and upper air data.  These files have the format, where II is the model initialzation hours and HHH 
+# and upper air data.  These files have the format, where II is the model initialization hours and HHH 
 # is the lead time in hours:
 #
 # * gfs.tIIz.pgrb2.0p25.fHHH 

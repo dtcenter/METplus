@@ -32,7 +32,7 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 #
 # **Forecast:** NOAA Warn-on-Forecast System (WoFS) Ensemble
 #
-# **Observation:** MRMS Gauge-corrected 1-hr quatitative precipation estimate (QPE)
+# **Observation:** MRMS Gauge-corrected 1-hr quantitative precipitation estimate (QPE)
 #
 # **Climatology:** None
 #

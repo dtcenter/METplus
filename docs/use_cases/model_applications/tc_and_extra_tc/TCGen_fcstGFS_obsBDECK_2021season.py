@@ -16,7 +16,7 @@ model_applications/tc_and_extra_tc/TCGen_fcstGFS_obsBDECK_2021season.conf
 # --------------------
 #
 # This use case runs TC-Gen to analyze the operational Global Forecast System (GFS) tropical cyclone (TC) genesis forecasts for a portion of the 2021 Atlantic and
-# Eastern Pacific basin hurrican seasons. TC-Gen will produce verification of deterministic and probabilistic tropical cyclone genesis forecasts in the ATCF
+# Eastern Pacific basin hurricane seasons. TC-Gen will produce verification of deterministic and probabilistic tropical cyclone genesis forecasts in the ATCF
 # file and shape file formats.  TC-Gen will output deterministic and probabilistic categorical counts and statistics and genesis matched pairs, which is a specific
 # line type for TC-Gen.
 

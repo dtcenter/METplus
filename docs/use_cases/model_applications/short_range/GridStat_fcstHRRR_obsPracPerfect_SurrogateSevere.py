@@ -48,7 +48,7 @@ model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.
 # ------------------
 #
 # This use case runs grid_stat to create categorical statistics for 
-# Surrogate Severe derived from the HRRR model and Practially Perfect
+# Surrogate Severe derived from the HRRR model and Practically Perfect
 # Analysis derived from local storm reports.  
 
 ##############################################################################

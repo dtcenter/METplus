@@ -47,7 +47,7 @@ model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly_gonzalo.conf
 # ------------------
 #
 # This use case utilizes the METplus TCRMW wrapper to search for
-# the desired ADECK file and forecast files that are correspond to the track.
+# the desired ADECK file and forecast files that correspond to the track.
 # It generates a command to run the MET tool TC-RMW if all required files are found.
 
 ##############################################################################
