@@ -240,7 +240,7 @@ model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.py
 # Where the YYYYMMDDHH is the year, month, day, and hour of the model initialization time, and HHH is the 
 # forecast lead time.  There should be 20 files in both the RH_10 and RH_15 directories.
 #
-# The output from Point-Stat will contain 3 directories, Individual_Variables, RH_10, and RH_16.  Each 
+# The output from Point-Stat will contain 3 directories, Individual_Variables, RH_10, and RH_15.  Each 
 # of these directories will contain sub-directories labeled with the model initialization time in 
 # YYYYMMDDHH.  There should be 20 files total output for each Point-Stat directory.  The files have 
 # the following format::

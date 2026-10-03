@@ -84,9 +84,9 @@ model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** 0, 6, 12, 18
 #
-# GenVxMask is run once.  The Grid-Stat, MODE, and Stat-Analysis tools run for each time. 
+# GenVxMask is run once.  The Grid-Stat and MODE tools run for each time, and Stat-Analysis is run once. 
 # This example loops by model initialization time.  It processes one initialization time and 
-# three lead times for a total of 3 valid times, listed below.
+# four lead times for a total of 4 valid times, listed below.
 #
 # | **Valid:** 2024-03-07_00Z
 # | **Forecast lead:** 00
@@ -94,10 +94,10 @@ model_applications/clouds/GridStat_fcstGFS_obsGFS_cloudFracLayer.conf
 # | **Valid:** 2024-03-07_06Z
 # | **Forecast lead:** 06
 #
-# | **Init:** 2024-03-07_12Z
+# | **Valid:** 2024-03-07_12Z
 # | **Forecast lead:** 12
 #
-# | **Init:** 2024-03-07_18Z
+# | **Valid:** 2024-03-07_18Z
 # | **Forecast lead:** 18
 #
 # Both UserScripts are each run once.  The first UserScript reformats the GridStat CTS

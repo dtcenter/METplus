@@ -2,7 +2,7 @@
 Basic MTD Use Case
 ===================
 
-met_tool_wrappper/MTD/MTD.conf
+met_tool_wrapper/MTD/MTD.conf
 
 """
 ##############################################################################
