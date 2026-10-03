@@ -13,7 +13,7 @@ Sample image
    :width: 600
 
 Recommended use
-  "Place observations into a gridded model space for the purpose of starting, or initializing, weather forecasts with observed data” from NOAA NCEI
+  "Place observations into a gridded model space for the purpose of starting, or initializing, weather forecasts with observed data" from NOAA NCEI
 
 File format
   * Grib2
