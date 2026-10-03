@@ -53,7 +53,7 @@ For rc1 development releases, create a new reference branch for the upcoming off
     * Pushing this branch to GitHub should trigger the GitHub Actions automation
       that runs all of the use cases and creates Docker data volumes with the output
       data. These data will be used to verify that any bugfixes applied to the
-      main_vX.Y branch does not break any of existing logic.
+      main_vX.Y branch do not break any of the existing logic.
 
   * Monitor GitHub Actions Workflow
 
