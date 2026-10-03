@@ -23,7 +23,7 @@ Location of data
   To request access: https://mping.ou.edu/static/mping/access.html
 
 Access restrictions
-  Both research and commerical licenses are available (access link above)
+  Both research and commercial licenses are available (access link above)
 
 Spatial resolution, grid, or coverage
   Reports can be submitted from anywhere in the world; however, reports typically are over CONUS
