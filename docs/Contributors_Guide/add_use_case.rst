@@ -90,7 +90,7 @@ If creating a new model applications use case, in the category sub-directory
 following:
 
 * A METplus configuration file named
-  *\<MET-TOOL\>_fcst\<FCST\>_obs\<OBS\>_cilmo\<CLIMO\>\<DESCRIPTOR\>.conf*
+  *\<MET-TOOL\>_fcst\<FCST\>_obs\<OBS\>_climo\<CLIMO\>\<DESCRIPTOR\>.conf*
   where
 
     * *<MET-TOOL>* is the MET tool that performs the primary statistical
@@ -124,9 +124,9 @@ Use Case Rules
 - The use case METplus configuration file should not **set** any variables
   specific to the user's environment, such as INPUT_BASE, OUTPUT_BASE, and
   PARM_BASE, METPLUS_CONF, etc.
-- A limited number of run times should be processed so that they use case runs
+- A limited number of run times should be processed so that the use case runs
   in a reasonable amount of time.  They are designed to demonstrate the
-  functionality but not necessarily processed all of the data that would be
+  functionality but not necessarily process all of the data that would be
   processed for analysis. Users can take an example and modify the run times
   to produce more output as desired.
 - No errors should result from running the use case.
@@ -312,7 +312,7 @@ the text content. These are already provided in the example template.
       is using which dataset. At a minimum, users should list the 
       Forecast, Observation, and Climatology fields. If they are not being used, 
       "None" can be listed. 
-      Acronyms should be spelled out (i.e not GFS, but Global Forecast System). 
+      Acronyms should be spelled out (i.e., not GFS, but Global Forecast System). 
       This section also includes a Location description consisting of 
       set language of how users can access the use case data for themselves.
 
@@ -668,7 +668,7 @@ Verify use case config file contains correct directory
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Set directory paths in the use case config file relative to INPUT_BASE
-i.e *{INPUT_BASE}/model_applications/<category>/<use_case>* where
+i.e., *{INPUT_BASE}/model_applications/<category>/<use_case>* where
 <category> is the value that has been set for ${METPLUS_USE_CASE_CATEGORY} and
 <use_case> is the value that has been set for ${METPLUS_USE_CASE_NAME}.
 For a new met_tool_wrapper use case, use *{INPUT_BASE}/met_test/new*.
@@ -1024,7 +1024,7 @@ environment, potential reasons include:
   environment
 - Memory usage of the use case exceeds the available memory in the
   GitHub Actions environment
-- Disk space usage of the use casee exceeds the available space in the
+- Disk space usage of the use case exceeds the available space in the
   GitHub Actions environment
 
 GitHub Actions has
@@ -1108,7 +1108,7 @@ Use Cases That Cannot be Run in GitHub Actions
 If a use case utilizing Python embedding does not run successfully in 
 GitHub Actions due to exceeding the memory limit and memory mitigation 
 steps were unsuccessful in lowering memory usage, or if a use case does 
-run successfully in GitHub Actions due to exceeding available disk space 
+not run successfully in GitHub Actions due to exceeding available disk space 
 and the data cannot be further pared down, please take the following steps.
 
 - Document the GitHub Actions failure in the GitHub use case issue. 

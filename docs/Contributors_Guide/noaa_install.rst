@@ -123,7 +123,7 @@ Conda Environment
 
 Ensure the proper conda environment is set for the METplus installations. The table below
 lists the system name, the location of the conda environment, the account used to install
-the environment, any applicable notes. The :code:`<environment-name>` referred to below
+the environment, and any applicable notes. The :code:`<environment-name>` referred to below
 is in the format *metplus_v<X1>.<Y1>_py<X2>.<Y2>*, where :code:`<X1>` is the major version of
 METplus release, :code:`<Y1>` is the minor version of the METplus release, :code:`<X2>` is the
 major version of the Python release, and :code:`<Y2>` is the minor version of the Python release.
@@ -632,7 +632,7 @@ To download the file for **Ursa** for METplus version X.Y.Z, for example, run:
    The :code:`wget` command above will get the modulefile for the
    METplus X.Y.Z release. Replace the *main_v6.1* with the actual version numbers or
    with *develop* for a **beta** or **rc** release, and
-   the *X.Y.Z* in the *X.Y.Z_<system-name>* filename with tha actual version numbers.
+   the *X.Y.Z* in the *X.Y.Z_<system-name>* filename with the actual version numbers.
 
 .. warning::
 
@@ -1090,7 +1090,7 @@ Update the Existing Builds Section
 Update the Existing Builds section in the
 `METplus GitHub Repository <https://github.com/dtcenter/METplus>`_
 in the **docs/Users_Guide/existing_builds.rst** file for the appropriate branch
-with an information that needs to be updated, including the *Last updated:*
+with any information that needs to be updated, including the *Last updated:*
 date. For example:
 
   * If installing an official release, update in the *main_X.Y* branch.
