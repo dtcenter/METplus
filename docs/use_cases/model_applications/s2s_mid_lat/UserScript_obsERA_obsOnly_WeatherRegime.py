@@ -36,7 +36,7 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.py
 #
 # **Forecast:** None
 #
-# **Observation:** ERA Reanlaysis 500 mb height for DJF 1979 - 2017
+# **Observation:** ERA Reanalysis 500 mb height for DJF 1979 - 2017
 #
 # **Climatology:** None
 #
@@ -56,7 +56,7 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.py
 # METplus Components
 # ------------------
 #
-# This use case calles UserScript once and Stat-Analysis twice.  There are two optional
+# This use case calls UserScript once and Stat-Analysis twice.  There are two optional
 # pre-processing steps, Regrid-Data-Plane and PCP-Combine.  Additionally, METcalcpy
 # and METplotpy are required to run this use case.  The METcalcpy scripts accessed include
 # the following:
@@ -65,7 +65,7 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.py
 #
 # * metcalcpy/contributed/blocking_weather_regime/Blocking_WeatherRegime_util.py
 #
-# The METplopty scripts accessed include the following:
+# The METplotpy scripts accessed include the following:
 #
 # * metplotpy/contributed/weather_regime/plot_weather_regime.py
 
@@ -138,7 +138,7 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.py
 # K means clustering (KMEANS), plotting the weather regimes (PLOTKMEANS), computing a user specified
 # time frequency of weather regimes (TIMEFREQ) and plotting the time frequency (PLOTFREQ).  The 
 # TIMEFREQ and PLOTFREQ steps require that the KMEANS step be run first, while all other steps 
-# can be run individally. Input variables to the WeatherRegime driver are set and described
+# can be run individually. Input variables to the WeatherRegime driver are set and described
 # in the [user_env_vars] section of the configuration file. 
 #
 # Elbow computes the optimal number of clusters using the sum of squared distances for 
@@ -146,7 +146,7 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.py
 # clusters.  This helps determine the optimal cluster number by examining the largest 
 # difference between the curve and the straight line.  The EOFs step computes empirical orthogonal 
 # functions.  These EOFs are used to reconstruct the height field, with this reconstructed data used 
-# in the K means calculation.  If EOFs are not compted, the original height field is used in the K means 
+# in the K means calculation.  If EOFs are not computed, the original height field is used in the K means 
 # calculation.  The K means step uses clustering to compute the frequency of occurrence and anomalies 
 # for each cluster to give the most common weather regimes.  Then, the time frequency computes the 
 # frequency of each weather regime over a user specified time frame.

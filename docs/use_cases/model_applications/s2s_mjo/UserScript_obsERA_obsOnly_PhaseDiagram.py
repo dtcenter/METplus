@@ -31,7 +31,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_PhaseDiagram.py
 #
 # **Forecast:**  None
 #
-# **Observation:** ERA Reanlaysis Outgoing Longwave Radiation
+# **Observation:** ERA Reanalysis Outgoing Longwave Radiation
 #
 # **Climatology:** None
 #

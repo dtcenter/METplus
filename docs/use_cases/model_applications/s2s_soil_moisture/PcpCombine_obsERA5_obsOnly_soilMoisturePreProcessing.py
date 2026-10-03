@@ -13,7 +13,7 @@ model_applications/s2s_soil_moisture/PcpCombine_obsERA5_obsOnly_soilMoisturePreP
 # This use case performs pre-processing on Soil Moisture data to prepare it to
 # be run through Grid-Stat or another program for verification.  As part of that
 # pre-processing, 1 m soil moisture is calculated by adding the soil moisture for
-# the top three layers (0-7cm, 7-28 cm, 28-100 cm), each multipled by the layer 
+# the top three layers (0-7cm, 7-28 cm, 28-100 cm), each multiplied by the layer 
 # thickness.  After 1m soil moisture is calculated for each month, a 30 year 
 # climatology is calculated by computing the mean and standard deviation for 
 # each month between 1991 and 2020.
@@ -160,12 +160,12 @@ model_applications/s2s_soil_moisture/PcpCombine_obsERA5_obsOnly_soilMoisturePreP
 #  * swvl2(lat, lon)
 #  * swvl3(lat, lon)
 #
-# The netCDF output files for the first PCP-Combine run contains one variable (not
+# The netCDF output files for the first PCP-Combine run contain one variable (not
 # including the lat/lon fields)::
 #
 #  * soilm1m(lat, lon)
 #
-# The netCDF output files for the second PCP-Combine run contains two variables (not
+# The netCDF output files for the second PCP-Combine run contain two variables (not
 # including the lat/lon fields)::
 #
 #  * soilm1m_mean(lat, lon)
