@@ -18,7 +18,7 @@ met_tools_wrapper/PCPCombine/PCPCombine_subtract.conf
 #
 # | **Forecast:** WRF precipitation accumulation fields (18 hour and 15 hour forecast leads)
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
+# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to go to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
 # | **Data Source:** WRF
@@ -29,7 +29,7 @@ met_tools_wrapper/PCPCombine/PCPCombine_subtract.conf
 # ------------------
 #
 # This use case utilizes the METplus PCPCombine wrapper to search for files to extract the desired accumulation for a given run time
-# using a filename template, forecast lead, and output accumulation. It will a generate a command to run PCPCombine to subtract
+# using a filename template, forecast lead, and output accumulation. It will generate a command to run PCPCombine to subtract
 # a field from another field to extract the desired accumulation.
 
 ##############################################################################
