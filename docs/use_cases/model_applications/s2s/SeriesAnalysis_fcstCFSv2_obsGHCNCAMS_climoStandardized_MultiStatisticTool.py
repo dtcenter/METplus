@@ -20,7 +20,7 @@ model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_Mu
 # the observation dataset, which is presented as normalized. The forecast to observation verification are completed across both the temporal and spatial.
 # This use case highlights several important features within METplus; in particular, how to create climatologies for ensemble members using SeriesAnalysis,
 # how those climatologies can be used by GenEnsProd to normalize each ensemble member to its corresponding climatology,
-# and calculating probabilistic verfication on s2s data, which is a frequent request from climatological centers.
+# and calculating probabilistic verification on s2s data, which is a frequent request from climatological centers.
 
 ##############################################################################
 # Version Added

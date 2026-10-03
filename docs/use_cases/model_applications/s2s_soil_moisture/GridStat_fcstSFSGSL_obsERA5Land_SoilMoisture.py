@@ -20,7 +20,7 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 # to compute categorical, continuous, and anomaly statistics over the globe and CONUS 
 # with Grid-Stat, and also select continuous statistics at each grid point over the globe 
 # statistics with Series-Analysis.  It also illustrates how to read in NMME data and 
-# compute an emsemble mean from NMME data as input to Grid-Stat and Series-Analysis, and 
+# compute an ensemble mean from NMME data as input to Grid-Stat and Series-Analysis, and 
 # how to plot example statistics from the command line.
 
 ##############################################################################
@@ -37,7 +37,7 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 #
 # **Observation:** ERA5-Land, Monthly 0-1m Soil Moisture field in mm 
 #
-# **Climatology Forecast:** SFS-GSL 30 year Enemble Mean Soil Moisture mean and standard deviation
+# **Climatology Forecast:** SFS-GSL 30 year Ensemble Mean Soil Moisture mean and standard deviation
 #
 # **Climatology Observation:** ERA5-Land, 30 year Monthly 0-1m Soil Moisture mean and standard deviation
 #
@@ -61,7 +61,7 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 #
 # * metcalcpy/util/read_env_vars_in_config.py
 #
-# The METplopty scrips accessed include the following:
+# The METplotpy scripts accessed include the following:
 #
 # * metplotpy/plots/line/line.py
 #
@@ -168,7 +168,7 @@ model_applications/s2s_soil_moisture/GridStat_fcstSFSGSL_obsERA5Land_SoilMoistur
 # GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.conf METplus configuration file.
 #
 # The second Python script is plot_line_stats.py.  This script creates line plots for ME and RMSE
-# over time, using the YAML files custom_line_ME.yaml, and custom_line_RMSE.yaml  Input variables 
+# over time, using the YAML files custom_line_ME.yaml, and custom_line_RMSE.yaml.  Input variables 
 # to both scripts are set in the [user_env_vars] section of the 
 # GridStat_fcstSFSGSL_obsERA5Land_SoilMoisture.conf file.
 #

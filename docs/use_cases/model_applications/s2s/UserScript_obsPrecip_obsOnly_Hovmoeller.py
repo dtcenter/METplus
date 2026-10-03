@@ -19,8 +19,8 @@ model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.py
 # This use case calls the METplotpy hovmoeller plot to create a sample Hovmoeller diagram
 # using sample data created by METcalcpy hovmoeller functions
 #
-# The Hovmoeller plot and hovmoeller calculations where created by Maria Gehne at the 
-# Physical Sciences Labratory in NOAA 
+# The Hovmoeller plot and hovmoeller calculations were created by Maria Gehne at the 
+# Physical Sciences Laboratory in NOAA 
 
 ##############################################################################
 # Version Added
