@@ -381,6 +381,42 @@ def test_mode_missing_inputs(metplus_config, get_test_data_dir, run_all_and_chec
          {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
         ({'TIME_OFFSET_WARNING': 2, 'MODE_TIME_OFFSET_WARNING': 4},
          {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
+        ({'MODE_PLOT_VALID_FLAG': 'true', },
+         {'METPLUS_PLOT_VALID_FLAG': 'plot_valid_flag = TRUE;'}),
+
+        ({'MODE_FCST_RAW_PLOT_COLOR_TABLE': 'MET_BASE/colortables/met_default.ctable', },
+         {'METPLUS_FCST_RAW_PLOT_DICT': 'fcst_raw_plot = {color_table = "MET_BASE/colortables/met_default.ctable";}'}),
+
+        ({'MODE_FCST_RAW_PLOT_PLOT_MIN': '2.0', },
+         {'METPLUS_FCST_RAW_PLOT_DICT': 'fcst_raw_plot = {plot_min = 2.0;}'}),
+
+        ({'MODE_FCST_RAW_PLOT_PLOT_MAX': '4.0', },
+         {'METPLUS_FCST_RAW_PLOT_DICT': 'fcst_raw_plot = {plot_max = 4.0;}'}),
+
+        ({
+             'MODE_FCST_RAW_PLOT_COLOR_TABLE': 'MET_BASE/colortables/met_default.ctable',
+             'MODE_FCST_RAW_PLOT_PLOT_MIN': '3.0',
+             'MODE_FCST_RAW_PLOT_PLOT_MAX': '5.0',
+         },
+         {
+             'METPLUS_FCST_RAW_PLOT_DICT': 'fcst_raw_plot = {color_table = "MET_BASE/colortables/met_default.ctable";plot_min = 3.0;plot_max = 5.0;}'}),
+
+        ({'MODE_OBS_RAW_PLOT_COLOR_TABLE': 'MET_BASE/colortables/met_default.ctable', },
+         {'METPLUS_OBS_RAW_PLOT_DICT': 'obs_raw_plot = {color_table = "MET_BASE/colortables/met_default.ctable";}'}),
+
+        ({'MODE_OBS_RAW_PLOT_PLOT_MIN': '2.0', },
+         {'METPLUS_OBS_RAW_PLOT_DICT': 'obs_raw_plot = {plot_min = 2.0;}'}),
+
+        ({'MODE_OBS_RAW_PLOT_PLOT_MAX': '4.0', },
+         {'METPLUS_OBS_RAW_PLOT_DICT': 'obs_raw_plot = {plot_max = 4.0;}'}),
+
+        ({
+             'MODE_OBS_RAW_PLOT_COLOR_TABLE': 'MET_BASE/colortables/met_default.ctable',
+             'MODE_OBS_RAW_PLOT_PLOT_MIN': '2.0',
+             'MODE_OBS_RAW_PLOT_PLOT_MAX': '4.0',
+         },
+         {
+             'METPLUS_OBS_RAW_PLOT_DICT': 'obs_raw_plot = {color_table = "MET_BASE/colortables/met_default.ctable";plot_min = 2.0;plot_max = 4.0;}'}),
     ]
 )
 @pytest.mark.wrapper_a

@@ -5269,7 +5269,13 @@ METplus Configuration
 | :term:`MODE_INPUT_THRESH`
 | :term:`MODE_WARN_IF_DUPLICATE_OUTPUT`
 | :term:`MODE_WARN_IF_OUTPUT_EXISTS`
-
+| :term:`MODE_PLOT_VALID_FLAG`
+| :term:`MODE_FCST_RAW_PLOT_COLOR_TABLE`
+| :term:`MODE_FCST_RAW_PLOT_PLOT_MIN`
+| :term:`MODE_FCST_RAW_PLOT_PLOT_MAX`
+| :term:`MODE_OBS_RAW_PLOT_COLOR_TABLE`
+| :term:`MODE_OBS_RAW_PLOT_PLOT_MIN`
+| :term:`MODE_OBS_RAW_PLOT_PLOT_MAX`
 
 .. warning:: **DEPRECATED:**
 
@@ -5887,6 +5893,50 @@ ${METPLUS_TOTAL_INTEREST_THRESH}
      - MET Config File
    * - :term:`MODE_TOTAL_INTEREST_THRESH`
      - total_interest_thresh
+
+${METPLUS_FCST_RAW_PLOT_DICT}
+"""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_FCST_RAW_PLOT_COLOR_TABLE`
+     - fcst_raw_plot.color_table
+   * - :term:`MODE_FCST_RAW_PLOT_PLOT_MIN`
+     - fcst_raw_plot.plot_min
+   * - :term:`MODE_FCST_RAW_PLOT_PLOT_MAX`
+     - fcst_raw_plot.plot_max
+
+${METPLUS_OBS_RAW_PLOT_DICT}
+""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_OBS_RAW_PLOT_COLOR_TABLE`
+     - obs_raw_plot.color_table
+   * - :term:`MODE_OBS_RAW_PLOT_PLOT_MIN`
+     - obs_raw_plot.plot_min
+   * - :term:`MODE_OBS_RAW_PLOT_PLOT_MAX`
+     - obs_raw_plot.plot_max
+
+${METPLUS_PLOT_VALID_FLAG}
+""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_PLOT_VALID_FLAG`
+     - plot_valid_flag
 
 ${METPLUS_PS_PLOT_FLAG}
 """""""""""""""""""""""
