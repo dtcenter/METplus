@@ -433,19 +433,18 @@ def test_mode_single_field(metplus_config, config_overrides, env_var_values,
     wrapper = MODEWrapper(config)
     assert wrapper.is_ok
 
-    app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
-    verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
-    config_file = wrapper.c_dict.get('CONFIG_FILE')
-    out_dir = wrapper.c_dict.get('OUTPUT_DIR')
-    expected_cmds = [(f"{app_path} {verbosity} "
-                      f"{fcst_dir}/2005080700/fcst_file_F012 "
-                      f"{obs_dir}/2005080712/obs_file "
-                      f"{config_file} -outdir {out_dir}/2005080712"),
-                     (f"{app_path} {verbosity} "
-                      f"{fcst_dir}/2005080712/fcst_file_F012 "
-                      f"{obs_dir}/2005080800/obs_file "
-                      f"{config_file} -outdir {out_dir}/2005080800"),
-                     ]
+    init_valid_times = [
+        ("2005080700", "2005080712"),
+        ("2005080712", "2005080800"),
+    ]
+
+    expected_cmds = [
+        (f"{wrapper.app_path} -v {wrapper.c_dict['VERBOSITY']} "
+         f"{fcst_dir}/{init}/fcst_file_F012 "
+         f"{obs_dir}/{valid}/obs_file "
+         f"{wrapper.c_dict.get('CONFIG_FILE')} -outdir {wrapper.c_dict.get('OUTPUT_DIR')}/{valid}")
+        for init, valid in init_valid_times
+    ]
 
     all_cmds = wrapper.run_all_times()
 
@@ -518,21 +517,20 @@ def test_mode_multi_variate(metplus_config, compare_command_and_env_vars,
     wrapper = MODEWrapper(config)
     assert wrapper.is_ok
 
-    app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
-    verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
-    config_file = wrapper.c_dict.get('CONFIG_FILE')
-    out_dir = wrapper.c_dict.get('OUTPUT_DIR')
+    init_valid_times = [
+        ("2005080700", "2005080712"),
+        ("2005080712", "2005080800"),
+    ]
+
     file_list_dir = os.path.join(config.getdir('STAGING_DIR'), 'file_lists')
 
-    expected_cmds = [(f"{app_path} {verbosity} "
-                      f"{file_list_dir}/mode_files_FCST_init_20050807000000_valid_20050807120000_lead_43200.txt "
-                      f"{file_list_dir}/mode_files_OBS_init_20050807000000_valid_20050807120000_lead_43200.txt "
-                      f"{config_file} -outdir {out_dir}/2005080712"),
-                     (f"{app_path} {verbosity} "
-                      f"{file_list_dir}/mode_files_FCST_init_20050807120000_valid_20050808000000_lead_43200.txt "
-                      f"{file_list_dir}/mode_files_OBS_init_20050807120000_valid_20050808000000_lead_43200.txt "
-                      f"{config_file} -outdir {out_dir}/2005080800"),
-                     ]
+    expected_cmds = [
+        (f"{wrapper.app_path} -v {wrapper.c_dict['VERBOSITY']} "
+         f"{file_list_dir}/mode_files_FCST_init_{init}0000_valid_{valid}0000_lead_43200.txt "
+         f"{file_list_dir}/mode_files_OBS_init_{init}0000_valid_{valid}0000_lead_43200.txt "
+         f"{wrapper.c_dict.get('CONFIG_FILE')} -outdir {wrapper.c_dict.get('OUTPUT_DIR')}/{valid}")
+        for init, valid in init_valid_times
+    ]
 
     all_cmds = wrapper.run_all_times()
 
@@ -540,8 +538,7 @@ def test_mode_multi_variate(metplus_config, compare_command_and_env_vars,
         'METPLUS_FCST_FIELD': fcst_multi_fmt,
         'METPLUS_OBS_FIELD': obs_multi_fmt,
     }
-    compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values,
-                                 wrapper, special_values)
+    compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values, wrapper, special_values)
 
 
 @pytest.mark.parametrize(
@@ -592,11 +589,12 @@ def test_config_synonyms(metplus_config, config_name, env_var_name,
          value in the environment variables list
     """
     in_value = 'out_value'
+    out_value = in_value
 
     if var_type == 'list':
-        out_value = f'[{in_value}]'
+        out_value = f'[{out_value}]'
     elif var_type == 'upper':
-        out_value = in_value.upper()
+        out_value = out_value.upper()
     elif var_type == 'float':
         in_value = out_value = 4.0
 
