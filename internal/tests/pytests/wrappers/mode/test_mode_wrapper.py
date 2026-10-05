@@ -4,7 +4,6 @@ import pytest
 
 import os
 
-
 from metplus.wrappers.mode_wrapper import MODEWrapper
 
 fcst_dir = '/some/path/fcst'
@@ -450,27 +449,7 @@ def test_mode_single_field(metplus_config, config_overrides, env_var_values,
 
     all_cmds = wrapper.run_all_times()
 
-    # set default values in expected output list
-    # only if they are not set and if MODE_GRID_RES is set
-    if 'MODE_GRID_RES' in config_overrides:
-        met_remove_prefixes = ['interest_function_', 'fcst_', 'obs_']
-        met_lists = ['conv_radius']
-        for name, default_val in wrapper.DEFAULT_VALUES.items():
-            if f'MODE_{name}' not in config_overrides:
-                met_name = name.lower()
-                # remove prefix that corresponds to dictionary not variable
-                for met_remove_prefix in met_remove_prefixes:
-                    if met_name.startswith(met_remove_prefix):
-                        met_name = met_name.split(met_remove_prefix)[1]
-                        break
-
-                # convert value to list if variable expects a list
-                if met_name in met_lists:
-                    default_val = f'[{default_val}]'
-
-                env_var_values[f'METPLUS_{name}'] = (
-                    f'{met_name} = {default_val};'
-                )
+    _handle_mode_grid_res(config_overrides, env_var_values, wrapper)
 
     special_values = {
         'METPLUS_FCST_FIELD': fcst_fmt,
@@ -480,6 +459,32 @@ def test_mode_single_field(metplus_config, config_overrides, env_var_values,
                                  wrapper, special_values)
 
 
+def _handle_mode_grid_res(config_overrides, env_var_values, wrapper):
+    """!Set default values in expected output list only if they are not set and if MODE_GRID_RES is set
+    """
+    if 'MODE_GRID_RES' not in config_overrides:
+        return
+
+    met_remove_prefixes = ['interest_function_', 'fcst_', 'obs_']
+    met_lists = ['conv_radius']
+    for name, default_val in wrapper.DEFAULT_VALUES.items():
+        if f'MODE_{name}' not in config_overrides:
+            met_name = name.lower()
+            # remove prefix that corresponds to dictionary not variable
+            for met_remove_prefix in met_remove_prefixes:
+                if met_name.startswith(met_remove_prefix):
+                    met_name = met_name.split(met_remove_prefix)[1]
+                    break
+
+            # convert value to list if variable expects a list
+            if met_name in met_lists:
+                default_val = f'[{default_val}]'
+
+            env_var_values[f'METPLUS_{name}'] = (
+                f'{met_name} = {default_val};'
+            )
+
+
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
         ({'MODE_MULTIVAR_LOGIC': '#1 && #2 && #3', },
@@ -487,12 +492,16 @@ def test_mode_single_field(metplus_config, config_overrides, env_var_values,
     ]
 )
 @pytest.mark.wrapper_a
-def test_mode_multi_variate(metplus_config, config_overrides,
-                            env_var_values):
+def test_mode_multi_variate(metplus_config, compare_command_and_env_vars,
+                            config_overrides, env_var_values):
     config = metplus_config
 
     # set config variables needed to run
     set_minimum_config_settings(config)
+
+    # set config variable overrides
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
 
     # change config values to reflect an expected multi-variate run
     # multiple fields and input files
@@ -516,39 +525,23 @@ def test_mode_multi_variate(metplus_config, config_overrides,
     file_list_dir = os.path.join(config.getdir('STAGING_DIR'), 'file_lists')
 
     expected_cmds = [(f"{app_path} {verbosity} "
-                      f"{file_list_dir}/20050807000000_12_mode_fcst.txt "
-                      f"{file_list_dir}/20050807000000_12_mode_obs.txt "
+                      f"{file_list_dir}/mode_files_FCST_init_20050807000000_valid_20050807120000_lead_43200.txt "
+                      f"{file_list_dir}/mode_files_OBS_init_20050807000000_valid_20050807120000_lead_43200.txt "
                       f"{config_file} -outdir {out_dir}/2005080712"),
                      (f"{app_path} {verbosity} "
-                      f"{file_list_dir}/20050807120000_12_mode_fcst.txt "
-                      f"{file_list_dir}/20050807120000_12_mode_obs.txt "
+                      f"{file_list_dir}/mode_files_FCST_init_20050807120000_valid_20050808000000_lead_43200.txt "
+                      f"{file_list_dir}/mode_files_OBS_init_20050807120000_valid_20050808000000_lead_43200.txt "
                       f"{config_file} -outdir {out_dir}/2005080800"),
                      ]
 
     all_cmds = wrapper.run_all_times()
-    print(f"ALL COMMANDS: {all_cmds}")
 
-    missing_env = [item for item in env_var_values
-                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
-    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
-
-    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
-        # ensure commands are generated as expected
-        assert cmd == expected_cmd
-
-        # check that environment variables were set properly
-        # including deprecated env vars (not in wrapper env var keys)
-        for env_var_key in env_var_keys:
-            match = next((item for item in env_vars if
-                          item.startswith(env_var_key)), None)
-            assert match is not None
-            value = match.split('=', 1)[1]
-            if env_var_key == 'METPLUS_FCST_FIELD':
-                assert value == fcst_multi_fmt
-            elif env_var_key == 'METPLUS_OBS_FIELD':
-                assert value == obs_multi_fmt
-            else:
-                assert env_var_values.get(env_var_key, '') == value
+    special_values = {
+        'METPLUS_FCST_FIELD': fcst_multi_fmt,
+        'METPLUS_OBS_FIELD': obs_multi_fmt,
+    }
+    compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values,
+                                 wrapper, special_values)
 
 
 @pytest.mark.parametrize(
