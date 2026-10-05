@@ -117,9 +117,9 @@ ${METPLUS_SKIP_CONST}
 // Set dist_type to NONE to use the observation error table instead
 // May be set separately in each "obs.field" entry
 //
-obs_error = {
+obs_err = {
    //flag =
-   ${METPLUS_OBS_ERROR_FLAG}
+   ${METPLUS_OBS_ERR_FLAG}
    dist_type        = NONE;
    dist_parm        = [];
    inst_bias_scale  = 1.0;

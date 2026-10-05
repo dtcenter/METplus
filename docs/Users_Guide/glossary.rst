@@ -5514,10 +5514,13 @@ METplus Configuration Glossary
 
      | *Used by:*  EnsembleStat
 
-   ENSEMBLE_STAT_OBS_ERROR_FLAG
-     Specify the value for 'obs_error.flag' in the MET configuration file for EnsembleStat.
+   ENSEMBLE_STAT_OBS_ERR_FLAG
+     Specify the value for 'obs_err.flag' in the MET configuration file for EnsembleStat.
 
      | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_ERROR_FLAG
+      .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_OBS_ERR_FLAG` instead.
 
    ENSEMBLE_STAT_CLIMO_MEAN_FILE_NAME
      Specify the value for 'climo_mean.file_name' in the MET configuration file for EnsembleStat.

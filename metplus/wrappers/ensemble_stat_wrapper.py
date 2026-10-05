@@ -12,7 +12,7 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import do_string_sub, parse_var_list, PYTHON_EMBEDDING_TYPES
+from ..util import do_string_sub, PYTHON_EMBEDDING_TYPES
 from . import CompareGriddedWrapper
 
 """!@namespace EnsembleStatWrapper
@@ -50,7 +50,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_OBS_SUMMARY',
         'METPLUS_OBS_PERC_VALUE',
         'METPLUS_SKIP_CONST',
-        'METPLUS_OBS_ERROR_FLAG',
+        'METPLUS_OBS_ERR_FLAG',
         'METPLUS_ENS_SSVAR_BIN_SIZE',
         'METPLUS_ENS_PHIST_BIN_SIZE',
         'METPLUS_CLIMO_MEAN_DICT',
@@ -91,6 +91,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'OBTYPE',
         'REGRID_TO_GRID',
         'OUTPUT_PREFIX',
+        'METPLUS_OBS_ERROR_FLAG',
     ]
 
     OUTPUT_FLAGS = [
@@ -208,9 +209,15 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         )
 
         # read by MET through environment variable, not set in MET config file
-        c_dict['MET_OBS_ERR_TABLE'] = (
-            self.config.getraw('config', 'ENSEMBLE_STAT_MET_OBS_ERR_TABLE')
-        )
+        obs_err_conf = self.config.get_mp_config_name((
+            'ENSEMBLE_STAT_MET_OBS_ERR_TABLE',
+            'ENSEMBLE_STAT_MET_OBS_ERROR_TABLE'
+        ))
+        if obs_err_conf is None:
+            obs_err_value = ''
+        else:
+            obs_err_value = self.config.getraw('config', obs_err_conf)
+        c_dict['MET_OBS_ERR_TABLE'] = obs_err_value
 
         self.add_met_config(name='vld_thresh', data_type='float',
                             metplus_configs=[
@@ -276,8 +283,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.handle_flags('NC_ORANK')
 
         self.add_met_config(name='flag', data_type='bool',
-                            env_var_name='METPLUS_OBS_ERROR_FLAG',
-                            metplus_configs=['ENSEMBLE_STAT_OBS_ERROR_FLAG'])
+                            env_var_name='METPLUS_OBS_ERR_FLAG',
+                            metplus_configs=['ENSEMBLE_STAT_OBS_ERR_FLAG',
+                                             'ENSEMBLE_STAT_OBS_ERROR_FLAG',])
 
         self.add_met_config(name='grid', data_type='list',
                             env_var_name='METPLUS_MASK_GRID',
@@ -416,7 +424,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         return time_info
 
     def set_environment_variables(self, time_info):
-        self.add_env_var("MET_OBS_ERROR_TABLE",
+        self.add_env_var("MET_OBS_ERR_TABLE",
                          self.c_dict.get('MET_OBS_ERR_TABLE', ''))
         super().set_environment_variables(time_info)
 

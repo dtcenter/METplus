@@ -305,7 +305,7 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_SKIP_CONST`
 | :term:`ENSEMBLE_STAT_CENSOR_THRESH`
 | :term:`ENSEMBLE_STAT_CENSOR_VAL`
-| :term:`ENSEMBLE_STAT_OBS_ERROR_FLAG`
+| :term:`ENSEMBLE_STAT_OBS_ERR_FLAG`
 | :term:`ENSEMBLE_STAT_CLIMO_MEAN_FILE_NAME`
 | :term:`ENSEMBLE_STAT_CLIMO_MEAN_FILE_TYPE`
 | :term:`ENSEMBLE_STAT_CLIMO_MEAN_VAR<n>_NAME`
@@ -484,6 +484,7 @@ METplus Configuration
    | :term:`ENSEMBLE_STAT_OUT_DIR`
    | :term:`ENSEMBLE_STAT_CONFIG`
    | :term:`ENSEMBLE_STAT_MET_OBS_ERROR_TABLE`
+   | :term:`ENSEMBLE_STAT_OBS_ERROR_FLAG`
    | :term:`ENSEMBLE_STAT_GRID_VX`
    | :term:`ENSEMBLE_STAT_CLIMO_MEAN_INPUT_DIR`
    | :term:`ENSEMBLE_STAT_CLIMO_STDEV_INPUT_DIR`
@@ -993,8 +994,8 @@ ${METPLUS_SKIP_CONST}
    * - :term:`ENSEMBLE_STAT_SKIP_CONST`
      - skip_const
 
-${METPLUS_OBS_ERROR_FLAG}
-"""""""""""""""""""""""""
+${METPLUS_OBS_ERR_FLAG}
+"""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -1002,8 +1003,8 @@ ${METPLUS_OBS_ERROR_FLAG}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`ENSEMBLE_STAT_OBS_ERROR_FLAG`
-     - obs_error.flag
+   * - :term:`ENSEMBLE_STAT_OBS_ERR_FLAG`
+     - obs_err.flag
 
 ${METPLUS_OBTYPE_AS_GROUP_VAL_FLAG}
 """""""""""""""""""""""""""""""""""

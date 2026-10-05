@@ -928,6 +928,16 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
          {'METPLUS_OBS_FIELD': f'{obs_fmt[0: -3]}obs_summary = PERC; }}];'}),
         ({'ENSEMBLE_STAT_OBS_VAR1_OBS_PERC_VALUE': '50;', },
          {'METPLUS_OBS_FIELD': f'{obs_fmt[0: -3]}obs_perc_value = 50; }}];'}),
+        ({'ENSEMBLE_STAT_MET_OBS_ERR_TABLE': '/some/err/table/path.txt'},
+         {'MET_OBS_ERR_TABLE': '/some/err/table/path.txt'}),
+        # legacy config variable name
+        ({'ENSEMBLE_STAT_MET_OBS_ERROR_TABLE': '/some/err/table/path.txt'},
+         {'MET_OBS_ERR_TABLE': '/some/err/table/path.txt'}),
+        ({'ENSEMBLE_STAT_OBS_ERR_FLAG': 'true'},
+         {'METPLUS_OBS_ERR_FLAG': 'flag = TRUE;'}),
+        # legacy config variable name
+        ({'ENSEMBLE_STAT_OBS_ERROR_FLAG': 'true'},
+         {'METPLUS_OBS_ERR_FLAG': 'flag = TRUE;'}),
     ]
 )
 @pytest.mark.wrapper_c
