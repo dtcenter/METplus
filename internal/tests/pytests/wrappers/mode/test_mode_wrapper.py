@@ -454,8 +454,7 @@ def test_mode_single_field(metplus_config, config_overrides, env_var_values,
         'METPLUS_FCST_FIELD': fcst_fmt,
         'METPLUS_OBS_FIELD': obs_fmt,
     }
-    compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values,
-                                 wrapper, special_values)
+    compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values, wrapper, special_values)
 
 
 def _handle_mode_grid_res(config_overrides, env_var_values, wrapper):
