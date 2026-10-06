@@ -266,7 +266,7 @@ A case may be
 affected by the size of the data, the length of time to run and other factors.
 
 How will METplus be run? Manually? Scheduled through cron? Automated via a workflow manager (e.g., Rocoto, EC-Flow, Rose-Cylc)?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
   * If run manually, this can be done.
     
@@ -277,7 +277,7 @@ How will METplus be run? Manually? Scheduled through cron? Automated via a workf
     configuring the use cases to run smaller amounts of data.
     
 Where will METplus be run? Local machine, project machine, HPC system, in the cloud (e.g., AWS)? Serial runs or parallelized?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   
   * Running on linux or a project machine – identify where METplus is
     installed by running **which run_metplus.py**; it is recommended an
