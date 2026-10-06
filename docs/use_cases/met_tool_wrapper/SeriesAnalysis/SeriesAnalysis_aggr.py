@@ -48,7 +48,7 @@ met_tool_wrapper/SeriesAnalysis/SeriesAnalysis_aggr.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# e.g. parm/use_cases/met_tool_wrapper/SeriesAnalysis/SeriesAnalysis_aggr.conf
+# e.g., parm/use_cases/met_tool_wrapper/SeriesAnalysis/SeriesAnalysis_aggr.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/SeriesAnalysis/SeriesAnalysis_aggr.conf

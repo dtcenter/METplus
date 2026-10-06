@@ -132,7 +132,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line, i.e.
+# then it loads any configuration files passed to METplus via the command line, i.e.,
 # parm/use_cases/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.conf
 #
 # .. highlight:: bash
@@ -179,7 +179,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py
 # plotting the blocking frequency (PLOTBLOCKS).  This use case runs all steps although not all of 
 # them are required to be run.  The CBL, IBL, GIBL, and CALCBLOCKS steps must be run in order as the
 # IBL step requires previously computed CBLs, and GIBLs requires previously computed IBLs.  Plotting
-# also requires the associated step to be run (e.g. PLOTCBL requires CBL to be run first).  The 
+# also requires the associated step to be run (e.g., PLOTCBL requires CBL to be run first).  The 
 # methodology used in these calculations is described in Miller & Wang (2019, 2022) listed in the 
 # Scientific Objective section.
 #

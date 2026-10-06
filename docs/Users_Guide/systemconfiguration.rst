@@ -396,14 +396,14 @@ By default, a new log file is created for each METplus run::
 
     LOG_TIMESTAMP_TEMPLATE = %Y%m%d%H%M%S
 
-This example will use the format YYYYMMDDHHMMSS, i.e. 20141231101159.
+This example will use the format YYYYMMDDHHMMSS, i.e., 20141231101159.
 Change this value to adjust the frequency that new log files are created.
 For example, to write all log output that is generated within a day to a
 single log file, set::
 
     LOG_TIMESTAMP_TEMPLATE = %Y%m%d
 
-This example will use the format YYYYMMDD, i.e. 20141231
+This example will use the format YYYYMMDD, i.e., 20141231
 
 .. _log_timestamp_use_datatime:
 
@@ -438,7 +438,7 @@ LOG_TO_TERMINAL_ONLY
 """"""""""""""""""""
 
 If set to True, all log output is written to the screen only.
-This includes output from commands that are run, e.g. MET commands.
+This includes output from commands that are run, e.g., MET commands.
 No log files will be created and :ref:`log_metplus` will be set to an empty
 string. ::
 
@@ -664,7 +664,7 @@ All input data read by the use case is relative to INPUT_BASE and all output
 paths for data written by the use case are relative to OUTPUT_BASE. The
 expectation is a use case can be run locally if the user's INPUT_BASE
 contains the sample data associated with the use case *AND* any additional
-dependencies (i.e. Python packages) are available.
+dependencies (i.e., Python packages) are available.
 See the chapter titled :ref:`metplus_use_cases` to view the documentation for
 the existing use cases to see if additional dependencies are required for a
 given use case.
@@ -723,7 +723,7 @@ Example::
     VALID_TIME_FMT = %Y%m%d%H
 
 Using this format, the valid time range values specified must be defined
-as YYYYMMDDHH, i.e. 2019020112.
+as YYYYMMDDHH, i.e., 2019020112.
 
 :term:`VALID_BEG`
 """""""""""""""""
@@ -800,7 +800,7 @@ When looping over initialization time (:term:`LOOP_BY` = INIT or LOOP_BY = RETRO
 :term:`INIT_TIME_FMT`
 """""""""""""""""""""
 
-This is the format of the initialization times the user can configure in METplus Wrappers. The value of :term:`INIT_BEG` and :term:`INIT_END` must correspond to this format. Example: INIT_TIME_FMT = %Y%m%d%H. Using this format, the initialization time range values specified must be defined as YYYYMMDDHH, i.e. 2019020112.
+This is the format of the initialization times the user can configure in METplus Wrappers. The value of :term:`INIT_BEG` and :term:`INIT_END` must correspond to this format. Example: INIT_TIME_FMT = %Y%m%d%H. Using this format, the initialization time range values specified must be defined as YYYYMMDDHH, i.e., 2019020112.
 
 :term:`INIT_BEG`
 """"""""""""""""
@@ -900,7 +900,7 @@ Grouping Forecast Leads
 
 Grouping forecast leads is possible as well using a special version of
 the :term:`LEAD_SEQ` variable.
-If {APP_NAME}_RUNTIME_FREQ, e.g. SERIES_ANALYSIS_RUNTIME_FREQ, is set to
+If {APP_NAME}_RUNTIME_FREQ, e.g., SERIES_ANALYSIS_RUNTIME_FREQ, is set to
 **RUN_ONCE_PER_INIT_OR_VALID**,
 then groups of forecast leads can be defined to be evaluated together.
 Any number of these groups can be defined by setting
@@ -1134,7 +1134,7 @@ Example 8::
 
 This will skip all days of the week except for Monday, Wednesday, and Friday.
 
-:term:`INC_VALID_TIMES` also supports wrapper-specific versions, e.g.
+:term:`INC_VALID_TIMES` also supports wrapper-specific versions, e.g.,
 GRID_STAT_INC_VALID_TIMES.
 
 INC_VALID_TIMES and SKIP_VALID_TIMES can be used together.
@@ -1166,7 +1166,7 @@ and the METplus Wrappers is run with::
 
 then the value of :term:`VALID_END` will be set to 2019042608. {today} 
 can also be used to substitute the
-current YYYYMMDD, i.e. 20190426. The formatting for
+current YYYYMMDD, i.e., 20190426. The formatting for
 the 'today' keyword cannot be changed.
 
 Shift Keyword
@@ -1508,7 +1508,7 @@ CyclonePlotter, StatAnalysis, and TCStat wrappers are not supported.
 If the variable is not set or set
 to an empty string, the wrapper will execute as normal without additional
 runs. The names of the wrapper-specific variables contain the name of the
-wrapper, i.e. SERIES_ANALYSIS_CUSTOM_LOOP_LIST,
+wrapper, i.e., SERIES_ANALYSIS_CUSTOM_LOOP_LIST,
 PCP_COMBINE_CUSTOM_LOOP_LIST, GRID_STAT_CUSTOM_LOOP_LIST, etc.
 Setting these variables will override the value set for
 CUSTOM_LOOP_LIST for that wrapper only.
@@ -2508,7 +2508,7 @@ the threshold to prevent an error.
 
 There are wrapper-specific versions of both :term:`ALLOW_MISSING_INPUTS` and
 :term:`INPUT_THRESH` for most of the wrappers,
-e.g. :term:`GRID_STAT_ALLOW_MISSING_INPUTS` and :term:`GRID_STAT_INPUT_THRESH`.
+e.g., :term:`GRID_STAT_ALLOW_MISSING_INPUTS` and :term:`GRID_STAT_INPUT_THRESH`.
 Refer to the :ref:`python_wrappers` chapter or the :ref:`METplus_glossary`
 to see which variables are supported.
 
@@ -2641,7 +2641,7 @@ to an empty string. This will result in the default value "NA" to be used.
 
 Typically for single value or array MET config variables,
 the names of the METplus config variable, environment variable, and
-MET config variable are closely related, i.e.
+MET config variable are closely related, i.e.,
 
 *           **desc**: MET config name
 * GRID_STAT\_\ **DESC**: METplus config name
@@ -2724,7 +2724,7 @@ that are absent will use the default value.
 GridStat Fields
 ---------------
 
-Field information, i.e. the fcst/obs dictionary field item, is handled
+Field information, i.e., the fcst/obs dictionary field item, is handled
 a little differently than other MET variables. Multiple fields can be
 specified for a given use case to generate a command for each field or, if
 the MET tool supports it, pass in all of the fields to a single command.
@@ -3351,7 +3351,7 @@ MET Configuration Files
 
 The METplus wrappers set environment variables that are read by the MET configuration files to customize each run. Some of the environment variables that were previously set by METplus wrappers to handle very specific use cases are no longer set in favor of using a common set of variables across the MET tools. The following are examples of changes that have occurred in METplus regarding environment variables.
 
-EnsembleStat previously set $GRID_VX to define the grid to use to regrid data within the tool. In version 3.0, MET tools that have a 'to_grid' value in the 'regrid' dictionary of the MET config file have a uniformly named METplus configuration variable called <MET-tool>_REGRID_TO_GRID (i.e. :term:`ENSEMBLE_STAT_REGRID_TO_GRID`) that is used to define this value::
+EnsembleStat previously set $GRID_VX to define the grid to use to regrid data within the tool. In version 3.0, MET tools that have a 'to_grid' value in the 'regrid' dictionary of the MET config file have a uniformly named METplus configuration variable called <MET-tool>_REGRID_TO_GRID (i.e., :term:`ENSEMBLE_STAT_REGRID_TO_GRID`) that is used to define this value::
 
     Before:
        to_grid    = ${GRID_VX};
@@ -3359,7 +3359,7 @@ EnsembleStat previously set $GRID_VX to define the grid to use to regrid data wi
     After:
        to_grid    = ${REGRID_TO_GRID};
 
-MET_VALID_HHMM was used by GridStat wrapper to set part of the climatology file path. This was replaced by the METplus configuration variables <MET-tool>_CLIMO_[MEAN/STDEV]_INPUT_[DIR/TEMPLATE] (i.e. :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE`)::
+MET_VALID_HHMM was used by GridStat wrapper to set part of the climatology file path. This was replaced by the METplus configuration variables <MET-tool>_CLIMO_[MEAN/STDEV]_INPUT_[DIR/TEMPLATE] (i.e., :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE`)::
 
   Before:
      file_name = [ "${INPUT_BASE}/grid_to_grid/nwprod/fix/cmean_1d.1959${MET_VALID_HHMM}" ];

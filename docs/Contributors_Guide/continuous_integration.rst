@@ -218,7 +218,7 @@ Differences can also occur when a new use case is added, as the new use case
 creates output that does not yet exist in the truth dataset.
 
 Once all differences are confirmed to be expected,
-the reference branch, e.g. develop-ref, needs to be updated. This triggers a
+the reference branch, e.g., develop-ref, needs to be updated. This triggers a
 :ref:`cg-ci-testing-workflow` that runs all of the use cases, creates
 Docker images with the new truth data, and pushes them to DockerHub.
 This is done so that future pull requests will
@@ -314,9 +314,9 @@ by reviewing the log output from the workflow run.
 Update and Upload Truth Data (update_truth_data.yml)
 ----------------------------------------------------
 
-This workflow is triggered by pushes to reference branches (e.g. **develop-ref**
+This workflow is triggered by pushes to reference branches (e.g., **develop-ref**
 or **main_vX.Y-ref**). It locates the most recent testing workflow run from the
-corresponding base branch (e.g. **develop** or **main_vX.Y**). For each use case
+corresponding base branch (e.g., **develop** or **main_vX.Y**). For each use case
 group in which differences were flagged, rerun those use cases to generate
 updated output files, save that output as the new truth dataset, and push
 the new truth Docker data volume to DockerHub.
@@ -794,7 +794,7 @@ The tests typically use the develop version tag of the MET Docker image for
 development testing. If testing is done on a stable release, then the
 corresponding MET stable release will be used. However, there may be an
 instance where a change in MET breaks something in another METplus component,
-i.e. METplotpy or METviewer, until a corresponding change is made to that
+i.e., METplotpy or METviewer, until a corresponding change is made to that
 component. If this occurs then some of the METplus use cases may break.
 
 Another situation that may require a different MET Docker image is if there
@@ -871,7 +871,7 @@ after a feature branch is populated with the existing data for the use case
 category and the new data is added there. This data is used for testing the
 new use case in the automated tests. When the pull request for the new use
 case is approved, the new data is moved into the version of the
-data that corresponds to the upcoming release (i.e. v4.1)
+data that corresponds to the upcoming release (i.e., v4.1)
 so that it will be available for future tests. More details on this
 process can be found in the :ref:`use_case_input_data` section of the
 Add Use Cases chapter of the Contributor's Guide.
@@ -1157,7 +1157,7 @@ Example::
 The above example uses the Conda environment
 in *dtcenter/metplus-envs*:**mp_analysis**.vX.Y to run a user script
 where X.Y is the version of METplus when the environment was last updated,
-e.g. 5.1.
+e.g., 5.1.
 Note that only one dependency that contains the **_env** suffix can be supplied
 to a given use case.
 
@@ -1299,7 +1299,7 @@ The following steps should be taken to add a new environment:
    formatted so the job name matches the environment name and is checked in the
    :code:`if` condition. The dependency (:code:`needs`) should also include
    the base environment and the Dockerfile should be chosen based on the
-   environment criteria (e.g. :code:`metplus_base`, :code:`py_embed_base`, or
+   environment criteria (e.g., :code:`metplus_base`, :code:`py_embed_base`, or
    :code:`Dockerfile.cartopy` if it contains cartopy).
 
 4. After these files are added, run the **Create Conda Envs** GHA workflow
@@ -1383,7 +1383,7 @@ Each use case group is defined with the following format::
 * **<INDEX_LIST>** is a list of indices of the use cases from
   **all_use_cases.txt** to run in the group.
   This can be a single integer, a comma-separated list of
-  integers, and a range of values with a dash, i.e. 0-3.
+  integers, and a range of values with a dash, i.e., 0-3.
 * **<RUN_STATUS>** is a boolean (true/false) value that determines if the use
   case group should be run. If the workflow job controls are not set to run
   all of the use cases, then only use case groups that are set to true are

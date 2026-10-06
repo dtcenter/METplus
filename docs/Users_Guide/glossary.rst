@@ -24,7 +24,7 @@ METplus Configuration Glossary
 
      With this configuration, SeriesAnalysis will be called twice. The first run will use SeriesAnalysisConfig_one and write output to {OUTPUT_BASE}/one. The second run will use SeriesAnalysisConfig_two and write output to {OUTPUT_BASE}/two.
 
-     If unset or left blank, the wrapper will run once per run time. There are also wrapper-specific configuration variables to define a custom string loop list for a single wrapper, i.e. :term:`SERIES_ANALYSIS_CUSTOM_LOOP_LIST` and :term:`PCP_COMBINE_CUSTOM_LOOP_LIST`.
+     If unset or left blank, the wrapper will run once per run time. There are also wrapper-specific configuration variables to define a custom string loop list for a single wrapper, i.e., :term:`SERIES_ANALYSIS_CUSTOM_LOOP_LIST` and :term:`PCP_COMBINE_CUSTOM_LOOP_LIST`.
 
      | *Used by:* Many
 
@@ -422,17 +422,17 @@ METplus Configuration Glossary
      | *Used by:* All
 
    FCST_PCP_COMBINE_COMMAND
-     Used only when :term:`FCST_PCP_COMBINE_METHOD` = USER_DEFINED. Custom command to run PCPCombine with a complex call that doesn't fit common use cases. Value can include filename template syntax, i.e. {valid?fmt=%Y%m%d}, that will be substituted based on the current runtime. The name of the application and verbosity flag does not need to be included. For example, if set to '-derive min,max /some/file' the command run will be pcp_combine -v 2 -derive min,max /some/file. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_COMMAND`.
+     Used only when :term:`FCST_PCP_COMBINE_METHOD` = USER_DEFINED. Custom command to run PCPCombine with a complex call that doesn't fit common use cases. Value can include filename template syntax, i.e., {valid?fmt=%Y%m%d}, that will be substituted based on the current runtime. The name of the application and verbosity flag does not need to be included. For example, if set to '-derive min,max /some/file' the command run will be pcp_combine -v 2 -derive min,max /some/file. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_COMMAND`.
 
      | *Used by:* PCPCombine
 
    OBS_PCP_COMBINE_COMMAND
-     Used only when :term:`OBS_PCP_COMBINE_METHOD` = USER_DEFINED. Custom command to run PCPCombine with a complex call that doesn't fit common use cases. Value can include filename template syntax, i.e. {valid?fmt=%Y%m%d}, that will be substituted based on the current runtime. The name of the application and verbosity flag does not need to be included. For example, if set to '-derive min,max /some/file' the command run will be pcp_combine -v 2 -derive min,max /some/file. A corresponding variable exists for forecast data called :term:`FCST_PCP_COMBINE_COMMAND`.
+     Used only when :term:`OBS_PCP_COMBINE_METHOD` = USER_DEFINED. Custom command to run PCPCombine with a complex call that doesn't fit common use cases. Value can include filename template syntax, i.e., {valid?fmt=%Y%m%d}, that will be substituted based on the current runtime. The name of the application and verbosity flag does not need to be included. For example, if set to '-derive min,max /some/file' the command run will be pcp_combine -v 2 -derive min,max /some/file. A corresponding variable exists for forecast data called :term:`FCST_PCP_COMBINE_COMMAND`.
 
      | *Used by:* PCPCombine
 
    PY_EMBED_INGEST_<n>_SCRIPT
-     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the python script with arguments to run through RegridDataPlane to generate a file that can be read by the MET tools. This variable supports filename template syntax, so you can specify filenames with time information, i.e. {valid?fmt=%Y%m%d}. See also :term:`PY_EMBED_INGEST_<n>_TYPE`, :term:`PY_EMBED_INGEST_<n>_OUTPUT_GRID`, :term:`PY_EMBED_INGEST_<n>_OUTPUT_TEMPLATE`, and :term:`PY_EMBED_INGEST_<n>_OUTPUT_DIR`.
+     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the python script with arguments to run through RegridDataPlane to generate a file that can be read by the MET tools. This variable supports filename template syntax, so you can specify filenames with time information, i.e., {valid?fmt=%Y%m%d}. See also :term:`PY_EMBED_INGEST_<n>_TYPE`, :term:`PY_EMBED_INGEST_<n>_OUTPUT_GRID`, :term:`PY_EMBED_INGEST_<n>_OUTPUT_TEMPLATE`, and :term:`PY_EMBED_INGEST_<n>_OUTPUT_DIR`.
 
      | *Used by:* PyEmbedIngest
 
@@ -1183,7 +1183,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`FCST_POINT_STAT_INPUT_DIR` instead.
 
    FCST_INPUT_DIR
-     .. warning:: **DEPRECATED:** Please use FCST_[MET-APP]_INPUT_DIR` instead, i.e. :term:`FCST_GRID_STAT_INPUT_DIR`
+     .. warning:: **DEPRECATED:** Please use ``FCST_[MET-APP]_INPUT_DIR`` instead, i.e., :term:`FCST_GRID_STAT_INPUT_DIR`
 
    FCST_INPUT_FILE_REGEX
      .. warning:: **DEPRECATED:** Regular expression to use when identifying which forecast file to use.
@@ -1395,7 +1395,7 @@ METplus Configuration Glossary
      If processing precipitation accumulation data, this is equivalent to the
      desired output accumulation to compute.
      Units are assumed to be hours unless a time identifier such as
-     Y, m, d, H, M, S is specified at the end of the value, i.e. 30M or 1m.
+     Y, m, d, H, M, S is specified at the end of the value, i.e., 30M or 1m.
      If unset, :term:`FCST_PCP_COMBINE_OUTPUT_ACCUM` will be used.
      If that is unset, then :term:`FCST_PCP_COMBINE_DERIVE_LOOKBACK` will be
      used.
@@ -1652,7 +1652,7 @@ METplus Configuration Glossary
 
      See :ref:`Field_Info` for more information.
 
-     This value can be set to a call to a python script with arguments to supply data to the MET tools via Python Embedding. Filename template syntax can be used here to specify time information of an input file, i.e. {valid?fmt=%Y%m%d%H}. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information about Python Embedding in the MET tools.
+     This value can be set to a call to a python script with arguments to supply data to the MET tools via Python Embedding. Filename template syntax can be used here to specify time information of an input file, i.e., {valid?fmt=%Y%m%d%H}. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information about Python Embedding in the MET tools.
 
      | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
 
@@ -2047,12 +2047,12 @@ METplus Configuration Glossary
      | *Used by:*  PointStat
 
    POINT_STAT_OBS_VALID_BEG
-     Optional variable that sets the -obs_valid_beg command line argument for PointStat if set to something other than an empty string. Accepts filename template syntax, i.e. {valid?fmt=%Y%m%d_%H}
+     Optional variable that sets the -obs_valid_beg command line argument for PointStat if set to something other than an empty string. Accepts filename template syntax, i.e., {valid?fmt=%Y%m%d_%H}
 
      | *Used by:* PointStat
 
    POINT_STAT_OBS_VALID_END
-     Optional variable that sets the -obs_valid_end command line argument for PointStat if set to something other than an empty string. Accepts filename template syntax, i.e. {valid?fmt=%Y%m%d_%H}
+     Optional variable that sets the -obs_valid_end command line argument for PointStat if set to something other than an empty string. Accepts filename template syntax, i.e., {valid?fmt=%Y%m%d_%H}
 
      | *Used by:* PointStat
 
@@ -2143,7 +2143,7 @@ METplus Configuration Glossary
      | *Used by:*  All
 
    INIT_SEQ
-     Specify a list of initialization hours that are used to build a sequence of forecast lead times to include in the analysis. Used only when looping by valid time (LOOP_BY = VALID). Comma separated list format, e.g.:0, 6, 12 See :ref:`looping_over_forecast_leads` for more information.
+     Specify a list of initialization hours that are used to build a sequence of forecast lead times to include in the analysis. Used only when looping by valid time (LOOP_BY = VALID). Comma separated list format, e.g., 0, 6, 12 See :ref:`looping_over_forecast_leads` for more information.
 
      | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PB2NC, PCPCombine, PointStat, RegridDataPlane, SeriesAnalysis
 
@@ -2217,7 +2217,7 @@ METplus Configuration Glossary
 
    FCST_LEAD_LIST
      Specify the values of the FSCT_LEAD column in the MET .stat file to use.
-     Comma separated list format, e.g.: 00, 24, 48, 72, 96, 120
+     Comma separated list format, e.g., 00, 24, 48, 72, 96, 120
 
      Groups of values can be looped over by setting FCST_LEAD_LIST<n> and
      adding FCST_LEAD_LIST to :term:`LOOP_LIST_ITEMS`.
@@ -2226,7 +2226,7 @@ METplus Configuration Glossary
      | *Used by:*  StatAnalysis
 
    OBS_LEAD_LIST
-     Specify the values of the OBS_LEAD column in the MET .stat file to use. Comma separated list format, e.g.: 00, 24, 48, 72, 96, 120
+     Specify the values of the OBS_LEAD column in the MET .stat file to use. Comma separated list format, e.g., 00, 24, 48, 72, 96, 120
 
      Groups of values can be looped over by setting OBS_LEAD_LIST<n> and
      adding OBS_LEAD_LIST to :term:`LOOP_LIST_ITEMS`.
@@ -2235,7 +2235,7 @@ METplus Configuration Glossary
      | *Used by:*  StatAnalysis
 
    LEAD_SEQ
-     Specify the sequence of forecast lead times to include in the analysis. Comma separated list format, e.g.:0, 6, 12. See :ref:`looping_over_forecast_leads` for more information. Units are assumed to be hours unless specified with Y, m, d, H, M, or S.
+     Specify the sequence of forecast lead times to include in the analysis. Comma separated list format, e.g., 0, 6, 12. See :ref:`looping_over_forecast_leads` for more information. Units are assumed to be hours unless specified with Y, m, d, H, M, or S.
 
      | *Used by:*  All
 
@@ -2250,7 +2250,7 @@ METplus Configuration Glossary
      | *Used by:*  All
 
    LEAD_SEQ_<n>
-     Specify the sequence of forecast lead times to include in the analysis. Comma separated list format, e.g.:0, 6, 12. <n> corresponds to the bin in which the user wishes to aggregate series by lead results.
+     Specify the sequence of forecast lead times to include in the analysis. Comma separated list format, e.g., 0, 6, 12. <n> corresponds to the bin in which the user wishes to aggregate series by lead results.
 
      | *Used by:*  All
 
@@ -2353,7 +2353,7 @@ METplus Configuration Glossary
 
    LOG_TIMESTAMP_TEMPLATE
      Set the timestamp template used to set :term:`LOG_TIMESTAMP`.
-     Use only Python strftime directives, e.g. %Y%m%d for YYYYMMDD.
+     Use only Python strftime directives, e.g., %Y%m%d for YYYYMMDD.
      See also :term:`LOG_TIMESTAMP_USE_DATATIME`.
 
      | *Used by:*  All
@@ -2417,7 +2417,7 @@ METplus Configuration Glossary
      | *Used by:*  All
 
    MET_BIN_DIR
-     The directory of the MET executables. Used to get the full path of the MET executable when calling from METplus Wrappers. When using the --bindir option in configuring MET, set MET_BIN_DIR to the same location.  MET_BIN_DIR will be set to {MET_INSTALL_DIR}/bin. Users can unset MET_BIN_DIR or set it to an empty string if the MET tools are found in the user's path, e.g. when using module loads.
+     The directory of the MET executables. Used to get the full path of the MET executable when calling from METplus Wrappers. When using the --bindir option in configuring MET, set MET_BIN_DIR to the same location.  MET_BIN_DIR will be set to {MET_INSTALL_DIR}/bin. Users can unset MET_BIN_DIR or set it to an empty string if the MET tools are found in the user's path, e.g., when using module loads.
      | *Used by:*  All
 
    MISSING_VAL
@@ -3209,7 +3209,7 @@ METplus Configuration Glossary
      | ...
      | OBS_VAR<n>_NAME
 
-     This value can be set to a call to a python script with arguments to supply data to the MET tools via Python Embedding. Filename template syntax can be used here to specify time information of an input file, i.e. {valid?fmt=%Y%m%d%H}. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information about Python Embedding in the MET tools.
+     This value can be set to a call to a python script with arguments to supply data to the MET tools via Python Embedding. Filename template syntax can be used here to specify time information of an input file, i.e., {valid?fmt=%Y%m%d%H}. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information about Python Embedding in the MET tools.
 
      | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
 
@@ -3300,12 +3300,12 @@ METplus Configuration Glossary
      | *Used by:*  PB2NC
 
    PB2NC_VALID_BEGIN
-     Used to set the command line argument -valid_beg that controls the lower bound of valid times of data to use. Filename template notation can be used, i.e. {valid?fmt=%Y%m%d_%H%M%S}
+     Used to set the command line argument -valid_beg that controls the lower bound of valid times of data to use. Filename template notation can be used, i.e., {valid?fmt=%Y%m%d_%H%M%S}
 
      | *Used by:*  PB2NC
 
    PB2NC_VALID_END
-     Used to set the command line argument -valid_end that controls the upper bound of valid times of data to use. Filename template notation can be used, i.e. {valid?fmt=%Y%m%d_%H%M%S?shift=1d} (valid time shifted forward one day)
+     Used to set the command line argument -valid_end that controls the upper bound of valid times of data to use. Filename template notation can be used, i.e., {valid?fmt=%Y%m%d_%H%M%S?shift=1d} (valid time shifted forward one day)
 
      | *Used by:*  PB2NC
 
@@ -3330,7 +3330,7 @@ METplus Configuration Glossary
      | *Used by:* PB2NC
 
    PB2NC_OBS_BUFR_VAR_LIST
-     Specify which BUFR codes to use from the observation dataset when using the MET pb2nc tool. Format is comma separated list, e.g.:PMO, TOB, TDO
+     Specify which BUFR codes to use from the observation dataset when using the MET pb2nc tool. Format is comma separated list, e.g., PMO, TOB, TDO
 
      | *Used by:*  PB2NC
 
@@ -3704,7 +3704,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`MODEL<n>_STAT_ANALYSIS_LOOKIN_DIR` instead.
 
    MODEL<n>_STAT_ANALYSIS_LOOKIN_DIR
-     Specify the input directory where the MET stat_analysis tool will find input files. This is the directory that the stat_analysis wrapper will use to build the argument to -lookin for the MET stat_analysis tool. It can contain wildcards, i.e. \*.
+     Specify the input directory where the MET stat_analysis tool will find input files. This is the directory that the stat_analysis wrapper will use to build the argument to -lookin for the MET stat_analysis tool. It can contain wildcards, i.e., \*.
 
      | *Used by:*  StatAnalysis
 
@@ -3942,7 +3942,7 @@ METplus Configuration Glossary
      | *Used by:*  TCStat
 
    TC_STAT_INIT_EXCLUDE
-     Specify the initialization times to exclude when using the MET tc_stat tool, via a comma separated list e.g.:20141220_18, 20141221_00. Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
+     Specify the initialization times to exclude when using the MET tc_stat tool, via a comma separated list, e.g., 20141220_18, 20141221_00. Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 
      | *Used by:*  TCStat
 
@@ -3952,7 +3952,7 @@ METplus Configuration Glossary
      | *Used by:*  TCStat
 
    TC_STAT_INIT_INCLUDE
-     Specify the initialization times to include when using the MET tc_stat tool, via a comma separated list e.g.:20141220_00, 20141220_06, 20141220_12. Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
+     Specify the initialization times to include when using the MET tc_stat tool, via a comma separated list, e.g., 20141220_00, 20141220_06, 20141220_12. Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 
      | *Used by:*  TCStat
 
@@ -4217,7 +4217,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Specify the vertical location desired when using the MET pb2nc tool.
 
    FCST_PCP_COMBINE_INPUT_ACCUMS
-     Specify what accumulation levels should be used from the forecast data for the analysis. This is a list of input accumulations in the order of preference to use to build the desired accumulation. If an accumulation cannot be used (i.e. it is larger than the remaining accumulation that needs to be built) then the next value in the list is tried. Units are assumed to be hours unless a time identifier such as Y, m, d, H, M, S is specified at the end of the value, i.e. 30M or 1m.
+     Specify what accumulation levels should be used from the forecast data for the analysis. This is a list of input accumulations in the order of preference to use to build the desired accumulation. If an accumulation cannot be used (i.e., it is larger than the remaining accumulation that needs to be built) then the next value in the list is tried. Units are assumed to be hours unless a time identifier such as Y, m, d, H, M, S is specified at the end of the value, i.e., 30M or 1m.
 
      If the name and/or level of the accumulation value must be specified for the data, then a list of equal length to this variable must be set for :term:`FCST_PCP_COMBINE_INPUT_NAMES` and :term:`FCST_PCP_COMBINE_INPUT_LEVELS`. See these sections for more information.
 
@@ -4700,7 +4700,7 @@ METplus Configuration Glossary
      matching times to skip. Multiple items can be defined separated by commas.
      begin_end_incr syntax can be used to define a list as well.
      Values can be set for a specific wrapper by using the appropriate
-     wrapper-specific variable, e.g. :term:`GRID_STAT_SKIP_VALID_TIMES`.
+     wrapper-specific variable, e.g., :term:`GRID_STAT_SKIP_VALID_TIMES`.
      See also: :term:`INC_VALID_TIMES`, :term:`SKIP_INIT_TIMES`, and
      :term:`INC_INIT_TIMES`.
 
@@ -4742,7 +4742,7 @@ METplus Configuration Glossary
      List of initialization times to skip processing.
      See :term:`SKIP_VALID_TIMES` for formatting information.
      Values can be set for a specific wrapper by using the appropriate
-     wrapper-specific variable, e.g. :term:`GRID_STAT_SKIP_INIT_TIMES`.
+     wrapper-specific variable, e.g., :term:`GRID_STAT_SKIP_INIT_TIMES`.
 
      | *Used by:*  All
 
@@ -4752,7 +4752,7 @@ METplus Configuration Glossary
      Can be used in addition to or in place of :term:`SKIP_VALID_TIMES`.
      See :term:`SKIP_VALID_TIMES` for formatting information.
      Values can be set for a specific wrapper by using the appropriate
-     wrapper-specific variable, e.g. :term:`GRID_STAT_INC_VALID_TIMES`.
+     wrapper-specific variable, e.g., :term:`GRID_STAT_INC_VALID_TIMES`.
 
      | *Used by:*  All
 
@@ -4762,7 +4762,7 @@ METplus Configuration Glossary
      Can be used in addition to or in place of :term:`SKIP_INIT_TIMES`.
      See :term:`SKIP_VALID_TIMES` for formatting information.
      Values can be set for a specific wrapper by using the appropriate
-     wrapper-specific variable, e.g. :term:`GRID_STAT_INC_INIT_TIMES`.
+     wrapper-specific variable, e.g., :term:`GRID_STAT_INC_INIT_TIMES`.
 
      | *Used by:*  All
 
@@ -6026,7 +6026,7 @@ METplus Configuration Glossary
      | *Used by:*  PCPCombine
 
    FCST_PCP_COMBINE_EXTRA_LEVELS
-     Specify a list of any additional fields to add to the command. The items in this list correspond to the list set by :term:`FCST_PCP_COMBINE_EXTRA_NAMES`. If this list has fewer items than the names list, then no level value will be specified for those names (i.e. if using Python Embedding). A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_EXTRA_LEVELS`. See :term:`FCST_PCP_COMBINE_EXTRA_NAMES` for an example.
+     Specify a list of any additional fields to add to the command. The items in this list correspond to the list set by :term:`FCST_PCP_COMBINE_EXTRA_NAMES`. If this list has fewer items than the names list, then no level value will be specified for those names (i.e., if using Python Embedding). A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_EXTRA_LEVELS`. See :term:`FCST_PCP_COMBINE_EXTRA_NAMES` for an example.
 
      | *Used by:*  PCPCombine
 
@@ -7462,7 +7462,7 @@ METplus Configuration Glossary
      If any files are not found on disk, then "missing" will be added in place
      of the file path. Each file list text file will be named after the current
      init/valid/lead values for that run and a label named input<n> where <n>
-     is a zero-based index of the template, i.e. a single template will be
+     is a zero-based index of the template, i.e., a single template will be
      labeled input0, two templates will be labeled input0 and input1, etc.
      Custom labels can be defined with
      :term:`USER_SCRIPT_INPUT_TEMPLATE_LABELS`. For each template, an
@@ -8595,14 +8595,14 @@ METplus Configuration Glossary
    IODA2NC_VALID_BEG
      Used to set the command line argument -valid_beg that controls the
      lower bound of valid times of data to use.
-     Filename template notation can be used, i.e. {valid?fmt=%Y%m%d_%H%M%S}
+     Filename template notation can be used, i.e., {valid?fmt=%Y%m%d_%H%M%S}
 
      | *Used by:*  IODA2NC
 
    IODA2NC_VALID_END
      Used to set the command line argument -valid_end that controls the
      upper bound of valid times of data to use.
-     Filename template notation can be used, i.e.
+     Filename template notation can be used, i.e.,
      {valid?fmt=%Y%m%d_%H%M%S?shift=1d} (valid time shifted forward one day)
 
      | *Used by:*  IODA2NC
@@ -9328,7 +9328,7 @@ METplus Configuration Glossary
 
    <TOOL-NAME>_CLIMO_MEAN_FIELD
      Specify the value for 'climo_mean.field' in the MET configuration file for
-     <TOOL-NAME> i.e. EnsembleStat.
+     <TOOL-NAME> i.e., EnsembleStat.
      The value set here must include the proper formatting that is expected in
      MET configuration file for specifying field information.
      Example: {name="TMP"; level="(*,*)";}
@@ -9341,7 +9341,7 @@ METplus Configuration Glossary
 
    <TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME
      Specify the name of the nth field for 'climo_mean.field' in the
-     MET configuration file for <TOOL-NAME> i.e. EnsembleStat.
+     MET configuration file for <TOOL-NAME> i.e., EnsembleStat.
      If any fields are set using this
      variable, then :term:`<TOOL-NAME>_CLIMO_MEAN_FIELD` will be ignored.
      See also :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS`
@@ -9351,7 +9351,7 @@ METplus Configuration Glossary
 
    <TOOL-NAME>_CLIMO_MEAN_VAR<n>_LEVELS
      Specify the level of the nth field for 'climo_mean.field' in the
-     MET configuration file for <TOOL-NAME> i.e. EnsembleStat.
+     MET configuration file for <TOOL-NAME> i.e., EnsembleStat.
      If any fields are set using this variable,
      then :term:`<TOOL-NAME>_CLIMO_MEAN_FIELD` will be ignored.
      See also :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
@@ -9361,7 +9361,7 @@ METplus Configuration Glossary
 
    <TOOL-NAME>_CLIMO_MEAN_VAR<n>_OPTIONS
      Specify the extra options of the nth field for 'climo_mean.field' in the
-     MET configuration file for <TOOL-NAME> i.e. EnsembleStat.
+     MET configuration file for <TOOL-NAME> i.e., EnsembleStat.
      If any fields are set using this variable,
      then :term:`<TOOL-NAME>_CLIMO_MEAN_FIELD` will be ignored.
      See also :term:`<TOOL-NAME>_CLIMO_MEAN_VAR<n>_NAME`
@@ -9371,7 +9371,7 @@ METplus Configuration Glossary
 
    <TOOL-NAME>_CLIMO_STDEV_FIELD
      Specify the value for 'climo_stdev.field' in the MET configuration file for
-     <TOOL-NAME> i.e. EnsembleStat.
+     <TOOL-NAME> i.e., EnsembleStat.
      The value set here must include the proper formatting that is expected in
      MET configuration file for specifying field information.
      Example: {name="TMP"; level="(*,*)";}
@@ -9384,7 +9384,7 @@ METplus Configuration Glossary
 
    <TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME
      Specify the name of the nth field for 'climo_stdev.field' in the
-     MET configuration file for <TOOL-NAME> i.e. EnsembleStat.
+     MET configuration file for <TOOL-NAME> i.e., EnsembleStat.
      If any fields are set using this
      variable, then :term:`<TOOL-NAME>_CLIMO_STDEV_FIELD` will be ignored.
      See also :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_LEVELS`
@@ -9394,7 +9394,7 @@ METplus Configuration Glossary
 
    <TOOL-NAME>_CLIMO_STDEV_VAR<n>_LEVELS
      Specify the level of the nth field for 'climo_stdev.field' in the
-     MET configuration file for <TOOL-NAME> i.e. EnsembleStat.
+     MET configuration file for <TOOL-NAME> i.e., EnsembleStat.
      If any fields are set using this variable,
      then :term:`<TOOL-NAME>_CLIMO_STDEV_FIELD` will be ignored.
      See also :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME`
@@ -9404,7 +9404,7 @@ METplus Configuration Glossary
 
    <TOOL-NAME>_CLIMO_STDEV_VAR<n>_OPTIONS
      Specify the extra options of the nth field for 'climo_stdev.field' in the
-     MET configuration file for <TOOL-NAME> i.e. EnsembleStat.
+     MET configuration file for <TOOL-NAME> i.e., EnsembleStat.
      If any fields are set using this variable,
      then :term:`<TOOL-NAME>_CLIMO_STDEV_FIELD` will be ignored.
      See also :term:`<TOOL-NAME>_CLIMO_STDEV_VAR<n>_NAME`
@@ -12012,27 +12012,27 @@ METplus Configuration Glossary
 
    FCST_PCP_COMBINE_INPUT_THRESH
      Specify the value for the command line argument '-input_thresh' for the
-     forecast run of PCPCombine, e.g. :term:`FCST_PCP_COMBINE_RUN` is True.
+     forecast run of PCPCombine, e.g., :term:`FCST_PCP_COMBINE_RUN` is True.
      Not used when :term:`FCST_PCP_COMBINE_METHOD` is SUBTRACT or USER_DEFINED.
 
      | *Used by:* PCPCombine
 
    OBS_PCP_COMBINE_INPUT_THRESH
      Specify the value for the command line argument '-input_thresh' for the
-     observation run of PCPCombine, e.g. :term:`OBS_PCP_COMBINE_RUN` is True.
+     observation run of PCPCombine, e.g., :term:`OBS_PCP_COMBINE_RUN` is True.
      Not used when :term:`OBS_PCP_COMBINE_METHOD` is SUBTRACT or USER_DEFINED.
 
      | *Used by:* PCPCombine
 
    FCST_PCP_COMBINE_VLD_THRESH
      Specify the value for the command line argument '-vld_thresh' for the
-     forecast run of PCPCombine, e.g. :term:`FCST_PCP_COMBINE_RUN` is True.
+     forecast run of PCPCombine, e.g., :term:`FCST_PCP_COMBINE_RUN` is True.
 
      | *Used by:* PCPCombine
 
    OBS_PCP_COMBINE_VLD_THRESH
      Specify the value for the command line argument '-vld_thresh' for the
-     observation run of PCPCombine, e.g. :term:`OBS_PCP_COMBINE_RUN` is True.
+     observation run of PCPCombine, e.g., :term:`OBS_PCP_COMBINE_RUN` is True.
 
      | *Used by:* PCPCombine
 

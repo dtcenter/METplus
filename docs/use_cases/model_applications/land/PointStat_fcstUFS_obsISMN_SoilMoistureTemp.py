@@ -18,7 +18,7 @@ model_applications/land/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
 # This use case examines soil moisture and temperature biases in the UFS global forecast system (GFS).
 # The specific configuration is a GFSv17 pre-release version (HR1). Correct representation of land states 
 # is important for many processes, such as prediction of convection, near surface sensible weather 
-# (e.g. winds, humidity, temperature), and subsequent hydrological forecasting applications such as 
+# (e.g., winds, humidity, temperature), and subsequent hydrological forecasting applications such as 
 # snowpack evolution and runoff generation. Here we use the International Soil Moisture Network (ISMN) 
 # soil moisture and temperature data to assess UFS forecast errors across CONUS for an example summer 
 # 60 hour forecast. We plot spatial differences (forecast-observation) to diagnose regional variations 
@@ -91,7 +91,7 @@ model_applications/land/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config, 
 # then it loads any configuration files passed to METplus via the command line, 
-# i.e. parm/use_cases/model_applications/land/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
+# i.e., parm/use_cases/model_applications/land/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/land/PointStat_fcstUFS_obsISMN_SoilMoistureTemp.conf

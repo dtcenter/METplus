@@ -12,7 +12,7 @@ Update the release notes for this release.
 
       https://github.com/orgs/dtcenter/projects
 
-  * Click on the project that corresponds to support for the release, i.e.
+  * Click on the project that corresponds to support for the release, i.e.,
     METplus Version X.Y Support
 
   * Navigate to the "Closed Issues" tab. If this tab does not exist,
@@ -33,7 +33,7 @@ Update the release notes for this release.
   * Update the release-notes.rst file found in the User's Guide directory.
 
   * Consider organizing release notes into logical groups
-    (e.g. Enhancements, Bugfixes, Documentation, etc.) and modifying
+    (e.g., Enhancements, Bugfixes, Documentation, etc.) and modifying
     GitHub issue titles for consistency. The release notes should match
     the GitHub issue titles, when possible.
   
@@ -41,7 +41,7 @@ Update the release notes for this release.
 
   * When creating a bugfix release, leave the "Version X.Y.0 release notes
     (YYYYMMDD)" in place, along with any other bugfix release notes and
-    add a section above for the latest bugfix release (i.e. "Version X.Y.Z
+    add a section above for the latest bugfix release (i.e., "Version X.Y.Z
     release notes (YYYYMMDD)").
   
   * Commit changes and push to GitHub.

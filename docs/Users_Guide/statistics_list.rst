@@ -289,7 +289,7 @@ Statistics List C-E
     - Ensemble-Stat
     - ORANK 
   * - The PERTURBED ensemble :raw-html:`<br />`
-      mean (e.g. with :raw-html:`<br />`
+      mean (e.g., with :raw-html:`<br />`
       Observation Error).
     - ENS_MEAN :raw-html:`<br />`
       _OERR

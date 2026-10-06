@@ -41,10 +41,10 @@ determine which tools to use and how to set up METplus.
   METplus Use Cases? One large one or multiple smaller ones?
    
   * How will METplus be run? Manually? Scheduled, through cron?
-    Automated via a workflow manager (e.g. Rocoto, EC-Flow, Rose-Cylc)?
+    Automated via a workflow manager (e.g., Rocoto, EC-Flow, Rose-Cylc)?
      
   * Where will METplus be run? Local machine, project machine,
-    HPC system, in the cloud (e.g. AWS)? Serial runs or parallelized?
+    HPC system, in the cloud (e.g., AWS)? Serial runs or parallelized?
      
 This section will provide some guidance on how to use METplus based on
 the answers.
@@ -265,7 +265,7 @@ It is also worth considering the
 A case may be
 affected by the size of the data, the length of time to run and other factors.
 
-How will METplus be run? Manually? Scheduled through cron? Automated via a workflow manager (e.g. Rocoto, EC-Flow, Rose-Cylc)?
+How will METplus be run? Manually? Scheduled through cron? Automated via a workflow manager (e.g., Rocoto, EC-Flow, Rose-Cylc)?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
   * If run manually, this can be done.
@@ -276,7 +276,7 @@ How will METplus be run? Manually? Scheduled through cron? Automated via a workf
   * If automated via a workflow manager, it is recommended the user consider
     configuring the use cases to run smaller amounts of data.
     
-Where will METplus be run? Local machine, project machine, HPC system, in the cloud (e.g. AWS)? Serial runs or parallelized?
+Where will METplus be run? Local machine, project machine, HPC system, in the cloud (e.g., AWS)? Serial runs or parallelized?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   
   * Running on linux or a project machine – identify where METplus is
@@ -408,7 +408,7 @@ Sample input data for all of the use cases provided with the METplus wrappers
 are also available on DockerHub. These data are found in the
 dtcenter/metplus-data DockerHub repository and are named with the X.Y version
 of the corresponding METplus Coordinated Release and the name of the use case category
-separated by a dash, e.g. 4.1-data_assimilation or 4.0-met_tool_wrapper.
+separated by a dash, e.g., 4.1-data_assimilation or 4.0-met_tool_wrapper.
 A list of
 `available tags for input data <https://hub.docker.com/repository/docker/dtcenter/metplus-data/tags>`_
 can also be found on DockerHub.
@@ -484,7 +484,7 @@ Navigate to a working directory and pull an image from DockerHub, e.g.::
     apptainer pull docker://dtcenter/metplus:5.1-latest
 
 This will create a *.sif* file in the current directory,
-e.g. **metplus_5.1-latest.sif**.
+e.g., **metplus_5.1-latest.sif**.
 
 See :ref:`metplus-docker` for information about available images on DockerHub.
 
@@ -497,7 +497,7 @@ The Docker data volumes that contain sample input data provided on DockerHub are
 not compatible with Apptainer. Therefore, sample input data must be obtained from the METplus Data website.
 Navigate to the `METplus Data <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data>`_
 website. Next, navigate to the directory that corresponds to the vX.Y version that
-will be run, e.g. `v5.1 <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v5.1>`_
+will be run, e.g., `v5.1 <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/v5.1>`_
 The names of sample data tar files include the corresponding use case category.
 
 Download one or more of the sample data tar files and uncompress them into

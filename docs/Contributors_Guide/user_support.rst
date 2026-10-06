@@ -16,7 +16,7 @@ Support Responsibilities
 Staff members take turns monitoring Discussions throughout the week.
 
 All support members should follow up on existing Discussions in
-which they are assigned (i.e. tagged).
+which they are assigned (i.e., tagged).
 
 The responsibilities for each assignee are described below.
 
@@ -44,9 +44,9 @@ Review the Unanswered Discussions
 
 Review the `unanswered discussions <https://github.com/dtcenter/METplus/discussions?discussions_q=is%3Aunanswered>`_.
 
-* For new discussions that have been posted on the current day (i.e. since last midnight):
+* For new discussions that have been posted on the current day (i.e., since last midnight):
 
-  * If the issue is time sensitive (i.e. related to an upcoming training series
+  * If the issue is time sensitive (i.e., related to an upcoming training series
     session) or from a user with priority support, take action.  See :ref:`actions_new_discussions`.
 
   * Otherwise, leave the discussion unanswered until the next day to allow the
@@ -92,7 +92,7 @@ Actions for Handling New Discussions
   to some other category.
 
 * Review the labels and pick at least one of the blue ones ("component:" and/or
-  repository-specific - e.g. "MET:", "METplus:", etc.) to further categorize it.
+  repository-specific - e.g., "MET:", "METplus:", etc.) to further categorize it.
 
 * If the organization or institution with which the user is affiliated is known,
   select the appropriate "requestor:" label to further categorize it. If the
@@ -108,7 +108,7 @@ Actions for Handling New Discussions
   `here <https://drive.google.com/drive/folders/1OvYqQwKWV5rB6JHBM-Ljyb4es93vFx_U>`_.
   Move the data to a shared location on the project machine **seneca** by creating
   a directory on **seneca** at **/d1/projects/METplus/discussions/** with the
-  METplus Discussion number (e.g. 2978) and copying the data to that location. Once
+  METplus Discussion number (e.g., 2978) and copying the data to that location. Once
   the data is copied to **seneca**, delete the data from the team drive.
   
 * Ensure the discussion is answered:

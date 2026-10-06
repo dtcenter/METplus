@@ -118,13 +118,13 @@ The following wrappers require additional Python packages be installed to run.
 
 Cartopy, one of the dependencies of CyclonePlotter, attempts to download
 shapefiles from the internet to complete successfully.
-So if CyclonePlotter is run on a closed system (i.e. no internet),
+So if CyclonePlotter is run on a closed system (i.e., no internet),
 additional steps need to be taken.
 First, go to the
 `Natural Earth Data webpage <https://www.naturalearthdata.com/downloads>`_
 and download the small scale (1:110m)
 cultural and physical files that will have multiple extensions
-(e.g. .dbf, .shp, .shx). Untar these files in a noted location.
+(e.g., .dbf, .shp, .shx). Untar these files in a noted location.
 Finally, create an environment variable in the user-specific system
 configuration file for CARTOPY_DIR, setting it to the location where
 the shapefiles are located.
@@ -208,7 +208,7 @@ the example use cases, which illustrate how the wrappers work.
   `sample input data <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data>`_.
 
 - Click on the vX.Y version directory that corresponds to the release to
-  install, i.e. v4.0 directory for the v4.0.0 release.
+  install, i.e., v4.0 directory for the v4.0.0 release.
 
 - Click on the sample data tgz file for the desired use case category or
   categories to run and when prompted, save the file to the directory created
@@ -216,7 +216,7 @@ the example use cases, which illustrate how the wrappers work.
 
 .. note::
     Files with the version number in the name,
-    i.e. sample_data-data_assimilation-4.0.tgz, have been updated since the
+    i.e., sample_data-data_assimilation-4.0.tgz, have been updated since the
     last major release. Files without the version number in the file name have
     not changed since the last major release and can be skipped if the data
     have already been obtained with a previous release.

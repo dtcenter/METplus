@@ -111,7 +111,7 @@ model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.py
 #
 # METplus first loads all of the configuration files found in parm/metplus_config, 
 # then it loads any configuration files passed to METplus via the command line, 
-# i.e. parm/use_cases/model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.conf
+# i.e., parm/use_cases/model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/fire/PointStat_fcstHRRR_obsMADIS_FrazierFire.conf

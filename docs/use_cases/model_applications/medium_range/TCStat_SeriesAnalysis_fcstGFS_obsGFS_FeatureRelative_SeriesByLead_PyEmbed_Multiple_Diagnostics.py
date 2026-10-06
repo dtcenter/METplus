@@ -15,8 +15,8 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 # Scientific Objective
 # --------------------
 # This use case calls multiple tools to produce diagnostic plots of systematic errors relative to a
-# feature (e.g. hurricane, MCS, etc...). This use case calls two user provided python scripts that
-# calculate diagnostics of interest (e.g. integrated vapor transport, potential vorticity, etc...).
+# feature (e.g., hurricane, MCS, etc...). This use case calls two user provided python scripts that
+# calculate diagnostics of interest (e.g., integrated vapor transport, potential vorticity, etc...).
 # These user diagnostics are then used to define the systematic errors. This example calculates
 # statistics over varying forecast leads with the ability to define lead groupings.
 # This use case is very similar to the Multi_Tools: Feature Relative by Lead use case and the
@@ -156,7 +156,7 @@ model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRela
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_Multiple_Diagnostics.conf
+# i.e., parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_Multiple_Diagnostics.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf

@@ -37,7 +37,7 @@ Link Conda Directory to Data Disk (RAL Linux Machines)
 ======================================================
 
 By default, Conda environments are stored in a directory called ".conda" that
-is found in the user's home directory, e.g. /home/user/.conda
+is found in the user's home directory, e.g., /home/user/.conda
 (Note that the dot at the beginning of the directory name is a hidden directory
 that does not always show up in a directory listing).
 Conda environments can take up a lot of disk space which can quickly fill up

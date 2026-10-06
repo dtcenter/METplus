@@ -9,7 +9,7 @@ File Name
 ---------
 
 Create the new wrapper in the *metplus/wrappers* directory and
-name it to reflect the wrapper's function, e.g.: new_tool_wrapper.py is
+name it to reflect the wrapper's function, e.g., new_tool_wrapper.py is
 a wrapper around an application named "new_tool."
 Identify an existing wrapper that is similar to the new wrapper and
 copy it to start the process.
@@ -235,7 +235,7 @@ Allow Multiple Files
 ^^^^^^^^^^^^^^^^^^^^
 
 If the application can take more than one file as input for a given category
-(i.e. FCST, OBS, ENS, etc.) then ALLOW_MULTIPLE_FILES must be set to True::
+(i.e., FCST, OBS, ENS, etc.) then ALLOW_MULTIPLE_FILES must be set to True::
 
     c_dict['ALLOW_MULTIPLE_FILES'] = True
 
@@ -255,10 +255,10 @@ to read the appropriate METplus config variables for inputs.
 The first argument is the c_dict variable, which will be modified by the
 function.
 The 2nd argument is a dictionary that defines the inputs. The key is the name
-of the input type, e.g. *FCST* or *OBS*. The value is a dictionary that must
+of the input type, e.g., *FCST* or *OBS*. The value is a dictionary that must
 include at least the *prefix* key which defines the prefix of the METplus
 configuration variables to read,
-e.g. **{prefix}_INPUT_DIR** and **{prefix}_INPUT_TEMPLATE**.
+e.g., **{prefix}_INPUT_DIR** and **{prefix}_INPUT_TEMPLATE**.
 
 The *required* key can be set to specify if the input must be defined in the
 METplus config file or not.
@@ -350,7 +350,7 @@ config to set *c_dict* items that can be used to set command line arguments.
 The METplus configuration variables should match the format
 {APP_NAME}_{ARG_NAME} where {APP_NAME} is the name of the wrapper and {ARG_NAME}
 is the name of the command line argument. Use the appropriate get function that
-corresponds to the argument data type, e.g. *getraw* for strings and
+corresponds to the argument data type, e.g., *getraw* for strings and
 *getint* for integers.
 
 Example::

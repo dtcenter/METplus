@@ -234,7 +234,7 @@ account used for the installation.
      - role-ovp
    
 On the system, in the location listed above, create a directory using the version number
-for the version of MET to be installed (e.g. X.Y.Z or X.Y.Z-betaN or X.Y.Z-rcN) and change
+for the version of MET to be installed (e.g., X.Y.Z or X.Y.Z-betaN or X.Y.Z-rcN) and change
 into that directory. For example:
 
 .. code-block::
@@ -261,7 +261,7 @@ Download the compilation script, *compile_MET_all.sh*. For example:
 
    The :code:`wget` command above will get the latest and greatest script from the
    **develop** branch. If that is not desired, replace **develop** with the branch
-   of your choice (e.g. **main_v12.1** or other).
+   of your choice (e.g., **main_v12.1** or other).
 
 Make the script executable:
 

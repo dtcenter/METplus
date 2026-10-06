@@ -8,17 +8,17 @@ Files used to create a Conda recipe can be found in **internal/scripts/conda**.
 In the **recipe** directory are:
 
 * **meta.yaml** - defines what is included in the recipe,
-  e.g. package name/version/info, source code URLs, build dependencies, etc.
+  e.g., package name/version/info, source code URLs, build dependencies, etc.
   See the `Defining Metadata in the Conda Docs <https://docs.conda.io/projects/conda-build/en/stable/resources/define-metadata.html>`_ for more information.
 * **build.sh** - shell script used to install the software (for Linux and MacOS)
-* **conda_build_config.yaml** - defines build settings, e.g. compiler versions.
+* **conda_build_config.yaml** - defines build settings, e.g., compiler versions.
   See this `example <https://github.com/conda-forge/conda-forge-pinning-feedstock/blob/main/recipe/conda_build_config.yaml>`_.
 
 After making changes to a Conda recipe, it is recommended that developers
 build the recipe locally, install it in a fresh Conda environment, and run
 any tests that are not included in the recipe to ensure that everything works
 as expected. Ideally, testing should be performed on a variety of platforms,
-e.g. Linux and OSX.
+e.g., Linux and OSX.
 
 Build Recipe Locally
 ====================
@@ -56,7 +56,7 @@ at the first failed test.
 If the run was successful, review the terminal output to find the path to the
 .tar.gz or .conda file that was created.
 Save this path for the following instructions and note the OS that was used
-(the directory following conda-bld, e.g. **linux-64**).
+(the directory following conda-bld, e.g., **linux-64**).
 
 Create a local channel directory
 ================================
@@ -69,7 +69,7 @@ Example::
     mkdir /d1/personal/${USER}/my-test-channel
 
 Create a directory in the channel directory that matches the OS name from the
-previous step, e.g. linux-64.
+previous step, e.g., linux-64.
 
 Example::
 

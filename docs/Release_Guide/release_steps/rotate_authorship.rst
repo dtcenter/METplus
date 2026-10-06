@@ -17,7 +17,7 @@ for each official release.
     common format for citations.
 
   * The author list is typically found in the conf.py file in the documentation
-    directory, i.e. *docs/conf.py*.
+    directory, i.e., *docs/conf.py*.
     Most of the component repositories store the list of authors in a variable
     named **author_list**. Please ensure that changes to this list match the
     correct format listed above.

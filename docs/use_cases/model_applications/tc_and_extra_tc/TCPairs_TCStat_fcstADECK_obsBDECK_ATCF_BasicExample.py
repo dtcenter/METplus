@@ -58,7 +58,7 @@ model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicE
 #
 # To generate TCPairs output, this example loops by initialization time for every 6 hour period that is available
 # in the data set between 2021082500 and 2021083000. Then TCStat filters the TCPairs output based on user criteria
-# (e.g. storm characteristics in this use case).
+# (e.g., storm characteristics in this use case).
 
 ##############################################################################
 # METplus Components
@@ -84,8 +84,8 @@ model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicE
 # TCPairs and TCStat to perform relevant tasks.
 #
 # TCPairs is the first tool called in this example. It processes the following
-# run times for each storm file (e.g. aal092021.dat, aal102021.dat) against the corresponding 
-# Bdeck files (e.g. bal092021.dat, bal102021.dat):
+# run times for each storm file (e.g., aal092021.dat, aal102021.dat) against the corresponding 
+# Bdeck files (e.g., bal092021.dat, bal102021.dat):
 #
 # | **Init/Valid:** 2021082500
 # | **End/Valid:** 2021083000
@@ -93,7 +93,7 @@ model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicE
 # TC-Stat is the second (and final) tool called in this example. It processes the output
 # from TCPairs. In this example the TC-Stat filters the TC-Pairs output based on the 
 # characteristics of the storm (HU, SD, SS, TS, TD). The output from the TC-Stat can be used to 
-# aggregate verification statistics (e.g. Track, Intensity, MSLP, wind radii errors etc.).
+# aggregate verification statistics (e.g., Track, Intensity, MSLP, wind radii errors etc.).
 
 ##############################################################################
 # METplus Configuration
@@ -101,7 +101,7 @@ model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicE
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. /path/to/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf
+# i.e., /path/to/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/TCPairs_TCStat_fcstADECK_obsBDECK_ATCF_BasicExample.conf

@@ -104,7 +104,7 @@ model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.py
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line, i.e.
+# then it loads any configuration files passed to METplus via the command line, i.e.,
 # parm/use_cases/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherREgime.conf
 #
 # .. highlight:: bash

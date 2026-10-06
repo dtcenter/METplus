@@ -47,7 +47,7 @@ of the Atmosphere (SIMA) modeling communities for testing and evaluation
 of new model capabilities, applications in new environments, and so on.
 The METplus Wrappers release schedule is coincident with the MET release
 schedule and the METplus Wrappers major release number is six less than
-the MET major release number (e.g. MET 8.X is released with METplus Wrappers 2.X).
+the MET major release number (e.g., MET 8.X is released with METplus Wrappers 2.X).
 
 METplus Wrappers Goals and Design Philosophy
 ============================================

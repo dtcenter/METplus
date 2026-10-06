@@ -59,7 +59,7 @@ are required to perform the following steps.
      **Project templates: From your organization** option on the left side,
      click on **[TEMPLATE] METplus-X.Y Development**,
      change the title to **METplus-X.Y Development**
-     (e.g. **METplus-6.1 Development**),
+     (e.g., **METplus-6.1 Development**),
      then click the **Create Project** button.
 
 2. Update the project **Settings**.
@@ -171,7 +171,7 @@ required to perform the following steps.
      **Project templates: From your organization** option on the left side,
      then click on **[TEMPLATE] Coordinated METplus-X.Y Support**,
      change the title to **Coordinated METplus-X.Y Support**
-     (e.g. **Coordinated METplus-6.1 Support**),
+     (e.g., **Coordinated METplus-6.1 Support**),
      then click the **Create Project** button.
 
 2. Update the project **Settings**.
@@ -447,7 +447,7 @@ Find or Create a GitHub Issue
 
 * If creating a new issue, select the
   `"New Issue" <https://github.com/dtcenter/METplus/issues/new/choose>`_ button
-  and review the categories of issues (e.g. Bug report, enhancement request,
+  and review the categories of issues (e.g., Bug report, enhancement request,
   New feature request, New use case, Sub-Issue, Task).  Find an appropriate
   category and click on "Get Started" next to the category.
 
@@ -777,7 +777,7 @@ Open a Pull Request
 ^^^^^^^^^^^^^^^^^^^
 
 * To request to have the changes be incorporated into the remote repository
-  (i.e. the
+  (i.e., the
   `GitHub METplus repository <https://github.com/dtcenter/METplus>`_).
 
 * An authorized METplus developer will need to approve the request and
@@ -806,7 +806,7 @@ Open a Pull Request
   * For the compare button, make sure to select
     'compare:<your_feature_branch>'
     where <your_feature_branch> corresponds to the feature branch
-    where the changes have been made (e.g. feature_777_wrapper_xyz).
+    where the changes have been made (e.g., feature_777_wrapper_xyz).
 
 * If working from a branch in the dtcenter organization, there should be
   two grey buttons.
@@ -974,7 +974,7 @@ Clean Up After a Successfully Merged Pull Request
 
 * After an authorized METplus developer has accepted the changes and merged
   them into the develop repository, update the local clone by pulling changes
-  from the original repository's (i.e. the
+  from the original repository's (i.e., the
   `METplus develop branch <https://github.com/dtcenter/METplus/tree/develop>`_):
 
 * Checkout the develop branch:
@@ -1005,7 +1005,7 @@ Clean Up After a Successfully Merged Pull Request
     *git branch -D <branch name>*
     *git push --delete origin <branch name>*
 
-  where <branch name> is the feature branch name, e.g. feature_777_wrapper_xyz.
+  where <branch name> is the feature branch name, e.g., feature_777_wrapper_xyz.
 
   Verify that the feature branch has been successfully removed/deleted
   via the web browser. Navigate to

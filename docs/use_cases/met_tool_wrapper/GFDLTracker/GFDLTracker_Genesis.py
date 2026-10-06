@@ -50,7 +50,7 @@ met_tool_wrapper/GFDLTracker/GFDLTracker_Genesis.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/GFDLTracker/GFDLTracker_Genesis.conf
+# with the -c option, i.e., -c parm/use_cases/met_tool_wrapper/GFDLTracker/GFDLTracker_Genesis.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/GFDLTracker/GFDLTracker_Genesis.conf

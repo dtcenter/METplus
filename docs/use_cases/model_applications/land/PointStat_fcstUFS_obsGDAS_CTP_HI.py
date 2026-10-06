@@ -18,7 +18,7 @@ model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 # This use case examines short-term land-atmosphere coupling within the UFS global forecast system (GFS).
 # The specific configuration is a GFSv17 pre-release version (HR1).  Land-atmosphere coupling is 
 # important for many processes, such as prediction of convection, convective clouds, as well as near surface 
-# sensible weather (e.g. winds, humidity, temperature).  Here the CTP-HI process diagnostic uses morning 
+# sensible weather (e.g., winds, humidity, temperature).  Here the CTP-HI process diagnostic uses morning 
 # surface and lower atmosphere conditions to assess the convective coupling in wet or dry coupling phases.
 # This permits further assessment of the model near surface and lower atmosphere biases in an integrated 
 # phase space, using CTP versus HI.
@@ -87,7 +87,7 @@ model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config, 
 # then it loads any configuration files passed to METplus via the command line, 
-# i.e. parm/use_cases/model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool.conf
+# i.e., parm/use_cases/model_applications/s2s/SeriesAnalysis_fcstCFSv2_obsGHCNCAMS_climoStandardized_MultiStatisticTool.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/land/PointStat_fcstUFS_obsGDAS_CTP_HI.conf

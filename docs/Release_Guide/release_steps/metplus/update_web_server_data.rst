@@ -18,7 +18,7 @@ Create a directory for the next release.
       git checkout develop
       git pull
 
-  Now run the script passing in the version of the next release, i.e.
+  Now run the script passing in the version of the next release, i.e.,
   if creating the v6.0.0-rc1 release, pass in v6.1 as the argument::
 
       new_version=v6.1

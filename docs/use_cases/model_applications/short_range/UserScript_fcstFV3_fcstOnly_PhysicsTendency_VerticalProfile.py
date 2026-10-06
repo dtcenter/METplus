@@ -28,7 +28,7 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 # how to generate the vertical profile plot.  The METplotpy source code is needed to generate the plot.           
 # Clone the METplotpy repository (https://github.com/dtcenter/METplotpy) under the same base
 # directory as the METPLUS_BASE directory so that the METplus and
-# METplotpy directories are under the same base directory (i.e. if the METPLUS_BASE directory is
+# METplotpy directories are under the same base directory (i.e., if the METPLUS_BASE directory is
 # /home/username/working/METplus, then clone the METplotpy source
 # code into the /home/username/working directory).
 #
@@ -110,7 +110,7 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Verti
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalProfile.conf
+# i.e., parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalProfile.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_VerticalProfile.conf

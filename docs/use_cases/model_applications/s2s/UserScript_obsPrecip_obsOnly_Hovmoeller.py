@@ -58,7 +58,7 @@ model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.py
 # Clone the METcalcpy repository (https://github.com/dtcenter/METcalcpy) and the
 # METplotpy repository (https://github.com/dtcenter/METplotpy) under the same base
 # directory as the METPLUS_BASE directory so that the METplotpy, METcalcpy, and
-# METplotpy directories are under the same base directory (i.e. if the METPLUS_BASE directory is
+# METplotpy directories are under the same base directory (i.e., if the METPLUS_BASE directory is
 # /home/username/working/METplus, then clone the METcalcpy and METplotpy source
 # code into the /home/username/working directory).  
 

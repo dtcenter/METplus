@@ -83,7 +83,7 @@ model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 #
 # METplus first loads the default configuration file,
 # then it loads any configuration files passed to METplus via the command line
-# e.g. parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
+# e.g., parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/fire/GridStat_fcstWRF_obsMMA_fire_perimeter.conf

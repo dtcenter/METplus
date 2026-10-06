@@ -158,7 +158,7 @@ items that are specific to that wrapper and finally returning the dictionary
 that was created. If possible, all of the calls to the 'get' functions of the
 METplusConfig object should be found in the create_c_dict function. This
 allows the configuration values to be referenced throughout the wrapper
-without redundantly referencing the wrapper name (i.e. ASCII2NC_INPUT_DIR
+without redundantly referencing the wrapper name (i.e., ASCII2NC_INPUT_DIR
 can be referenced as INPUT_DIR in ASCII2NC since it already pertains to
 ASCII2NC). It also makes it easier to see which configuration variables are
 used in each wrapper.
@@ -456,7 +456,7 @@ The add_met_config function can be used to set a single MET config variable.
 The function takes a few named arguments to determine how the variable
 should be set.
 
-* name: Name of the variable to set, i.e. model
+* name: Name of the variable to set, i.e., model
 * data_type: Type of variable. Valid options are int, string, list, float,
   bool, and thresh.
 * metplus_configs: List of METplus configuration variable names that should be
@@ -465,7 +465,7 @@ should be set.
   read and the environment variable will be set to override the value.
 * env_var_name (optional): Name of environment to set if the MET config
   variable should be overridden. Defaults to the name of the variable in all
-  caps with METPLUS\_ prepended, i.e. METPLUS_MODEL.
+  caps with METPLUS\_ prepended, i.e., METPLUS_MODEL.
 * extra_args (optional): Dictionary containing additional information about the
   variable. Valid options are described below.
 
@@ -480,7 +480,7 @@ should be set.
       value in the default MET config file is not an empty list.
     * **to_grid**: If True, format "to_grid" value in MET config. This can be
       a constant NONE, FCST, OBS, or a quoted string such as a path.
-    * **add_x**: If True, add (x) to variable name, e.g. convert(x)
+    * **add_x**: If True, add (x) to variable name, e.g., convert(x)
 
 ::
 
@@ -507,7 +507,7 @@ Add Support for MET Dictionary
 The add_met_config_dict function can be used to easily set a MET config
 dictionary variable. The function takes 2 arguments:
 
-* dict_name: Name of the MET dictionary variable, i.e. distance_map.
+* dict_name: Name of the MET dictionary variable, i.e., distance_map.
 * items: Dictionary containing information about the variables that are found
   in the dictionary. The key is the name of the variable and the value is
   either a string that contains the data type (see data_type above) or a tuple
@@ -558,7 +558,7 @@ CompareGriddedWrapper and is used by GridStat, PointStat, and EnsembleStat::
 
 This function handles setting the climo_cdf dictionary. The METplus config
 variable that fits the format {APP_NAME}_{DICTIONARY_NAME}_{VARIABLE_NAME},
-i.e. GRID_STAT_CLIMO_CDF_CDF_BINS for GridStat's climo_cdf.cdf_bins, is
+i.e., GRID_STAT_CLIMO_CDF_CDF_BINS for GridStat's climo_cdf.cdf_bins, is
 queried first. However, this default name is a little redundant, so adding
 the nickname 'GRID_STAT_CLIMO_CDF_BINS' allows the user to set the variable
 GRID_STAT_CLIMO_CDF_BINS instead.
@@ -581,7 +581,7 @@ dictionary variable.
             'end': 'int',
         })
 
-This can be called from any wrapper, i.e. TCGen::
+This can be called from any wrapper, i.e., TCGen::
 
     self.add_met_config_window('fcst_hr_window')
 
