@@ -68,7 +68,7 @@ model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 # **Sequence of forecast leads to process (LEAD_SEQ):** None
 #
 # The METdbload is run once and loads data for two ensemble members, one model initialization
-# time and 2 forecast lead times, listed below. These forecast lead times (i.e. LEAD_SEQ) 
+# time and 2 forecast lead times, listed below. These forecast lead times (i.e., LEAD_SEQ) 
 # are not set in this conf file, but rather are controlled with the conf file for other 
 # use cases that generate the output used here.
 #
@@ -84,7 +84,7 @@ model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line, 
-# i.e. parm/use_cases/model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
+# i.e., parm/use_cases/model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/METdbLoad_fcstFV3_obsGoes_BrightnessTemp.conf

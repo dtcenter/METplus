@@ -30,9 +30,9 @@ Access restrictions
   None
 
 Spatial resolution, grid, or coverage
-  Radar sites over CONUS, Alaska (7), Hawaii (4), U.S territories
+  Radar sites over CONUS, Alaska (7), Hawaii (4), U.S. territories
 
-  Radial coverage of 0.5 degree azmuthal by 250m range gate resolution out to 230 km for most fields
+  Radial coverage of 0.5 degree azimuthal by 250m range gate resolution out to 230 km for most fields
 
 Temporal resolution
   4.5 - 10 mins depending on Volume Coverage Patterns (VCPs)

@@ -32,7 +32,7 @@ model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.con
 #
 # **Observation:** NOAA Global Forecast System (GFS) analysis
 #
-# **Climotology:** NCEP-NCAR 40-year Reanalysis (daily 1 degree global)
+# **Climatology:** NCEP-NCAR 40-year Reanalysis (daily 1 degree global)
 #
 # **Location:** All of the input data required for this use case can be 
 # found in a sample data tarball. Each use case category will have 
@@ -84,7 +84,7 @@ model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.con
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf
+# i.e., parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf

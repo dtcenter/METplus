@@ -40,7 +40,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.py
 #
 # **Forecast:** GFS Forecast 500 mb height
 #
-# **Observation:** ERA Reanlaysis 500 mb height
+# **Observation:** ERA Reanalysis 500 mb height
 #
 # **Climatology:** None
 #
@@ -60,7 +60,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.py
 # METplus Components
 # ------------------
 #
-# This use case calles UserScript once and Stat-Analysis twice.  There are two optional
+# This use case calls UserScript once and Stat-Analysis twice.  There are two optional
 # pre-processing steps, Regrid-Data-Plane and PCP-Combine.  Additionally, METcalcpy
 # and METplotpy are required to run this use case.  The METcalcpy scripts accessed include
 # the following:
@@ -71,7 +71,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.py
 #
 # * metcalcpy/util/write_mpr.py
 #
-# The METplopty scrips accessed include the following:
+# The METplotpy scripts accessed include the following:
 #
 # * metplotpy/contributed/weather_regime/plot_weather_regime.py
 
@@ -111,7 +111,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.py
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line, i.e.
+# then it loads any configuration files passed to METplus via the command line, i.e.,
 # parm/use_cases/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.conf
 #
 # .. highlight:: bash
@@ -157,7 +157,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.py
 # K means clustering (KMEANS), plotting the weather regimes (PLOTKMEANS), computing a user specified
 # time frequency of weather regimes (TIMEFREQ) and plotting the time frequency (PLOTFREQ).  The 
 # TIMEFREQ and PLOTFREQ steps require that the KMEANS step be run first, while the ELBOW, EOF, and 
-# KMEANS steps can be run individally. Input variables to the WeatherRegime driver are set and 
+# KMEANS steps can be run individually. Input variables to the WeatherRegime driver are set and 
 # described in the [user_env_vars] section of the configuration file. 
 #
 # Elbow computes the optimal number of clusters using the sum of squared distances for 
@@ -165,7 +165,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.py
 # clusters.  This helps determine the optimal cluster number by examining the largest 
 # difference between the curve and the straight line.  The EOFs step computes empirical orthogonal 
 # functions.  These EOFs are used to reconstruct the height field, with this reconstructed data used 
-# in the K means calculation.  If EOFs are not compted, the original height field is used in the K means 
+# in the K means calculation.  If EOFs are not computed, the original height field is used in the K means 
 # calculation.  The K means step uses clustering to compute the frequency of occurrence and anomalies 
 # for each cluster to give the most common weather regimes.  Then, the time frequency computes the 
 # frequency of each weather regime over a user specified time frame.
@@ -216,13 +216,13 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.py
 # There are numerous matched pair files output in two subdirectories of the mpr directory.  These contain
 # output classified weather regimes and also the frequency for each weather regime.  For the classified 
 # weather regimes, one file is written for each day to the WeatherRegime subdirectory (1513 files total)
-# in the format below where HHMMSSL is the lead time in hours, mintues and seconds, YYYYMMDD is the valid 
+# in the format below where HHMMSSL is the lead time in hours, minutes and seconds, YYYYMMDD is the valid 
 # year, month, and day, and HHMMSSV is the hours, minutes and seconds of the valid time::
 #
 # * weather_regime_stat_GFS_HHMMSSL_YYYYMMDD_HHMMSSV.stat
 #
 # for the frequency matched pair files, one file is written for each day and each weather regime (8466 files 
-# total) to the freq subdirectory in the format below where HHMMSSL is the lead time in hours, mintues and 
+# total) to the freq subdirectory in the format below where HHMMSSL is the lead time in hours, minutes and 
 # seconds, YYYYMMDD is the valid year, month, and day, HHMMSSV is the hours, minutes and seconds of the 
 # valid time, and NN is the weather regime number::
 #

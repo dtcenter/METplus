@@ -69,12 +69,12 @@ model_applications/short_range/MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp
 #
 # **End Time (INIT_END):** 2024010905
 #
-# **Increment between beginning and end times (VALID_INCREMENT):** 1H
+# **Increment between beginning and end times (INIT_INCREMENT):** 1H
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** 9,10
 #
 # This use case runs twice, once for each forecast lead time provided. It 
-# creates objects valid at 14UTC and 15UTC from 09 January 2024 are compared to 
+# compares objects valid at 14UTC and 15UTC on 09 January 2024 to 
 # the 9h and 10h forecasts initialized at 05UTC on 9 January 2024.
 # Convective objects are identified with thresholds of
 # satellite brightness temperature < 235 K and radar reflectivity > 40 dBZ, 
@@ -90,7 +90,7 @@ model_applications/short_range/MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line, i.e.
+# then it loads any configuration files passed to METplus via the command line, i.e.,
 # parm/use_cases/model_applications/short_range/MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.conf
 #
 # .. highlight:: bash

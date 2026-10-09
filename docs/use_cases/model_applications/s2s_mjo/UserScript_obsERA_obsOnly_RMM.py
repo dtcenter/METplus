@@ -39,7 +39,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.py
 #
 # **Forecast:**  None
 #
-# **Observation:** ERA Reanlaysis Outgoing Longwave Radiation, 850 hPa wind and 200 hPa wind, 2000 - 2002
+# **Observation:** ERA Reanalysis Outgoing Longwave Radiation, 850 hPa wind and 200 hPa wind, 2000 - 2002
 # 
 # **Climatology:**
 #
@@ -104,7 +104,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.py
 #
 # Settings for the optional pre-processing steps can be found in the respective sections of the configuration, 
 # mean_daily_annual_cycle_obs_wind, mean_daily_annual_cycle_obs_olr, daily_mean_obs_wind, and daily_mean_obs_olr.  
-# Data is not provided in the tarball to run these steps, but the configurations is provided for reference on how 
+# Data is not provided in the tarball to run these steps, but the configurations are provided for reference on how 
 # to set up these calculations.
 #
 # The Phase diagram and timeseries plots are created over a different time frame, 01-01-2002 
@@ -116,7 +116,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.py
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# i.e. parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.conf.
+# i.e., parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.conf.
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.conf
@@ -147,8 +147,8 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.py
 #
 # The anomalies are created using a harmonic analysis for OLR, U850, and U200 with the Python script
 # compute_harmonic_anomalies.py.  Input to the harmonic analysis script include a text file containing the
-# list of input files, the daily mean variable name, mean daily average varable name, output directory and output file 
-# basename.  These are defined in the [harmonic_anomalies_olr], [harmonic_anomalies_u850], and harmonic_anomalies_u200] 
+# list of input files, the daily mean variable name, mean daily average variable name, output directory and output file 
+# basename.  These are defined in the [harmonic_anomalies_olr], [harmonic_anomalies_u850], and [harmonic_anomalies_u200] 
 # sections of the configuration file.  Additional variables for the RMM calculation and harmonic analysis are set in the 
 # [user_env_vars] section of the .conf file.
 #
@@ -198,7 +198,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.py
 # * ERA_U200_anom_000000L_YYYYMMDD_000000V.nc
 # * ERA_U850_anom_000000L_YYYYMMDD_000000V.nc
 #
-# One variabe is output in each of the above files (not including the lat/lon fields). Those variables are::
+# One variable is output in each of the above files (not including the lat/lon fields). Those variables are::
 #
 # * olr_anom(lat, lon)
 # * U_P200_mean_anom(lat, lon)
@@ -210,7 +210,7 @@ model_applications/s2s_mjo/UserScript_obsERA_obsOnly_RMM.py
 # * ERA_U200_YYYYMMDD.nc
 # * ERA_U850_YYYYMMDD.nc
 #
-# One variabe is output in each of the regriddwed files (not including the lat/lon fields). Those variables 
+# One variable is output in each of the regridded files (not including the lat/lon fields). Those variables 
 # are::
 #
 # * OLR_anom(lat, lon)

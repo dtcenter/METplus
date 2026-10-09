@@ -49,7 +49,7 @@ model_applications/medium_range/GridStat_fcstGFS_obsOMI_TotalColumnOzone.conf
 # ------------------
 #
 # This use case first runs PCPCombine on the forecast data to build a
-# 36-hour Total Colum Ozone mean/average file. Then the forecast data
+# 36-hour Total Column Ozone mean/average file. Then the forecast data
 # are compared to the observation data using GridStat. This use case utilizes 
 # the METplus GridStat wrapper to read in the observation file using Python Embedding.
 

@@ -32,7 +32,7 @@ model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_Pr
 #
 # **Forecast:** NOAA Global Forecast System (GFS) temperature, u-wind component, v-wind component, and height
 #
-# **Observation:** Global Data Assimilation System (GDAS) prepBURF data
+# **Observation:** Global Data Assimilation System (GDAS) prepBUFR data
 #
 # **Climatology:** None
 #
@@ -75,7 +75,7 @@ model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_Pr
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf
+# i.e., parm/use_cases/model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf

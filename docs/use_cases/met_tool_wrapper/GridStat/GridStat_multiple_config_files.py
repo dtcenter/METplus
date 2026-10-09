@@ -52,7 +52,7 @@ _files.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
+# with the -c option, i.e., -c parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
 #
 # **GridStat.conf**
 #
@@ -124,7 +124,7 @@ _files.conf
 # **NOTE:** All of these items must be found under the [dir] section.
 #
 # .. note::
-#    The order that the configurations files are supplied on the command line is very important. If the same variables are found in multiple configuration files, then each subsequent configuration file will override the values of the previous files.
+#    The order that the configuration files are supplied on the command line is very important. If the same variables are found in multiple configuration files, then each subsequent configuration file will override the values of the previous files.
 #
 
 ##############################################################################

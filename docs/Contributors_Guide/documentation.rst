@@ -39,7 +39,7 @@ documentation for defining section formatting::
   ^ for subsubsections
   " for the final level of headers
 
-Part (e.g. User's Guide, Contributor's Guide) and chapter (e.g. Overview,
+Part (e.g., User's Guide, Contributor's Guide) and chapter (e.g., Overview,
 Coding Standards) headers are created by underlining and overlining the
 header name using the appropriate character as described above. When using
 the underline and overline formatting, their lengths must be identical and
@@ -218,7 +218,7 @@ for more information.
 
 **What to bold:**
 
-  * Environment Variables (e.g. **MET_INSTALL_DIR, INPUT_BASE, METCALCPY_HOME**, etc.)
+  * Environment Variables (e.g., **MET_INSTALL_DIR, INPUT_BASE, METCALCPY_HOME**, etc.)
   * Filenames (**line_defaults.yaml, contour_defaults.yaml, defaults.conf**, etc.)
 
 Italics
@@ -280,7 +280,7 @@ followed by indented body elements.
 
 Footnote labels are one of:
 
-  #. one of more digits (i.e. a number),
+  #. one or more digits (i.e., a number),
   #. a single "#" (denoting auto-numbered footnotes),
   #. a "#" followed by a simple reference name, or
   #. a single "*" (denoting auto-symbol footnotes)
@@ -305,7 +305,7 @@ resulting in the following displayed text:
   .. [#NCAR] National Center for Atmospheric Research
   .. [#UCAR] University Center for Atmospheric Research
 
-An example of the usage of footnotes in reStructured text can be seen in the
+An example of the usage of footnotes in reStructuredText can be seen in the
 `METplus docs/index.rst file <https://raw.githubusercontent.com/dtcenter/METplus/develop/docs/index.rst>`_
 and displayed in Read The Docs `here <https://metplus.readthedocs.io/en/develop/index.html>`_.
      
@@ -400,7 +400,7 @@ Literal Include
 
 This feature is used often in the Release Guide, but there are other places it could be useful.
 Using a literal include ensures only having to update the documentation in one place.
-It is important to use a relative path (i.e. "../../") to get to the correct 
+It is important to use a relative path (i.e., "../../") to get to the correct 
 directory of the file being referenced in the literal include.  This will keep the 
 file linking to the correct version and branch.  
 
@@ -417,7 +417,7 @@ Literal blocks are usually used for showing command line syntax and are
 typically rendered in a monospaced font. Literal blocks are introduced
 by ending a paragraph with the special marker `::`.
      
-The literal block must be indented and separated by the surrounding text
+The literal block must be indented and separated from the surrounding text
 with a blank line above and below the text.  Example::
 
   Some text::
@@ -445,7 +445,7 @@ Substitution References
 Substitution references are replacements in the text as defined in the :code:`rst_epilog` 
 in the **docs/conf.py** file.  For example, instead of hard coding the MET version in 
 the METplus documentation, a variable :code:`met_version` can be set to a value 
-(e.g. 12.0.0) in the **docs/conf.py** file in the following way:
+(e.g., 12.0.0) in the **docs/conf.py** file in the following way:
 
 .. code-block:: ini
 
@@ -918,7 +918,7 @@ to match the format that is needed for RST.
 Now, the necessary formatting for a list-table will be added, in a new column,
 to the reformatted data in column E.  An asterisk represents the start of a
 row.  It is important that the asterisk be lined up with the first colon
-under the metadata information described above (e.g. the first colon in
+under the metadata information described above (e.g., the first colon in
 ":width:" and ":header-rows:"). Note that in the example below, there are three
 spaces before the asterisk. Starting with the adjacent cell to the
 first cell of the reformatted data (in this case cell F6), add the following
@@ -1101,7 +1101,7 @@ resulting in the following displayed table:
 Dropdown Menus
 --------------
 
-Dropdown menus, also known as accordions or collapsable lists are used
+Dropdown menus, also known as accordions or collapsible lists are used
 extensively in the :ref:`release-notes` to make the Release Notes easier
 to read.  An example of how to use a dropdown menu is shown below.
 
@@ -1265,7 +1265,7 @@ Example::
 
   run_program.py \-\-help
 
-resulting in the following displayed test:
+resulting in the following displayed text:
 
 run_program.py \-\-help 
 
@@ -1399,7 +1399,7 @@ Contributor's Guide:
   * **deprecation.rst** (What to do to deprecate a variable)
   * **documentation.rst** (Describing the documentation process and files)
   * **github_workflow.rst** (A description of how releases are made,
-    how to to obtain source code from the GitHub repository)
+    how to obtain source code from the GitHub repository)
   * **index.rst** (The page that shows all the 'chapters/sections'
     of the Contributor's Guide)
   * **testing.rst** (A description of how to set up testing the
@@ -1412,7 +1412,7 @@ Release Guide:
   any METplus component, including official, bugfix, and development
   releases.
 
-* Each METplus component has a top level file (e.g. **metplus.rst**)
+* Each METplus component has a top level file (e.g., **metplus.rst**)
   which simply contains references to files for each of the
   releases.  For example, **metplus.rst** contains references to:
     
@@ -1420,15 +1420,15 @@ Release Guide:
   * metplus_bugfix.
   * metplus_development.
 
-* Each release file (e.g. **metplus_official.rst**, **metplus_bugfix.rst**,
+* Each release file (e.g., **metplus_official.rst**, **metplus_bugfix.rst**,
   **metplus_development.rst**) contains, at a minimum, a replacement
   value for the projectRepo variable and include
   statements for each release step.  These individual steps
-  (e.g. **open_release_issue.rst**, **clone_project_repository.rst**, etc.)
+  (e.g., **open_release_issue.rst**, **clone_project_repository.rst**, etc.)
   may be common to multiple METplus components.  These common steps
   are located in the *release_steps* directory.  However, a METplus
   component may have different instructions from other components
-  (e.g. For **METplus wrappers**, **update_version.rst**,
+  (e.g., For **METplus wrappers**, **update_version.rst**,
   **create_release_extra.rst**, etc.). In this case, the instructions
   that are specific to that component are located in a subdirectory
   of *release_steps*.  For example, files that are specific to
@@ -1436,7 +1436,7 @@ Release Guide:
   that are specific to METcalcpy are located in
   *release_steps/metcalcpy*.
 
-* The file for each individual step (e.g. **open_release_issue.rst**,
+* The file for each individual step (e.g., **open_release_issue.rst**,
   **update_version.rst**, etc.) contains the instructions for
   completing that step for the release.  
     
@@ -1470,11 +1470,11 @@ and tags on repositories.  For the METplus components, documentation is
 automatically built by Read the Docs when a new tag is created and when a
 branch is created with the prefix:
 
-  * feature (e.g. feature_836_rtd_doc)
+  * feature (e.g., feature_836_rtd_doc)
     
-  * bugfix (e.g. bugfix_1716_develop_perc_thresh)
+  * bugfix (e.g., bugfix_1716_develop_perc_thresh)
 
-The documentation of these "versions" are automatically hidden, however, the
+The documentation of these "versions" is automatically hidden, however, the
 documentation can be accessed by directly modifying the URL. For example, to
 view "feature_836_rtd_doc" for the METplus repository the URL would be:
 
@@ -1486,7 +1486,7 @@ view "feature_836_rtd_doc" for the METplus repository the URL would be:
   
 The URL branch name will be lowercase regardless of the actual branch
 letter casing,
-i.e. "*feature_836_RTD_Doc*" branch would be accessed by the
+i.e., "*feature_836_RTD_Doc*" branch would be accessed by the
 above-mentioned URL.
   
 Read the Docs will automatically delete the documentation for a feature
@@ -1566,7 +1566,7 @@ This script does the following:
 * Builds the Sphinx documentation
 * Builds the doxygen documentation
 * Removes unwanted text from use case documentation
-* Copies doxygen files into* _build/html* for easy deployment
+* Copies doxygen files into *_build/html* for easy deployment
 * Creates symbolic links under Users_Guide to the directories under
   "generated" to preserve old URL paths
 

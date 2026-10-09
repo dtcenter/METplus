@@ -16,7 +16,7 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.co
 # --------------------
 #
 # This use case utilizes the new ASCII2NC method to natively read in NDBC ASCII files, a common source of sea surface data
-# for operational entities. These values are then compared to GFS' new wave height output, which it incorporated from Wave Watch III.
+# for operational entities. These values are then compared to GFS' new wave height output, which it incorporated from WAVEWATCH III.
 
 ##############################################################################
 # Version Added
@@ -77,7 +77,7 @@ model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.co
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.conf
+# i.e., parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/PointStat_fcstGFS_obsNDBC_WaveHeight.conf

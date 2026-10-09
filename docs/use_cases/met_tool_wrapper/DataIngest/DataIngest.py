@@ -50,7 +50,7 @@ met_tool_wrapper/DataIngest/DataIngest.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/met_tool_wrapper/DataIngest/DataIngest.conf
+# i.e., parm/use_cases/met_tool_wrapper/DataIngest/DataIngest.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/DataIngest/DataIngest.conf
@@ -72,7 +72,7 @@ met_tool_wrapper/DataIngest/DataIngest.conf
 # User Scripting
 # --------------
 #
-# This user case does not call a user-defined script.
+# This use case does not call a user-defined script.
 
 ##############################################################################
 # Running METplus

@@ -9,7 +9,7 @@ Return to GitHub to finalize the details of this release.
 
   * Edit the milestone for the current release by updating the *Due date* with the actual release date.
 
-  * Create a new milestone for the next bugfix release (e.g. '|projectRepo| X.Y.{Z+1} (bugfix)').
+  * Create a new milestone for the next bugfix release (e.g., '|projectRepo| X.Y.{Z+1} (bugfix)').
 
   * If necessary, reassign any remaining issues for the current bugfix milestone to the next one.
 

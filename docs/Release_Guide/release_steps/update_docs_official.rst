@@ -20,7 +20,7 @@ Update the default branch for Read the Docs.
     * Click on Settings in the top right menu
      
     * Select the new default branch in the dropdown menu for "Default branch"
-      (e.g. main_v4.0.0) and click the Save button at the bottom of the page
+      (e.g., main_v4.0.0) and click the Save button at the bottom of the page
     
     * Ensure that "latest" points to the new default branch by clicking on
       "latest" build that just started and click on "Version latest" to view the

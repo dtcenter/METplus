@@ -34,7 +34,7 @@ model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.
 #
 # **Forecast:** GFS Forecast U and T at multiple pressure levels
 #
-# **Observation:** ERA Reanlaysis U and T at multiple pressure levels
+# **Observation:** ERA Reanalysis U and T at multiple pressure levels
 #
 # **Climatology:** None
 #
@@ -94,7 +94,7 @@ model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.conf
+# i.e., parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.conf
@@ -126,7 +126,7 @@ model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.
 # User Scripting
 # --------------
 #
-# There are two Python scripts in the is use case.  The first, polar_t_u_driver.py reads in netCDF files for the
+# There are two Python scripts in this use case.  The first, polar_t_u_driver.py reads in netCDF files for the
 # forecast and observations and computes zonal means for temperature and wind.  Then, polar cap temperature is 
 # computed by taking the meridional mean between 60 and 90 latitude, while polar vortex u is computed by taking
 # the meridional mean between 50 and 80 latitude.  This data is written to output files in MET's matched pair
@@ -181,7 +181,7 @@ model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratospherePolar.
 # * GFS_ERA_20180201_20180228_HH0000L_PolarCapT_CNT.stat
 # * GFS_ERA_20180201_20180228_HH0000L_PolarVortexU_CNT.stat
 #
-# Four plot are also output to the plots directory::
+# Four plots are also output to the plots directory::
 # 
 # * ME_2018_02_polar_cap_T.png
 # * ME_2018_02_polar_vortex_U.png

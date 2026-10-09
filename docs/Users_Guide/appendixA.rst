@@ -207,7 +207,7 @@ METplus Components Python Packages
     | `UserScript: Compute Cross Spectra and Make a Plot <../generated/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.html>`__ 
     | `Grid-Stat: Verification of TC forecasts against merged TDR data <../generated/model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.html>`_ 
     | `UserScript: Calculate the Difficulty Index <../generated/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.html>`_
-    | `UserScript: Make zonal and meridonial means <../generated/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.html>`_
+    | `UserScript: Make zonal and meridional means <../generated/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.html>`_
 
 .. dropdown:: metplotpy
 
@@ -363,7 +363,7 @@ METplus Components Python Packages
 
   Description:
     A convenience module that bulk imports matplotlib.pyplot (for plotting) and NumPy (for 
-    Mathematics and working with arrays) in a single name space
+    mathematics and working with arrays) in a single name space
 
   Use Case:
     | `WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.html>`__  

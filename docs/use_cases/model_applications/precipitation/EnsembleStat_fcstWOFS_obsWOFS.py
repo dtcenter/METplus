@@ -2,7 +2,7 @@
 Ensemble-Stat: WoFS
 ===================
 
-model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
+model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 
 """
 ##############################################################################
@@ -32,7 +32,7 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 #
 # **Forecast:** NOAA Warn-on-Forecast System (WoFS) Ensemble
 #
-# **Observation:** MRMS Gauge-corrected 1-hr quatitative precipation estimate (QPE)
+# **Observation:** MRMS Gauge-corrected 1-hr quantitative precipitation estimate (QPE)
 #
 # **Climatology:** None
 #
@@ -82,7 +82,7 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
+# i.e., parm/use_cases/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
