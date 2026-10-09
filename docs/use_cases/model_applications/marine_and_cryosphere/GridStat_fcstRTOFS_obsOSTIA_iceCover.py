@@ -158,7 +158,7 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.co
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this ice use case will be found in 20210305 (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in 20210305 (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # * grid_stat_north_000000L_20210305_120000V_cnt.txt

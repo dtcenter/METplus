@@ -146,7 +146,7 @@ model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar.co
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this ice use case will be found in model_applications/PlotDataPlane_obsHYCOM_coordTripolar
+# Output for this use case will be found in model_applications/PlotDataPlane_obsHYCOM_coordTripolar
 # (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #

@@ -1183,7 +1183,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`FCST_POINT_STAT_INPUT_DIR` instead.
 
    FCST_INPUT_DIR
-     .. warning:: **DEPRECATED:** Please use ``FCST_[MET-APP]_INPUT_DIR`` instead, i.e., :term:`FCST_GRID_STAT_INPUT_DIR`
+     .. warning:: **DEPRECATED:** Please use ``FCST_<TOOL-NAME>_INPUT_DIR`` instead, i.e., :term:`FCST_GRID_STAT_INPUT_DIR`
 
    FCST_INPUT_FILE_REGEX
      .. warning:: **DEPRECATED:** Regular expression to use when identifying which forecast file to use.
