@@ -442,7 +442,7 @@ METplus Configuration Glossary
      | *Used by:* PyEmbedIngest
 
    PY_EMBED_INGEST_<n>_OUTPUT_GRID
-     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the grid information that RegridDataPlane will use to generate a file that can be read by the MET tools. This can be a file path or a grid definition. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information. See also :term:`PY_EMBED_INGEST_<n>_TYPE`, :term:`PY_EMBED_INGEST_<n>_SCRIPT`, :term:`PY_EMBED_INGEST_<n>_OUTPUT_TEMPLATE`, and :term:`PY_EMBED_INGEST_<n>_OUTPUT_DIR`.
+     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the grid information that RegridDataPlane will use to generate a file that can be read by the MET tools. This can be a file path or a grid definition. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information. See also :term:`PY_EMBED_INGEST_<n>_TYPE`, :term:`PY_EMBED_INGEST_<n>_SCRIPT`, :term:`PY_EMBED_INGEST_<n>_OUTPUT_TEMPLATE`, and :term:`PY_EMBED_INGEST_<n>_OUTPUT_DIR`.
 
      | *Used by:* PyEmbedIngest
 
@@ -568,57 +568,57 @@ METplus Configuration Glossary
      | *Used by:* SeriesAnalysis
 
    ASCII2NC_TIME_SUMMARY_FLAG
-     Boolean value to turn on/off time summarization. Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration for more information.
+     Boolean value to turn on/off time summarization. Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration for more information.
 
      | *Used by:* ASCII2NC
 
    ASCII2NC_TIME_SUMMARY_RAW_DATA
-     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
+     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
 
      | *Used by:* ASCII2NC
 
    ASCII2NC_TIME_SUMMARY_BEG
-     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
+     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
 
      | *Used by:* ASCII2NC
 
    ASCII2NC_TIME_SUMMARY_END
-     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
+     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
 
      | *Used by:* ASCII2NC
 
    ASCII2NC_TIME_SUMMARY_STEP
-     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
+     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
 
      | *Used by:* ASCII2NC
 
    ASCII2NC_TIME_SUMMARY_WIDTH
-     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
+     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
 
      | *Used by:* ASCII2NC
 
    ASCII2NC_TIME_SUMMARY_GRIB_CODES
-     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
+     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
 
      | *Used by:* ASCII2NC
 
    ASCII2NC_TIME_SUMMARY_VAR_NAMES
-     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
+     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
 
      | *Used by:* ASCII2NC
 
    ASCII2NC_TIME_SUMMARY_TYPES
-     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
+     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
 
      | *Used by:* ASCII2NC
 
    ASCII2NC_TIME_SUMMARY_VALID_FREQ
-     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
+     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
 
      | *Used by:* ASCII2NC
 
    ASCII2NC_TIME_SUMMARY_VALID_THRESH
-     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
+     Read by the ASCII2NC configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ section regarding ASCII2NC configuration files for more information.
 
      | *Used by:* ASCII2NC
 
@@ -950,12 +950,12 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_REGRID_TO_GRID`.
 
    ENSEMBLE_STAT_REGRID_TO_GRID
-     Used to set the regrid dictionary item 'to_grid' in the MET EnsembleStat config file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Used to set the regrid dictionary item 'to_grid' in the MET EnsembleStat config file. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  EnsembleStat
 
    GRID_STAT_REGRID_TO_GRID
-     Used to set the regrid dictionary item 'to_grid' in the MET GridStat config file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Used to set the regrid dictionary item 'to_grid' in the MET GridStat config file. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  GridStat
 
@@ -965,7 +965,7 @@ METplus Configuration Glossary
      | *Used by:*  Point2Grid
 
    POINT_STAT_REGRID_TO_GRID
-     Used to set the regrid dictionary item 'to_grid' in the MET PointStat config file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Used to set the regrid dictionary item 'to_grid' in the MET PointStat config file. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PointStat
 
@@ -974,17 +974,17 @@ METplus Configuration Glossary
 
 
    MODE_REGRID_TO_GRID
-     Used to set the regrid dictionary item 'to_grid' in the MET MODE config file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Used to set the regrid dictionary item 'to_grid' in the MET MODE config file. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  MODE
 
    MTD_REGRID_TO_GRID
-     Used to set the regrid dictionary item 'to_grid' in the MET MTD config file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Used to set the regrid dictionary item 'to_grid' in the MET MTD config file. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  MTD
 
    SERIES_ANALYSIS_REGRID_TO_GRID
-     Used to set the regrid dictionary item 'to_grid' in the MET SeriesAnalysis config file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Used to set the regrid dictionary item 'to_grid' in the MET SeriesAnalysis config file. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:* SeriesAnalysis
 
@@ -1085,7 +1085,7 @@ METplus Configuration Glossary
      | *Used by:*  ExtractTiles
 
    EXTRACT_TILES_VAR_LIST
-     Control what variables the METplus extract_tiles utility runs on. Additional filtering by summary (via the MET tc_stat tool). Please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ (TC-STAT Tools) for all the available options for filtering by summary method in tc-stat. If no additional filtering is required, simply leave the value to :term:`EXTRACT_TILES_FILTER_OPTS` blank/empty in the METplus configuration file.
+     Control what variables the METplus extract_tiles utility runs on. Additional filtering by summary (via the MET tc_stat tool). Please refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ (TC-STAT Tools) for all the available options for filtering by summary method in tc-stat. If no additional filtering is required, simply leave the value to :term:`EXTRACT_TILES_FILTER_OPTS` blank/empty in the METplus configuration file.
 
      | *Used by:*  ExtractTiles
 
@@ -1652,7 +1652,7 @@ METplus Configuration Glossary
 
      See :ref:`Field_Info` for more information.
 
-     This value can be set to a call to a python script with arguments to supply data to the MET tools via Python Embedding. Filename template syntax can be used here to specify time information of an input file, i.e., {valid?fmt=%Y%m%d%H}. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information about Python Embedding in the MET tools.
+     This value can be set to a call to a python script with arguments to supply data to the MET tools via Python Embedding. Filename template syntax can be used here to specify time information of an input file, i.e., {valid?fmt=%Y%m%d%H}. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information about Python Embedding in the MET tools.
 
      | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
 
@@ -2022,27 +2022,27 @@ METplus Configuration Glossary
      | *Used by:*  GridStat
 
    GRID_STAT_NEIGHBORHOOD_WIDTH
-     Sets the neighborhood width used by GridStat. See `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Sets the neighborhood width used by GridStat. See `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  GridStat
 
    GRID_STAT_NEIGHBORHOOD_SHAPE
-     Sets the neighborhood shape used by GridStat. See `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Sets the neighborhood shape used by GridStat. See `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  GridStat
 
    GRID_STAT_NEIGHBORHOOD_COV_THRESH
-     Sets the neighborhood cov_thresh list used by GridStat. See `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Sets the neighborhood cov_thresh list used by GridStat. See `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  GridStat
 
    POINT_STAT_NEIGHBORHOOD_WIDTH
-     Sets the neighborhood width used by PointStat. See `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Sets the neighborhood width used by PointStat. See `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PointStat
 
    POINT_STAT_NEIGHBORHOOD_SHAPE
-     Sets the neighborhood shape used by PointStat. See `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Sets the neighborhood shape used by PointStat. See `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PointStat
 
@@ -2582,7 +2582,7 @@ METplus Configuration Glossary
      | *Used by:*  MODE
 
    MODE_OBS_CONV_RADIUS
-     .. warning:: **DEPRECATED:** Please see `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ instead.
+     .. warning:: **DEPRECATED:** Please see `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ instead.
 
    MODE_OBS_CONV_THRESH
      .. warning:: **DEPRECATED:** Please use :term:`OBS_MODE_CONV_THRESH` instead.
@@ -2636,7 +2636,7 @@ METplus Configuration Glossary
      | *Used by:* MTD
 
    MTD_MIN_VOLUME
-     Sets min_volume in the MET MODE-TD config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Sets min_volume in the MET MODE-TD config file. Refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:* MTD
 
@@ -3209,7 +3209,7 @@ METplus Configuration Glossary
      | ...
      | OBS_VAR<n>_NAME
 
-     This value can be set to a call to a python script with arguments to supply data to the MET tools via Python Embedding. Filename template syntax can be used here to specify time information of an input file, i.e., {valid?fmt=%Y%m%d%H}. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information about Python Embedding in the MET tools.
+     This value can be set to a call to a python script with arguments to supply data to the MET tools via Python Embedding. Filename template syntax can be used here to specify time information of an input file, i.e., {valid?fmt=%Y%m%d%H}. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information about Python Embedding in the MET tools.
 
      | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
 
@@ -3360,22 +3360,22 @@ METplus Configuration Glossary
      | *Used by:*  PB2NC
 
    PB2NC_TIME_SUMMARY_FLAG
-     Specify the time summary flag item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Specify the time summary flag item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PB2NC
 
    PB2NC_TIME_SUMMARY_BEG
-     Specify the time summary beg item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Specify the time summary beg item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PB2NC
 
    PB2NC_TIME_SUMMARY_END
-     Specify the time summary end item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Specify the time summary end item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PB2NC
 
    PB2NC_TIME_SUMMARY_VAR_NAMES
-     Specify the time summary obs_var list item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Specify the time summary obs_var list item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PB2NC
 
@@ -3386,7 +3386,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`PB2NC_TIME_SUMMARY_TYPES` instead.
 
    PB2NC_TIME_SUMMARY_TYPES
-     Specify the time summary type list item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Specify the time summary type list item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PB2NC
 
@@ -3519,7 +3519,7 @@ METplus Configuration Glossary
      | *Used by:*  Point2Grid
 
    REGRID_DATA_PLANE_METHOD
-     Sets the method used by regrid_data_plane. See `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Sets the method used by regrid_data_plane. See `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  RegridDataPlane
 
@@ -3529,7 +3529,7 @@ METplus Configuration Glossary
      | *Used by:*  RegridDataPlane
 
    REGRID_DATA_PLANE_WIDTH
-     Sets the width used by regrid_data_plane. See `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Sets the width used by regrid_data_plane. See `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  RegridDataPlane
 
@@ -3759,7 +3759,7 @@ METplus Configuration Glossary
      | *Used by:*  TCPairs
 
    TC_PAIRS_BASIN
-     Control what basins are desired for tropical cyclone analysis. Per the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ acceptable basin ID's are:WP = Western Northern PacificIO = Northern Indian OceanSH = Southern HemisphereCP = Central Northern PacificEP = Eastern Northern PacificAL = Northern AtlanticSL = Southern Atlantic
+     Control what basins are desired for tropical cyclone analysis. Per the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ acceptable basin ID's are:WP = Western Northern PacificIO = Northern Indian OceanSH = Southern HemisphereCP = Central Northern PacificEP = Eastern Northern PacificAL = Northern AtlanticSL = Southern Atlantic
 
      | *Used by:*  TCPairs
 
@@ -3780,12 +3780,12 @@ METplus Configuration Glossary
      | *Used by:*  TCPairs
 
    TC_PAIRS_CYCLONE
-     Specify which cyclone numbers to include in the tropical cyclone analysis. Per the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_, this can be any number 01-99 (HH format). Use a space or comma separated list, or leave unset if all cyclones are desired.
+     Specify which cyclone numbers to include in the tropical cyclone analysis. Per the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_, this can be any number 01-99 (HH format). Use a space or comma separated list, or leave unset if all cyclones are desired.
 
      | *Used by:*  TCPairs
 
    TC_PAIRS_DLAND_FILE
-     The file generated by the MET tool tc_dland, containing the gridded representation of the minimum distance to land. Please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information about the tc_dland tool.
+     The file generated by the MET tool tc_dland, containing the gridded representation of the minimum distance to land. Please refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information about the tc_dland tool.
 
      | *Used by:*  TCPairs
 
@@ -3887,7 +3887,7 @@ METplus Configuration Glossary
    TC_STAT_CMD_LINE_JOB
      .. warning:: **DEPRECATED:** Please set :term:`TC_STAT_CONFIG_FILE` to run using a config file and leave it unset to run via the command line.
 
-     Old: Specify expression(s) that will be passed to the MET tc_stat tool via the command line. Only specify if TC_STAT_RUN_VIA=CLI. Please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ chapter for tc-stat for the details on performing job summaries and job filters.
+     Old: Specify expression(s) that will be passed to the MET tc_stat tool via the command line. Only specify if TC_STAT_RUN_VIA=CLI. Please refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ chapter for tc-stat for the details on performing job summaries and job filters.
 
      | *Used by:*  TCStat
 
@@ -3957,17 +3957,17 @@ METplus Configuration Glossary
      | *Used by:*  TCStat
 
    TC_STAT_INIT_MASK
-     This corresponds to the INIT_MASK keyword in the MET tc_stat config file. For more information, please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ .
+     This corresponds to the INIT_MASK keyword in the MET tc_stat config file. For more information, please refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ .
 
      | *Used by:*  TCStat
 
    TC_STAT_INIT_STR_NAME
-     This corresponds to the INIT_STR_NAME keyword in the MET tc_stat config file. Please refer to  the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more details.
+     This corresponds to the INIT_STR_NAME keyword in the MET tc_stat config file. Please refer to  the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more details.
 
      | *Used by:*  TCStat
 
    TC_STAT_INIT_STR_VAL
-     This corresponds to the INIT_STR_VAL keyword in the MET tc_stat config file. Please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     This corresponds to the INIT_STR_VAL keyword in the MET tc_stat config file. Please refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  TCStat
 
@@ -4083,7 +4083,7 @@ METplus Configuration Glossary
      | *Used by:*  TCStat
 
    TC_STAT_VALID_HOUR
-     This corresponds to the VALID_HOUR keyword in the MET tc_stat config file. For more information, please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_.
+     This corresponds to the VALID_HOUR keyword in the MET tc_stat config file. For more information, please refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_.
 
      | *Used by:*  TCStat
 
@@ -4093,7 +4093,7 @@ METplus Configuration Glossary
      | *Used by:*  TCStat
 
    TC_STAT_VALID_MASK
-     This corresponds to the VALID_MASK in the MET tc_stat config file. Please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     This corresponds to the VALID_MASK in the MET tc_stat config file. Please refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  TCStat
 
@@ -6081,32 +6081,32 @@ METplus Configuration Glossary
      | *Used by:*  GridDiag
 
    PB2NC_TIME_SUMMARY_RAW_DATA
-     Specify the time summary raw_data item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Specify the time summary raw_data item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PB2NC
 
    PB2NC_TIME_SUMMARY_STEP
-     Specify the time summary step item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Specify the time summary step item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PB2NC
 
    PB2NC_TIME_SUMMARY_WIDTH
-     Specify the time summary width item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Specify the time summary width item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PB2NC
 
    PB2NC_TIME_SUMMARY_GRIB_CODES
-     Specify the time summary grib_code item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Specify the time summary grib_code item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PB2NC
 
    PB2NC_TIME_SUMMARY_VALID_FREQ
-     Specify the time summary valid_freq item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Specify the time summary valid_freq item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PB2NC
 
    PB2NC_TIME_SUMMARY_VALID_THRESH
-     Specify the time summary valid_thresh item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Specify the time summary valid_thresh item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  PN2NC
 

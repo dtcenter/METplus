@@ -19,9 +19,9 @@ File format
   NetCDF
 
 Location of data
-  GOES-16: https://console.cloud.google.com/storage/browser/gcp-public-data-goes-16 
+  `GOES-16 <https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fconsole.cloud.google.com%2Fstorage%2Fbrowser%2Fgcp-public-data-goes-16&dsh=S1360945128%3A1784845336917752&followup=https%3A%2F%2Fconsole.cloud.google.com%2Fstorage%2Fbrowser%2Fgcp-public-data-goes-16&osid=1&passive=1209600&service=cloudconsole&flowName=GlifWebSignIn&flowEntry=ServiceLogin&ifkv=Ac50bxsdYK2GGDDoQ6Zon9fWLCgjVWA4PPUmNan424z9BsNaplR4bvXJYgVV6t0AxGJaKfkjmYe3ww>`_
 
-  GOES-17: https://console.cloud.google.com/storage/browser/gcp-public-data-goes-17  
+  `GOES-17 <https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fconsole.cloud.google.com%2Fstorage%2Fbrowser%2Fgcp-public-data-goes-17&dsh=S-1338392620%3A1784845336976484&followup=https%3A%2F%2Fconsole.cloud.google.com%2Fstorage%2Fbrowser%2Fgcp-public-data-goes-17&osid=1&passive=1209600&service=cloudconsole&flowName=GlifWebSignIn&flowEntry=ServiceLogin&ifkv=Ac50bxtoVvDlUij5NCRq6UOuX0E9EZtrGTzm2h29vO6Tm-xXVmIJS1Gf1ejRlFbo5FCON1MxV-cz>`_ 
 
   Note: There are other government institutions, cloud providers, and research institutions that provide this data.
 

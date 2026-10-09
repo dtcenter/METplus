@@ -388,7 +388,7 @@ LOG_TIMESTAMP_TEMPLATE
 
 Sets the desired timestamp format, using strftime format directives.
 It must only contain valid strftime format directives (see
-https://strftime.org).
+https://www.bairesdev.com/tools/strftime/).
 The current run time is substituted using the format specified unless
 :ref:`LOG_TIMESTAMP_USE_DATATIME<log_timestamp_use_datatime>`
 is set to true/yes.

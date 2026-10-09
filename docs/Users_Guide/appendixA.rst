@@ -18,14 +18,14 @@ METplus components, see the documentation links below for the desired
 METplus component. Please note that the documentation for the METplus
 Use Cases lists the required Python packages in the individual Use Cases
 documentation.
-	  
+
   * :ref:`METplus Python Package Requirements <python_package_requirements>`
-  * `MET Python Embedding Requirements <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#compiling-met-for-python-embedding>`_
-  * `METcalcpy Python Package Requirements <https://metcalcpy.readthedocs.io/en/latest/Users_Guide/installation.html#python-requirements>`_
-  * `METdataio Python Package Requirements <https://metdataio.readthedocs.io/en/latest/Users_Guide/installation.html#requirements>`_
-  * `METplotpy Python Package Requirements <https://metplotpy.readthedocs.io/en/latest/Users_Guide/installation.html#python-requirements>`_
-  * `METviewer Python Package Requirements <https://metviewer.readthedocs.io/en/latest/Users_Guide/installation.html#installing-metviewer>`_
-  * `METexpress Python Package Requirements <https://metexpress.readthedocs.io/en/latest/Users_Guide/installation.html#metexpress-system-requirements-installation-and-support>`_
+  * `MET Python Embedding Requirements <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/appendixF.html#compiling-met-for-python-embedding>`_
+  * `METcalcpy Python Package Requirements <https://metplus.readthedocs.io/projects/metcalcpy/en/latest/Users_Guide/installation.html#python-requirements>`_
+  * `METdataio Python Package Requirements <https://metplus.readthedocs.io/projects/metdataio/en/latest/Users_Guide/installation.html#requirements>`_
+  * `METplotpy Python Package Requirements <https://metplus.readthedocs.io/projects/metplotpy/en/latest/Users_Guide/installation.html#python-requirements>`_
+  * `METviewer Python Package Requirements <https://metplus.readthedocs.io/projects/metviewer/en/latest/Users_Guide/installation.html#installing-metviewer>`_
+  * `METexpress Python Package Requirements <https://metplus.readthedocs.io/projects/metexpress/en/latest/Users_Guide/installation.html#metexpress-system-requirements-installation-and-support>`_
 
 .. _metplus_components_python_packages:
 
@@ -148,7 +148,7 @@ METplus Components Python Packages
     | METplotpy
 
   Source:
-    https://pypi.org/project/imageio/
+    https://pypi.org/project/ImageIO/
 
   Description:
     Provides an easy interface to read and write a wide range of image data, including animated
@@ -207,7 +207,7 @@ METplus Components Python Packages
     | `UserScript: Compute Cross Spectra and Make a Plot <../generated/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.html>`__ 
     | `Grid-Stat: Verification of TC forecasts against merged TDR data <../generated/model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.html>`_ 
     | `UserScript: Calculate the Difficulty Index <../generated/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.html>`_
-    | `UserScript: Make zonal and meridional means <../generated/model_applications/s2s/UserScript_obsERA_obsOnly_Stratosphere.html>`_
+    | `UserScript: Make zonal and meridional means <../generated/model_applications/s2s_stratosphere/UserScript_fcstGFS_obsERA_StratosphereBias.html>`_
 
 .. dropdown:: metplotpy
 
@@ -223,7 +223,7 @@ METplus Components Python Packages
 
   Use Case:
     | `UserScript: Make a Hovmoeller plot  <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.html>`_  
-    | `UserScript: Compute Cross Spectra and Make a Plot <../generated/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.html>`__  
+    | `UserScript: Compute Cross Spectra and Make a Plot <../generated/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.html>`__  
     | `UserScript: Calculate the Difficulty Index <../generated/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.html>`_ 
     | `TCGen: Genesis Density Function (GDF) and Track Density Function (TDF) <../generated/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.html>`_
 
@@ -388,7 +388,7 @@ METplus Components Python Packages
     Select METplus Use Cases
 
   Source:
-    https://github.com/pyproj4/pyproj/archive/v2.3.1rel.tar.gz
+    `https://github.com/pyproj4/pyproj/archive/v2.3.1rel.tar.gz <https://codeload.github.com/pyproj4/pyproj/tar.gz/refs/tags/v2.3.1rel>`_
 
   Description:
     Python interface to PROJ (cartographic projections and  coordinate transformations library)
@@ -421,7 +421,7 @@ METplus Components Python Packages
     | METdataio
 
   Source:
-    https://github.com/pytest-dev/pytest/archive/5.2.1.tar.gz
+    `https://github.com/pytest-dev/pytest/archive/5.2.1.tar.gz <https://codeload.github.com/pytest-dev/pytest/tar.gz/refs/tags/5.2.1>`_
 
   Description:
     A mature full-featured Python testing tool that helps to write better programs
@@ -490,7 +490,7 @@ METplus Components Python Packages
   Use Case:
     | `Blocking Calculation: ERA RegridDataPlane, PcpCombine, and Blocking python code <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_Blocking.html>`_ 
     | `WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_WeatherRegime.html>`__ 
-    | `UserScript: Make OMI plot from calculated MJO indices with ERA obs only <../generated/model_applications/s2s_mid_lat/UserScript_obsERA_obsOnly_OMI.html>`__ 
+    | `UserScript: Make OMI plot from calculated MJO indices with ERA obs only <../generated/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_OMI.html>`__ 
     | `WeatherRegime Calculation: GFS and ERA RegridDataPlane, PcpCombine, and WeatherRegime python code <../generated/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_WeatherRegime.html>`__ 
     | `Blocking Calculation: GFS and ERA RegridDataPlane, PcpCombine, and Blocking python code <../generated/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.html>`_ 
     | `UserScript: Make a Phase Diagram plot from input RMM or OMI <../generated/model_applications/s2s_mjo/UserScript_obsERA_obsOnly_PhaseDiagram.html>`__ 

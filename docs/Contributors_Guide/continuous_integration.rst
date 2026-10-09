@@ -52,15 +52,18 @@ Documentation (documentation.yml)
 METplus documentation is written using Sphinx.
 The METplus components utilize ReadTheDocs to build and display documentation.
 However, ReadTheDocs will render the documentation when warnings occur.
-This GitHub Actions workflow is run to catch/report warnings and errors.
+This GitHub Actions workflow is run to catch/report warnings and errors,
+and to check the documentation for broken links
+(see :ref:`cg-ci-linkcheck`).
 
-This workflow is only triggered when changes are made to files under the
-**docs** directory of the METplus repository.
+This workflow is triggered by pushes that change files under the
+**docs** directory of the METplus repository, by every pull request,
+and manually with a **workflow_dispatch** event.
 It builds the documentation by running "make clean html" and
 makes the files available to download at the end of the workflow
 as a GitHub Actions artifact. This step is no longer mandatory because
 ReadTheDocs is configured to automatically generate the documentation for each
-branch/tag and publish it `online <https://metplus.readthedocs.io>`_.
+branch/tag and publish it `online <https://metplus.readthedocs.io/en/latest/>`_.
 
 The Makefile that runs sphinx-build was modified to write warnings and errors
 to a file called warnings.log using the -w argument. This file will be empty
@@ -80,39 +83,38 @@ at the bottom of the workflow summary page when the workflow has completed.
 
 .. _cg-ci-linkcheck:
 
-Check Documentation Links (linkcheck.yml)
------------------------------------------
+Checking Documentation Links
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 METplus documentation contains many links to external resources, such as
 academic papers, related software packages, and other websites. Over time,
-these external links can break as pages are moved or removed. This workflow
-runs Sphinx's ``linkcheck`` builder to identify broken links in the
+these external links can break as pages are moved or removed. After the
+documentation builds without warnings, the Documentation workflow runs
+Sphinx's ``linkcheck`` builder to identify broken links in the
 documentation.
 
-This workflow is defined in each of the METplus component repositories.
-It calls a :ref:`cg-ci-custom-actions` action,
+This step calls a :ref:`cg-ci-custom-actions` action,
 `dtcenter/metplus-action-linkcheck <https://github.com/dtcenter/metplus-action-linkcheck>`_,
 so that the logic to install documentation dependencies and run the
-``linkcheck`` builder does not need to be duplicated across repositories.
+``linkcheck`` builder does not need to be duplicated across the METplus
+component repositories. Each component runs it from its own
+Documentation workflow.
 
-This workflow is triggered by:
+Because it is part of the Documentation workflow, the link check runs
+whenever the Documentation workflow does.
 
-* A weekly **schedule**, so that link rot is caught even when
-  no documentation changes have been made
-* A **pull_request** event for changes to files under the **docs** directory,
-  so that new or edited links are checked before a pull request is merged
-* A manual **workflow_dispatch** event, so that a developer can run the check
-  on demand against any branch
-
-If broken links are found, the workflow job fails, as indicated by a red X,
-and the full ``linkcheck`` report is made available for download as a
-GitHub Actions artifact so it can be reviewed.
+Links that fail because of a temporary network problem are re-checked
+after a delay before they are reported as broken. If broken links are
+found, the workflow job fails, as indicated by a red X. The broken links
+are listed in the job summary, and the full ``linkcheck`` report is made
+available for download as a GitHub Actions artifact.
 
 Some links may be intentionally excluded from this check. For example, a link
 may be valid but block automated/non-browser requests, or may point to a
 resource that is only reachable from an internal network. These exclusions
 are configured per repository in the ``linkcheck_ignore`` variable in that
-repository's **docs/conf.py** file.
+repository's **docs/conf.py** file. Ignored links are listed in the job
+summary so they can be checked by hand.
 
 .. _cg-ci-sonarqube:
 
@@ -145,8 +147,8 @@ METcalcpy, and METdataio) run jobs to:
 * Run a SonarQube quality gate check job provided by SonarSource
  
 The quality gate check job pushes the scan results, including code coverage,
-to a [SonarQube server](https://needham.rap.ucar.edu/) hosted by the METplus
-team. All memebers of the DTCenter GitHub organization can access this server
+to a `SonarQube server <https://dtc-sca.rap.ucar.edu/>`_ hosted by the METplus
+team. All members of the DTCenter GitHub organization can access this server
 by logging in with their GitHub credentials.
 
 The SonarQube scans for MET and METviewer require that the code be built,
@@ -814,12 +816,12 @@ The format of the value is <REPO>:<TAG>
 where the DockerHub repo used is dtcenter/<REPO> and the tag used is <TAG>.
 
 Stable releases of MET are found in the
-`dtcenter/met DockerHub repo <https://hub.docker.com/repository/docker/dtcenter/met/general>`_
+`dtcenter/met DockerHub repo <https://hub.docker.com/r/dtcenter/met>`_
 and are named using the X.Y.Z version of the release,
 so setting **SET_MET_IMAGE=met:11.1.0** will use dtcenter/met:11.1.0.
 
 Development versions of MET are found in the
-`dtcenter/met-dev DockerHub repo <https://hub.docker.com/repository/docker/dtcenter/met-dev/general>`_
+`dtcenter/met-dev DockerHub repo <https://hub.docker.com/r/dtcenter/met-dev>`_
 and are named using the branch name,
 so setting **SET_MET_IMAGE=met-dev:feature_XYZ_info** will use
 dtcenter/met-dev:feature_XYZ_info.
@@ -1206,7 +1208,7 @@ will use the **pygrib** environment to run::
     user_env_vars.MET_PYTHON_EXE=/usr/local/envs/pygrib/bin/python3
 
 Please see the
-`MET User's Guide <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html>`_
+`MET User's Guide <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/appendixF.html>`_
 for more information on how to use Python Embedding.
 
 * **metviewer** - Used if METviewer should be made available to the use case.
@@ -1255,7 +1257,7 @@ environments, refer to the comments in the scripts found in
 If none of these environments contain the package requirements
 needed to run a new use case, a new environment must be added by a METplus developer.
 See the instructions below or create a new discussion on the
-`METplus GitHub Discussions <https://github.com/dtcenter/METplus/discussions/new/choose>`_
+`METplus GitHub Discussions <https://github.com/login?return_to=https%3A%2F%2Fgithub.com%2Fdtcenter%2FMETplus%2Fdiscussions%2Fnew%2Fchoose>`_
 forum.
 
 A **README.md** file can be found in *internal/scripts/docker_env* that
@@ -1521,7 +1523,7 @@ using the **\-\-volumes-from** argument to the **docker run** command.
 Build Docker Test Environment
 """""""""""""""""""""""""""""
 
-A `Docker multi-stage build <https://docs.docker.com/develop/develop-images/multistage-build>`_
+A `Docker multi-stage build <https://docs.docker.com/build/building/multi-stage/>`_
 is used to create the Docker environment to run the use cases.
 The Docker images that contain the :ref:`cg-ci-use-case-dependencies` are
 built and the relevant files (such as the Conda environment files) are

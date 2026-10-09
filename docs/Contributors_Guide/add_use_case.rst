@@ -115,7 +115,7 @@ configuration file name excluding the .conf suffix.
 .. figure:: figure/model_applications_example.png
 
 .. figure:: figure/model_applications_subdir.png
-	    
+
 Use Case Rules
 --------------
 
@@ -556,7 +556,7 @@ PRMSL data and TMP data on 1000, 900, 800, 700, 500, and 100 mb levels::
     wgrib2 file.grib2 -s | egrep '(:TMP:1000 mb:|:TMP:900 mb:|:TMP:800 mb:|:TMP:700 mb:|:TMP:500 mb:|:TMP:100 mb:|:PRMSL)' | wgrib2 -i file.grib2 -grib subset.grib2
 
 If the input data is in NetCDF format, the
-`ncks <http://nco.sourceforge.net/nco.html>`_ tool can be used to subset
+`ncks <https://nco.sourceforge.net/nco.html>`_ tool can be used to subset
 the file(s).
 
 Providing new data
@@ -1028,7 +1028,7 @@ environment, potential reasons include:
   GitHub Actions environment
 
 GitHub Actions has
-`limited memory <https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources>`_
+`limited memory <https://docs.github.com/en/actions/reference/runners/github-hosted-runners>`_
 available and will cause the use case to fail when exceeded. A failure
 caused by exceeding the memory allocation in a Python Embedding script
 may result in an unclear error message. 
@@ -1121,7 +1121,7 @@ and the data cannot be further pared down, please take the following steps.
   Change the number in front of the new use case to an 'X', preceded 
   by the ‘#’ character::
 
-	#X::GridStat_fcstRTOFS_obsGHRSST_climWOA_sst::model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf:: icecover_env, py_embed
+        #X::GridStat_fcstRTOFS_obsGHRSST_climWOA_sst::model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf:: icecover_env, py_embed
 
 - In the *.github/parm/use_case_groups.json* file, remove the entry that 
   was added during the :ref:`add_new_category_to_test_runs` 

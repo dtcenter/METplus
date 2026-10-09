@@ -220,7 +220,7 @@ account used for the installation.
    * - Hera
      - /contrib/met
      - role.metplus
-   * - Jet	
+   * - Jet
      - /contrib/met
      - role.metplus
    * - Gaea
@@ -253,9 +253,9 @@ Download the compilation script, *compile_MET_all.sh*. For example:
 
 .. warning::
 
-   Note	that the link above links to the **RAW** content of the	file. It is essential to
+   Note that the link above links to the **RAW** content of the file. It is essential to
    download the raw format, otherwise the file will contain unwanted HTML information
-   and will not	work appropriately. 
+   and will not work appropriately.
    
 .. note::
 
@@ -456,7 +456,7 @@ If installing a rc release, rename the file X.Y.Z-rcN. For example:
 
    mv X.Y.Z_ursa X.Y.Z-rcN
 
-Open the file using the	editor of your choice and change any references	to
+Open the file using the editor of your choice and change any references to
 X.Y.Z to X.Y.Z-rcN. Save the file.
 
 **Review the file to ensure no other updates need to be made.**

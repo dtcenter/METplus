@@ -7,8 +7,6 @@ Description
   Meteorological Phenomena Identification Near the Ground (mPING) is a crowd-sourced weather observing network developed through partnership between the National Severe Storms Laboratory, The University of Oklahoma, and the Cooperative Institute for Mesoscale Meteorological Studies.
   
   https://mping.ou.edu/
- 
-  https://mping.nssl.noaa.gov/ 
 
 Sample image
 
