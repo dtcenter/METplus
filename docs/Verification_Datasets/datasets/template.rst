@@ -77,6 +77,7 @@ Keywords
       DataProviderEUMETNET
       DataProviderNASA
       DataProviderNOAA
+      DataProviderUGent
       DataProviderUSAF
     Select at least one DataApplication label:
       DataApplicationClimate
