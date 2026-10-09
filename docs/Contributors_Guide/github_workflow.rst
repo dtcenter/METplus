@@ -446,9 +446,9 @@ Find or Create a GitHub Issue
   the METplus GitHub Discussions page to ask if an issue should be created.
 
 * If creating a new issue, select the
-  `"New Issue" <https://github.com/login?return_to=https%3A%2F%2Fgithub.com%2Fdtcenter%2FMETplus%2Fdiscussions%2Fnew%2Fchoose>`_ button
-  and review the categories of issues (e.g., Bug report, enhancement request,
-  New feature request, New use case, Sub-Issue, Task).  Find an appropriate
+  `"New Issue" <https://github.com/login?return_to=https%3A%2F%2Fgithub.com%2Fdtcenter%2FMETplus%2Fissues%2Fnew%2Fchoose>`_ button
+  and review the categories of issues (e.g., Bug report, Documentation,
+  Enhancement request, New feature request, New use case, Sub-Issue, Task).  Find an appropriate
   category and click on "Get Started" next to the category.
 
   Create a short, but descriptive title. In the 'write' window, follow the
