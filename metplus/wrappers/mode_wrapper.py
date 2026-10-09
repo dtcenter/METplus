@@ -71,6 +71,9 @@ class MODEWrapper(CompareGriddedWrapper):
         'METPLUS_FCST_MULTIVAR_LEVEL',
         'METPLUS_OBS_MULTIVAR_NAME',
         'METPLUS_OBS_MULTIVAR_LEVEL',
+        'METPLUS_PLOT_VALID_FLAG',
+        'METPLUS_FCST_RAW_PLOT_DICT',
+        'METPLUS_OBS_RAW_PLOT_DICT',
     ]
 
     # deprecated env vars that are no longer supported in the wrapped MET conf
@@ -200,6 +203,8 @@ class MODEWrapper(CompareGriddedWrapper):
             for default_key in self.DEFAULT_VALUES:
                 defaults[default_key] = None
 
+        self.add_met_config(name='plot_valid_flag', data_type='bool')
+
         # read forecast and observation field variables
         for data_type in ['FCST', 'OBS']:
             self.add_met_config(
@@ -316,6 +321,14 @@ class MODEWrapper(CompareGriddedWrapper):
                                  f'{tool}_VLD_THRESH',
                                  f'{tool}_VALID_THRESH'
                                  ],
+            )
+
+            self.add_met_config_dict(
+                f'{data_type.lower()}_raw_plot',{
+                    'color_table': 'string',
+                    'plot_min': 'float',
+                    'plot_max': 'float',
+                }
             )
 
         self.add_met_config(

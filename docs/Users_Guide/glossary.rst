@@ -15653,3 +15653,38 @@ METplus Configuration Glossary
      Specify the value for 'write_weights' in the MET configuration file for PairStat.
 
      | *Used by:* PairStat
+
+   MODE_PLOT_VALID_FLAG
+     Specify the value for 'plot_valid_flag' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_FCST_RAW_PLOT_COLOR_TABLE
+     Specify the value for 'fcst_raw_plot.color_table' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_FCST_RAW_PLOT_PLOT_MIN
+     Specify the value for 'fcst_raw_plot.plot_min' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_FCST_RAW_PLOT_PLOT_MAX
+     Specify the value for 'fcst_raw_plot.plot_max' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_OBS_RAW_PLOT_COLOR_TABLE
+     Specify the value for 'obs_raw_plot.color_table' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_OBS_RAW_PLOT_PLOT_MIN
+     Specify the value for 'obs_raw_plot.plot_min' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_OBS_RAW_PLOT_PLOT_MAX
+     Specify the value for 'obs_raw_plot.plot_max' in the MET configuration file for MODE.
+
+     | *Used by:* MODE

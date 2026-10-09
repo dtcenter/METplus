@@ -4,7 +4,6 @@ import pytest
 
 import os
 
-
 from metplus.wrappers.mode_wrapper import MODEWrapper
 
 fcst_dir = '/some/path/fcst'
@@ -381,6 +380,42 @@ def test_mode_missing_inputs(metplus_config, get_test_data_dir, run_all_and_chec
          {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
         ({'TIME_OFFSET_WARNING': 2, 'MODE_TIME_OFFSET_WARNING': 4},
          {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
+        ({'MODE_PLOT_VALID_FLAG': 'true', },
+         {'METPLUS_PLOT_VALID_FLAG': 'plot_valid_flag = TRUE;'}),
+
+        ({'MODE_FCST_RAW_PLOT_COLOR_TABLE': 'MET_BASE/colortables/met_default.ctable', },
+         {'METPLUS_FCST_RAW_PLOT_DICT': 'fcst_raw_plot = {color_table = "MET_BASE/colortables/met_default.ctable";}'}),
+
+        ({'MODE_FCST_RAW_PLOT_PLOT_MIN': '2.0', },
+         {'METPLUS_FCST_RAW_PLOT_DICT': 'fcst_raw_plot = {plot_min = 2.0;}'}),
+
+        ({'MODE_FCST_RAW_PLOT_PLOT_MAX': '4.0', },
+         {'METPLUS_FCST_RAW_PLOT_DICT': 'fcst_raw_plot = {plot_max = 4.0;}'}),
+
+        ({
+             'MODE_FCST_RAW_PLOT_COLOR_TABLE': 'MET_BASE/colortables/met_default.ctable',
+             'MODE_FCST_RAW_PLOT_PLOT_MIN': '3.0',
+             'MODE_FCST_RAW_PLOT_PLOT_MAX': '5.0',
+         },
+         {
+             'METPLUS_FCST_RAW_PLOT_DICT': 'fcst_raw_plot = {color_table = "MET_BASE/colortables/met_default.ctable";plot_min = 3.0;plot_max = 5.0;}'}),
+
+        ({'MODE_OBS_RAW_PLOT_COLOR_TABLE': 'MET_BASE/colortables/met_default.ctable', },
+         {'METPLUS_OBS_RAW_PLOT_DICT': 'obs_raw_plot = {color_table = "MET_BASE/colortables/met_default.ctable";}'}),
+
+        ({'MODE_OBS_RAW_PLOT_PLOT_MIN': '2.0', },
+         {'METPLUS_OBS_RAW_PLOT_DICT': 'obs_raw_plot = {plot_min = 2.0;}'}),
+
+        ({'MODE_OBS_RAW_PLOT_PLOT_MAX': '4.0', },
+         {'METPLUS_OBS_RAW_PLOT_DICT': 'obs_raw_plot = {plot_max = 4.0;}'}),
+
+        ({
+             'MODE_OBS_RAW_PLOT_COLOR_TABLE': 'MET_BASE/colortables/met_default.ctable',
+             'MODE_OBS_RAW_PLOT_PLOT_MIN': '2.0',
+             'MODE_OBS_RAW_PLOT_PLOT_MAX': '4.0',
+         },
+         {
+             'METPLUS_OBS_RAW_PLOT_DICT': 'obs_raw_plot = {color_table = "MET_BASE/colortables/met_default.ctable";plot_min = 2.0;plot_max = 4.0;}'}),
     ]
 )
 @pytest.mark.wrapper_a
@@ -398,50 +433,54 @@ def test_mode_single_field(metplus_config, config_overrides, env_var_values,
     wrapper = MODEWrapper(config)
     assert wrapper.is_ok
 
-    app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
-    verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
-    config_file = wrapper.c_dict.get('CONFIG_FILE')
-    out_dir = wrapper.c_dict.get('OUTPUT_DIR')
-    expected_cmds = [(f"{app_path} {verbosity} "
-                      f"{fcst_dir}/2005080700/fcst_file_F012 "
-                      f"{obs_dir}/2005080712/obs_file "
-                      f"{config_file} -outdir {out_dir}/2005080712"),
-                     (f"{app_path} {verbosity} "
-                      f"{fcst_dir}/2005080712/fcst_file_F012 "
-                      f"{obs_dir}/2005080800/obs_file "
-                      f"{config_file} -outdir {out_dir}/2005080800"),
-                     ]
+    init_valid_times = [
+        ("2005080700", "2005080712"),
+        ("2005080712", "2005080800"),
+    ]
+
+    expected_cmds = [
+        (f"{wrapper.app_path} -v {wrapper.c_dict['VERBOSITY']} "
+         f"{fcst_dir}/{init}/fcst_file_F012 "
+         f"{obs_dir}/{valid}/obs_file "
+         f"{wrapper.c_dict.get('CONFIG_FILE')} -outdir {wrapper.c_dict.get('OUTPUT_DIR')}/{valid}")
+        for init, valid in init_valid_times
+    ]
 
     all_cmds = wrapper.run_all_times()
 
-    # set default values in expected output list
-    # only if they are not set and if MODE_GRID_RES is set
-    if 'MODE_GRID_RES' in config_overrides:
-        met_remove_prefixes = ['interest_function_', 'fcst_', 'obs_']
-        met_lists = ['conv_radius']
-        for name, default_val in wrapper.DEFAULT_VALUES.items():
-            if f'MODE_{name}' not in config_overrides:
-                met_name = name.lower()
-                # remove prefix that corresponds to dictionary not variable
-                for met_remove_prefix in met_remove_prefixes:
-                    if met_name.startswith(met_remove_prefix):
-                        met_name = met_name.split(met_remove_prefix)[1]
-                        break
-
-                # convert value to list if variable expects a list
-                if met_name in met_lists:
-                    default_val = f'[{default_val}]'
-
-                env_var_values[f'METPLUS_{name}'] = (
-                    f'{met_name} = {default_val};'
-                )
+    _handle_mode_grid_res(config_overrides, env_var_values, wrapper)
 
     special_values = {
         'METPLUS_FCST_FIELD': fcst_fmt,
         'METPLUS_OBS_FIELD': obs_fmt,
     }
-    compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values,
-                                 wrapper, special_values)
+    compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values, wrapper, special_values)
+
+
+def _handle_mode_grid_res(config_overrides, env_var_values, wrapper):
+    """!Set default values in expected output list only if they are not set and if MODE_GRID_RES is set
+    """
+    if 'MODE_GRID_RES' not in config_overrides:
+        return
+
+    met_remove_prefixes = ['interest_function_', 'fcst_', 'obs_']
+    met_lists = ['conv_radius']
+    for name, default_val in wrapper.DEFAULT_VALUES.items():
+        if f'MODE_{name}' not in config_overrides:
+            met_name = name.lower()
+            # remove prefix that corresponds to dictionary not variable
+            for met_remove_prefix in met_remove_prefixes:
+                if met_name.startswith(met_remove_prefix):
+                    met_name = met_name.split(met_remove_prefix)[1]
+                    break
+
+            # convert value to list if variable expects a list
+            if met_name in met_lists:
+                default_val = f'[{default_val}]'
+
+            env_var_values[f'METPLUS_{name}'] = (
+                f'{met_name} = {default_val};'
+            )
 
 
 @pytest.mark.parametrize(
@@ -451,12 +490,16 @@ def test_mode_single_field(metplus_config, config_overrides, env_var_values,
     ]
 )
 @pytest.mark.wrapper_a
-def test_mode_multi_variate(metplus_config, config_overrides,
-                            env_var_values):
+def test_mode_multi_variate(metplus_config, compare_command_and_env_vars,
+                            config_overrides, env_var_values):
     config = metplus_config
 
     # set config variables needed to run
     set_minimum_config_settings(config)
+
+    # set config variable overrides
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
 
     # change config values to reflect an expected multi-variate run
     # multiple fields and input files
@@ -473,46 +516,28 @@ def test_mode_multi_variate(metplus_config, config_overrides,
     wrapper = MODEWrapper(config)
     assert wrapper.is_ok
 
-    app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
-    verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
-    config_file = wrapper.c_dict.get('CONFIG_FILE')
-    out_dir = wrapper.c_dict.get('OUTPUT_DIR')
+    init_valid_times = [
+        ("2005080700", "2005080712"),
+        ("2005080712", "2005080800"),
+    ]
+
     file_list_dir = os.path.join(config.getdir('STAGING_DIR'), 'file_lists')
 
-    expected_cmds = [(f"{app_path} {verbosity} "
-                      f"{file_list_dir}/20050807000000_12_mode_fcst.txt "
-                      f"{file_list_dir}/20050807000000_12_mode_obs.txt "
-                      f"{config_file} -outdir {out_dir}/2005080712"),
-                     (f"{app_path} {verbosity} "
-                      f"{file_list_dir}/20050807120000_12_mode_fcst.txt "
-                      f"{file_list_dir}/20050807120000_12_mode_obs.txt "
-                      f"{config_file} -outdir {out_dir}/2005080800"),
-                     ]
+    expected_cmds = [
+        (f"{wrapper.app_path} -v {wrapper.c_dict['VERBOSITY']} "
+         f"{file_list_dir}/mode_files_FCST_init_{init}0000_valid_{valid}0000_lead_43200.txt "
+         f"{file_list_dir}/mode_files_OBS_init_{init}0000_valid_{valid}0000_lead_43200.txt "
+         f"{wrapper.c_dict.get('CONFIG_FILE')} -outdir {wrapper.c_dict.get('OUTPUT_DIR')}/{valid}")
+        for init, valid in init_valid_times
+    ]
 
     all_cmds = wrapper.run_all_times()
-    print(f"ALL COMMANDS: {all_cmds}")
 
-    missing_env = [item for item in env_var_values
-                   if item not in wrapper.WRAPPER_ENV_VAR_KEYS]
-    env_var_keys = wrapper.WRAPPER_ENV_VAR_KEYS + missing_env
-
-    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
-        # ensure commands are generated as expected
-        assert cmd == expected_cmd
-
-        # check that environment variables were set properly
-        # including deprecated env vars (not in wrapper env var keys)
-        for env_var_key in env_var_keys:
-            match = next((item for item in env_vars if
-                          item.startswith(env_var_key)), None)
-            assert match is not None
-            value = match.split('=', 1)[1]
-            if env_var_key == 'METPLUS_FCST_FIELD':
-                assert value == fcst_multi_fmt
-            elif env_var_key == 'METPLUS_OBS_FIELD':
-                assert value == obs_multi_fmt
-            else:
-                assert env_var_values.get(env_var_key, '') == value
+    special_values = {
+        'METPLUS_FCST_FIELD': fcst_multi_fmt,
+        'METPLUS_OBS_FIELD': obs_multi_fmt,
+    }
+    compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values, wrapper, special_values)
 
 
 @pytest.mark.parametrize(
@@ -563,11 +588,12 @@ def test_config_synonyms(metplus_config, config_name, env_var_name,
          value in the environment variables list
     """
     in_value = 'out_value'
+    out_value = in_value
 
     if var_type == 'list':
-        out_value = f'[{in_value}]'
+        out_value = f'[{out_value}]'
     elif var_type == 'upper':
-        out_value = in_value.upper()
+        out_value = out_value.upper()
     elif var_type == 'float':
         in_value = out_value = 4.0
 
