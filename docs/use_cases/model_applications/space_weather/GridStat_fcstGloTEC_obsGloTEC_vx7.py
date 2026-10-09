@@ -28,7 +28,7 @@ GridStat_fcstGloTEC_obsGloTEC_vx7.conf
 # Novel aspects of this use case:
 #
 # * This is the first example use case to run grid_stat on a space weather model (GloTEC)
-# * Example of how to run with NetCDF input data which do not strictly conform to the Climate Forecasts (CF) conventions
+# * Example of how to run with NetCDF input data which do not strictly conform to the Climate and Forecast (CF) conventions
 # * Example of using masks covering latitudinal bands of interest to the space weather community: equatorial region, mid-latitude region, and polar region
 # * Example of masking using the values of a quality flag which vary at each time step and grid point
 
@@ -108,7 +108,7 @@ GridStat_fcstGloTEC_obsGloTEC_vx7.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/space_weather/GridStat_fcstGloTEC_obsGloTEC_vx7.conf
+# i.e., parm/use_cases/model_applications/space_weather/GridStat_fcstGloTEC_obsGloTEC_vx7.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/space_weather/GridStat_fcstGloTEC_obsGloTEC_vx7.conf

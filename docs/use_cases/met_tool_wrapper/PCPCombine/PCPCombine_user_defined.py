@@ -20,7 +20,7 @@ met_tool_wrapper/PCPCombine/PCPCombine_user_defined.conf
 #
 # | **Forecast:** WRF precipitation accumulation fields (24, 21, 18, 15, 12, and 9 hour forecast leads)
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
+# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to go to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
 # | **Data Source:** WRF
@@ -33,7 +33,7 @@ met_tool_wrapper/PCPCombine/PCPCombine_user_defined.conf
 # This use case utilizes the METplus PCPCombine wrapper to generate a command to run PCPCombine to derive
 # statistics from the fields. FCST_PCP_COMBINE_COMMAND is used to define all arguments to the call to the MET tool
 # pcp_combine. This variable uses filename template notation using the 'shift' keyword to define filenames that
-# are valid at a time slightly shifted from the run time, i.e. wrfprs_ruc13_{lead?fmt=%HH?shift=-3H}.tm00_G212.
+# are valid at a time slightly shifted from the run time, i.e., wrfprs_ruc13_{lead?fmt=%HH?shift=-3H}.tm00_G212.
 # It also references other configuration variables in the METplus
 # configuration file, such as FCST_PCP_COMBINE_INPUT_NAMES and FCST_PCP_COMBINE_INPUT_LEVELS, and FCST_PCP_COMBINE_INPUT_DIR.
 
@@ -54,7 +54,7 @@ met_tool_wrapper/PCPCombine/PCPCombine_user_defined.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_user_defined.conf
+# with the -c option, i.e., -c parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_user_defined.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_user_defined.conf

@@ -16,7 +16,7 @@ model_applications/climate/GridStat_fcstCESM_obsGFS_ConusTemp.conf
 # Scientific Objective
 # --------------------
 #
-# To evaluate the CESM model temperature against the GFS analysis across the
+# To evaluate the CESM model temperature against the GFS analysis across
 # the Continental United States to obtain categorical output statistics. This 
 # was developed as part of the NCAR System for Integrated Modeling of the 
 # Atmosphere (SIMA) project. 
@@ -51,7 +51,7 @@ model_applications/climate/GridStat_fcstCESM_obsGFS_ConusTemp.conf
 # ------------------
 #
 # This use case runs grid_stat to create continuous statistics on 
-# tempeprature from the CESM model and observations from the GFS analysis. 
+# temperature from the CESM model and observations from the GFS analysis. 
 
 ##############################################################################
 # METplus Workflow
@@ -86,7 +86,7 @@ model_applications/climate/GridStat_fcstCESM_obsGFS_ConusTemp.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/climate/GridStat_fcstCESM_obsGFS_ConusTemp.conf
+# i.e., parm/use_cases/model_applications/climate/GridStat_fcstCESM_obsGFS_ConusTemp.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/climate/GridStat_fcstCESM_obsGFS_ConusTemp.conf

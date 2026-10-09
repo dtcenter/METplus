@@ -15,7 +15,7 @@ model_applications/short_range/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
 # Scientific Objective
 # --------------------
 #
-# To provide statistical inforation on the forecast hail size compared to the 
+# To provide statistical information on the forecast hail size compared to the 
 # observed hail size from MRMS MESH data.  Using objects to verify hail size
 # avoids the "unfair penalty" issue, where a CAM must first generate convection
 # to have any chance of accurately predicting the hail size.  In addition,
@@ -84,7 +84,7 @@ model_applications/short_range/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/short_range/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
+# i.e., parm/use_cases/model_applications/short_range/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf

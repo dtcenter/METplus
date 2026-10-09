@@ -84,7 +84,7 @@ model_applications/s2s/GridStat_fcstSFSBaseline_obsGHCNCAMS_climoSFSandGHCNCAMS_
 #
 # METplus first loads all of the configuration files found in parm/metplus_config, 
 # then it loads any configuration files passed to METplus via the command line, 
-# i.e. parm/use_cases/model_applications/s2s/GridStat_fcstSFSBaseline_obsGHCNCAMS_climoSFSandGHCNCAMS_separateClimo.conf
+# i.e., parm/use_cases/model_applications/s2s/GridStat_fcstSFSBaseline_obsGHCNCAMS_climoSFSandGHCNCAMS_separateClimo.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/GridStat_fcstSFSBaseline_obsGHCNCAMS_climoSFSandGHCNCAMS_separateClimo.conf

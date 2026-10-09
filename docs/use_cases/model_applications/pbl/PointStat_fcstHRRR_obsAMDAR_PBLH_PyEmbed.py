@@ -60,7 +60,7 @@ model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
 # 
 # This use case utilizes the METplus PointStat tool to compare PBLH 
 # from AMDAR data to model output. The python embedding script "calc_amdar_pblh.py" 
-# computes PBLH and sends data MET via python embedding. 
+# computes PBLH and sends data to MET via python embedding. 
  
 ##############################################################################
 # METplus Workflow
@@ -88,7 +88,7 @@ model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
+# i.e., parm/use_cases/model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/pbl/PointStat_fcstHRRR_obsAMDAR_PBLH_PyEmbed.conf

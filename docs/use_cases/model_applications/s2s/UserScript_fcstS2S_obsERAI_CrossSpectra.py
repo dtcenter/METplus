@@ -20,7 +20,7 @@ model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.py
 # diagram using sample data.
 #
 # The space time plot and cross spectra calculations were created by Maria Gehne 
-# at the Physical Sciences Labratory in NOAA. 
+# at the Physical Sciences Laboratory in NOAA. 
 
 ##############################################################################
 # Version Added
@@ -77,7 +77,7 @@ model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.py
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.conf
+# i.e., parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstS2S_obsERAI_CrossSpectra.conf

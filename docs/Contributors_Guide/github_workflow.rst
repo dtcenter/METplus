@@ -29,7 +29,7 @@ GitHub Projects to Manage Development
 =====================================
 
 Software development for official METplus releases is organized into development cycles.
-While the length a development cycle can vary widely, they are nominally 6 weeks long.
+While the length of a development cycle can vary widely, they are nominally 6 weeks long.
 GitHub issues and pull requests assigned to each cycle are either completed during the
 time window for that cycle or reassigned to a future development cycle.
 
@@ -59,7 +59,7 @@ are required to perform the following steps.
      **Project templates: From your organization** option on the left side,
      click on **[TEMPLATE] METplus-X.Y Development**,
      change the title to **METplus-X.Y Development**
-     (e.g. **METplus-6.1 Development**),
+     (e.g., **METplus-6.1 Development**),
      then click the **Create Project** button.
 
 2. Update the project **Settings**.
@@ -73,7 +73,7 @@ are required to perform the following steps.
         for multiple repositories, such as METplus-Analysis, should list the target version number for
         each repository.
 
-      - Scroll down to the **Danger zone** and change **Visibilty** from its default value of **Private**
+      - Scroll down to the **Danger zone** and change **Visibility** from its default value of **Private**
         to **Public**.
 
       - Scroll up and click on the green **Save changes** button.
@@ -171,7 +171,7 @@ required to perform the following steps.
      **Project templates: From your organization** option on the left side,
      then click on **[TEMPLATE] Coordinated METplus-X.Y Support**,
      change the title to **Coordinated METplus-X.Y Support**
-     (e.g. **Coordinated METplus-6.1 Support**),
+     (e.g., **Coordinated METplus-6.1 Support**),
      then click the **Create Project** button.
 
 2. Update the project **Settings**.
@@ -185,7 +185,7 @@ required to perform the following steps.
       - README: List the X.Y version number for each METplus component contained within
         the coordinated release.
 
-      - Scroll down to the **Danger zone** and change **Visibilty** from its default value
+      - Scroll down to the **Danger zone** and change **Visibility** from its default value
         of **Private** to **Public**.
 
       - Scroll up and click on the green **Save changes** button.
@@ -249,7 +249,7 @@ categories:
     requested the work.
 
   - **required** labels are colored pink and indicate whether the work is actually
-    required for the development cycle and/or official release to which is has been
+    required for the development cycle and/or official release to which it has been
     assigned.
 
   - **type** labels are colored tan and differentiate between, for example, bugfixes,
@@ -361,7 +361,7 @@ statement. The options are summarized below:
    * - :code:`--assign "NEW"`
      - Add label NEW to every *open* issue and pull request.
    * - :code:`--assign "OLD=>NEW"`
-     - Add label NEW to every *open* issue and pull request labelled OLD,
+     - Add label NEW to every *open* issue and pull request labeled OLD,
        leaving OLD in place. If NEW does not exist, it is created with the color
        and description of OLD.
    * - :code:`--unassign "NAME"`
@@ -373,7 +373,7 @@ statement. The options are summarized below:
    * - :code:`--rename "OLD=>NEW"`
      - Rename label OLD to NEW, preserving its existing assignments. If label
        NEW already exists, merge OLD into it instead by adding NEW to every open
-       and closed issue and pull request labelled OLD and then deleting label
+       and closed issue and pull request labeled OLD and then deleting label
        OLD.
    * - :code:`--update "NAME"`
      - Update the color and/or description of label NAME in place.
@@ -447,9 +447,9 @@ Find or Create a GitHub Issue
 
 * If creating a new issue, select the
   `"New Issue" <https://github.com/dtcenter/METplus/issues/new/choose>`_ button
-  and review the categories of issues (e.g. Bug report, enhancement request,
+  and review the categories of issues (e.g., Bug report, enhancement request,
   New feature request, New use case, Sub-Issue, Task).  Find an appropriate
-  categories and click on "Get Started" next to the category.
+  category and click on "Get Started" next to the category.
 
   Create a short, but descriptive title. In the 'write' window, follow the
   directions and fill in the template.  Add any additional comments/details.
@@ -777,7 +777,7 @@ Open a Pull Request
 ^^^^^^^^^^^^^^^^^^^
 
 * To request to have the changes be incorporated into the remote repository
-  (i.e. the
+  (i.e., the
   `GitHub METplus repository <https://github.com/dtcenter/METplus>`_).
 
 * An authorized METplus developer will need to approve the request and
@@ -806,7 +806,7 @@ Open a Pull Request
   * For the compare button, make sure to select
     'compare:<your_feature_branch>'
     where <your_feature_branch> corresponds to the feature branch
-    where the changes have been made (e.g. feature_777_wrapper_xyz).
+    where the changes have been made (e.g., feature_777_wrapper_xyz).
 
 * If working from a branch in the dtcenter organization, there should be
   two grey buttons.
@@ -974,7 +974,7 @@ Clean Up After a Successfully Merged Pull Request
 
 * After an authorized METplus developer has accepted the changes and merged
   them into the develop repository, update the local clone by pulling changes
-  from the original repository's (i.e. the
+  from the original repository's (i.e., the
   `METplus develop branch <https://github.com/dtcenter/METplus/tree/develop>`_):
 
 * Checkout the develop branch:
@@ -1005,7 +1005,7 @@ Clean Up After a Successfully Merged Pull Request
     *git branch -D <branch name>*
     *git push --delete origin <branch name>*
 
-  where <branch name> is the feature branch name, e.g. feature_777_wrapper_xyz.
+  where <branch name> is the feature branch name, e.g., feature_777_wrapper_xyz.
 
   Verify that the feature branch has been successfully removed/deleted
   via the web browser. Navigate to

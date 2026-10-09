@@ -13,7 +13,7 @@ Update existing build information on DockerHub.
       DockerHub items and update them as needed.
 
     * Update the "Last Updated:" information to include the release date,
-      e.g. November 14, 2024.
+      e.g., November 14, 2024.
 
     * If you are creating a **beta1** release, remove the text that says
       "- Coming Soon!" in the dropdown menu label.

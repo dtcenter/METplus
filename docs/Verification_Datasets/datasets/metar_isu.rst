@@ -27,7 +27,7 @@ Spatial resolution, grid, or coverage
   Point observations with locations spanning the globe
 
 Temporal resolution
-  Typical reporting time is hourly, but can vary based on weather event and other meteorological and non-meteorlogical reasons
+  Typical reporting time is hourly, but can vary based on weather event and other meteorological and non-meteorological reasons
 
 Starting and/or ending dates
   Varies based on reporting station
