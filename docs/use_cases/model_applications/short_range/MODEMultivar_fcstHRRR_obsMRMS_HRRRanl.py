@@ -24,12 +24,12 @@ model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 # snow bands. Output from this use-case consists of the MODE ASCII, NetCDF, and
 # PostScript files for the MODE forecast and observation super objects.
 #
-# In this case, MODE super object intensity statistics were ouput for both 10-m
-# wind and visibility. Using the the MODE_MULTIVAR_INTENSITY_FLAG, the user can
+# In this case, MODE super object intensity statistics were output for both 10-m
+# wind and visibility. Using the MODE_MULTIVAR_INTENSITY_FLAG, the user can
 # control for which variables super object intensity statistics will be output.
 # If all are set to False, then no intensity information will be output and only
 # statistics relative to the super-object geometry will be available. In the case
-# no requested intesities, the parameters MODE_FCST/OBS_MULTIVAR_NAME and/or
+# no requested intensities, the parameters MODE_FCST/OBS_MULTIVAR_NAME and/or
 # MODE_FCST/OBS_MULTIVAR_LEVEL may be used as identifiers for the super-object.
 
 ##############################################################################
@@ -90,7 +90,7 @@ model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
+# i.e., parm/use_cases/model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/MODEMultivar_fcstHRRR_obsMRMS_HRRRanl.conf

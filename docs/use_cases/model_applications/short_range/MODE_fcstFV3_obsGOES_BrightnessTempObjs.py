@@ -15,7 +15,7 @@ model_applications/short_range/MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf
 # Scientific Objective
 # --------------------
 #
-# To provide statistical inforation on regions of low brightness temperatures, 
+# To provide statistical information on regions of low brightness temperatures, 
 # defined by creating objects, in the FV3 ensemble members compared to GOES satellite. 
 # In addition, distance map information is computed for both the model and observation
 # using object based brightness temperatures
@@ -81,7 +81,7 @@ model_applications/short_range/MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/short_range/MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf
+# i.e., parm/use_cases/model_applications/short_range/MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/MODE_fcstFV3_obsGOES_BrightnessTempObjs.conf

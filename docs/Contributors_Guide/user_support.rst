@@ -16,7 +16,7 @@ Support Responsibilities
 Staff members take turns monitoring Discussions throughout the week.
 
 All support members should follow up on existing Discussions in
-which they are assigned (i.e. tagged).
+which they are assigned (i.e., tagged).
 
 The responsibilities for each assignee are described below.
 
@@ -28,7 +28,7 @@ Review the `Tips/Tricks <https://github.com/dtcenter/METplus/discussions/categor
 page.
 
 The Tips/Tricks page is for discussion only and does not have the ability to
-have an *answer* assigned to it. Check for any new dicussions that have been
+have an *answer* assigned to it. Check for any new discussions that have been
 added by users that are actually questions. If there are, move the discussion
 to a more appropriate category so that it can be found when filtering for
 unanswered discussions.  Please note that if the discussions have been
@@ -44,9 +44,9 @@ Review the Unanswered Discussions
 
 Review the `unanswered discussions <https://github.com/dtcenter/METplus/discussions?discussions_q=is%3Aunanswered>`_.
 
-* For new discussions that have been posted on the current day (i.e. since last midnight):
+* For new discussions that have been posted on the current day (i.e., since last midnight):
 
-  * If the issue is time sensitive (i.e. related to an upcoming training series
+  * If the issue is time sensitive (i.e., related to an upcoming training series
     session) or from a user with priority support, take action.  See :ref:`actions_new_discussions`.
 
   * Otherwise, leave the discussion unanswered until the next day to allow the
@@ -68,7 +68,7 @@ Review the `unanswered discussions <https://github.com/dtcenter/METplus/discussi
     * If the user has not responded in 7 or more days, consider following up to
       see if the user's issue is resolved or if they need more assistance. If
       the user has not responded in two weeks, close the discussion with a comment
-      indicating that is our policy to close discussions after two weeks of
+      indicating that it is our policy to close discussions after two weeks of
       inactivity.
 
     * If unsure how to proceed, post in the User Support Slack channel of
@@ -80,7 +80,7 @@ Review Answered Discussions that are Unlocked
 Review `answered discussions that are unlocked <https://github.com/dtcenter/METplus/discussions?discussions_q=is%3Aanswered+is%3Aunlocked>`_.
 
 If there is any recent activity on an **answered** question that indicates the
-questioner is satisified with the response, click on the button to **lock** the
+questioner is satisfied with the response, click on the button to **lock** the
 discussion to prevent future activity. See :ref:`lock_discussions`.
       
 .. _actions_new_discussions:
@@ -92,11 +92,11 @@ Actions for Handling New Discussions
   to some other category.
 
 * Review the labels and pick at least one of the blue ones ("component:" and/or
-  repository-specific - e.g. "MET:", "METplus:", etc.) to further categorize it.
+  repository-specific - e.g., "MET:", "METplus:", etc.) to further categorize it.
 
-* If the organization or institution with which the user is affliated is known,
+* If the organization or institution with which the user is affiliated is known,
   select the appropriate "requestor:" label to further categorize it. If the
-  organization or instituion is unknown, ask the user something like:
+  organization or institution is unknown, ask the user something like:
   *Can you please let us know the organization or institution with which you're
   affiliated, so we can add a "requestor" label to this discussion to help us
   keep track of the support we provide?*
@@ -108,7 +108,7 @@ Actions for Handling New Discussions
   `here <https://drive.google.com/drive/folders/1OvYqQwKWV5rB6JHBM-Ljyb4es93vFx_U>`_.
   Move the data to a shared location on the project machine **seneca** by creating
   a directory on **seneca** at **/d1/projects/METplus/discussions/** with the
-  METplus Discussion number (e.g. 2978) and copying the data to that location. Once
+  METplus Discussion number (e.g., 2978) and copying the data to that location. Once
   the data is copied to **seneca**, delete the data from the team drive.
   
 * Ensure the discussion is answered:
@@ -139,7 +139,7 @@ Actions for Handling New Discussions
 How to Lock a Discussion
 ------------------------
 
-If an obvious answer exists and it is apparent the questioner is satisified
+If an obvious answer exists and it is apparent the questioner is satisfied
 with the response, consider posting something like the following before locking
 the discussion:
 
@@ -151,7 +151,7 @@ users to follow. So if/when more issues/questions arise, please feel free
 to start a new discussion.*
 
 If there is no answer selected and no indication that the questioner is
-satisified with the response, follow up, requesting that the user mark
+satisfied with the response, follow up, requesting that the user mark
 the best answer so we can lock and close the discussion. The following
 text may need to be modified to match a specific situation, but this is
 a good starting point as an example:

@@ -51,7 +51,7 @@ Add or update information about software releases on the website.
         "https://metplus.readthedocs.io/en/vX.Y.Z/Users_Guide/"
 
       * Add Link: Link text should be "Existing Builds and Docker" and the URL
-        should be the latest Existing Builds page, i.e.
+        should be the latest Existing Builds page, i.e.,
         https://metplus.readthedocs.io/en/main_vX.Y/Users_Guide/release-notes.html#existing-builds
 
     * In the **Release Notes** text box provide direct links to the *release-notes.html*
@@ -63,7 +63,7 @@ Add or update information about software releases on the website.
       "Recommended" to "Other" and click the **Update Release** button.
 
     * Review the existing component releases and remove any remaining development
-      releases (e.g. beta and rc) for any of the official releases included in this
+      releases (e.g., beta and rc) for any of the official releases included in this
       coordinated release.
 
     * Click on **Save** at the bottom of the page.

@@ -25,7 +25,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py
 # The methodology in Miller & Wang (2019, 2022) first computes the Central Blocking Latitude 
 # (CBL) or storm track.  Allowing for an offset north and south of the storm track, reversals 
 # in geopotential height are then identified as Instantaneously Blocked longitudes (IBLs).  These 
-# IBLs are grouped when consective longitudes are blocked (GIBLs) and then blocks are identified 
+# IBLs are grouped when consecutive longitudes are blocked (GIBLs) and then blocks are identified 
 # by applying thresholds to ensure the large-scale, quasi-stationary characteristics of blocking 
 # anticyclones are met.  The IBLs, GIBLs, and blocks are computed separately for the model and 
 # observations, and contingency table statistics are computed to compare model performance at 
@@ -48,7 +48,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py
 #
 # **Forecast:** GFS Forecast 500 mb height for DJF 2000 - 2017 
 #
-# **Observation:** ERA Reanlaysis 500 mb height for DJF 2000 - 2017 for the blocking evaluation and 1979 - 2017 for the CBL calculation
+# **Observation:** ERA Reanalysis 500 mb height for DJF 2000 - 2017 for the blocking evaluation and 1979 - 2017 for the CBL calculation
 #
 # **Climatology:** None
 #
@@ -69,7 +69,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py
 # ------------------
 #
 # This use case calls UserScript twice and StatAnalysis twice.  The first StatAnalysis
-# run computes contingency table statistics on the IBLs, while the second computes contintency 
+# run computes contingency table statistics on the IBLs, while the second computes contingency 
 # table statistics on the computed blocks. There are 6 optional pre-processing steps, 2 calls to 
 # RegridDataPlane and 4 calls to PCP-Combine.  Additionally, METcalcpy and METplotpy are 
 # required to run this use case.  The METcalcpy scripts accessed include the following:
@@ -80,7 +80,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py
 #
 # * metcalcpy/util/write_mpr.py
 #
-# The METplopty scrips accessed include the following:
+# The METplotpy scripts accessed include the following:
 #
 # * metplotpy/contributed/blocking_s2s/CBL_plot.py
 #
@@ -110,10 +110,10 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py
 #
 # The two calls to StatAnalysis also don't loop but are run once for all valid times.  The first 
 # StatAnalysis run computes contingency table statistics on the IBLs, while the second computes 
-# contintency table statistics on the computed blocks.
+# contingency table statistics on the computed blocks.
 #
-# The 6 optional pre-processing steps loop by loop by valid time with different timing settings 
-# needed used for the different steps.  These include 2 runs of RegridDataPlane to regrid both
+# The 6 optional pre-processing steps loop by valid time with different timing settings 
+# needed for the different steps.  These include 2 runs of RegridDataPlane to regrid both
 # the model and observations to a 1 degree grid.  Then, there are 2 calls to PcpCombine.  These 
 # compute daily average 500 mb height for the model and observations.  The next two calls to 
 # PcpCombine compute a 5 day running mean and daily anomalies on the observations, which are used 
@@ -132,7 +132,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line, i.e.
+# then it loads any configuration files passed to METplus via the command line, i.e.,
 # parm/use_cases/model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.conf
 #
 # .. highlight:: bash
@@ -167,7 +167,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py
 #
 # This use case runs the blocking driver.  The blocking driver runs the user selected steps
 # of the blocking calculation for both the forecast and observation.  These steps are specified 
-# in FCST_STEPS and OBS_STEPS in the [user_env_vars] section fo the configuration file in the 
+# in FCST_STEPS and OBS_STEPS in the [user_env_vars] section of the configuration file in the 
 # following format:
 #
 #  | FCST_STEPS = CBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
@@ -179,7 +179,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py
 # plotting the blocking frequency (PLOTBLOCKS).  This use case runs all steps although not all of 
 # them are required to be run.  The CBL, IBL, GIBL, and CALCBLOCKS steps must be run in order as the
 # IBL step requires previously computed CBLs, and GIBLs requires previously computed IBLs.  Plotting
-# also requires the associated step to be run (e.g. PLOTCBL requires CBL to be run first).  The 
+# also requires the associated step to be run (e.g., PLOTCBL requires CBL to be run first).  The 
 # methodology used in these calculations is described in Miller & Wang (2019, 2022) listed in the 
 # Scientific Objective section.
 #
@@ -211,7 +211,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py
 #   INFO: METplus has successfully finished running.
 #
 # Warnings of missing files will also be output to the log file.  In this case, the warnings are a result of
-# the 5 day running mean calculation.  They should alert the user about missing data fir 12/01, 12/02, 02/27,
+# the 5 day running mean calculation.  They should alert the user about missing data for 12/01, 12/02, 02/27,
 # and 02/28 of each year the calculation runs.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use 
@@ -230,14 +230,14 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py
 # 
 # There are numerous matched pair files output in two subdirectories of the mpr directory.  These contain
 # output computed IBLs and blocks.  For the IBLs, one file is written for each day to the IBL subdirectory.
-# The files will be labeled by date and time where HHMMSSL is the lead time in hours, mintues and seconds, 
+# The files will be labeled by date and time where HHMMSSL is the lead time in hours, minutes and seconds, 
 # YYYYMMDD is the valid year, month, and day, and HHMMSSV is the hours, minutes and seconds of the valid 
 # time::
 #
 # * IBL_stat_GFS_HHMMSSL_YYYYMMDD_HHMMSSV.stat
 #
 # For the blocks .stat files, one file is also written for each day to the Blocks subdirectory in the format
-# below, where HHMMSSL is the lead time in hours, mintues and seconds, YYYYMMDD is the valid year, month, and 
+# below, where HHMMSSL is the lead time in hours, minutes and seconds, YYYYMMDD is the valid year, month, and 
 # day, and HHMMSSV is the hours, minutes and seconds of the valid time::
 #
 # * blocking_stat_GFS_HHMMSSL_YYYYMMDD_HHMMSSV.stat
@@ -248,7 +248,7 @@ model_applications/s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking.py
 #  * GFS_ERA_Blocks_240000L_CTS.stat
 #
 # If the pre-processing steps are turned on, regridded data, daily averaged files, running mean files, 
-# and anomaly files will also be output to Regrid, Daily,Rmean5d, and Anomaly directories in the ERA 
+# and anomaly files will also be output to Regrid, Daily, Rmean5d, and Anomaly directories in the ERA 
 # directory and Regrid and Daily directories in the GFS directory. 
 
 ##############################################################################

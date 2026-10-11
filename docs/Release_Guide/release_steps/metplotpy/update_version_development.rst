@@ -7,7 +7,7 @@ Update the software version information. Remove **-dev** from the version number
 
   * In 'metplotpy/_version.py', update the version number.
 
-    * The version should match the upcoming release with -dev added to the end like X.Y.Z-betaN-dev, i.e. 4.0.0-beta1-dev
+    * The version should match the upcoming release with -dev added to the end like X.Y.Z-betaN-dev, i.e., 4.0.0-beta1-dev
 
     * Remove the '-dev' suffix and ensure that the version number is correct.
 

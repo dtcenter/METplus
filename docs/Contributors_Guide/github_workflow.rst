@@ -29,7 +29,7 @@ GitHub Projects to Manage Development
 =====================================
 
 Software development for official METplus releases is organized into development cycles.
-While the length a development cycle can vary widely, they are nominally 6 weeks long.
+While the length of a development cycle can vary widely, they are nominally 6 weeks long.
 GitHub issues and pull requests assigned to each cycle are either completed during the
 time window for that cycle or reassigned to a future development cycle.
 
@@ -59,7 +59,7 @@ are required to perform the following steps.
      **Project templates: From your organization** option on the left side,
      click on **[TEMPLATE] METplus-X.Y Development**,
      change the title to **METplus-X.Y Development**
-     (e.g. **METplus-6.1 Development**),
+     (e.g., **METplus-6.1 Development**),
      then click the **Create Project** button.
 
 2. Update the project **Settings**.
@@ -73,7 +73,7 @@ are required to perform the following steps.
         for multiple repositories, such as METplus-Analysis, should list the target version number for
         each repository.
 
-      - Scroll down to the **Danger zone** and change **Visibilty** from its default value of **Private**
+      - Scroll down to the **Danger zone** and change **Visibility** from its default value of **Private**
         to **Public**.
 
       - Scroll up and click on the green **Save changes** button.
@@ -171,7 +171,7 @@ required to perform the following steps.
      **Project templates: From your organization** option on the left side,
      then click on **[TEMPLATE] Coordinated METplus-X.Y Support**,
      change the title to **Coordinated METplus-X.Y Support**
-     (e.g. **Coordinated METplus-6.1 Support**),
+     (e.g., **Coordinated METplus-6.1 Support**),
      then click the **Create Project** button.
 
 2. Update the project **Settings**.
@@ -185,7 +185,7 @@ required to perform the following steps.
       - README: List the X.Y version number for each METplus component contained within
         the coordinated release.
 
-      - Scroll down to the **Danger zone** and change **Visibilty** from its default value
+      - Scroll down to the **Danger zone** and change **Visibility** from its default value
         of **Private** to **Public**.
 
       - Scroll up and click on the green **Save changes** button.
@@ -249,7 +249,7 @@ categories:
     requested the work.
 
   - **required** labels are colored pink and indicate whether the work is actually
-    required for the development cycle and/or official release to which is has been
+    required for the development cycle and/or official release to which it has been
     assigned.
 
   - **type** labels are colored tan and differentiate between, for example, bugfixes,
@@ -266,61 +266,143 @@ should only be added to a repository when a corresponding GitHub issue template 
 also added to its :code:`.github/ISSUE_TEMPLATE` directory.
 
 
-Scripts to manage these common labels are provided in the :code:`.github/labels`
-directory of the METplus repository:
+.. _wo-update-labels:
 
+Managing Labels with update_labels.sh
+-------------------------------------
 
-  - :code:`common_labels.txt` defines the name, color, and description for each of the
-    labels common to all METplus repositories.
+The common labels are defined and managed by files in the
+:code:`.github/labels` directory of the METplus repository:
 
-  - :code:`process_labels.sh` has two required arguments: the GitHub user name and
-    authorization token for command line actions. It loops through the METplus
-    component repositories and runs the following scripts for each.
+  - :code:`common_labels.txt` defines the name, color, description, and archived
+    state for each of the labels common to all METplus repositories. It contains
+    one JSON object per line, as accepted by the GitHub labels API:
 
-  - :code:`post_patch_labels.sh` is called by :code:`process_labels.sh` for each
-    METplus repository. It retrieves the list of existing labels for the specified
-    repository, compares it to :code:`common_labels.txt` and generates commands to
-    *add* new labels (i.e. :code:`curl POST`) or *update* existing labels (i.e.
-    :code:`curl PATCH`). For example, if the label description is modified, the update
-    command will make that change.
+    .. code-block:: none
 
-  - :code:`delete_labels.sh` is called by :code:`process_labels.sh` for each
-    METplus repository. It retrieves the list of existing labels for the specified
-    repository, compares it to :code:`common_labels.txt`, and generates commands
-    to *delete* (i.e. :code:`curl DELETE`) any labels that should be removed.
+      {"name": "type: bug","color": "e5bf7e","description": "Fix something that is not working","archived": false}
 
-  - :code:`get_labels.sh` retrieves the current set of the labels from the
-    specified METplus repository.
+  - :code:`update_labels.sh` manages the labels for all of the METplus component
+    repositories, either by synchronizing them with :code:`common_labels.txt` or
+    by operating on individual labels.
 
+How It Works
+^^^^^^^^^^^^
 
-Note that the scripts **DO NOT** actually add, modify, or delete any labels
-directly.  Instead, they generate the *curl* commands for those actions and
-write them to shell scripts in the **commands** sub-directory.  After generating
-these commands, the user should carefully review them to decide before executing
-them:
+The script uses the `GitHub CLI <https://cli.github.com>`_ (:code:`gh`),
+which must be installed and authenticated by running :code:`gh auth login`
+before use. The :code:`--sync` option also requires
+`jq <https://jqlang.org>`_.
 
+Note that the script **DOES NOT** actually add, modify, or delete any labels
+directly. Instead, it queries each repository, generates the :code:`gh`
+commands for the requested actions, and writes them to shell scripts in the
+:code:`.github/labels/commands` sub-directory:
 
-  - :code:`commands/post_labels_*_cmd.sh` scripts contain :code:`curl POST` commands
-    for adding new common labels. Run these after adding a new common label.
+  - :code:`update_labels_<repo>_cmd.sh` contains the commands for a single
+    METplus repository.
 
-  - :code:`commands/delete_labels_*_cmd.sh` scripts contain :code:`curl DELETE`
-    commands to remove labels which should not exist. Run these after deleting
-    existing common labels. Proceed with caution since deletions cannot be undone,
-    and all occurrences of these labels will be removed.
+  - :code:`update_labels_all_cmd.sh` runs each of the per-repository command
+    files listed above.
 
-  - :code:`commands/patch_labels_*_cmd.sh` scripts contain :code:`curl PATCH` commands for
-    updating all existing labels. Run these after modifying the description or color
-    of existing common labels.
+Each run first removes the command files left over from any previous run, so
+the :code:`commands` sub-directory only contains the commands from the most
+recent one. Each generated command file stops at the first command that fails.
 
+If any GitHub query for a repository fails, no commands are written for that
+repository, since an incomplete set of commands could, for example, archive a
+label before its issues and pull requests are reassigned. The script reports
+the skipped repositories and exits with a non-zero status, so they can be
+processed again using the :code:`--repos` option.
 
-The process of adding a new label, for example, consists of the following steps:
+The user should carefully review the generated commands before running
+:code:`update_labels_all_cmd.sh` to apply them. The commands are written in
+dependency order (unarchive, create, rename/merge/update, assign, archive,
+strip, delete), so that a label can be created, assigned, and archived in a
+single run.
 
-  1. Add a new line in :code:`common_labels.txt` to define it.
+When a run creates a label that is not yet defined in
+:code:`common_labels.txt`, the script also prints the line that would define
+it there, ready to be copied into that file if the label should be common to
+all repositories.
 
-  2. Run :code:`process_labels.sh` to generate commands, supplying your GitHub user name
-     and access token as arguments.
+Note that *archiving* a label retains its history on existing issues and pull
+requests but prevents it from being added to new ones, whereas *deleting* a
+label removes it everywhere and cannot be undone. Archiving is the preferred
+way to retire a label.
 
-  3. Review the actions in the :code:`commands/post_labels_*_cmd.sh` scripts and run them.
+Options
+^^^^^^^
+
+Run :code:`.github/labels/update_labels.sh --help` for the complete usage
+statement. The options are summarized below:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 30 70
+   :class: wrap-table
+
+   * - Option
+     - Description
+   * - :code:`--sync [FILE]`
+     - Make every repository match the common label definitions in
+       :code:`common_labels.txt` (or FILE), creating missing labels and
+       correcting colors, descriptions, and archived state.
+   * - :code:`--prune`
+     - With :code:`--sync`, also delete repository labels that are not
+       defined in the label file. The repository-specific **component** and
+       **type** labels are always kept, as are archived labels.
+   * - :code:`--create "NAME"`
+     - Create label NAME in each repository that does not already define it.
+       Requires :code:`--color`.
+   * - :code:`--delete "NAME"`
+     - Permanently delete label NAME, removing it from every issue and pull
+       request.
+   * - :code:`--assign "NEW"`
+     - Add label NEW to every *open* issue and pull request.
+   * - :code:`--assign "OLD=>NEW"`
+     - Add label NEW to every *open* issue and pull request labeled OLD,
+       leaving OLD in place. If NEW does not exist, it is created with the color
+       and description of OLD.
+   * - :code:`--unassign "NAME"`
+     - Remove label NAME from every *open* issue and pull request, keeping the
+       label itself.
+   * - :code:`--strip-archived`
+     - Remove every archived label from the *open* issues and pull requests,
+       leaving their history on closed ones intact.
+   * - :code:`--rename "OLD=>NEW"`
+     - Rename label OLD to NEW, preserving its existing assignments. If label
+       NEW already exists, merge OLD into it instead by adding NEW to every open
+       and closed issue and pull request labeled OLD and then deleting label
+       OLD.
+   * - :code:`--update "NAME"`
+     - Update the color and/or description of label NAME in place.
+   * - :code:`--archive "NAME"`
+     - Archive label NAME.
+   * - :code:`--unarchive "NAME"`
+     - Restore previously archived label NAME.
+   * - :code:`--color HEX`
+     - Set the color of the label named by the preceding :code:`--create`,
+       :code:`--assign`, :code:`--rename`, or :code:`--update` option.
+   * - :code:`--description TEXT`
+     - Set the description of the label named by the preceding
+       :code:`--create`, :code:`--assign`, :code:`--rename`, or
+       :code:`--update` option.
+   * - :code:`--repos "R1 R2 ..."`
+     - Space-separated list of repositories to process. Defaults to all of the
+       METplus repositories.
+   * - :code:`--org ORG`
+     - GitHub organization. Defaults to :code:`dtcenter`.
+
+Examples
+^^^^^^^^
+
+Step-by-step examples of common tasks, such as adding a new common label,
+adding a custom label to a single repository, and replacing an existing label
+with a new one, are provided in the
+`README.md <https://github.com/dtcenter/METplus/blob/develop/.github/labels/README.md>`_
+file of the :code:`.github/labels` directory.
+
 
 
 Sequence of Events - Contributing Code
@@ -365,9 +447,9 @@ Find or Create a GitHub Issue
 
 * If creating a new issue, select the
   `"New Issue" <https://github.com/dtcenter/METplus/issues/new/choose>`_ button
-  and review the categories of issues (e.g. Bug report, enhancement request,
+  and review the categories of issues (e.g., Bug report, enhancement request,
   New feature request, New use case, Sub-Issue, Task).  Find an appropriate
-  categories and click on "Get Started" next to the category.
+  category and click on "Get Started" next to the category.
 
   Create a short, but descriptive title. In the 'write' window, follow the
   directions and fill in the template.  Add any additional comments/details.
@@ -695,7 +777,7 @@ Open a Pull Request
 ^^^^^^^^^^^^^^^^^^^
 
 * To request to have the changes be incorporated into the remote repository
-  (i.e. the
+  (i.e., the
   `GitHub METplus repository <https://github.com/dtcenter/METplus>`_).
 
 * An authorized METplus developer will need to approve the request and
@@ -724,7 +806,7 @@ Open a Pull Request
   * For the compare button, make sure to select
     'compare:<your_feature_branch>'
     where <your_feature_branch> corresponds to the feature branch
-    where the changes have been made (e.g. feature_777_wrapper_xyz).
+    where the changes have been made (e.g., feature_777_wrapper_xyz).
 
 * If working from a branch in the dtcenter organization, there should be
   two grey buttons.
@@ -892,7 +974,7 @@ Clean Up After a Successfully Merged Pull Request
 
 * After an authorized METplus developer has accepted the changes and merged
   them into the develop repository, update the local clone by pulling changes
-  from the original repository's (i.e. the
+  from the original repository's (i.e., the
   `METplus develop branch <https://github.com/dtcenter/METplus/tree/develop>`_):
 
 * Checkout the develop branch:
@@ -923,7 +1005,7 @@ Clean Up After a Successfully Merged Pull Request
     *git branch -D <branch name>*
     *git push --delete origin <branch name>*
 
-  where <branch name> is the feature branch name, e.g. feature_777_wrapper_xyz.
+  where <branch name> is the feature branch name, e.g., feature_777_wrapper_xyz.
 
   Verify that the feature branch has been successfully removed/deleted
   via the web browser. Navigate to

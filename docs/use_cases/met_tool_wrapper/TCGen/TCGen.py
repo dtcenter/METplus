@@ -20,7 +20,7 @@ met_tool_wrapper/TCGen/TCGen.conf
 # | **Track:** A Deck or B Deck (Best)
 # | **Genesis:** Genesis Forecast
 #
-# | **Location:** All of the input data required for this use case can be found in the met_tool_wrapper sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
+# | **Location:** All of the input data required for this use case can be found in the met_tool_wrapper sample data tarball. Click here to go to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 # |
 #
@@ -49,7 +49,7 @@ met_tool_wrapper/TCGen/TCGen.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c /path/to/TCGen.conf
+# with the -c option, i.e., -c /path/to/TCGen.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/TCGen/TCGen.conf
@@ -84,7 +84,7 @@ met_tool_wrapper/TCGen/TCGen.conf
 #
 #        run_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/TCGen/TCGen.conf
 #
-# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following METplus configuration variables must be set correctly to run this example.:
+# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following METplus configuration variables must be set correctly to run this example:
 #
 # * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs).
 # * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions

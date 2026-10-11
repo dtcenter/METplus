@@ -15,7 +15,7 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 # Scientific Objective
 # --------------------
 # 
-# Tropocal cyclone (TC) genesis density function (GDF) and track density function (TDF) are designed to
+# Tropical cyclone (TC) genesis density function (GDF) and track density function (TDF) are designed to
 # quantitatively evaluate geographic distributions of TC activities including TC genesis frequency and
 # subsequent TC tracks. Spatial patterns of long-term averaged GDF or TDF on the regional or global scale
 # are particularly useful to evaluate TC forecasts against those derived from an observational best-track

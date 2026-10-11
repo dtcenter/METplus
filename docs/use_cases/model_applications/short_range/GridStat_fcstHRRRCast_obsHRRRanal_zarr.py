@@ -74,7 +74,7 @@ model_applications/short_range/GridStat_fcstHRRRCast_obsHRRRanal_zarr.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config, 
 # then it loads any configuration files passed to METplus via the command line, 
-# e.g. parm/use_cases/model_applications/short_range/GridStat_fcstHRRRCast_obsHRRRanal_zarr.conf
+# e.g., parm/use_cases/model_applications/short_range/GridStat_fcstHRRRCast_obsHRRRanal_zarr.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GridStat_fcstHRRRCast_obsHRRRanal_zarr.conf

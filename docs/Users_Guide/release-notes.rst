@@ -175,4 +175,4 @@ be generated unless the following is added::
 
    GRID_STAT_MASK_GRID = FULL
 
-If neither **GRID_STAT_MASK_GRID** nor **GRID_STAT_MASK_POLY** are set, then *FULL* output will be generated.
+If neither **GRID_STAT_MASK_GRID** nor **GRID_STAT_MASK_POLY** is set, then *FULL* output will be generated.

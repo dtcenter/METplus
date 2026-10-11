@@ -12,7 +12,7 @@ Sample image
   .. image:: images/GOES_16_ADP.jpg
    :width: 600
 
-  Image frm NOAA/SSD
+  Image from NOAA/SSD
 
 Recommended use
   Evaluating air quality, visibility, and dust with remotely-sensed data

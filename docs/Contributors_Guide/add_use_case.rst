@@ -80,21 +80,21 @@ sub-directory (*parm/use_cases/met_tool_wrapper/<MET TOOL NAME>*), each
 use case should have the following:
 
 * A METplus configuration file where the MET tool name follows PascalCase,
-  e.g. **GridStat.conf** or **ASCII2NC.conf**.
+  e.g., **GridStat.conf** or **ASCII2NC.conf**.
   If the use case uses a Python embedding script, it should be
   indicated by adding "_python_embedding" to the MET tool name.
-  e.g. **GridStat_python_embedding.conf**.
+  e.g., **GridStat_python_embedding.conf**.
 
 If creating a new model applications use case, in the category sub-directory
 (*parm/use_cases/model_applications/<CATEGORY>*), each use case should have the
 following:
 
 * A METplus configuration file named
-  *\<MET-TOOL\>_fcst\<FCST\>_obs\<OBS\>_cilmo\<CLIMO\>\<DESCRIPTOR\>.conf*
+  *\<MET-TOOL\>_fcst\<FCST\>_obs\<OBS\>_climo\<CLIMO\>\<DESCRIPTOR\>.conf*
   where
 
     * *<MET-TOOL>* is the MET tool that performs the primary statistical
-      analysis, i.e. GridStat or SeriesAnalysis.
+      analysis, i.e., GridStat or SeriesAnalysis.
 
     * *<FCST>* is the name of the forecast input data source (this can be
       excluded if no forecast data is used).
@@ -124,9 +124,9 @@ Use Case Rules
 - The use case METplus configuration file should not **set** any variables
   specific to the user's environment, such as INPUT_BASE, OUTPUT_BASE, and
   PARM_BASE, METPLUS_CONF, etc.
-- A limited number of run times should be processed so that they use case runs
+- A limited number of run times should be processed so that the use case runs
   in a reasonable amount of time.  They are designed to demonstrate the
-  functionality but not necessarily processed all of the data that would be
+  functionality but not necessarily process all of the data that would be
   processed for analysis. Users can take an example and modify the run times
   to produce more output as desired.
 - No errors should result from running the use case.
@@ -172,7 +172,7 @@ Please confirm that the use case can run successfully before creating a pull req
 
 To run in GitHub Actions, the environment specified in all_use_cases.txt must contain
 all required dependencies. This includes a Conda environment that contains the
-required Python packages needed to run the METplus Analysis Python tools, e.g.
+required Python packages needed to run the METplus Analysis Python tools, e.g.,
 metplotpy_env.
 A list of the existing Conda Environments and the packages they contain can also be
 found in the :ref:`Conda Environments <cg-ci-conda-environments>` section.
@@ -283,7 +283,7 @@ the text content. These are already provided in the example template.
       equal in length to the header (spaces included). Follow this with one line of no characters, 
       then the path to the use case configuration file. This should be written in the format of
       model_applications/{use_case_category}/{use_case_configuration_file}. 
-      This section is preceded and followed by three ‘“‘ characters (i.e. `PEP 257 Docstring convention. <https://peps.python.org/pep-0257>`_
+      This section is preceded and followed by three ‘“‘ characters (i.e., `PEP 257 Docstring convention. <https://peps.python.org/pep-0257>`_
 
   * Internal Table of Contents
 
@@ -312,7 +312,7 @@ the text content. These are already provided in the example template.
       is using which dataset. At a minimum, users should list the 
       Forecast, Observation, and Climatology fields. If they are not being used, 
       "None" can be listed. 
-      Acronyms should be spelled out (i.e not GFS, but Global Forecast System). 
+      Acronyms should be spelled out (i.e., not GFS, but Global Forecast System). 
       This section also includes a Location description consisting of 
       set language of how users can access the use case data for themselves.
 
@@ -320,7 +320,7 @@ the text content. These are already provided in the example template.
 
     * This section lists the tools that will be used during the use case. 
       If there are multiple tools, a brief overview should be provided of what each tool 
-      is responsible for (i.e. GenVxMask for creating masks that are used in 
+      is responsible for (i.e., GenVxMask for creating masks that are used in 
       the verification step, which is completed by GridStat). If Python embedding 
       is used, it can be mentioned here as well.
       It’s important to note that this section should NOT give detailed 
@@ -445,7 +445,7 @@ following documentation steps:
   page for this new use case in the dropdown menu for that package, following the
   format in the dropdown menu.  If the package is not already listed, update
   the dropdown menus to include the name of the required package, the version,
-  the METplus component (e.g. METplus wrappers, METcalcpy, METplotpy), the
+  the METplus component (e.g., METplus wrappers, METcalcpy, METplotpy), the
   source, a brief description of the package, and a link to this new use
   case that uses this new Python package.
       
@@ -454,7 +454,7 @@ following documentation steps:
   to the *docs/_static* directory and should be named
   <category>-<conf>.png
   where <category> is the use case category and <conf> is the name of the
-  configuration file, i.e.
+  configuration file, i.e.,
   **air_quality_and_comp-EnsembleStat_fcstICAP_obsMODIS_aod.png.**
   This is the same image that is referenced in the documentation file with this syntax:
 
@@ -476,7 +476,7 @@ seen as beneficial to upcoming use cases.
 * Open the quicksearch.rst file
 * Determine a name for the keyword following the format of the existing keywords in the appropriate section.
 
-  * All keywords should be one word with the first letter of each word capitalized (i.e. CamelCase).
+  * All keywords should be one word with the first letter of each word capitalized (i.e., CamelCase).
   * All keywords should end with "UseCase"
   * Keywords in the "Use Cases by MET Tool" section should end with "ToolUseCase"
   * Keywords in the "Use Cases by Application" section should end with "AppUseCase"
@@ -631,7 +631,7 @@ If the above is shown, then METPLUS_VERSION should be set to 4.0
   to met_tool_wrapper.
 
 * METPLUS_USE_CASE_NAME should be the name of the new use case without the
-  .conf extension, i.e. EnsembleStat_fcstICAP_obsMODIS_aod. If adding a new
+  .conf extension, i.e., EnsembleStat_fcstICAP_obsMODIS_aod. If adding a new
   met_tool_wrapper use case, set this value to met_test_YYYYMMDD where
   YYYYMMDD is today's date.
 
@@ -655,7 +655,7 @@ working shell is bash::
 Create sub-directories for input data
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Put new dataset into a directory that matches the use case directories, i.e.
+Put new dataset into a directory that matches the use case directories, i.e.,
 model_applications/${METPLUS_USE_CASE_CATEGORY}/${METPLUS_USE_CASE_NAME}.
 For a new met_tool_wrapper use case, put the data in a directory called
 met_test/new.
@@ -668,7 +668,7 @@ Verify use case config file contains correct directory
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Set directory paths in the use case config file relative to INPUT_BASE
-i.e *{INPUT_BASE}/model_applications/<category>/<use_case>* where
+i.e., *{INPUT_BASE}/model_applications/<category>/<use_case>* where
 <category> is the value that has been set for ${METPLUS_USE_CASE_CATEGORY} and
 <use_case> is the value that has been set for ${METPLUS_USE_CASE_NAME}.
 For a new met_tool_wrapper use case, use *{INPUT_BASE}/met_test/new*.
@@ -679,7 +679,7 @@ Create new data tarfile
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 Create a tarfile on the development machine with the new dataset. Make sure
-the tarfile contains directories, i.e.
+the tarfile contains directories, i.e.,
 *model_applications/${METPLUS_USE_CASE_CATEGORY}*.  
 **ONLY RUN THE COMMAND THAT IS APPROPRIATE TO YOUR CASE. READ CAREFULLY!**
 
@@ -837,7 +837,7 @@ Untar the new data tarball into the feature branch directory::
     tar zxf ${METPLUS_DATA_STAGING_DIR}/${METPLUS_NEW_DATA_TARFILE} -C ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
 
 Verify that all of the old and new data exists in the directory that was
-created (i.e. *model_applications/<category>*).
+created (i.e., *model_applications/<category>*).
 
 Create the new tarfile
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -867,7 +867,7 @@ If you are adding a new use case category, add a new entry to the volume mount
 directories file for the new category.
 Add the new entry in alphabetical order so it is easier for others to review.
 The format of this file follows
-**<category>**:model_applications/**<category>**, e.g.
+**<category>**:model_applications/**<category>**, e.g.,
 **climate**:model_applications/**climate**.
 
 Log out of DTC Web Server
@@ -1024,7 +1024,7 @@ environment, potential reasons include:
   environment
 - Memory usage of the use case exceeds the available memory in the
   GitHub Actions environment
-- Disk space usage of the use casee exceeds the available space in the
+- Disk space usage of the use case exceeds the available space in the
   GitHub Actions environment
 
 GitHub Actions has
@@ -1079,7 +1079,7 @@ can be run on other environments while still allowing a subset of the use case
 to be included in the automated use case tests.
 
 If needed, create a file named **ci_overrides.conf** in the use case directory,
-e.g. parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac/ci_overrides.conf.
+e.g., parm/use_cases/model_applications/clouds/GridStat_fcstGFS_obsERA5_lowAndTotalCloudFrac/ci_overrides.conf.
 This configuration file will automatically be read **after** the use case
 configuration file when run in the automated testing environment.
 
@@ -1108,7 +1108,7 @@ Use Cases That Cannot be Run in GitHub Actions
 If a use case utilizing Python embedding does not run successfully in 
 GitHub Actions due to exceeding the memory limit and memory mitigation 
 steps were unsuccessful in lowering memory usage, or if a use case does 
-run successfully in GitHub Actions due to exceeding available disk space 
+not run successfully in GitHub Actions due to exceeding available disk space 
 and the data cannot be further pared down, please take the following steps.
 
 - Document the GitHub Actions failure in the GitHub use case issue. 

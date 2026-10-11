@@ -19,7 +19,7 @@ met_tool_wrapper/PCPCombine/PCPCombine_derive.conf
 #
 # | **Forecast:** WRF precipitation accumulation fields (24, 21, 18, 15, 12, and 9 hour forecast leads)
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
+# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to go to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
 # | **Data Source:** WRF
@@ -30,7 +30,7 @@ met_tool_wrapper/PCPCombine/PCPCombine_derive.conf
 # ------------------
 #
 # This use case utilizes the METplus PCPCombine wrapper to search for files for each run time
-# using a filename template, forecast lead, and lookback time. It will a generate a command to run PCPCombine to derive
+# using a filename template, forecast lead, and lookback time. It will generate a command to run PCPCombine to derive
 # statistics from the fields.
 
 ##############################################################################
@@ -50,7 +50,7 @@ met_tool_wrapper/PCPCombine/PCPCombine_derive.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_derive.conf
+# with the -c option, i.e., -c parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_derive.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_derive.conf

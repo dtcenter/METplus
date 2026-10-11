@@ -316,7 +316,7 @@ SCRUB_STAGING_DIR
 ^^^^^^^^^^^^^^^^^
 
 True or False variable to determine if the :term:`STAGING_DIR` should be
-removed after the METplus has finished running.
+removed after METplus has finished running.
 
 
 OMP_NUM_THREADS
@@ -355,7 +355,7 @@ Logging
 Log File Information
 ^^^^^^^^^^^^^^^^^^^^
 
-Where to write logs files
+Where to write log files
 
 .. _log_metplus:
 
@@ -396,14 +396,14 @@ By default, a new log file is created for each METplus run::
 
     LOG_TIMESTAMP_TEMPLATE = %Y%m%d%H%M%S
 
-This example will use the format YYYYMMDDHHMMSS, i.e. 20141231101159.
+This example will use the format YYYYMMDDHHMMSS, i.e., 20141231101159.
 Change this value to adjust the frequency that new log files are created.
 For example, to write all log output that is generated within a day to a
 single log file, set::
 
     LOG_TIMESTAMP_TEMPLATE = %Y%m%d
 
-This example will use the format YYYYMMDD, i.e. 20141231
+This example will use the format YYYYMMDD, i.e., 20141231
 
 .. _log_timestamp_use_datatime:
 
@@ -415,7 +415,7 @@ when the METplus run was started::
 
     LOG_TIMESTAMP_USE_DATATIME = no
 
-If set to true/yes, write log timstamps using the value set for
+If set to true/yes, write log timestamps using the value set for
 :term:`INIT_BEG` or :term:`VALID_BEG` depending on the value set for
 :term:`LOOP_BY`. This is useful if it is desired to organize the
 log output files based on the data that was processed during the run.
@@ -438,7 +438,7 @@ LOG_TO_TERMINAL_ONLY
 """"""""""""""""""""
 
 If set to True, all log output is written to the screen only.
-This includes output from commands that are run, e.g. MET commands.
+This includes output from commands that are run, e.g., MET commands.
 No log files will be created and :ref:`log_metplus` will be set to an empty
 string. ::
 
@@ -457,7 +457,7 @@ LOG_LEVEL
 This controls the level of logging output from the METplus wrappers that is
 written to the log file defined by :ref:`log_metplus`.
 It does not control the logging level of the actual MET applications.
-The possible values to:
+The possible values are:
 
 * CRITICAL
 * ERROR
@@ -499,7 +499,7 @@ log output is desired for a specific application. For example::
     LOG_POINT_STAT_VERBOSITY = 4
 
 In the above example, ASCII2NC will use 3, PointStat will use 4, and
-all other MET applications with use 2.
+all other MET applications will use 2.
 
 Log Formatting Information
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -620,7 +620,7 @@ these variables in a user configuration file::
     INPUT_BASE = /my/input/base
     MET_INSTALL_DIR = /usr/local/met-10.0.0
 
-Overriding MET_INSTALL_DIR in the user configuration file allows users to use a
+Overriding MET_INSTALL_DIR in the user configuration file allows users to use an
 older version or test a new beta version of MET.
 Overriding INPUT_BASE can be useful when developing a new use case.
 
@@ -661,10 +661,10 @@ by variables that are found in these files. For example::
     GRID_STAT_OUTPUT_DIR = {OUTPUT_BASE}/met_tool_wrapper/GridStat
 
 All input data read by the use case is relative to INPUT_BASE and all output
-paths for data written by the use case is relative to OUTPUT_BASE. The
+paths for data written by the use case are relative to OUTPUT_BASE. The
 expectation is a use case can be run locally if the user's INPUT_BASE
 contains the sample data associated with the use case *AND* any additional
-dependencies (i.e. Python packages) are available.
+dependencies (i.e., Python packages) are available.
 See the chapter titled :ref:`metplus_use_cases` to view the documentation for
 the existing use cases to see if additional dependencies are required for a
 given use case.
@@ -723,7 +723,7 @@ Example::
     VALID_TIME_FMT = %Y%m%d%H
 
 Using this format, the valid time range values specified must be defined
-as YYYYMMDDHH, i.e. 2019020112.
+as YYYYMMDDHH, i.e., 2019020112.
 
 :term:`VALID_BEG`
 """""""""""""""""
@@ -800,7 +800,7 @@ When looping over initialization time (:term:`LOOP_BY` = INIT or LOOP_BY = RETRO
 :term:`INIT_TIME_FMT`
 """""""""""""""""""""
 
-This is the format of the initialization times the user can configure in METplus Wrappers. The value of :term:`INIT_BEG` and :term:`INIT_END` must correspond to this format. Example: INIT_TIME_FMT = %Y%m%d%H. Using this format, the initialization time range values specified must be defined as YYYYMMDDHH, i.e. 2019020112.
+This is the format of the initialization times the user can configure in METplus Wrappers. The value of :term:`INIT_BEG` and :term:`INIT_END` must correspond to this format. Example: INIT_TIME_FMT = %Y%m%d%H. Using this format, the initialization time range values specified must be defined as YYYYMMDDHH, i.e., 2019020112.
 
 :term:`INIT_BEG`
 """"""""""""""""
@@ -813,7 +813,7 @@ This is the first initialization time that will be processed. The format of this
 This is the last initialization time that can be processed. The format of this variable is controlled by INIT_TIME_FMT. For example, if INIT_TIME_FMT = %Y%m%d, then INIT_END must be set to an initialization time matching YYYYMMDD, such as 20190202.
 
 .. note::
-    The time specified for this variable will not necessarily be processed. It is used to determine the cutoff of run times that can be processed. For example, if METplus Wrappers is configured to start at 2019-02-01 and end at 2019-02-02 processing data in 48 hour increments, it will process 2019-02-01 then increment the run time to 2019-02-03. This is later than the INIT_END valid, so execution will stop. However, if the increment is set to 24 hours (see INIT_INCREMENT), then METplus Wrappers will process initialization times 2019-02-01 and 2019-02-02 before ending executaion.
+    The time specified for this variable will not necessarily be processed. It is used to determine the cutoff of run times that can be processed. For example, if METplus Wrappers is configured to start at 2019-02-01 and end at 2019-02-02 processing data in 48 hour increments, it will process 2019-02-01 then increment the run time to 2019-02-03. This is later than the INIT_END value, so execution will stop. However, if the increment is set to 24 hours (see INIT_INCREMENT), then METplus Wrappers will process initialization times 2019-02-01 and 2019-02-02 before ending execution.
 
 :term:`INIT_INCREMENT`
 """"""""""""""""""""""
@@ -900,7 +900,7 @@ Grouping Forecast Leads
 
 Grouping forecast leads is possible as well using a special version of
 the :term:`LEAD_SEQ` variable.
-If {APP_NAME}_RUNTIME_FREQ, e.g. SERIES_ANALYSIS_RUNTIME_FREQ, is set to
+If {APP_NAME}_RUNTIME_FREQ, e.g., SERIES_ANALYSIS_RUNTIME_FREQ, is set to
 **RUN_ONCE_PER_INIT_OR_VALID**,
 then groups of forecast leads can be defined to be evaluated together.
 Any number of these groups can be defined by setting
@@ -953,7 +953,7 @@ group. From the previous example, setting::
 
 will label the groups **Day1** and **SecondDay**.
 
-If the list of forecast leads contain a gap where there are no leads that fall
+If the list of forecast leads contains a gap where there are no leads that fall
 within a given group, that group will be skipped. For example::
 
     [config]
@@ -1134,7 +1134,7 @@ Example 8::
 
 This will skip all days of the week except for Monday, Wednesday, and Friday.
 
-:term:`INC_VALID_TIMES` also supported wrapper-specific versions, e.g.
+:term:`INC_VALID_TIMES` also supports wrapper-specific versions, e.g.,
 GRID_STAT_INC_VALID_TIMES.
 
 INC_VALID_TIMES and SKIP_VALID_TIMES can be used together.
@@ -1166,8 +1166,8 @@ and the METplus Wrappers is run with::
 
 then the value of :term:`VALID_END` will be set to 2019042608. {today} 
 can also be used to substitute the
-current YYYYMMDD, i.e. 20190426. The formatting for
-the 'today' keyword cannot be changed..
+current YYYYMMDD, i.e., 20190426. The formatting for
+the 'today' keyword cannot be changed.
 
 Shift Keyword
 """""""""""""
@@ -1256,7 +1256,7 @@ This method is controlled by:
 When these variables are set, METplus scans the specified directory for files matching the template pattern and
 extracts time information from the file paths.
 This automatically builds the list of times to process, eliminating the need to manually configure time ranges and increments.
-The list of forecast leads to process are determined for each initialization or valid time.
+The list of forecast leads to process is determined for each initialization or valid time.
 
 When ``TIME_GENERATOR_INPUT_TEMPLATE`` is set, the following traditional time looping variables are ignored:
 
@@ -1367,7 +1367,7 @@ METplus identifies valid times present in both datasets:
 Note that 2024-01-01 18Z from GFS init 2024-01-01 12Z lead 6h is not processed
 because no Stage IV observation exists for that time.
 
-Mulitple Template - Two Model Example
+Multiple Template - Two Model Example
 """""""""""""""""""""""""""""""""""""
 
 Complex configurations can handle multiple data sources with different directory structures:
@@ -1441,7 +1441,7 @@ wrapper to be specified in the PROCESS_LIST. Users can create a new section
 header in their configuration files with the same name as the instance.
 If defined, values in this section will override the values in the
 configuration for that instance. The instance name of the process is defined
-by adding text after the process name inside parenthesis. There should be
+by adding text after the process name inside parentheses. There should be
 no space between the process name and the parenthesis.
 
 **Example 3 Configuration**::
@@ -1507,8 +1507,8 @@ unless the wrapper does not support this functionality.
 CyclonePlotter, StatAnalysis, and TCStat wrappers are not supported.
 If the variable is not set or set
 to an empty string, the wrapper will execute as normal without additional
-runs. The name of the wrapper-specific variables contain the name of the
-wrapper, i.e. SERIES_ANALYSIS_CUSTOM_LOOP_LIST,
+runs. The names of the wrapper-specific variables contain the name of the
+wrapper, i.e., SERIES_ANALYSIS_CUSTOM_LOOP_LIST,
 PCP_COMBINE_CUSTOM_LOOP_LIST, GRID_STAT_CUSTOM_LOOP_LIST, etc.
 Setting these variables will override the value set for
 CUSTOM_LOOP_LIST for that wrapper only.
@@ -1829,7 +1829,7 @@ will add the following to the MET config file::
 
 Some GRIB files contain probabilistic field information in the
 Product Definition Section (PDS). The format of the fcst.field info to read
-these data expect the name to be set to "PROB" and the field name/level values
+these data expects the name to be set to "PROB" and the field name/level values
 are set inside a prob dictionary.
 If this is the case, then :term:`FCST_PROB_IN_GRIB_PDS` should be set to True.
 At least 1 threshold must be set with :term:`FCST_VAR<n>_THRESH` in this case.
@@ -2211,7 +2211,7 @@ The possible values for the \*_RUNTIME_FREQ variables are:
   All filename templates are substituted with values.
 
 Note that the following example may not contain all of the configuration
-variables that are required for a successful run. The are intended to show
+variables that are required for a successful run. They are intended to show
 how these variables affect how the data is processed.
 
 **SeriesAnalysis Examples**::
@@ -2490,7 +2490,7 @@ Allow Missing Inputs
 --------------------
 
 When any of the required input files for a given METplus run time are not found,
-an error is reported. In result, the entire METplus run fails.
+an error is reported. As a result, the entire METplus run fails.
 In some cases, users may expect a certain number of inputs to be unavailable
 and do not want the entire run to fail when this happens.
 
@@ -2508,7 +2508,7 @@ the threshold to prevent an error.
 
 There are wrapper-specific versions of both :term:`ALLOW_MISSING_INPUTS` and
 :term:`INPUT_THRESH` for most of the wrappers,
-e.g. :term:`GRID_STAT_ALLOW_MISSING_INPUTS` and :term:`GRID_STAT_INPUT_THRESH`.
+e.g., :term:`GRID_STAT_ALLOW_MISSING_INPUTS` and :term:`GRID_STAT_INPUT_THRESH`.
 Refer to the :ref:`python_wrappers` chapter or the :ref:`METplus_glossary`
 to see which variables are supported.
 
@@ -2631,7 +2631,7 @@ METplus will set the value of the ${METPLUS_DESC} environment variable to::
 
   desc = "my_description";
 
-Notice that the variable name and equals sign is included in the value of the
+Notice that the variable name and equals sign are included in the value of the
 environment variable. The default value for *desc* will be replaced with the
 new value "my_description" when the wrapped config file is read.
 
@@ -2641,14 +2641,14 @@ to an empty string. This will result in the default value "NA" to be used.
 
 Typically for single value or array MET config variables,
 the names of the METplus config variable, environment variable, and
-MET config variable are closely related, i.e.
+MET config variable are closely related, i.e.,
 
 *           **desc**: MET config name
 * GRID_STAT\_\ **DESC**: METplus config name
 *  $METPLUS\_\ **DESC**: Environment variable name
 
 However, this is not always the case. Refer to the 'MET Configuration' section
-for each wrapper in the:doc:`wrappers` chapter to see the full list of
+for each wrapper in the :doc:`wrappers` chapter to see the full list of
 supported variables.
 
 GridStat Dictionary example
@@ -2724,12 +2724,12 @@ that are absent will use the default value.
 GridStat Fields
 ---------------
 
-Field information, i.e. the fcst/obs dictionary field item, is handled
+Field information, i.e., the fcst/obs dictionary field item, is handled
 a little differently than other MET variables. Multiple fields can be
 specified for a given use case to generate a command for each field or, if
 the MET tool supports it, pass in all of the fields to a single command.
 Refer to the :ref:`Field_Info`
-section for information on how to sets these values.
+section for information on how to set these values.
 
 .. _reconcile_default_values:
 
@@ -3141,10 +3141,10 @@ _MET_CONFIG_OVERRIDES. Here are some examples:
 * :term:`TC_RMW_MET_CONFIG_OVERRIDES`
 * :term:`TC_STAT_MET_CONFIG_OVERRIDES`
 
-The value set for each of these variables are set to the
+The value set for each of these variables is set to the
 **${METPLUS_MET_CONFIG_OVERRIDES}** environment variable for the corresponding
 MET tool. This environment variable is referenced at the bottom
-of each wrapped MET configuration file, so the values are read at the end of
+of each wrapped MET configuration file, so the values are read at the end
 of parsing, overriding any values that were set.
 
 
@@ -3198,7 +3198,7 @@ A line would be added that looks like::
 This causes MET to update the value of the 'baddeley_p' variable in the
 'distance_map' dictionary to be 10 instead of the default value of 2.
 
-More than one MET config variables can be set using this functionality.
+More than one MET config variable can be set using this functionality.
 Simply list all of the overrides in the same METplus configuration variable::
 
   GRID_STAT_MET_CONFIG_OVERRIDES = distance_map = {baddeley_p = 10;} rank_corr_flag = TRUE;
@@ -3223,7 +3223,7 @@ Instead of calling the script and passing in all of the values as command line
 arguments, the environment variables can be read from inside the script.
  
 To set a user-defined environment variable, add a
-section to a METplus configuration files called [user_env_vars].
+section to a METplus configuration file called [user_env_vars].
 Under this header, add key-value pairs as desired.
 For example, if the following is added to a METplus configuration file::
 
@@ -3296,7 +3296,7 @@ use case, execution will stop immediately and an error report of all variables
 that must be updated is output.
 In some cases, simply renaming the variable is sufficient.
 Other changes may require more thought.
-The next few sections will outline a few of common changes that will need to
+The next few sections will outline a few common changes that will need to
 be made. In the last section, a tool called validate_config.py is described.
 This tool can be used to help with this transition by automating some of the
 work required to update configuration files.
@@ -3320,7 +3320,7 @@ FCST/OBS/BOTH Variables
 Field information passed into many of the MET tools is defined with the [FCST/OBS]_VAR<n>_[NAME/LEVELS/THRESH/OPTIONS] configuration variables.
 For example, FCST_VAR1_NAME and FCST_VAR1_LEVELS are used to define forecast name/level values that are compared to observations defined with OBS_VAR1_NAME and OBS_VAR1_LEVELS.
 
-Before METplus 3.0, users could define the FCST_* variables and omit the OBS_* variables or vice versa. In this case, it was assumed the undefined values matched the coresponding term. For example, if FCST_VAR1_NAME = TMP and OBS_VAR1_NAME is not defined, it was assumed that OBS_VAR1_NAME = TMP as well. This method was not always clear to users.
+Before METplus 3.0, users could define the FCST_* variables and omit the OBS_* variables or vice versa. In this case, it was assumed the undefined values matched the corresponding term. For example, if FCST_VAR1_NAME = TMP and OBS_VAR1_NAME is not defined, it was assumed that OBS_VAR1_NAME = TMP as well. This method was not always clear to users.
 
 Starting in METplus 3.0, users are required to either explicitly set both FCST_* and OBS_* variables or set the equivalent BOTH_* variables to make it clear that the values apply to both forecast and observation data.
 
@@ -3351,7 +3351,7 @@ MET Configuration Files
 
 The METplus wrappers set environment variables that are read by the MET configuration files to customize each run. Some of the environment variables that were previously set by METplus wrappers to handle very specific use cases are no longer set in favor of using a common set of variables across the MET tools. The following are examples of changes that have occurred in METplus regarding environment variables.
 
-EnsembleStat previously set $GRID_VX to define the grid to use to regrid data within the tool. In version 3.0, MET tools that have a 'to_grid' value in the 'grid' dictionary of the MET config file have a uniformly named METplus configuration variable called <MET-tool>_REGRID_TO_GRID (i.e. :term:`ENSEMBLE_STAT_REGRID_TO_GRID`) that is used to define this value::
+EnsembleStat previously set $GRID_VX to define the grid to use to regrid data within the tool. In version 3.0, MET tools that have a 'to_grid' value in the 'regrid' dictionary of the MET config file have a uniformly named METplus configuration variable called <MET-tool>_REGRID_TO_GRID (i.e., :term:`ENSEMBLE_STAT_REGRID_TO_GRID`) that is used to define this value::
 
     Before:
        to_grid    = ${GRID_VX};
@@ -3359,7 +3359,7 @@ EnsembleStat previously set $GRID_VX to define the grid to use to regrid data wi
     After:
        to_grid    = ${REGRID_TO_GRID};
 
-MET_VALID_HHMM was used by GridStat wrapper to set part of the climatology file path. This was replaced by the METplus configuration variables <MET-tool>_CLIMO_[MEAN/STDEV]_INPUT_[DIR/TEMPLATE] (i.e. :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE`)::
+MET_VALID_HHMM was used by GridStat wrapper to set part of the climatology file path. This was replaced by the METplus configuration variables <MET-tool>_CLIMO_[MEAN/STDEV]_INPUT_[DIR/TEMPLATE] (i.e., :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE`)::
 
   Before:
      file_name = [ "${INPUT_BASE}/grid_to_grid/nwprod/fix/cmean_1d.1959${MET_VALID_HHMM}" ];
@@ -3367,7 +3367,7 @@ MET_VALID_HHMM was used by GridStat wrapper to set part of the climatology file 
   After:
      file_name = [ ${CLIMO_MEAN_FILE} ];
 
-The output_prefix variable in the MET config files was previously set by referencing variable environment variables set by METplus. This has since been changed so that output_prefix references the $OUTPUT_PREFIX environment variable. This value is now set in the METplus configuration files using the wrapper-specific configuration variable, such as :term:`GRID_STAT_OUTPUT_PREFIX` or :term:`ENSEMBLE_STAT_OUTPUT_PREFIX`::
+The output_prefix variable in the MET config files was previously set by referencing field name environment variables (``${FCST_VAR}`` and ``${OBS_VAR}``) set by METplus. This has since been changed so that output_prefix references the $OUTPUT_PREFIX environment variable. This value is now set in the METplus configuration files using the wrapper-specific configuration variable, such as :term:`GRID_STAT_OUTPUT_PREFIX` or :term:`ENSEMBLE_STAT_OUTPUT_PREFIX`::
 
   Before:
      output_prefix    = "${FCST_VAR}_vs_${OBS_VAR}";

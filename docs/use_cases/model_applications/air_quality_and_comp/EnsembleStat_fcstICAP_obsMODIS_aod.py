@@ -17,7 +17,7 @@ model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf
 # --------------------
 #
 # To provide useful statistical information on the relationship between
-# observation data for aersol optical depth (AOD) to an ensemble forecast.
+# observation data for aerosol optical depth (AOD) to an ensemble forecast.
 # These values can be used to help correct ensemble member deviations from observed values.
 
 ##############################################################################
@@ -81,7 +81,7 @@ model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config, 
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf
+# i.e., parm/use_cases/model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf
