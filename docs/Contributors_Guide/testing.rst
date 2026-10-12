@@ -89,7 +89,7 @@ Some examples include:
     * plotting (custom marker for tests that involve plotting)
 
 To set up unit test functions so that they can be easily excluded or included
-from text execution, contributors can add the following on the line before
+from test execution, contributors can add the following on the line before
 the function definition in the Python test file::
       
     @pytest.mark.<MARKER-NAME>

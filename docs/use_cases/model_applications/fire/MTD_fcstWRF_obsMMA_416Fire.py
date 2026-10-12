@@ -74,7 +74,7 @@ model_applications/fire/MTD_fcstWRF_obsMMA_416Fire.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config, 
 # then it loads any configuration files passed to METplus via the command line, 
-# i.e. parm/use_cases/model_applications/fire/MTD_fcstWRF_obsMMA_416Fire.conf
+# i.e., parm/use_cases/model_applications/fire/MTD_fcstWRF_obsMMA_416Fire.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/fire/MTD_fcstWRF_obsMMA_416Fire.conf
@@ -135,8 +135,8 @@ model_applications/fire/MTD_fcstWRF_obsMMA_416Fire.conf
 #
 #  * 416_Fire_Interpolated_YYYYMMDDHH.nc
 #
-# Here, YYYYMMDDHH is the year, month, day, and hour of the interpolated permiters.  The 
-# output from MTD and will contain the following files::
+# Here, YYYYMMDDHH is the year, month, day, and hour of the interpolated perimeters.  The 
+# output from MTD will contain the following files::
 #
 #  * mtd_WRF_Fire_416_20180601_170000V_2d.txt
 #  * mtd_WRF_Fire_416_20180601_170000V_3d_pair_cluster.txt
@@ -146,7 +146,7 @@ model_applications/fire/MTD_fcstWRF_obsMMA_416Fire.conf
 #  * mtd_WRF_Fire_416_20180601_170000V_obj.nc
 #
 # The 2d file contains object-based statistics for the objects at different time steps.  
-# The 3d files contains the object based statistics over time for single and paired, simple and 
+# The 3d files contain the object based statistics over time for single and paired, simple and 
 # cluster objects.  For the netCDF file, six variable fields are present (not including the 
 # lat/lon fields). Those variables are::
 #

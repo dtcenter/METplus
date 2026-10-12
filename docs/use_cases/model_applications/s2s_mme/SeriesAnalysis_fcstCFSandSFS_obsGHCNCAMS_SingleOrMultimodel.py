@@ -70,7 +70,7 @@ model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCN_SingleOrMultimod
 # With an increment of 1 year, all November 1st’s from 1994 to 2020 are processed 
 # for a total of 27 years. This use case utilizes Python Embedding to process the 
 # forecast and observation inputs, reading user-set variables like TIME_PERIOD and 
-# CLIM to fine-tune what temporal size the means are calcuated over and what climatology
+# CLIM to fine-tune what temporal size the means are calculated over and what climatology
 # period is available, respectively. Outputs of ME, MAE, and RMSE, among others, provide
 # climate-useful statistical output. Instead of utilizing LEAD_SEQ, this use case
 # uses the CUSTOM_LOOP_LIST for 1, 2, and 3 month leads. This is done so that the Python script can
@@ -82,7 +82,7 @@ model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCN_SingleOrMultimod
 #
 # METplus first loads all of the configuration files found in parm/metplus_config, 
 # then it loads any configuration files passed to METplus via the command line, 
-# e.g. parm/use_cases/model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SingleOrMultimodel.conf
+# e.g., parm/use_cases/model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SingleOrMultimodel.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SingleOrMultimodel.conf
@@ -109,18 +109,18 @@ model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCN_SingleOrMultimod
 # ----------------
 #
 # This use case utilizes two Python scripts. The first, function_library.py,
-# serves the purpose of data handling. It open and reads in NMME and observational data,
+# serves the purpose of data handling. It opens and reads in NMME and observational data,
 # while also calculating climatologies, anomalies, and tercile probabilities using CPC methodologies 
 # (including non-normal assumption for precipitation terciles, or other variables as needed).
 # For more simple changes, users can add additional models under MODEL_SPECS 
 # (in the format 'model_name': nMembers); and additional model groupings can 
-# be added under MODEL_GROUPS, in the format  'short_name’: ['list', 'of', 'models']. 
+# be added under MODEL_GROUPS, in the format  'short_name': ['list', 'of', 'models']. 
 # Both of these are near the top of the function library. Additional observed datasets 
 # can be added under the file_map and var_map, under create_obs_anomalies. 
 # The second script, wrapper_combined.py, serves as the interface between python logic and METplus.
 # Based on options in the METplus config file, it formats model and observational 
 # data (e.g., standardizing to lat x lon grids) and holds it in memory for METplus 
-# to ingest. It also feature options for flags (FLIP_OBS, FLIP_MODELS) to handle 
+# to ingest. It also features options for flags (FLIP_OBS, FLIP_MODELS) to handle 
 # latitude orientation mismatches, ensuring data is geometrically correct before MET sees it.
 # 
 # .. dropdown:: parm/use_cases/model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SingleOrMultimodel/function_library.py

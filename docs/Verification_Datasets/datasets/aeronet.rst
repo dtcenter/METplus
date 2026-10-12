@@ -26,7 +26,7 @@ Location of data
   Main url: https://aeronet.gsfc.nasa.gov/cgi-bin/bamgomas_interactive
    
 Access restrictions
-  Most data is avialable with no restrictions. For more information:
+  Most data is available with no restrictions. For more information:
   https://aeronet.gsfc.nasa.gov/new_web/data.html
 
 Spatial resolution, grid, or coverage

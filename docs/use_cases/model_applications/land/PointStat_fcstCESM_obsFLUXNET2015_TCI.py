@@ -78,7 +78,7 @@ model_applications/land/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 # Then PointStat processes the output of PyEmbedIngest and FLUXNET2015 dataset
 # (using Python embedding), and outputs the requested line types.
 # Then the PlotPointObs tool reads the output of PyEmbedIngest and
-# FLUXNET2015 dataset and produce plots of TCI from CESM and point observations.
+# FLUXNET2015 dataset and produces plots of TCI from CESM and point observations.
 # A custom loop runs through all the pre-defined seasons (DJF, MAM, JJA, SON)
 # and runs PyEmbedIngest, PointStat, and PlotPointObs.
 #
@@ -112,7 +112,7 @@ model_applications/land/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #   The CESM forecasts cover a time period prior to the availability of FLUXNET
 #   observations. Thus, this use case should be considered a demonstration of
 #   the capability to read CESM forecast data, raw FLUXNET observation data,
-#   and compute TCI, rather than a bonafide scientific application.
+#   and compute TCI, rather than a bona fide scientific application.
 #   The use case is designed to enforce seasonal alignment, but it is not
 #   designed to enforce date/time alignment. In this case, the CESM data cover
 #   1979-1983, whereas the sample FLUXNET observations cover varying time
@@ -125,7 +125,7 @@ model_applications/land/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# i.e. parm/use_cases/model_applications/land/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
+# i.e., parm/use_cases/model_applications/land/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/land/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf

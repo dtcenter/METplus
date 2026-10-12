@@ -15,7 +15,7 @@ model_applications/short_range/MODE_fcstFV3_obsGOES_BrightnessTemp.conf
 # Scientific Objective
 # --------------------
 #
-# To provide statistical inforation on regions of low brightness temperatures, 
+# To provide statistical information on regions of low brightness temperatures, 
 # defined by creating objects, in the FV3 model compared to GOES satellite.
 
 ##############################################################################
@@ -62,7 +62,7 @@ model_applications/short_range/MODE_fcstFV3_obsGOES_BrightnessTemp.conf
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** 1,2
 #
-# The MODE tool is run for each of 2 ensemble members and for eachtime. This 
+# The MODE tool is run for each of 2 ensemble members and for each time. This 
 # example loops by initialization time.  It processes 2 lead times, listed below.
 #
 # | **Valid:** 2019-05-21_01Z
@@ -78,7 +78,7 @@ model_applications/short_range/MODE_fcstFV3_obsGOES_BrightnessTemp.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/short_range/MODE_fcstFV3_obsGOES_BrightnessTemp.conf
+# i.e., parm/use_cases/model_applications/short_range/MODE_fcstFV3_obsGOES_BrightnessTemp.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/MODE_fcstFV3_obsGOES_BrightnessTemp.conf

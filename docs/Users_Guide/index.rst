@@ -7,19 +7,19 @@ User's Guide
 
 
 This User's Guide is provided as an aid to users of the Model Evaluation
-Tools (MET) and it's companion package METplus Wrappers. MET is a suite of
-verification tools developed and supported to community via the
+Tools (MET) and its companion package METplus Wrappers. MET is a suite of
+verification tools developed and supported to the community via the
 Developmental Testbed Center (DTC) for use by the numerical weather
 prediction community. METplus Wrappers are intended to be a suite of
 Python wrappers and ancillary scripts to enhance the user's ability to
-quickly set-up and run MET. Over the next year, METplus Wrappers
+quickly set up and run MET. Over the next year, METplus Wrappers
 will become the authoritative repository for verification of the Unified
 Forecast System.
 
 It is important to note here that METplus Wrappers is an evolving
 software package. The METplus Wrappers package was first released
 in 2017. This documentation describes the |release_info|.
-Intermediate releases may include bug fixes. METplus Wrappers is also be
+Intermediate releases may include bug fixes. METplus Wrappers is also
 able to accept new modules contributed by the community. While we are
 setting up our community contribution protocol, please create a post in the
 `METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_
@@ -56,7 +56,7 @@ We thank all of the METplus sponsors including:
 DTC partners (NOAA, NCAR, USAF, and NSF), along with
 NOAA/Office of Atmospheric Research (OAR),
 NOAA/National Weather Service,
-NOAA/Joint Technology Transfer Program (JTTI),
+NOAA/Joint Technology Transfer Initiative (JTTI),
 NOAA/Subseasonal to Seasonal (S2S) Project,
 NOAA/Unified Forecast System Research to Operations Project (UFS R2O),
 Met Office,
@@ -66,7 +66,7 @@ Thanks also go to the staff at the Developmental Testbed Center for their
 help, advice, and many types of support.
 We released METplus Alpha in February 2017 and would not have made a decade of
 cutting-edge verification support without those who participated in
-DTC planning workshops and the United Forecast System Working Groups (UFS WGs).
+DTC planning workshops and the Unified Forecast System Working Groups (UFS WGs).
 Finally, the National Center for Atmospheric Research (NCAR)
 is sponsored by NSF.
 

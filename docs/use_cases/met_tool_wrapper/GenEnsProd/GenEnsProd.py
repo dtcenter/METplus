@@ -32,7 +32,7 @@ met_tool_wrapper/GenEnsProd/GenEnsProd.conf
 # **Input:** WRF ARW ensemble 24 hour precipitation accumulation
 #
 # **Location:** All of the input data required for this use case can be found
-# in the met_test sample data tarball. Click here to the METplus releases
+# in the met_test sample data tarball. Click here to go to the METplus releases
 # page and download sample data for the appropriate release:
 # https://github.com/dtcenter/METplus/releases
 # This tarball should be unpacked into the directory that you will set the

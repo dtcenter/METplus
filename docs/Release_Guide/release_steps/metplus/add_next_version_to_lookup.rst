@@ -23,7 +23,7 @@ Add version information for the next coordinated release.
   If the X.1 release was just created, add an entry for the X+1.0 release.
 
   Set the appropriate X.Y.0 versions for each component.
-  Maybe sure to set the Z number to 0.
+  Make sure to set the Z number to 0.
 
   Set the version for metexpress to None (not a string).
 

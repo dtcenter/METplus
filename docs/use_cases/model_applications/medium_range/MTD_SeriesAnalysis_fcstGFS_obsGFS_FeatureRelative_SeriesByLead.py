@@ -2,7 +2,7 @@
 Multi_Tool (MTD): Feature Relative by Lead (with lead groupings) 
 ================================================================
 
-model_applicaitons/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf
+model_applications/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf
 
 """
 ##############################################################################
