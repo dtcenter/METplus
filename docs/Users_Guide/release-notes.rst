@@ -246,6 +246,14 @@ when the old name is used.
      - ${METPLUS_TIME_OFFSET_WARNING}
      - ${METPLUS_TIME_OFFSET_WARN}
 
+.. note:: It is strongly recommended that users do not maintain their own wrapped
+          MET configuration files in favor of using the wrapped MET config files that
+          are provided with the METplus Wrappers and setting all configuration settings
+          through METplus configuration files.
+
+If a user-defined wrapped MET configuration file must be used,
+the following information can be used to update it.
+
 The following command can be run to update a wrapped MET configuration file::
 
     sed -i -e 's/METPLUS_TIME_OFFSET_WARNING/METPLUS_TIME_OFFSET_WARN/g' \
