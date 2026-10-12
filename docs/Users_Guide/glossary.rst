@@ -11892,25 +11892,37 @@ METplus Configuration Glossary
 
      | *Used by:* MADIS2NC
 
-   GRID_STAT_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for GridStat.
+   GRID_STAT_TIME_OFFSET_WARN
+     Specify the value for 'time_offset_warn' in the MET configuration file for GridStat.
 
      | *Used by:* GridStat
 
-   MODE_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for MODE.
+   GRID_STAT_TIME_OFFSET_WARNING
+      .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_TIME_OFFSET_WARN` instead.
+
+   MODE_TIME_OFFSET_WARN
+     Specify the value for 'time_offset_warn' in the MET configuration file for MODE.
 
      | *Used by:* MODE
 
-   SERIES_ANALYSIS_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for SeriesAnalysis.
+   MODE_TIME_OFFSET_WARNING
+      .. warning:: **DEPRECATED:** Please use :term:`MODE_TIME_OFFSET_WARN` instead.
+
+   SERIES_ANALYSIS_TIME_OFFSET_WARN
+     Specify the value for 'time_offset_warn' in the MET configuration file for SeriesAnalysis.
 
      | *Used by:* SeriesAnalysis
 
-   WAVELET_STAT_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for WaveletStat.
+   SERIES_ANALYSIS_TIME_OFFSET_WARNING
+      .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_TIME_OFFSET_WARN` instead.
+
+   WAVELET_STAT_TIME_OFFSET_WARN
+     Specify the value for 'time_offset_warn' in the MET configuration file for WaveletStat.
 
      | *Used by:* WaveletStat
+
+   WAVELET_STAT_TIME_OFFSET_WARNING
+      .. warning:: **DEPRECATED:** Please use :term:`WAVELET_STAT_TIME_OFFSET_WARN` instead.
 
    POINT2GRID_MET_CONFIG_OVERRIDES
      Override any variables in the MET configuration file that are not

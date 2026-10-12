@@ -97,8 +97,8 @@ MULTIPLE_INPUT_WRAPPERS = (
     'GenEnsProd',
 )
 
-# wrappers that support the time_offset_warning global MET config variable
-TIME_OFFSET_WARNING_WRAPPERS = (
+# wrappers that support the time_offset_warn global MET config variable
+TIME_OFFSET_WARN_WRAPPERS = (
     'GridStat',
     'MODE',
     'SeriesAnalysis',

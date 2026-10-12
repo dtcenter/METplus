@@ -17,7 +17,7 @@ from inspect import getframeinfo, stack
 from typing import Any
 
 from ..util.constants import PYTHON_EMBEDDING_TYPES, COMPRESSION_EXTENSIONS
-from ..util.constants import MULTIPLE_INPUT_WRAPPERS, TIME_OFFSET_WARNING_WRAPPERS
+from ..util.constants import MULTIPLE_INPUT_WRAPPERS, TIME_OFFSET_WARN_WRAPPERS
 from ..util.constants import WARNING_CONFIGS
 from ..util import getlist, preprocess_file
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
@@ -113,15 +113,20 @@ class CommandBuilder:
             # add key to list of env vars to set
             self.env_var_keys.append(self.MET_OVERRIDES_KEY)
 
-            if get_wrapper_name(self.app_name) in TIME_OFFSET_WARNING_WRAPPERS:
-                # add time_offset_warning env var
-                self.env_var_keys.append('METPLUS_TIME_OFFSET_WARNING')
-                time_offset_warning = self.get_wrapper_or_generic_config(
-                    'TIME_OFFSET_WARNING', var_type='int'
+            if get_wrapper_name(self.app_name) in TIME_OFFSET_WARN_WRAPPERS:
+                # add time_offset_warn env var
+                self.env_var_keys.append('METPLUS_TIME_OFFSET_WARN')
+                time_offset_warn = self.get_wrapper_or_generic_config(
+                    'TIME_OFFSET_WARN', var_type='int'
                 )
-                if time_offset_warning != '':
-                    self.env_var_dict['METPLUS_TIME_OFFSET_WARNING'] = (
-                        f'time_offset_warning = {time_offset_warning};'
+                # check legacy config variable name if new name is not set
+                if time_offset_warn == '':
+                    time_offset_warn = self.get_wrapper_or_generic_config(
+                        'TIME_OFFSET_WARNING', var_type='int'
+                    )
+                if time_offset_warn != '':
+                    self.env_var_dict['METPLUS_TIME_OFFSET_WARN'] = (
+                        f'time_offset_warn = {time_offset_warn};'
                     )
 
             # warn if any environment variables set by the wrapper are not
