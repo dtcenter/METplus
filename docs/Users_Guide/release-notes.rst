@@ -245,18 +245,41 @@ when the old name is used.
    * - GridStat, MODE, SeriesAnalysis, WaveletStat
      - ${METPLUS_TIME_OFFSET_WARNING}
      - ${METPLUS_TIME_OFFSET_WARN}
-   * - EnsembleStat
-     - ${METPLUS_OBS_ERROR_FLAG}
-     - ${METPLUS_OBS_ERR_FLAG}
-   * - EnsembleStat
-     - obs_error = {
-     - obs_err = {
 
 The following command can be run to update a wrapped MET configuration file::
 
     sed -i -e 's/METPLUS_TIME_OFFSET_WARNING/METPLUS_TIME_OFFSET_WARN/g' \
-           -e 's/METPLUS_OBS_ERROR_FLAG/METPLUS_OBS_ERR_FLAG/g' \
-           -e 's/obs_error = {/obs_err = {/g' /path/to/MyConfig_wrapped
+           /path/to/MyConfig_wrapped
+
+All items of the observation error dictionary can now be set from the METplus
+configuration (see :term:`ENSEMBLE_STAT_OBS_ERR_FLAG`,
+:term:`ENSEMBLE_STAT_OBS_ERR_DIST_TYPE`,
+:term:`ENSEMBLE_STAT_OBS_ERR_DIST_PARM`,
+:term:`ENSEMBLE_STAT_OBS_ERR_INST_BIAS_SCALE`,
+:term:`ENSEMBLE_STAT_OBS_ERR_INST_BIAS_OFFSET`,
+:term:`ENSEMBLE_STAT_OBS_ERR_MIN`, and :term:`ENSEMBLE_STAT_OBS_ERR_MAX`).
+In a custom EnsembleStat wrapped MET configuration file, replace the entire
+*obs_error* dictionary::
+
+    obs_error = {
+       //flag =
+       ${METPLUS_OBS_ERROR_FLAG}
+       dist_type        = NONE;
+       dist_parm        = [];
+       inst_bias_scale  = 1.0;
+       inst_bias_offset = 0.0;
+       min              = NA;      // Valid range of data
+       max              = NA;
+    }
+
+with::
+
+    //obs_err = {
+    ${METPLUS_OBS_ERR_DICT}
+
+If any of the values in the old dictionary were changed from the defaults
+shown above, set the corresponding METplus configuration variables to
+preserve that behavior.
 
 Environment Variables and Table Files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

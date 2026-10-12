@@ -306,6 +306,12 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_CENSOR_THRESH`
 | :term:`ENSEMBLE_STAT_CENSOR_VAL`
 | :term:`ENSEMBLE_STAT_OBS_ERR_FLAG`
+| :term:`ENSEMBLE_STAT_OBS_ERR_DIST_TYPE`
+| :term:`ENSEMBLE_STAT_OBS_ERR_DIST_PARM`
+| :term:`ENSEMBLE_STAT_OBS_ERR_INST_BIAS_SCALE`
+| :term:`ENSEMBLE_STAT_OBS_ERR_INST_BIAS_OFFSET`
+| :term:`ENSEMBLE_STAT_OBS_ERR_MIN`
+| :term:`ENSEMBLE_STAT_OBS_ERR_MAX`
 | :term:`ENSEMBLE_STAT_CLIMO_MEAN_FILE_NAME`
 | :term:`ENSEMBLE_STAT_CLIMO_MEAN_FILE_TYPE`
 | :term:`ENSEMBLE_STAT_CLIMO_MEAN_VAR<n>_NAME`
@@ -994,7 +1000,7 @@ ${METPLUS_SKIP_CONST}
    * - :term:`ENSEMBLE_STAT_SKIP_CONST`
      - skip_const
 
-${METPLUS_OBS_ERR_FLAG}
+${METPLUS_OBS_ERR_DICT}
 """""""""""""""""""""""
 
 .. list-table::
@@ -1005,6 +1011,18 @@ ${METPLUS_OBS_ERR_FLAG}
      - MET Config File
    * - :term:`ENSEMBLE_STAT_OBS_ERR_FLAG`
      - obs_err.flag
+   * - :term:`ENSEMBLE_STAT_OBS_ERR_DIST_TYPE`
+     - obs_err.dist_type
+   * - :term:`ENSEMBLE_STAT_OBS_ERR_DIST_PARM`
+     - obs_err.dist_parm
+   * - :term:`ENSEMBLE_STAT_OBS_ERR_INST_BIAS_SCALE`
+     - obs_err.inst_bias_scale
+   * - :term:`ENSEMBLE_STAT_OBS_ERR_INST_BIAS_OFFSET`
+     - obs_err.inst_bias_offset
+   * - :term:`ENSEMBLE_STAT_OBS_ERR_MIN`
+     - obs_err.min
+   * - :term:`ENSEMBLE_STAT_OBS_ERR_MAX`
+     - obs_err.max
 
 ${METPLUS_OBTYPE_AS_GROUP_VAL_FLAG}
 """""""""""""""""""""""""""""""""""

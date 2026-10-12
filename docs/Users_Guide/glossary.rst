@@ -5522,6 +5522,36 @@ METplus Configuration Glossary
    ENSEMBLE_STAT_OBS_ERROR_FLAG
       .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_OBS_ERR_FLAG` instead.
 
+   ENSEMBLE_STAT_OBS_ERR_DIST_TYPE
+     Specify the value for 'obs_err.dist_type' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_ERR_DIST_PARM
+     Specify the value for 'obs_err.dist_parm' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_ERR_INST_BIAS_SCALE
+     Specify the value for 'obs_err.inst_bias_scale' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_ERR_INST_BIAS_OFFSET
+     Specify the value for 'obs_err.inst_bias_offset' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_ERR_MIN
+     Specify the value for 'obs_err.min' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_ERR_MAX
+     Specify the value for 'obs_err.max' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
    ENSEMBLE_STAT_CLIMO_MEAN_FILE_NAME
      Specify the value for 'climo_mean.file_name' in the MET configuration file for EnsembleStat.
 

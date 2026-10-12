@@ -50,7 +50,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_OBS_SUMMARY',
         'METPLUS_OBS_PERC_VALUE',
         'METPLUS_SKIP_CONST',
-        'METPLUS_OBS_ERR_FLAG',
+        'METPLUS_OBS_ERR_DICT',
         'METPLUS_ENS_SSVAR_BIN_SIZE',
         'METPLUS_ENS_PHIST_BIN_SIZE',
         'METPLUS_CLIMO_MEAN_DICT',
@@ -286,10 +286,15 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         self.warn_if_deprecated_config('ENSEMBLE_STAT_OBS_ERROR_FLAG',
                                        'ENSEMBLE_STAT_OBS_ERR_FLAG')
-        self.add_met_config(name='flag', data_type='bool',
-                            env_var_name='METPLUS_OBS_ERR_FLAG',
-                            metplus_configs=['ENSEMBLE_STAT_OBS_ERR_FLAG',
-                                             'ENSEMBLE_STAT_OBS_ERROR_FLAG',])
+        self.add_met_config_dict('obs_err', {
+            'flag': ('bool', None, None, ['ENSEMBLE_STAT_OBS_ERROR_FLAG']),
+            'dist_type': ('string', 'constant'),
+            'dist_parm': ('list', 'remove_quotes,allow_empty'),
+            'inst_bias_scale': 'float',
+            'inst_bias_offset': 'float',
+            'min': 'float',
+            'max': 'float',
+        })
 
         self.add_met_config(name='grid', data_type='list',
                             env_var_name='METPLUS_MASK_GRID',
