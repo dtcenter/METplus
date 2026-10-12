@@ -119,6 +119,11 @@ class CommandBuilder:
                 time_offset_warn = self.get_wrapper_or_generic_config(
                     'TIME_OFFSET_WARN', var_type='int'
                 )
+                # warn if legacy config variable names are used
+                for name in (f'{self.app_name}_TIME_OFFSET', 'TIME_OFFSET'):
+                    self.warn_if_deprecated_config(f'{name.upper()}_WARNING',
+                                                   f'{name.upper()}_WARN')
+
                 # check legacy config variable name if new name is not set
                 if time_offset_warn == '':
                     time_offset_warn = self.get_wrapper_or_generic_config(
@@ -1591,6 +1596,17 @@ class CommandBuilder:
         if var_type == 'int':
             return self.config.getint('config', name)
         return self.config.getstr('config', name)
+
+    def warn_if_deprecated_config(self, old_name, new_name):
+        """! Log a warning if a deprecated config variable name is set.
+
+        @param old_name deprecated name of METplus config variable
+        @param new_name name of METplus config variable that should be used
+        """
+        if not self.config.has_option('config', old_name):
+            return
+        self.logger.warning(f'{old_name} is deprecated. '
+                            f'Please use {new_name} instead.')
 
     def format_field(self, data_type, field_string, is_list=True):
         """! Set {data_type}_FIELD c_dict value to the formatted field string

@@ -209,6 +209,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         )
 
         # read by MET through environment variable, not set in MET config file
+        self.warn_if_deprecated_config('ENSEMBLE_STAT_MET_OBS_ERROR_TABLE',
+                                       'ENSEMBLE_STAT_MET_OBS_ERR_TABLE')
         obs_err_conf = self.config.get_mp_config_name((
             'ENSEMBLE_STAT_MET_OBS_ERR_TABLE',
             'ENSEMBLE_STAT_MET_OBS_ERROR_TABLE'
@@ -282,6 +284,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.handle_flags('OUTPUT')
         self.handle_flags('NC_ORANK')
 
+        self.warn_if_deprecated_config('ENSEMBLE_STAT_OBS_ERROR_FLAG',
+                                       'ENSEMBLE_STAT_OBS_ERR_FLAG')
         self.add_met_config(name='flag', data_type='bool',
                             env_var_name='METPLUS_OBS_ERR_FLAG',
                             metplus_configs=['ENSEMBLE_STAT_OBS_ERR_FLAG',

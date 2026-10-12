@@ -581,7 +581,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
                 continue
 
             self.logger.debug(
-                f"{list_name} was found in LOOP_LIST_ITEMS but is empty. "
+                f"{list_name} was found in LOOP_LIST_ITEMS but has no values. "
                 "Moving to group list"
             )
             c_dict['GROUP_LIST_ITEMS'].append(list_name)

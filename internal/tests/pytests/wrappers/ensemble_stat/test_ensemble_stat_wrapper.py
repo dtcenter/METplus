@@ -1044,3 +1044,31 @@ def test_ensemble_stat_fill_missing(metplus_config, config_overrides,
         actual_num_files = len(file_handle.read().splitlines()) - 1
 
     assert actual_num_files == expected_num_files
+
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_warnings', [
+        ({'ENSEMBLE_STAT_OBS_ERR_FLAG': 'true',
+          'ENSEMBLE_STAT_MET_OBS_ERR_TABLE': '/some/err/table/path.txt'}, []),
+        ({'ENSEMBLE_STAT_OBS_ERROR_FLAG': 'true'},
+         ['ENSEMBLE_STAT_OBS_ERROR_FLAG is deprecated. '
+          'Please use ENSEMBLE_STAT_OBS_ERR_FLAG instead.']),
+        ({'ENSEMBLE_STAT_MET_OBS_ERROR_TABLE': '/some/err/table/path.txt'},
+         ['ENSEMBLE_STAT_MET_OBS_ERROR_TABLE is deprecated. '
+          'Please use ENSEMBLE_STAT_MET_OBS_ERR_TABLE instead.']),
+    ]
+)
+@pytest.mark.wrapper_c
+def test_ensemble_stat_obs_err_deprecated(metplus_config, config_overrides,
+                                          expected_warnings):
+    config = metplus_config
+    set_minimum_config_settings(config)
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    wrapper = EnsembleStatWrapper(config)
+    assert wrapper.is_ok
+
+    warnings = [call.args[0] for call in config.logger.warning.call_args_list]
+    deprecated = [msg for msg in warnings if 'deprecated' in msg]
+    assert deprecated == expected_warnings
