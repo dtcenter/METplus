@@ -16,7 +16,7 @@ Describe the changes proposed by this pull request:</br>
 If **yes**, describe the new output and/or changes to the existing output:</br>
 
 - [ ] Do these changes introduce new SonarQube findings? **[Yes or No]**</br>
-If **yes**, please describe:
+If **yes**, please describe:</br>
 
 - [ ] Please complete this pull request review by **[Fill in date]**.</br>
 
