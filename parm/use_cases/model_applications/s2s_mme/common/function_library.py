@@ -115,6 +115,63 @@ def setup(model_input_list, clim_per_str):
 
 
 # --------------------------------------------------------------------------------------------------
+def _open_model_datasets(base_path, variable, year_str, init_month, config, require_fcst=False):
+    """
+    Open the forecast file for each model for a given year, subset to the
+    configured number of members. Missing or unreadable files are skipped.
+    """
+    ds_list = []
+    for model_name in config['model_out']:
+        n_members = config['model_dict'][model_name]
+        file_name = f"{model_name}.{variable}.{year_str}{init_month}.fcst.nc"
+        full_path = os.path.join(base_path, model_name, file_name)
+
+        if not os.path.exists(full_path):
+            print(f"    WARNING: File missing for year {year_str}: {full_path}")
+            continue
+
+        try:
+            ds = xr.open_dataset(full_path, decode_times=False)
+            if require_fcst and 'fcst' not in ds:
+                print(f"    WARNING: 'fcst' variable missing in {full_path}")
+                continue
+            ds_list.append(ds.isel(ensmem=slice(0, n_members)))
+        except Exception as exc:
+            print(f"    WARNING: Error reading {full_path}: {exc}")
+
+    return ds_list
+
+
+def _combine_fcst(ds_list):
+    """Concatenate datasets along members and mask fill values as NaN."""
+    ds_combined = xr.concat(ds_list, dim='ensmem')
+    fcst_data = ds_combined['fcst'].values
+    return np.where(np.abs(fcst_data) < 9999, fcst_data, np.nan)
+
+
+def _select_lead(fcst_data, time_period, lead_int):
+    """Select (monthly) or average (seasonal) lead times. Shape (Members, Lead, Lat, Lon) -> (Members, Lat, Lon)"""
+    if time_period == 'monthly':
+        return fcst_data[:, lead_int, :, :]
+    if time_period == 'seasonal':
+        leads_to_avg = slice(lead_int - 1, lead_int + 2)
+        return np.nanmean(fcst_data[:, leads_to_avg, :, :], axis=1)
+    raise ValueError(f"Unsupported time period: {time_period}")
+
+
+def _convert_units(data, variable):
+    """Convert precipitation to mm/day and temperature to deg C."""
+    if variable == 'prate':
+        return data * 86400
+    if variable in ['tmp2m', 'tmpsfc']:
+        data = data - 273.15
+        if variable == 'tmpsfc':
+            data = np.where(data > 600, np.nan, data)
+    return data
+# --------------------------------------------------------------------------------------------------
+
+
+# --------------------------------------------------------------------------------------------------
 def open_and_process_models(base_path, variable, time_period,
                             init_month, lead_time, init_year,
                             config, return_members=False):
@@ -122,70 +179,28 @@ def open_and_process_models(base_path, variable, time_period,
     mode_str = "Full Ensemble" if return_members else "Ensemble Mean"
     print(f"Opening target data for {variable} ({mode_str})...")
 
-    model_order = config['model_out']
-    ds_list = []
     grid_shape = (181, 360)
 
-    for model_name in model_order:
-        n_members = config['model_dict'][model_name]
-        file_name = f"{model_name}.{variable}.{init_year}{init_month}.fcst.nc"
-        full_path = os.path.join(base_path, model_name, file_name)
-
-        try:
-            if not os.path.exists(full_path):
-                print(f"    WARNING: File missing: {full_path}")
-                continue
-
-            ds = xr.open_dataset(full_path, decode_times=False)
-            if 'fcst' not in ds:
-                print(f"    WARNING: 'fcst' variable missing in {full_path}")
-                continue
-
-            ds_subset = ds.isel(ensmem=slice(0, n_members))
-            ds_list.append(ds_subset)
-
-        except Exception as exc:
-            print(f"    WARNING: Error reading {full_path}: {exc}")
-            continue
-
+    ds_list = _open_model_datasets(base_path, variable, init_year, init_month,
+                                   config, require_fcst=True)
     if not ds_list:
         print(f"    WARNING: No valid data found for {init_year}. Returning -9999 to MET.")
         return np.full(grid_shape, -9999.0)
 
-    ds_combined = xr.concat(ds_list, dim='ensmem')
-    fcst_data = ds_combined['fcst'].values
-    fcst_data = np.where(np.abs(fcst_data) < 9999, fcst_data, np.nan)
-
+    fcst_data = _combine_fcst(ds_list)
     if np.isnan(fcst_data).all():
         print(f"    WARNING: Data for {init_year} is all-NaN. Returning -9999 to MET.")
         return np.full(grid_shape, -9999.0)
 
     lead_int = int(lead_time)
-
     try:
-        if time_period == 'monthly':
-            fcst_proc = fcst_data[:, lead_int, :, :]
-        elif time_period == 'seasonal':
-            leads_to_avg = slice(lead_int - 1, lead_int + 2)
-            fcst_subset = fcst_data[:, leads_to_avg, :, :]
-            fcst_proc = np.nanmean(fcst_subset, axis=1)
-        else:
-            raise ValueError(f"Unsupported time period: {time_period}")
+        fcst_proc = _select_lead(fcst_data, time_period, lead_int)
     except IndexError:
         print(f"    WARNING: Lead time {lead_int} out of bounds for {init_year}. Returning NaNs.")
         return np.full(grid_shape, np.nan)
 
-    if return_members:
-        fcst = fcst_proc
-    else:
-        fcst = np.nanmean(fcst_proc, axis=0)
-
-    if variable == 'prate':
-        fcst = fcst * 86400
-    elif variable in ['tmp2m', 'tmpsfc']:
-        fcst = fcst - 273.15
-        if variable == 'tmpsfc':
-            fcst = np.where(fcst > 600, np.nan, fcst)
+    fcst = fcst_proc if return_members else np.nanmean(fcst_proc, axis=0)
+    fcst = _convert_units(fcst, variable)
 
     print(f"    Shape of fcst array: {fcst.shape}")
     return fcst
@@ -193,77 +208,48 @@ def open_and_process_models(base_path, variable, time_period,
 
 
 # --------------------------------------------------------------------------------------------------
+def _load_history_year(base_path, variable, time_period, init_month, lead_int, config, year_str):
+    """
+    Load and process all models for a single climatology year.
+    Returns array of shape (Members, Lat, Lon) or None if the year should be skipped.
+    """
+    ds_list = _open_model_datasets(base_path, variable, year_str, init_month, config)
+    if not ds_list:
+        print(f"    WARNING: No valid model data found for year {year_str}. Skipping.")
+        return None
+
+    try:
+        fcst_data = _combine_fcst(ds_list)
+    except Exception as exc:
+        print(f"    WARNING: Error combining data for {year_str}: {exc}. Skipping.")
+        return None
+
+    if np.isnan(fcst_data).all():
+        print(f"    WARNING: Data for {year_str} is entirely NaN. Skipping.")
+        return None
+
+    return _select_lead(fcst_data, time_period, lead_int)
+
+
 def _load_history_stack(base_path, variable, time_period, init_month, lead_time, config):
     """
     Helper to avoid duplication in climatology and detrending logic.
     Returns array of shape: (Years, Members, Lat, Lon)
     """
-    clim_years = config['years']
-    model_order = config['model_out']
     lead_int = int(lead_time)
     history_stack = []
 
-    for year in clim_years:
-        year_str = str(year)
-        current_year_models = []
-
-        for model_name in model_order:
-            n_members = config['model_dict'][model_name]
-            file_name = f"{model_name}.{variable}.{year_str}{init_month}.fcst.nc"
-            full_path = os.path.join(base_path, model_name, file_name)
-
-            if not os.path.exists(full_path):
-                print(f"    WARNING: File missing for year {year_str}: {full_path}")
-                continue
-
-            try:
-                ds = xr.open_dataset(full_path, decode_times=False)
-                ds_subset = ds.isel(ensmem=slice(0, n_members))
-                current_year_models.append(ds_subset)
-            except Exception as exc:
-                print(f"    WARNING: Error reading {full_path}: {exc}")
-                continue
-
-        if not current_year_models:
-            print(f"    WARNING: No valid model data found for year {year_str}. Skipping.")
-            continue
-
-        try:
-            ds_combined = xr.concat(current_year_models, dim='ensmem')
-            fcst_data = ds_combined['fcst'].values
-            fcst_data = np.where(np.abs(fcst_data) < 9999, fcst_data, np.nan)
-        except Exception as exc:
-            print(f"    WARNING: Error combining data for {year_str}: {exc}. Skipping.")
-            continue
-
-        if np.isnan(fcst_data).all():
-            print(f"    WARNING: Data for {year_str} is entirely NaN. Skipping.")
-            continue
-
-        if time_period == 'monthly':
-            data_proc = fcst_data[:, lead_int, :, :]
-        elif time_period == 'seasonal':
-            leads_to_avg = slice(lead_int - 1, lead_int + 2)
-            fcst_subset = fcst_data[:, leads_to_avg, :, :]
-            data_proc = np.nanmean(fcst_subset, axis=1)
-        else:
-            raise ValueError(f"Unsupported time period: {time_period}")
-
-        history_stack.append(data_proc)
+    for year in config['years']:
+        data_proc = _load_history_year(base_path, variable, time_period, init_month,
+                                       lead_int, config, str(year))
+        if data_proc is not None:
+            history_stack.append(data_proc)
 
     if not history_stack:
         raise RuntimeError("CRITICAL ERROR: No valid years found for climatology.")
 
     full_hist_array = np.stack(history_stack, axis=0)
-
-    if variable == 'prate':
-        full_hist_array = full_hist_array * 86400
-    elif variable in ['tmp2m', 'tmpsfc']:
-        full_hist_array = full_hist_array - 273.15
-        if variable == 'tmpsfc':
-            full_hist_array = np.where(full_hist_array > 600, np.nan, full_hist_array)
-
-    return full_hist_array
+    return _convert_units(full_hist_array, variable)
 # --------------------------------------------------------------------------------------------------
 
 
