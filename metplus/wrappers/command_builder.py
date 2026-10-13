@@ -102,41 +102,8 @@ class CommandBuilder:
             self.log_error("Could not parse config")
             return
 
-        # if wrapper has a config file, read MET config overrides variable
-        if 'CONFIG_FILE' in self.c_dict:
-            config_name = self.MET_OVERRIDES_KEY.replace('METPLUS',
-                                                         self.app_name.upper())
-            self.env_var_dict[self.MET_OVERRIDES_KEY] = (
-                self.config.getraw('config', config_name)
-            )
-
-            # add key to list of env vars to set
-            self.env_var_keys.append(self.MET_OVERRIDES_KEY)
-
-            if get_wrapper_name(self.app_name) in TIME_OFFSET_WARN_WRAPPERS:
-                # add time_offset_warn env var
-                self.env_var_keys.append('METPLUS_TIME_OFFSET_WARN')
-                time_offset_warn = self.get_wrapper_or_generic_config(
-                    'TIME_OFFSET_WARN', var_type='int'
-                )
-                # warn if legacy config variable names are used
-                for name in (f'{self.app_name}_TIME_OFFSET', 'TIME_OFFSET'):
-                    self.warn_if_deprecated_config(f'{name.upper()}_WARNING',
-                                                   f'{name.upper()}_WARN')
-
-                # check legacy config variable name if new name is not set
-                if time_offset_warn == '':
-                    time_offset_warn = self.get_wrapper_or_generic_config(
-                        'TIME_OFFSET_WARNING', var_type='int'
-                    )
-                if time_offset_warn != '':
-                    self.env_var_dict['METPLUS_TIME_OFFSET_WARN'] = (
-                        f'time_offset_warn = {time_offset_warn};'
-                    )
-
-            # warn if any environment variables set by the wrapper are not
-            # being utilized in the user's config file
-            self.check_for_unused_env_vars()
+        # if wrapper has a MET config file, handle config settings
+        self._handle_met_config_settings()
 
         # set MET_TMP_DIR environment variable that controls
         # where the MET tools write temporary files
@@ -156,6 +123,45 @@ class CommandBuilder:
         self.log_name = self.app_name if hasattr(self, 'app_name') else ''
 
         self.clear()
+
+    def _handle_met_config_settings(self):
+        if 'CONFIG_FILE' not in self.c_dict:
+            return
+
+        # read MET config overrides variable
+        config_name = self.MET_OVERRIDES_KEY.replace('METPLUS',
+                                                     self.app_name.upper())
+        self.env_var_dict[self.MET_OVERRIDES_KEY] = (
+            self.config.getraw('config', config_name)
+        )
+
+        # add key to list of env vars to set
+        self.env_var_keys.append(self.MET_OVERRIDES_KEY)
+
+        if get_wrapper_name(self.app_name) in TIME_OFFSET_WARN_WRAPPERS:
+            # add time_offset_warn env var
+            self.env_var_keys.append('METPLUS_TIME_OFFSET_WARN')
+            time_offset_warn = self.get_wrapper_or_generic_config(
+                'TIME_OFFSET_WARN', var_type='int'
+            )
+            # warn if legacy config variable names are used
+            for name in (f'{self.app_name}_TIME_OFFSET', 'TIME_OFFSET'):
+                self.warn_if_deprecated_config(f'{name.upper()}_WARNING',
+                                               f'{name.upper()}_WARN')
+
+            # check legacy config variable name if new name is not set
+            if time_offset_warn == '':
+                time_offset_warn = self.get_wrapper_or_generic_config(
+                    'TIME_OFFSET_WARNING', var_type='int'
+                )
+            if time_offset_warn != '':
+                self.env_var_dict['METPLUS_TIME_OFFSET_WARN'] = (
+                    f'time_offset_warn = {time_offset_warn};'
+                )
+
+        # warn if any environment variables set by the wrapper are not
+        # being utilized in the user's config file
+        self.check_for_unused_env_vars()
 
     def populate_var_options(self):
         return {}
