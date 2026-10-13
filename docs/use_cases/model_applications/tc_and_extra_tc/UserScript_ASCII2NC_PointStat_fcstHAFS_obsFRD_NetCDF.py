@@ -16,7 +16,7 @@ model_applications/tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD
 # --------------------
 # To provide useful statistical information on the relationship between observation data
 # in point format to a gridded forecast. These values can be used to assess the skill 
-# of the prediction. Statistics are store as partial sums to save space and Stat-Analysis
+# of the prediction. Statistics are stored as partial sums to save space and Stat-Analysis
 # must be used to compute Continuous statistics.
 
 ##############################################################################
@@ -75,7 +75,7 @@ model_applications/tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF.conf
+# i.e., parm/use_cases/model_applications/tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF.conf

@@ -102,7 +102,7 @@ model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SelectClimat
 #
 # METplus first loads all of the configuration files found in parm/metplus_config, 
 # then it loads any configuration files passed to METplus via the command line, 
-# e.g. parm/use_cases/model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SelectClimateRegimes.conf
+# e.g., parm/use_cases/model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SelectClimateRegimes.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SelectClimateRegimes.conf
@@ -134,7 +134,7 @@ model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SelectClimat
 # (including non-normal assumption for precipitation terciles, or other variables as needed).
 # For more simple changes, users can add additional models under MODEL_SPECS 
 # (in the format 'model_name': nMembers); and additional model groupings can 
-# be added under MODEL_GROUPS, in the format  'short_name’: ['list', 'of', 'models']. 
+# be added under MODEL_GROUPS, in the format  'short_name': ['list', 'of', 'models'].
 # Both of these are near the top of the function library. Additional observed datasets 
 # can be added under the file_map and var_map, under create_obs_anomalies. 
 # The second script, wrapper_combined.py, serves as the interface between python logic and METplus.

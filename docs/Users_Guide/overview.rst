@@ -8,10 +8,10 @@ Purpose and Organization of the User's Guide
 The goal of this User's Guide is to equip users with the information
 needed to use the Model Evaluation Tools (MET) and its companion
 package METplus Wrappers. MET is a set of verification tools developed
-and supported to community via the Developmental Testbed Center (DTC)
+and supported to the community via the Developmental Testbed Center (DTC)
 for use by the numerical weather prediction community. METplus Wrappers
 is a suite of Python wrappers and ancillary scripts to enhance the
-user's ability to quickly set-up and run MET. Over the next few years,
+user's ability to quickly set up and run MET. Over the next few years,
 METplus Wrappers will become the authoritative repository for
 verification of the Unified Forecast System.
 
@@ -47,7 +47,7 @@ of the Atmosphere (SIMA) modeling communities for testing and evaluation
 of new model capabilities, applications in new environments, and so on.
 The METplus Wrappers release schedule is coincident with the MET release
 schedule and the METplus Wrappers major release number is six less than
-the MET major release number (e.g. MET 8.X is released with METplus Wrappers 2.X).
+the MET major release number (e.g., MET 8.X is released with METplus Wrappers 2.X).
 
 METplus Wrappers Goals and Design Philosophy
 ============================================
@@ -100,7 +100,7 @@ documented using GitHub issues and fixed either in the next bugfix or
 official release. Future METplus Wrappers development plans are based
 on several contributing factors, including the needs of both the
 operational and research community. Issues that are in the development
-queue detailed in the "Issues" section of the GitHub repository.
+queue are detailed in the "Issues" section of the GitHub repository.
 Please create a post in the
 `METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_
 with any questions.
@@ -109,7 +109,7 @@ User Support
 ============
 
 The `METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_
-is a place for questions, answers, and discussion about the Model Evaluation Tools (METplus)
+is a place for questions, answers, and discussion about the METplus
 verification system, which consists of code repositories for
 `METplus <https://github.com/dtcenter/METplus>`_,
 `MET <https://github.com/dtcenter/MET>`_,

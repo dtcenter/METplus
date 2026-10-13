@@ -6,7 +6,7 @@ Update the development version information.
 .. dropdown:: Instructions
 
   Change METcalcpy/docs/version __version__ value to the next release after this one with -dev added
-  to the end. Releases will loosely following these names, but are subject to change:
+  to the end. Releases will loosely follow these names, but are subject to change:
 
   +-------------------+----------------------------+
   | Release Version   | New Develop Version        |

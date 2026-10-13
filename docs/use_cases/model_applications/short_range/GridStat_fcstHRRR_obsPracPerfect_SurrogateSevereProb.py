@@ -16,7 +16,7 @@ model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevereP
 # --------------------
 #
 # To evaluate the surrogate severe forecasts at predicting Severe weather
-# using the (12Z - 12Z) practically perfect storm reports an obtain 
+# using the (12Z - 12Z) practically perfect storm reports and obtain 
 # probabilistic output statistics.
 
 ##############################################################################
@@ -49,7 +49,7 @@ model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevereP
 # ------------------
 #
 # This use case runs grid_stat to create probabilistic statistics on 
-# surrogate severe from the HRRR model and Practially Perfect observations 
+# surrogate severe from the HRRR model and Practically Perfect observations 
 # computed from local storm reports.  
 
 ##############################################################################
@@ -78,7 +78,7 @@ model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevereP
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
+# i.e., parm/use_cases/model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevereProb.conf

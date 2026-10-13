@@ -1,8 +1,8 @@
 """
-Point-Stat: Investigating Preciptitation Types
-==============================================
+Point-Stat: Investigating Precipitation Types
+=============================================
 
-model_application/precipitation/PointStat_fcstMULTI_obsMETAR_PtypeComparisons.conf
+model_applications/precipitation/PointStat_fcstMULTI_obsMETAR_PtypeComparisons.conf
 
 """
 ##############################################################################
@@ -15,12 +15,12 @@ model_application/precipitation/PointStat_fcstMULTI_obsMETAR_PtypeComparisons.co
 # Scientific Objective
 # --------------------
 #
-# During a storm that produces mulitiple precipitation types, the validation
+# During a storm that produces multiple precipitation types, the validation
 # process becomes critical to investigating how well a model does during these
 # situations. Using METplus' PointStat tool in this use case creates an opportunity
 # to compare three separate model outputs for a multi-precipitation type storm
 # across several valid times and create statistical output that can help modelers
-# fine-tune curent numerical models to perform better in this forecast situation.
+# fine-tune current numerical models to perform better in this forecast situation.
 
 ##############################################################################
 # Version Added
@@ -85,7 +85,7 @@ model_application/precipitation/PointStat_fcstMULTI_obsMETAR_PtypeComparisons.co
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/precipitation/PointStat_fcstMULTI_obsMETAR_PtypeComparisons.conf
+# i.e., parm/use_cases/model_applications/precipitation/PointStat_fcstMULTI_obsMETAR_PtypeComparisons.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/PointStat_fcstMULTI_obsMETAR_PtypeComparisons.conf
@@ -147,7 +147,7 @@ model_application/precipitation/PointStat_fcstMULTI_obsMETAR_PtypeComparisons.co
 #
 # * nam.obsfile_sfc_prwe.02[dd]2021_[hh].nc
 # 
-# Where [dd] and [hh] corespond to each valid time run (total of 7 files).
+# Where [dd] and [hh] correspond to each valid time run (total of 7 files).
 #
 # The following PointStat output files will also be created in model_applications/precipitation (relative to **OUTPUT_BASE**):
 #

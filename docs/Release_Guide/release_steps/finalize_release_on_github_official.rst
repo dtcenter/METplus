@@ -17,9 +17,9 @@ Return to GitHub to finalize the details of this release.
 
     * Close the current milestone.
 
-    * Create a new milestone for the first bugfix release (e.g. first vX.Y.1 (bugfix) release).
+    * Create a new milestone for the first bugfix release (e.g., first vX.Y.1 (bugfix) release).
 
-    * If necessary, create a new milestone for the next official release (e.g. next vX.Y.Z release).
+    * If necessary, create a new milestone for the next official release (e.g., next vX.Y.Z release).
 
   * Update projects:
 
