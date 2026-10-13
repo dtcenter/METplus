@@ -362,8 +362,8 @@ def _warn_if_dev_version(logger, version=None):
     logger.warning(f'Running a development version of METplus (v{version}) '
                    f'that is working towards the v{release} release. '
                    'Development versions may contain incomplete or '
-                   'untested features and are not recommended for '
-                   'production use.')
+                   'untested features and should not be used for '
+                   'production.')
     return True
 
 
