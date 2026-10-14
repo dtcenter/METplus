@@ -38,6 +38,12 @@ jobs:
           name: documentation_warnings.log
           path: artifact/doc_warnings.log
           if-no-files-found: ignore
+
+  linkcheck:
+    name: Check Links
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
       - name: Check links
         uses: dtcenter/metplus-action-linkcheck@v1
         with:
