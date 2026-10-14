@@ -11,7 +11,7 @@ for env_var_name in list_keys:
     print(f'Checking environment variable: {env_var_name}')
     file_list_path = os.environ.get(env_var_name)
     if not file_list_path:
-        print(f'{env_var_name} is not set or empty')
+        print(f'{env_var_name} is not set or has no value')
         continue
 
     if not os.path.exists(file_list_path):

@@ -51,6 +51,11 @@ class WaveletStatWrapper(CompareGriddedWrapper):
         'METPLUS_OUTPUT_PREFIX',
     ]
 
+    # deprecated env vars that are no longer supported in the wrapped MET conf
+    DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'METPLUS_TIME_OFFSET_WARNING',
+    ]
+
     OUTPUT_FLAGS = [
         'isc',
     ]

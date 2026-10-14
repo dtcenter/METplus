@@ -142,12 +142,12 @@ to::
 Common Environment Variables
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-All wrappers automatically support setting *time_offset_warning* and
+All wrappers automatically support setting *time_offset_warn* and
 :ref:`met-config-overrides`.
 
 Add the following to the very end of the wrapped MET config file::
 
-   ${METPLUS_TIME_OFFSET_WARNING}
+   ${METPLUS_TIME_OFFSET_WARN}
    ${METPLUS_MET_CONFIG_OVERRIDES}
 
 If these variables are not added, these values will not be read by the MET tool.

@@ -149,6 +149,9 @@ METplus Version 13.0.0 Beta 1 Release Notes (2026-02-05)
 METplus Wrappers Upgrade Instructions
 =====================================
 
+Masking (v13.0.0)
+-----------------
+
 MET pull request `#3321 <https://github.com/dtcenter/MET/pull/3321>`_
 changed the default behavior for masking for
 Point-Stat, Grid-Stat, Pair-Stat, and Ensemble-Stat.
@@ -175,4 +178,130 @@ be generated unless the following is added::
 
    GRID_STAT_MASK_GRID = FULL
 
-If neither **GRID_STAT_MASK_GRID** nor **GRID_STAT_MASK_POLY** is set, then *FULL* output will be generated.
+If neither **GRID_STAT_MASK_GRID** nor **GRID_STAT_MASK_POLY** are set, then *FULL* output will be generated.
+
+Renamed Configuration Variables (v13.0.0)
+-----------------------------------------
+
+When METplus is run operationally, the log files are scanned for words such
+as *warning* and *error* to identify problems. To avoid false positives,
+configuration variables and environment variables that contained these words
+have been renamed (`#3358 <https://github.com/dtcenter/METplus/issues/3358>`_)
+to match the corresponding MET changes
+(`MET #3455 <https://github.com/dtcenter/MET/issues/3455>`_).
+*WARNING* has been shortened to *WARN* and *ERROR* has been shortened to *ERR*.
+
+METplus Configuration Variables
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The old names are still read and behave the same as before, but a deprecation
+warning is logged when they are used. Rename them in METplus configuration
+files to remove the warning:
+
+.. list-table::
+   :widths: 50 50
+   :header-rows: 1
+
+   * - Old Name
+     - New Name
+   * - TIME_OFFSET_WARNING
+     - TIME_OFFSET_WARN
+   * - GRID_STAT_TIME_OFFSET_WARNING
+     - :term:`GRID_STAT_TIME_OFFSET_WARN`
+   * - MODE_TIME_OFFSET_WARNING
+     - :term:`MODE_TIME_OFFSET_WARN`
+   * - SERIES_ANALYSIS_TIME_OFFSET_WARNING
+     - :term:`SERIES_ANALYSIS_TIME_OFFSET_WARN`
+   * - WAVELET_STAT_TIME_OFFSET_WARNING
+     - :term:`WAVELET_STAT_TIME_OFFSET_WARN`
+   * - ENSEMBLE_STAT_OBS_ERROR_FLAG
+     - :term:`ENSEMBLE_STAT_OBS_ERR_FLAG`
+   * - ENSEMBLE_STAT_MET_OBS_ERROR_TABLE
+     - :term:`ENSEMBLE_STAT_MET_OBS_ERR_TABLE`
+
+Wrapped MET Configuration Files
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. note::
+
+    If no use cases set a **<TOOL_NAME>_CONFIG_FILE** variable to a
+    wrapped MET configuration file other than the one found in
+    *parm/met_config*, then this section is not relevant.
+
+Custom wrapped MET configuration files that were copied from an earlier
+version of METplus must be updated to reference the renamed environment
+variables. METplus will report an error and stop if
+${METPLUS_TIME_OFFSET_WARNING} or ${METPLUS_OBS_ERROR_FLAG} are found.
+MET still reads the *obs_error* dictionary, but it logs a deprecation warning
+when the old name is used.
+
+.. list-table::
+   :widths: 30 35 35
+   :header-rows: 1
+
+   * - MET Tool
+     - Old Text
+     - New Text
+   * - GridStat, MODE, SeriesAnalysis, WaveletStat
+     - ${METPLUS_TIME_OFFSET_WARNING}
+     - ${METPLUS_TIME_OFFSET_WARN}
+
+.. note:: It is strongly recommended that users do not maintain their own wrapped
+          MET configuration files in favor of using the wrapped MET config files that
+          are provided with the METplus Wrappers and setting all configuration settings
+          through METplus configuration files.
+
+If a user-defined wrapped MET configuration file must be used,
+the following information can be used to update it.
+
+The following command can be run to update a wrapped MET configuration file::
+
+    sed -i -e 's/METPLUS_TIME_OFFSET_WARNING/METPLUS_TIME_OFFSET_WARN/g' \
+           /path/to/MyConfig_wrapped
+
+All items of the observation error dictionary can now be set from the METplus
+configuration (see :term:`ENSEMBLE_STAT_OBS_ERR_FLAG`,
+:term:`ENSEMBLE_STAT_OBS_ERR_DIST_TYPE`,
+:term:`ENSEMBLE_STAT_OBS_ERR_DIST_PARM`,
+:term:`ENSEMBLE_STAT_OBS_ERR_INST_BIAS_SCALE`,
+:term:`ENSEMBLE_STAT_OBS_ERR_INST_BIAS_OFFSET`,
+:term:`ENSEMBLE_STAT_OBS_ERR_MIN`, and :term:`ENSEMBLE_STAT_OBS_ERR_MAX`).
+These settings apply to all observation fields. To set *obs_err* for an
+individual field, use :term:`OBS_ENSEMBLE_STAT_VAR<n>_OPTIONS`.
+In a custom EnsembleStat wrapped MET configuration file, replace the entire
+*obs_error* dictionary::
+
+    obs_error = {
+       //flag =
+       ${METPLUS_OBS_ERROR_FLAG}
+       dist_type        = NONE;
+       dist_parm        = [];
+       inst_bias_scale  = 1.0;
+       inst_bias_offset = 0.0;
+       min              = NA;      // Valid range of data
+       max              = NA;
+    }
+
+with::
+
+    //obs_err = {
+    ${METPLUS_OBS_ERR_DICT}
+
+If any of the values in the old dictionary were changed from the defaults
+shown above, set the corresponding METplus configuration variables to
+preserve that behavior.
+
+Environment Variables and Table Files
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+MET now reads the **MET_OBS_ERR_TABLE** environment variable instead of
+**MET_OBS_ERROR_TABLE**. METplus sets **MET_OBS_ERR_TABLE** automatically
+from :term:`ENSEMBLE_STAT_MET_OBS_ERR_TABLE`. If **MET_OBS_ERROR_TABLE** is set
+in the [user_env_vars] section of a METplus configuration file, rename it to
+**MET_OBS_ERR_TABLE**.
+
+The default observation error table file provided with MET has been renamed
+from *obs_error_table.txt* to *obs_err_table.txt*. User-defined table files
+with names that start with *obs_error* are still read by MET, but consider
+renaming them to start with *obs_err* so that the file paths do not appear in
+the log output with the word *error*.

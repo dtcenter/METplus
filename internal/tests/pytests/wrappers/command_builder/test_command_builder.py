@@ -1303,3 +1303,29 @@ def test_check_if_output_has_been_written(metplus_config, check_warn_output_over
     assert len(cb.output_written) == len(unique_paths)
     for path in unique_paths:
         assert path in cb.output_written
+
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_warn', [
+        ({}, False),
+        ({'NEW_NAME': 1}, False),
+        ({'OLD_NAME': 1}, True),
+        ({'OLD_NAME': 1, 'NEW_NAME': 2}, True),
+    ]
+)
+@pytest.mark.wrapper
+def test_warn_if_deprecated_config(metplus_config, config_overrides,
+                                   expected_warn):
+    for key, value in config_overrides.items():
+        metplus_config.set('config', key, value)
+    cb = CommandBuilder(metplus_config)
+    cb.logger.warning.reset_mock()
+
+    cb.warn_if_deprecated_config('OLD_NAME', 'NEW_NAME')
+
+    if expected_warn:
+        cb.logger.warning.assert_called_once_with(
+            'OLD_NAME is deprecated. Please use NEW_NAME instead.'
+        )
+    else:
+        cb.logger.warning.assert_not_called()
