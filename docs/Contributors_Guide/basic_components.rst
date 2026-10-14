@@ -90,7 +90,7 @@ An empty string will be set if they are not set to another value by the wrapper.
 Almost all of the variables that are referenced in the wrapped MET config file
 must be listed here so that they will always be set to prevent an error when MET
 reads the config file. The exceptions are **METPLUS_MET_CONFIG_OVERRIDES** and
-**METPLUS_TIME_OFFSET_WARNING** which are automatically set and included in the
+**METPLUS_TIME_OFFSET_WARN** which are automatically set and included in the
 CommandBuilder initialization step.
 
 See :ref:`bc_add_met_config` for more information on how to determine the

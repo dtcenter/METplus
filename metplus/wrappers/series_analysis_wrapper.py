@@ -76,6 +76,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         'FCST_FIELD',
         'OBS_FIELD',
         'STAT_LIST',
+        'METPLUS_TIME_OFFSET_WARNING',
     ]
 
     # variable names of output_stats dictionary

@@ -5514,8 +5514,41 @@ METplus Configuration Glossary
 
      | *Used by:*  EnsembleStat
 
+   ENSEMBLE_STAT_OBS_ERR_FLAG
+     Specify the value for 'obs_err.flag' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
    ENSEMBLE_STAT_OBS_ERROR_FLAG
-     Specify the value for 'obs_error.flag' in the MET configuration file for EnsembleStat.
+      .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_OBS_ERR_FLAG` instead.
+
+   ENSEMBLE_STAT_OBS_ERR_DIST_TYPE
+     Specify the value for 'obs_err.dist_type' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_ERR_DIST_PARM
+     Specify the value for 'obs_err.dist_parm' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_ERR_INST_BIAS_SCALE
+     Specify the value for 'obs_err.inst_bias_scale' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_ERR_INST_BIAS_OFFSET
+     Specify the value for 'obs_err.inst_bias_offset' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_ERR_MIN
+     Specify the value for 'obs_err.min' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_OBS_ERR_MAX
+     Specify the value for 'obs_err.max' in the MET configuration file for EnsembleStat.
 
      | *Used by:*  EnsembleStat
 
@@ -11889,25 +11922,37 @@ METplus Configuration Glossary
 
      | *Used by:* MADIS2NC
 
-   GRID_STAT_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for GridStat.
+   GRID_STAT_TIME_OFFSET_WARN
+     Specify the value for 'time_offset_warn' in the MET configuration file for GridStat.
 
      | *Used by:* GridStat
 
-   MODE_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for MODE.
+   GRID_STAT_TIME_OFFSET_WARNING
+      .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_TIME_OFFSET_WARN` instead.
+
+   MODE_TIME_OFFSET_WARN
+     Specify the value for 'time_offset_warn' in the MET configuration file for MODE.
 
      | *Used by:* MODE
 
-   SERIES_ANALYSIS_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for SeriesAnalysis.
+   MODE_TIME_OFFSET_WARNING
+      .. warning:: **DEPRECATED:** Please use :term:`MODE_TIME_OFFSET_WARN` instead.
+
+   SERIES_ANALYSIS_TIME_OFFSET_WARN
+     Specify the value for 'time_offset_warn' in the MET configuration file for SeriesAnalysis.
 
      | *Used by:* SeriesAnalysis
 
-   WAVELET_STAT_TIME_OFFSET_WARNING
-     Specify the value for 'time_offset_warning' in the MET configuration file for WaveletStat.
+   SERIES_ANALYSIS_TIME_OFFSET_WARNING
+      .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_TIME_OFFSET_WARN` instead.
+
+   WAVELET_STAT_TIME_OFFSET_WARN
+     Specify the value for 'time_offset_warn' in the MET configuration file for WaveletStat.
 
      | *Used by:* WaveletStat
+
+   WAVELET_STAT_TIME_OFFSET_WARNING
+      .. warning:: **DEPRECATED:** Please use :term:`WAVELET_STAT_TIME_OFFSET_WARN` instead.
 
    POINT2GRID_MET_CONFIG_OVERRIDES
      Override any variables in the MET configuration file that are not

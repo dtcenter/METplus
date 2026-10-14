@@ -1026,7 +1026,7 @@ class METplusConfig(object):
         @returns Name of first METplus config name in list that is set in the
         METplusConfig object. None if none keys in the list are set.
         """
-        if not isinstance(mp_config, list):
+        if isinstance(mp_config, str):
             mp_configs = [mp_config]
         else:
             mp_configs = mp_config

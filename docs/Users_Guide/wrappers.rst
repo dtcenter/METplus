@@ -305,7 +305,13 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_SKIP_CONST`
 | :term:`ENSEMBLE_STAT_CENSOR_THRESH`
 | :term:`ENSEMBLE_STAT_CENSOR_VAL`
-| :term:`ENSEMBLE_STAT_OBS_ERROR_FLAG`
+| :term:`ENSEMBLE_STAT_OBS_ERR_FLAG`
+| :term:`ENSEMBLE_STAT_OBS_ERR_DIST_TYPE`
+| :term:`ENSEMBLE_STAT_OBS_ERR_DIST_PARM`
+| :term:`ENSEMBLE_STAT_OBS_ERR_INST_BIAS_SCALE`
+| :term:`ENSEMBLE_STAT_OBS_ERR_INST_BIAS_OFFSET`
+| :term:`ENSEMBLE_STAT_OBS_ERR_MIN`
+| :term:`ENSEMBLE_STAT_OBS_ERR_MAX`
 | :term:`ENSEMBLE_STAT_CLIMO_MEAN_FILE_NAME`
 | :term:`ENSEMBLE_STAT_CLIMO_MEAN_FILE_TYPE`
 | :term:`ENSEMBLE_STAT_CLIMO_MEAN_VAR<n>_NAME`
@@ -484,6 +490,7 @@ METplus Configuration
    | :term:`ENSEMBLE_STAT_OUT_DIR`
    | :term:`ENSEMBLE_STAT_CONFIG`
    | :term:`ENSEMBLE_STAT_MET_OBS_ERROR_TABLE`
+   | :term:`ENSEMBLE_STAT_OBS_ERROR_FLAG`
    | :term:`ENSEMBLE_STAT_GRID_VX`
    | :term:`ENSEMBLE_STAT_CLIMO_MEAN_INPUT_DIR`
    | :term:`ENSEMBLE_STAT_CLIMO_STDEV_INPUT_DIR`
@@ -993,8 +1000,8 @@ ${METPLUS_SKIP_CONST}
    * - :term:`ENSEMBLE_STAT_SKIP_CONST`
      - skip_const
 
-${METPLUS_OBS_ERROR_FLAG}
-"""""""""""""""""""""""""
+${METPLUS_OBS_ERR_DICT}
+"""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -1002,8 +1009,26 @@ ${METPLUS_OBS_ERROR_FLAG}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`ENSEMBLE_STAT_OBS_ERROR_FLAG`
-     - obs_error.flag
+   * - :term:`ENSEMBLE_STAT_OBS_ERR_FLAG`
+     - obs_err.flag
+   * - :term:`ENSEMBLE_STAT_OBS_ERR_DIST_TYPE`
+     - obs_err.dist_type
+   * - :term:`ENSEMBLE_STAT_OBS_ERR_DIST_PARM`
+     - obs_err.dist_parm
+   * - :term:`ENSEMBLE_STAT_OBS_ERR_INST_BIAS_SCALE`
+     - obs_err.inst_bias_scale
+   * - :term:`ENSEMBLE_STAT_OBS_ERR_INST_BIAS_OFFSET`
+     - obs_err.inst_bias_offset
+   * - :term:`ENSEMBLE_STAT_OBS_ERR_MIN`
+     - obs_err.min
+   * - :term:`ENSEMBLE_STAT_OBS_ERR_MAX`
+     - obs_err.max
+
+These settings apply to all observation fields. To use different
+observation error settings for an individual field, set *obs_err* in
+:term:`OBS_ENSEMBLE_STAT_VAR<n>_OPTIONS`, e.g.::
+
+   OBS_ENSEMBLE_STAT_VAR1_OPTIONS = obs_err = { dist_type = NORMAL; dist_parm = [0.5]; };
 
 ${METPLUS_OBTYPE_AS_GROUP_VAL_FLAG}
 """""""""""""""""""""""""""""""""""
@@ -3749,7 +3774,7 @@ METplus Configuration
 | :term:`GRID_STAT_UGRID_MAX_DISTANCE_KM`
 | :term:`GRID_STAT_UGRID_COORDINATES_FILE`
 | :term:`GRID_STAT_UGRID_CONFIG_FILE`
-| :term:`GRID_STAT_TIME_OFFSET_WARNING`
+| :term:`GRID_STAT_TIME_OFFSET_WARN`
 | :term:`GRID_STAT_ALLOW_MISSING_INPUTS`
 | :term:`GRID_STAT_INPUT_THRESH`
 | :term:`GRID_STAT_GRADIENT_DX`
@@ -4463,8 +4488,8 @@ ${METPLUS_OUTPUT_PREFIX}
    * - :term:`GRID_STAT_OUTPUT_PREFIX`
      - output_prefix
 
-${METPLUS_TIME_OFFSET_WARNING}
-""""""""""""""""""""""""""""""
+${METPLUS_TIME_OFFSET_WARN}
+"""""""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -4472,8 +4497,8 @@ ${METPLUS_TIME_OFFSET_WARNING}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`GRID_STAT_TIME_OFFSET_WARNING`
-     - time_offset_warning
+   * - :term:`GRID_STAT_TIME_OFFSET_WARN`
+     - time_offset_warn
 
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""
@@ -5264,7 +5289,7 @@ METplus Configuration
 | :term:`MODE_INC_VALID_TIMES`
 | :term:`MODE_SKIP_INIT_TIMES`
 | :term:`MODE_INC_INIT_TIMES`
-| :term:`MODE_TIME_OFFSET_WARNING`
+| :term:`MODE_TIME_OFFSET_WARN`
 | :term:`MODE_ALLOW_MISSING_INPUTS`
 | :term:`MODE_INPUT_THRESH`
 | :term:`MODE_WARN_IF_DUPLICATE_OUTPUT`
@@ -5946,8 +5971,8 @@ ${METPLUS_OUTPUT_PREFIX}
    * - :term:`MODE_OUTPUT_PREFIX`
      - output_prefix
 
-${METPLUS_TIME_OFFSET_WARNING}
-""""""""""""""""""""""""""""""
+${METPLUS_TIME_OFFSET_WARN}
+"""""""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -5955,8 +5980,8 @@ ${METPLUS_TIME_OFFSET_WARNING}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`MODE_TIME_OFFSET_WARNING`
-     - time_offset_warning
+   * - :term:`MODE_TIME_OFFSET_WARN`
+     - time_offset_warn
 
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""
@@ -10160,7 +10185,7 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_INC_VALID_TIMES`
 | :term:`SERIES_ANALYSIS_SKIP_INIT_TIMES`
 | :term:`SERIES_ANALYSIS_INC_INIT_TIMES`
-| :term:`SERIES_ANALYSIS_TIME_OFFSET_WARNING`
+| :term:`SERIES_ANALYSIS_TIME_OFFSET_WARN`
 | :term:`SERIES_ANALYSIS_ALLOW_MISSING_INPUTS`
 | :term:`SERIES_ANALYSIS_INPUT_THRESH`
 | :term:`SERIES_ANALYSIS_GRADIENT_DX`
@@ -10663,8 +10688,8 @@ ${METPLUS_HSS_EC_VALUE}
    * - :term:`SERIES_ANALYSIS_HSS_EC_VALUE`
      - hss_ec_value
 
-${METPLUS_TIME_OFFSET_WARNING}
-""""""""""""""""""""""""""""""
+${METPLUS_TIME_OFFSET_WARN}
+"""""""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -10672,8 +10697,8 @@ ${METPLUS_TIME_OFFSET_WARNING}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`SERIES_ANALYSIS_TIME_OFFSET_WARNING`
-     - time_offset_warning
+   * - :term:`SERIES_ANALYSIS_TIME_OFFSET_WARN`
+     - time_offset_warn
 
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""
@@ -14387,7 +14412,7 @@ METplus Configuration
 | :term:`WAVELET_STAT_WVLT_PLOT_PLOT_MIN`
 | :term:`WAVELET_STAT_WVLT_PLOT_PLOT_MAX`
 | :term:`WAVELET_STAT_OUTPUT_PREFIX`
-| :term:`WAVELET_STAT_TIME_OFFSET_WARNING`
+| :term:`WAVELET_STAT_TIME_OFFSET_WARN`
 | :term:`WAVELET_STAT_ALLOW_MISSING_INPUTS`
 | :term:`WAVELET_STAT_INPUT_THRESH`
 | :term:`WAVELET_STAT_WARN_IF_DUPLICATE_OUTPUT`
@@ -14651,8 +14676,8 @@ ${METPLUS_OUTPUT_PREFIX}
    * - :term:`WAVELET_STAT_OUTPUT_PREFIX`
      - output_prefix
 
-${METPLUS_TIME_OFFSET_WARNING}
-""""""""""""""""""""""""""""""
+${METPLUS_TIME_OFFSET_WARN}
+"""""""""""""""""""""""""""
 
 .. list-table::
    :widths: 5 5
@@ -14660,8 +14685,8 @@ ${METPLUS_TIME_OFFSET_WARNING}
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`WAVELET_STAT_TIME_OFFSET_WARNING`
-     - time_offset_warning
+   * - :term:`WAVELET_STAT_TIME_OFFSET_WARN`
+     - time_offset_warn
 
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""
