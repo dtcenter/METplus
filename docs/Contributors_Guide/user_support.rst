@@ -105,7 +105,7 @@ Actions for Handling New Discussions
   `How to Send Us Data post <https://github.com/dtcenter/METplus/discussions/954>`_.
   If the user sends data through the Google form link, that data is stored in
   the METplus Team Drive
-  `here <https://drive.google.com/drive/folders/1OvYqQwKWV5rB6JHBM-Ljyb4es93vFx_U>`_.
+  `here <https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fdrive.google.com%2Fdrive%2Ffolders%2F1OvYqQwKWV5rB6JHBM-Ljyb4es93vFx_U&dsh=S-1338392620%3A1784849539105088&followup=https%3A%2F%2Fdrive.google.com%2Fdrive%2Ffolders%2F1OvYqQwKWV5rB6JHBM-Ljyb4es93vFx_U&osid=1&passive=1209600&service=wise&flowName=GlifWebSignIn&flowEntry=ServiceLogin&ifkv=Ac50bxvfjB133pohqSswysa-gB26xKTVs5DVazsNYnmi9MLviyCNonTYBIQyMZbghfh3Gd8-cyNY>`_.
   Move the data to a shared location on the project machine **seneca** by creating
   a directory on **seneca** at **/d1/projects/METplus/discussions/** with the
   METplus Discussion number (e.g., 2978) and copying the data to that location. Once

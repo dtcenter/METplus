@@ -238,7 +238,7 @@ OR::
     mamba install pygithub
 
 To run the script, first obtain a
-`GitHub personal access token <https://github.com/settings/tokens>`_.
+`GitHub personal access token <https://github.com/login?return_to=https%3A%2F%2Fgithub.com%2Fsettings%2Ftokens>`_.
 Set the environment variable GITHUB_TOKEN with this value::
 
     export GITHUB_TOKEN=gha_...

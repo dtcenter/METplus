@@ -7,7 +7,7 @@ Description
   Meteorological Aviation Routine Weather Report (METAR) is a format for observational weather data, which typically comes from airports or permanent observing stations around the world.
 
   Iowa State University maintains an archive of METAR data:
-  https://mesonet.agron.iastate.edu/request/download.phtml
+  :code:`https://mesonet.agron.iastate.edu/request/download.phtml`
 
   Note: METAR data is also available via other sources (e.g., MADIS, NCEP prepbufr files); however, ISU provides a long archive and does not require an account.
 

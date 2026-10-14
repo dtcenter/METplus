@@ -121,7 +121,7 @@ model_applications/climate/MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf
 # User Scripting
 # --------------
 # This use case does not use additional scripts.  However, a sample NCL script to plot
-# the output is available on the `Sample Analysis Scripts <https://dtcenter.org/community-code/model-evaluation-tools-met/sample-analysis-scripts>`_
+# the output is available on the `Sample Analysis Scripts <https://dtcenter.org/software-tools/model-evaluation-tools-met/sample-analysis-scripts>`_
 # page.
 
 ##############################################################################

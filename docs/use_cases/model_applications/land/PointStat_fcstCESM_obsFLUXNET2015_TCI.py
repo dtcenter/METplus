@@ -251,10 +251,10 @@ model_applications/land/PointStat_fcstCESM_obsFLUXNET2015_TCI.conf
 #      | *Default:* False
 #
 # Both of the above Python embedding scripts compute TCI using the ``calc_tci()`` function in METcalcpy.
-# See the METcalcpy documentation for more information: https://metcalcpy.readthedocs.io/en/latest/index.html.
+# See the METcalcpy documentation for more information: https://metplus.readthedocs.io/projects/metcalcpy/en/latest/index.html.
 #
 # For more information on the basic requirements to utilize Python Embedding in METplus, 
-# please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_ 
+# please refer to the MET User’s Guide section on `Python embedding <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_ 
 
 ##############################################################################
 # User Scripting

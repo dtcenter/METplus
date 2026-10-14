@@ -57,8 +57,8 @@ met_tool_wrapper/TCDiag/TCDiag.conf
 # value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
 # **Data source:** Users may obtain real-time data from the deterministic GFS runs from
-# NOAA's NOMADS server:
-# https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.YYYYMMDD/ZZ/atmos/
+# NOAA's `NOMADS server <https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/>`__:
+# ``https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.YYYYMMDD/ZZ/atmos/``
 # where YYYYMMDD is the date (4-digit year, 2-digit month, 2-digit day),
 # ZZ is the initialization hour of the desired model cycle (00, 06, 12, 18).
 
