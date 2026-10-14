@@ -1024,6 +1024,12 @@ ${METPLUS_OBS_ERR_DICT}
    * - :term:`ENSEMBLE_STAT_OBS_ERR_MAX`
      - obs_err.max
 
+These settings apply to all observation fields. To use different
+observation error settings for an individual field, set *obs_err* in
+:term:`OBS_ENSEMBLE_STAT_VAR<n>_OPTIONS`, e.g.::
+
+   OBS_ENSEMBLE_STAT_VAR1_OPTIONS = obs_err = { dist_type = NORMAL; dist_parm = [0.5]; };
+
 ${METPLUS_OBTYPE_AS_GROUP_VAL_FLAG}
 """""""""""""""""""""""""""""""""""
 
