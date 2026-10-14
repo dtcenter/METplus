@@ -266,6 +266,8 @@ configuration (see :term:`ENSEMBLE_STAT_OBS_ERR_FLAG`,
 :term:`ENSEMBLE_STAT_OBS_ERR_INST_BIAS_SCALE`,
 :term:`ENSEMBLE_STAT_OBS_ERR_INST_BIAS_OFFSET`,
 :term:`ENSEMBLE_STAT_OBS_ERR_MIN`, and :term:`ENSEMBLE_STAT_OBS_ERR_MAX`).
+These settings apply to all observation fields. To set *obs_err* for an
+individual field, use :term:`OBS_ENSEMBLE_STAT_VAR<n>_OPTIONS`.
 In a custom EnsembleStat wrapped MET configuration file, replace the entire
 *obs_error* dictionary::
 
