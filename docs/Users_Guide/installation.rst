@@ -186,7 +186,7 @@ Get the Source Code via Command Line
 - Open a shell terminal
 
 - Clone the DTCenter/METplus GitHub repository, replacing **vX.Y.Z** with the
-  tag of the desired release (e.g. v13.0.0):
+  tag of the desired release (e.g. v6.2.1):
 
 SSH::
 
