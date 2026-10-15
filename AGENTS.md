@@ -11,6 +11,59 @@ for full details.
 - Pull requests normally target `develop`. Bugfixes to a release also target
   the matching `main_vX.Y` branch.
 
+## Python packages
+
+- Follow PEP8.
+- Do not add a new Python package without approval from the developers.
+  METplus must run on operational HPCs, where every package needs approval.
+- What to update depends on where the package is used:
+  - **METplus wrappers code** (under `metplus/`): add the package to
+    `requirements.txt` and to the package table in
+    `docs/Users_Guide/appendixA.rst`.
+  - **A use case** (under `parm/use_cases/model_applications/`): add the
+    package to the table in `docs/Users_Guide/appendixA.rst` only. Do
+    **not** add it to `requirements.txt`. Use cases can depend on packages
+    that METplus wrappers do not need.
+
+## New wrappers
+
+Follow every step in `docs/Contributors_Guide/create_wrapper.rst`.
+
+## Unit tests
+
+- Decorate each new test with a `@pytest.mark.<marker>` marker. The markers
+  are defined under `[tool.pytest.ini_options]` in `pyproject.toml`; register
+  any new marker there.
+
+## Use cases
+
+- **File names.** A model applications use case config file is named
+  `<MET-TOOL>_fcst<FCST>_obs<OBS><DESCRIPTOR>.conf`, e.g.
+  `GridStat_fcstHREFmean_obsStgIV_Gempak.conf`, where `<MET-TOOL>` is the
+  MET tool that performs the main statistical analysis. Include
+  `_climo<CLIMO>` after the obs part only if the use case uses climatology
+  data. Put any scripts or other supporting files in a subdirectory with the
+  same name as the config file, without `.conf`.
+- **Config contents.**
+  - Never set `INPUT_BASE`, `OUTPUT_BASE`, `PARM_BASE` or `METPLUS_CONF`
+    in a use case config.
+  - Set input paths relative to `{INPUT_BASE}` and output paths relative to
+    `{OUTPUT_BASE}`.
+  - Process only a few run times.
+  - The use case must run without errors.
+- **Log messages.** Do not use the words *warning*, *error*, *fatal* or
+  *empty* in log messages or other output written by a use case or its
+  scripts unless something is actually wrong. Operational centers scan logs
+  for these words. For example, write "File has no data. Skipping" instead
+  of "File is empty. Skipping". This also applies to file names and config
+  values that are written to the log.
+- **Register each new use case:**
+  - Add it to `internal/tests/use_cases/all_use_cases.txt`.
+  - Add it as its own group in `.github/parm/use_case_groups.json`.
+  - If it needs a new keyword in `docs/Users_Guide/quicksearch.rst`, follow
+    the existing format and add the keyword in alphabetical order under both
+    the html and latex sections.
+
 ## Before creating a pull request
 
 1. **Turn off use case tests.** In `.github/parm/use_case_groups.json`, every
