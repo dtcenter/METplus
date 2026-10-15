@@ -11,19 +11,12 @@ for full details.
 - Pull requests normally target `develop`. Bugfixes to a release also target
   the matching `main_vX.Y` branch.
 
-## Python packages
+## Code and Python packages
 
-- Follow PEP8.
-- Do not add a new Python package without approval from the developers.
-  METplus must run on operational HPCs, where every package needs approval.
-- What to update depends on where the package is used:
-  - **METplus wrappers code** (under `metplus/`): add the package to
-    `requirements.txt` and to the package table in
-    `docs/Users_Guide/appendixA.rst`.
-  - **A use case** (under `parm/use_cases/model_applications/`): add the
-    package to the table in `docs/Users_Guide/appendixA.rst` only. Do
-    **not** add it to `requirements.txt`. Use cases can depend on packages
-    that METplus wrappers do not need.
+Before changing Python code or adding a Python package, read and follow
+`docs/Contributors_Guide/coding_standards.rst`. It covers code style and
+where to list a new package. Do not add a new package without approval from
+the developers.
 
 ## New wrappers
 
@@ -31,9 +24,9 @@ Follow every step in `docs/Contributors_Guide/create_wrapper.rst`.
 
 ## Unit tests
 
-- Decorate each new test with a `@pytest.mark.<marker>` marker. The markers
-  are defined under `[tool.pytest.ini_options]` in `pyproject.toml`; register
-  any new marker there.
+Before adding or changing unit tests, read and follow
+`docs/Contributors_Guide/testing.rst`. It covers running the tests and
+using pytest markers.
 
 ## Use cases
 

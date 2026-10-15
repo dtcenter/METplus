@@ -107,7 +107,7 @@ following:
       category, number of fields, statistical types, and file formats.
 
   If the use case does not use both forecast and observation data, name the
-  file using one of these formats:
+  file using one of these formats, with *fcstOnly* or *obsOnly* in lowercase:
 
     * Forecast data only:
       *\<MET-TOOL\>_fcst\<FCST\>_fcstOnly_\<DESCRIPTOR\>.conf*,
@@ -194,8 +194,10 @@ metplotpy_env.
 A list of the existing Conda Environments and the packages they contain can also be
 found in the :ref:`Conda Environments <cg-ci-conda-environments>` section.
 If the package requirements aren’t met by one of the existing
-Conda Environments, please create a post on the `METplus GitHub Discussions Forum 
+Conda Environments, please create a post on the `METplus GitHub Discussions Forum
 <https://github.com/dtcenter/METplus/discussions>`_ for assistance.
+See the :ref:`codingstandards` section for where to list a new Python package
+that a use case requires.
 
 Existing Use Case Examples
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
