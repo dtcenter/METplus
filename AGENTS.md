@@ -37,40 +37,13 @@ Follow every step in `docs/Contributors_Guide/create_wrapper.rst`.
 
 ## Use cases
 
-- **File names.** A model applications use case config file is named
-  `<MET-TOOL>_fcst<FCST>_obs<OBS>_<DESCRIPTOR>.conf`, e.g.
-  `GridStat_fcstHREFmean_obsStgIV_Gempak.conf`, where `<MET-TOOL>` is the
-  MET tool that performs the main statistical analysis.
-  - The descriptor is required, even though a few existing use cases lack one.
-  - Include `_climo<CLIMO>` after the obs part only if the use case uses
-    climatology data.
-  - A use case with only forecast data is named
-    `<MET-TOOL>_fcst<FCST>_fcstOnly_<DESCRIPTOR>.conf`, and one with only
-    observation data `<MET-TOOL>_obs<OBS>_obsOnly_<DESCRIPTOR>.conf`. Use
-    lowercase `fcstOnly`/`obsOnly`.
-  - Put any scripts or other supporting files in a subdirectory with the
-    same name as the config file, without `.conf`.
-  - Use cases under `parm/use_cases/met_tool_wrapper/` follow a different
-    convention; see `docs/Contributors_Guide/add_use_case.rst`.
-- **Config contents.**
-  - Never set `INPUT_BASE`, `OUTPUT_BASE`, `PARM_BASE` or `METPLUS_CONF`
-    in a use case config.
-  - Set input paths relative to `{INPUT_BASE}` and output paths relative to
-    `{OUTPUT_BASE}`.
-  - Process only a few run times.
-  - The use case must run without errors.
-- **Log messages.** Do not use the words *warning*, *error*, *fatal* or
-  *empty* in log messages or other output written by a use case or its
-  scripts unless something is actually wrong. Operational centers scan logs
-  for these words. For example, write "File has no data. Skipping" instead
-  of "File is empty. Skipping". This also applies to file names and config
-  values that are written to the log.
-- **Register each new use case:**
-  - Add it to `internal/tests/use_cases/all_use_cases.txt`.
-  - Add it as its own group in `.github/parm/use_case_groups.json`.
-  - If it needs a new keyword in `docs/Users_Guide/quicksearch.rst`, follow
-    the existing format and add the keyword in alphabetical order under both
-    the html and latex sections.
+Before adding or changing a use case, read and follow
+`docs/Contributors_Guide/add_use_case.rst`. It covers:
+
+- file and directory naming
+- what a use case config may and may not set
+- words to avoid in log messages
+- registering a new use case in the test suite and documentation
 
 ## Before creating a pull request
 
