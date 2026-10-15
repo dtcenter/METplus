@@ -27,8 +27,9 @@ for full details.
    not count. The `Check Use Case Groups` workflow fails any PR to `develop`
    or `main_vX.Y` that still has a group set to `true`.
 
-2. **Title the PR after the branch**, e.g. `Feature #777 wrapper_xyz` for
-   branch `feature_777_wrapper_xyz`.
+2. **Title the PR after the branch**, replacing the underscores in the
+   description with spaces, e.g. `Feature #777 wrapper xyz` for branch
+   `feature_777_wrapper_xyz`.
 
 3. **Use the PR template** in `.github/pull_request_template.md`. Fill in what
    you know (summary, testing performed) and leave the remaining items for
