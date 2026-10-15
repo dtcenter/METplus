@@ -27,6 +27,7 @@ Dataset Providers
 | `OU <../search.html?q=DataProviderOU&check_keywords=yes&area=default>`_
 | `USAF <../search.html?q=DataProviderUSAF&check_keywords=yes&area=default>`_
 | `NSIDC <../search.html?q=DataProviderNSIDC&check_keywords=yes&area=default>`_
+| `Ghent University <../search.html?q=DataProviderUGent&check_keywords=yes&area=default>`_
 
 Dataset Applications
 ====================
