@@ -68,3 +68,4 @@
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3332 - #3332 included minor changes to use cases to prevent warnings, as the PR also turned on a setting that causes use cases to fail upon warning
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] dtcenter/MET#3411 - dtcenter/MET#3411 sets level and units attributes in GridDiag output
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3360 - Correct `tc_and_extra_tc:3-5` to write output to `model_applications` instead of `model_application`
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3368 - #3368 turns on detrending for the s2s_mme detrend use case, which changes the results slightly

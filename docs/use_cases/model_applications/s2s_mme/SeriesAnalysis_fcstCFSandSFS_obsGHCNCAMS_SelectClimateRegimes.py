@@ -2,7 +2,7 @@
 SeriesAnalysis: Verifying seasonal models across conditional times
 ==================================================================
 
-model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCN_SelectClimateRegimes.conf
+model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SelectClimateRegimes.conf
 
 """
 ##############################################################################
@@ -16,7 +16,7 @@ model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCN_SelectClimateReg
 # --------------------
 #
 # This use case uses conditional time periods for verification, relying on METplus tool
-# instances and valid listing to create specific verification windows. Instead of aggregating 
+# instances and valid listing to create specific verification windows. Instead of aggregating
 # statistics over the entire hindcast period, this configuration allows users 
 # to assess model skill during specific climate regimes, such as El Niño, La Niña,
 # or Neutral years. 
@@ -83,7 +83,7 @@ model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCN_SelectClimateReg
 #
 # Neutral instance:
 #
-# **VALID_LIST :** 199610100, 2001110100, 2003110100, 2012110100, 2013110100, 2019110100
+# **VALID_LIST :** 1996110100, 2001110100, 2003110100, 2012110100, 2013110100, 2019110100
 #
 # With an increment of 1 year, all November 1st’s from 1994 to 2020 are processed 
 # for a total of 27 years for the first instance of SeriesAnalysis. In the following
@@ -134,24 +134,24 @@ model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCN_SelectClimateReg
 # (including non-normal assumption for precipitation terciles, or other variables as needed).
 # For more simple changes, users can add additional models under MODEL_SPECS 
 # (in the format 'model_name': nMembers); and additional model groupings can 
-# be added under MODEL_GROUPS, in the format  'short_name': ['list', 'of', 'models']. 
+# be added under MODEL_GROUPS, in the format  'short_name': ['list', 'of', 'models'].
 # Both of these are near the top of the function library. Additional observed datasets 
 # can be added under the file_map and var_map, under create_obs_anomalies. 
 # The second script, wrapper_combined.py, serves as the interface between python logic and METplus.
 # Based on options in the METplus config file, it formats model and observational 
 # data (e.g., standardizing to lat x lon grids) and holds it in memory for METplus 
-# to ingest. It also features options for flags (FLIP_OBS, FLIP_MODELS) to handle 
+# to ingest. It also features options for flags (FLIP_OBS, FLIP_MODELS) to handle
 # latitude orientation mismatches, ensuring data is geometrically correct before MET sees it.
 # 
-# .. dropdown:: parm/use_cases/model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SelectClimateRegimes/function_library.py
+# .. dropdown:: parm/use_cases/model_applications/s2s_mme/common/function_library.py
 #
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SelectClimateRegimes/function_library.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mme/common/function_library.py
 # 
-# .. dropdown:: parm/use_cases/model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SelectClimateRegimes/wrapper_combined.py
+# .. dropdown:: parm/use_cases/model_applications/s2s_mme/common/wrapper_combined.py
 #
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mme/SeriesAnalysis_fcstCFSandSFS_obsGHCNCAMS_SelectClimateRegimes/wrapper_combined.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mme/common/wrapper_combined.py
 #
 # For more information on the basic requirements to utilize Python Embedding in METplus, 
 # please refer to the MET User’s Guide section on `Python embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html#appendix-f-python-embedding>`_.

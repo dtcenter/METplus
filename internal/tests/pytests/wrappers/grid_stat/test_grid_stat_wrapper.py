@@ -693,12 +693,19 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
          {'METPLUS_UGRID_COORDINATES_FILE': 'ugrid_coordinates_file = "/met/test/input/ugrid_data/mpas/static.40962_reduced.nc";'}),
         ({'GRID_STAT_UGRID_CONFIG_FILE': ugrid_config_file, }, {}),
 
+        ({'GRID_STAT_TIME_OFFSET_WARN': 3},
+         {'METPLUS_TIME_OFFSET_WARN': 'time_offset_warn = 3;'}),
+        ({'TIME_OFFSET_WARN': 2},
+         {'METPLUS_TIME_OFFSET_WARN': 'time_offset_warn = 2;'}),
+        ({'TIME_OFFSET_WARN': 2, 'GRID_STAT_TIME_OFFSET_WARN': 4},
+         {'METPLUS_TIME_OFFSET_WARN': 'time_offset_warn = 4;'}),
+        # legacy config variable name
         ({'GRID_STAT_TIME_OFFSET_WARNING': 3},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
+         {'METPLUS_TIME_OFFSET_WARN': 'time_offset_warn = 3;'}),
         ({'TIME_OFFSET_WARNING': 2},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
-        ({'TIME_OFFSET_WARNING': 2, 'GRID_STAT_TIME_OFFSET_WARNING': 4},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
+         {'METPLUS_TIME_OFFSET_WARN': 'time_offset_warn = 2;'}),
+        ({'TIME_OFFSET_WARNING': 2, 'GRID_STAT_TIME_OFFSET_WARN': 4},
+         {'METPLUS_TIME_OFFSET_WARN': 'time_offset_warn = 4;'}),
         # fcst climo_mean
         ({'GRID_STAT_FCST_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt', },
          {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {file_name = ["/some/climo_mean/file.txt"];}'}),

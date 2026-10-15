@@ -14,7 +14,7 @@ Update the DOI for this coordinated release.
     - Navigate to the MET Zenodo software release page. This can be found on the
       `METplus GitHub repository <https://github.com/dtcenter/METplus>`_.
       Scroll down to the README file and click on the
-      `METplus Coordinated Release Digital Object Identifier (DOI) <https://doi.org/10.5281/zenodo.5567804>`_.
+      `METplus Coordinated Release Digital Object Identifier (DOI) <https://zenodo.org/records/17612708>`_.
 
     - Click the green **New version** button on the top right.
 

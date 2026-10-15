@@ -60,7 +60,7 @@ Coordinated Release
 A METplus coordinated release is a group of official or bugfix releases for each
 of the METplus components that have been developed and tested in parallel.
 Coordinated release announcements on the
-`DTC METplus Downloads <https://dtcenter.org/community-code/metplus/download>`_
+`DTC METplus Downloads <https://dtcenter.org/software-tools/metplus/download>`_
 page link to the component releases that comprise the coordinated release.
 When bugfix releases are issued for any METplus component, the corresponding
 coordinated release announcement is updated to link to the most recent bugfix

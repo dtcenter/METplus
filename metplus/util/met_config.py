@@ -777,11 +777,12 @@ def _parse_item_info(item_info):
       where the key is the name of the variable and the value is item info
       for the child variable in the same format as item_info that is
       parsed in this function
-    * nicknames: list of other METplus config variable name that can be
-       used to set a value. The app name i.e. GRID_STAT_ is prepended to
-       each nickname in the list. Used for backwards compatibility for
-       METplus config variables whose name does not match the MET config
-       variable name
+    * nicknames: list of other METplus config variable names that can be
+       used to set a value. Each nickname must be the full config variable
+       name including the app name, i.e. GRID_STAT_OLD_NAME. Nicknames are
+       checked in order after the default name. Used for backwards
+       compatibility for METplus config variables whose name does not match
+       the MET config variable name
 
     @param item_info string or tuple containing information about a
      dictionary item
