@@ -90,23 +90,32 @@ If creating a new model applications use case, in the category sub-directory
 following:
 
 * A METplus configuration file named
-  *\<MET-TOOL\>_fcst\<FCST\>_obs\<OBS\>_climo\<CLIMO\>\<DESCRIPTOR\>.conf*
+  *\<MET-TOOL\>_fcst\<FCST\>_obs\<OBS\>_climo\<CLIMO\>_\<DESCRIPTOR\>.conf*
   where
 
     * *<MET-TOOL>* is the MET tool that performs the primary statistical
       analysis, i.e., GridStat or SeriesAnalysis.
 
-    * *<FCST>* is the name of the forecast input data source (this can be
-      excluded if no forecast data is used).
+    * *<FCST>* is the name of the forecast input data source.
 
-    * *<OBS>* is the name of the observation input data source (this can be
-      excluded if no observation data is used).
+    * *<OBS>* is the name of the observation input data source.
 
-    * *<CLIMO>* is the optional climatology input data source (this can be
-      excluded if no climatology data is used).
+    * *<CLIMO>* is the climatology input data source. Exclude
+      *_climo\<CLIMO\>* if no climatology data is used.
 
-    * *<DESCRIPTOR>* is an optional description that can include field
+    * *<DESCRIPTOR>* is a required description that can include field
       category, number of fields, statistical types, and file formats.
+
+  If the use case does not use both forecast and observation data, name the
+  file using one of these formats:
+
+    * Forecast data only:
+      *\<MET-TOOL\>_fcst\<FCST\>_fcstOnly_\<DESCRIPTOR\>.conf*,
+      e.g., *TCRMW_fcstGFS_fcstOnly_gonzalo.conf*
+
+    * Observation data only:
+      *\<MET-TOOL\>_obs\<OBS\>_obsOnly_\<DESCRIPTOR\>.conf*,
+      e.g., *UserScript_obsERA_obsOnly_Blocking.conf*
 
 If the use case uses a Python Embedding script or any other additional files
 (besides input data), then put them in a sub-directory that matches the METplus
