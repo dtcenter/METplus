@@ -940,10 +940,11 @@ This example adds a new use case group that contains the climate use case
 with index 2 and is marked to "run" for every push.
 
 .. note::
-    Be sure to remember and change the "run" entry in this file to false
-    prior to the final merge after pull request review. This will trigger
-    a complete run of the testing suite prior to merging, so allow time
-    for that to complete as well.
+    Be sure to change the "run" entry in this file to false, then commit and
+    push the change, before opening a pull request. A check on pull requests
+    into the develop and main_vX.Y branches fails if any use case group is
+    set to run. Pull requests into these branches run the complete testing
+    suite, so allow time for that to complete before merging.
 
 New use cases are added as a separate item to make reviewing the test results
 easier. A new use case will produce new output data that is not found in the
