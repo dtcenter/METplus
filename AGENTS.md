@@ -32,7 +32,7 @@ for full details.
    `feature_777_wrapper_xyz`. Spell out an abbreviation only when its
    meaning is clear, for example from the issue title (`sq` becomes
    `SonarQube` for an issue about SonarQube findings). If it is unclear,
-   leave it as written. Keep the title about as short as the branch name.
+   leave it as written.
 
 3. **Use the PR template** in `.github/pull_request_template.md`. Fill in what
    you know (summary, testing performed) and leave the remaining items for
