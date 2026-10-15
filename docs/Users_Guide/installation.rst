@@ -180,17 +180,31 @@ Tar File::
 Get the Source Code via Command Line
 ------------------------------------
 
+.. warning::
+   Cloning the repository without specifying a branch or tag will obtain the
+   **develop** branch, which contains a development version of the software
+   that may be incomplete, untested, or unstable.
+   **We strongly recommend using a stable release instead.**
+   See the
+   `METplus releases page <https://github.com/dtcenter/METplus/releases>`_
+   for a list of available releases.
+
 - Open a shell terminal
 
-- Clone the DTCenter/METplus GitHub repository:
+- Clone the DTCenter/METplus GitHub repository, replacing **vX.Y.Z** with the
+  tag of the desired release (e.g. v13.0.0):
 
 SSH::
 
-    git clone git@github.com:dtcenter/metplus
+    git clone --branch vX.Y.Z git@github.com:dtcenter/metplus
 
 HTTPS::
 
-    git clone https://github.com/dtcenter/metplus
+    git clone --branch vX.Y.Z https://github.com/dtcenter/metplus
+
+.. note::
+   If the repository has already been cloned, a release can be obtained by
+   running **git checkout vX.Y.Z** from within the cloned directory.
 
 .. _obtain_sample_input_data:
 
