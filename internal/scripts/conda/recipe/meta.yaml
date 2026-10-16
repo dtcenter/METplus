@@ -1,18 +1,19 @@
-{% set version = "6.0.0" %}
-{% set met_version = "12.0.2" %}
+{% set version = "13.0.0b2" %}
+{% set tag = "13.0.0-beta2" %}
+{% set met_tag = "13.0.0-beta2" %}
 
 package:
   name: metplus
   version: {{ version }}
 
 source:
-  - url: https://github.com/dtcenter/METplus/archive/refs/tags/v{{ version }}.tar.gz
-    md5: a5612dfd025055707f4a45dff028e628
-    sha256: e9358aede2fd2abecd81806227de7b165d68fdf2fc9defcbba24df229461b155
+  - url: https://github.com/dtcenter/METplus/archive/refs/tags/v{{ tag }}.tar.gz
+    md5: eefba0650f24f2852b3ab76a6e900255
+    sha256: dfdb365f8c1874ba5b03b12c79c8c75e715ee56ac8cb9083555b481e914b14db
 
-  - url: https://github.com/dtcenter/MET/archive/refs/tags/v{{ met_version }}.tar.gz
-    md5: 4b9dba80639a74f1a3ecb15357785603
-    sha256: 613c74cbe5a0afa87422e81a4cd70984238c1a0eaf1a395503486331223ede45
+  - url: https://github.com/dtcenter/MET/archive/refs/tags/v{{ met_tag }}.tar.gz
+    md5: cb5d6736afac842cd256bb95dac9497e
+    sha256: 47982f5dbaf992b1d56bc517c0d05630906112ef86f7d189e835418ddbc182e9
     folder: MET
 
 
@@ -45,8 +46,6 @@ requirements:
     - gsl
     - netcdf-cxx4
     - zlib
-    - cairo
-    - freetype
     - nceplibs-bufr
     - nceplibs-g2c
     - metview

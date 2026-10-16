@@ -14,10 +14,6 @@ export CXXFLAGS="-DHAVE_ISATTY ${CXXFLAGS}"
 export MET_PYTHON_CC=$(${PREFIX}/bin/python3-config --cflags)
 export MET_PYTHON_LD=$(${PREFIX}/bin/python3-config --ldflags --embed)
 export MET_PYTHON_BIN_EXE=${PREFIX}/bin/python3
-export MET_FREETYPELIB="${PREFIX}/lib"
-export MET_FREETYPEINC="${PREFIX}/include/freetype2"
-export MET_CAIROINC="${PREFIX}/include/cairo"
-export MET_CAIROLIB="${PREFIX}/lib"
 export MET_ECKIT="${PREFIX}/lib/metview-bundle"
 export MET_ATLAS="${PREFIX}/lib/metview-bundle"
 
