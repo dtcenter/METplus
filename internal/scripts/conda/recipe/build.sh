@@ -22,6 +22,7 @@ mkdir -p "${PREFIX}/etc/conda/activate.d"
 
 PYTHON_VERSION=$(${MET_PYTHON_BIN_EXE} -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
 printf "export METPLUS_PARM=${PREFIX}/lib/python${PYTHON_VERSION}/site-packages/metplus/parm\n" >> "${PREFIX}/etc/conda/activate.d/${PKG_NAME}-activate.sh"
+printf "export MET_BASE=${PREFIX}/share/met\n" >> "${PREFIX}/etc/conda/activate.d/${PKG_NAME}-activate.sh"
 
 (cd MET &&
      ./configure --prefix="${PREFIX}" --enable-all BUFRLIB_NAME=-lbufr_4 GRIB2CLIB_NAME=-lg2c &&
