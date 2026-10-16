@@ -90,23 +90,32 @@ If creating a new model applications use case, in the category sub-directory
 following:
 
 * A METplus configuration file named
-  *\<MET-TOOL\>_fcst\<FCST\>_obs\<OBS\>_climo\<CLIMO\>\<DESCRIPTOR\>.conf*
+  *\<MET-TOOL\>_fcst\<FCST\>_obs\<OBS\>_climo\<CLIMO\>_\<DESCRIPTOR\>.conf*
   where
 
     * *<MET-TOOL>* is the MET tool that performs the primary statistical
       analysis, i.e., GridStat or SeriesAnalysis.
 
-    * *<FCST>* is the name of the forecast input data source (this can be
-      excluded if no forecast data is used).
+    * *<FCST>* is the name of the forecast input data source.
 
-    * *<OBS>* is the name of the observation input data source (this can be
-      excluded if no observation data is used).
+    * *<OBS>* is the name of the observation input data source.
 
-    * *<CLIMO>* is the optional climatology input data source (this can be
-      excluded if no climatology data is used).
+    * *<CLIMO>* is the climatology input data source. Exclude
+      *_climo\<CLIMO\>* if no climatology data is used.
 
-    * *<DESCRIPTOR>* is an optional description that can include field
+    * *<DESCRIPTOR>* is a required description that can include field
       category, number of fields, statistical types, and file formats.
+
+  If the use case does not use both forecast and observation data, name the
+  file using one of these formats, with *fcstOnly* or *obsOnly* in lowercase:
+
+    * Forecast data only:
+      *\<MET-TOOL\>_fcst\<FCST\>_fcstOnly_\<DESCRIPTOR\>.conf*,
+      e.g., *TCRMW_fcstGFS_fcstOnly_gonzalo.conf*
+
+    * Observation data only:
+      *\<MET-TOOL\>_obs\<OBS\>_obsOnly_\<DESCRIPTOR\>.conf*,
+      e.g., *UserScript_obsERA_obsOnly_Blocking.conf*
 
 If the use case uses a Python Embedding script or any other additional files
 (besides input data), then put them in a sub-directory that matches the METplus
@@ -185,8 +194,10 @@ metplotpy_env.
 A list of the existing Conda Environments and the packages they contain can also be
 found in the :ref:`Conda Environments <cg-ci-conda-environments>` section.
 If the package requirements aren’t met by one of the existing
-Conda Environments, please create a post on the `METplus GitHub Discussions Forum 
+Conda Environments, please create a post on the `METplus GitHub Discussions Forum
 <https://github.com/dtcenter/METplus/discussions>`_ for assistance.
+See the :ref:`codingstandards` section for where to list a new Python package
+that a use case requires.
 
 Existing Use Case Examples
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -940,10 +951,11 @@ This example adds a new use case group that contains the climate use case
 with index 2 and is marked to "run" for every push.
 
 .. note::
-    Be sure to remember and change the "run" entry in this file to false
-    prior to the final merge after pull request review. This will trigger
-    a complete run of the testing suite prior to merging, so allow time
-    for that to complete as well.
+    Be sure to change the "run" entry in this file to false, then commit and
+    push the change, before opening a pull request. A check on pull requests
+    into the develop and main_vX.Y branches fails if any use case group is
+    set to run. Pull requests into these branches run the complete testing
+    suite, so allow time for that to complete before merging.
 
 New use cases are added as a separate item to make reviewing the test results
 easier. A new use case will produce new output data that is not found in the
