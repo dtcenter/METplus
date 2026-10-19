@@ -1,5 +1,5 @@
 """
-PointStat: Met Office LFRic UGRID
+PointStat: MPAS UGRID
 ====================================
 
 model_applications/unstructured_grids/PointStat_fcstMPAS_UGRID_obsMESONET.conf
@@ -67,19 +67,19 @@ model_applications/unstructured_grids/PointStat_fcstMPAS_UGRID_obsMESONET.conf
 # METplus Workflow
 # ----------------
 #
-# **Beginning time (VALID_BEG):** 2025051700
+# **Beginning time (VALID_BEG):** 2025051900
 #
-# **End time (VALID_END):** 2025051700
+# **End time (VALID_END):** 2025051900
 #
 # **Increment between beginning and end times (VALID_INCREMENT):** 6H
 #
-# **Sequence of forecast leads to process (LEAD_SEQ):** 0
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0,1,2,3,4,5,6
 #
 # PointStat is the only tool called in this example. It processes the following
 # run times:
 #
-# | **Valid:** 2025-05-17_00Z  
-# | **Forecast lead:** 06 hour
+# | **Valid:** 2025-05-19_00Z to 2025-05-19_06Z  
+# | **Forecast lead:** 00 to 06 hour
 
 ##############################################################################
 # METplus Configuration
@@ -149,10 +149,11 @@ model_applications/unstructured_grids/PointStat_fcstMPAS_UGRID_obsMESONET.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in PointStat_UGRID  (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in OK_12km_ugrid/point_stat  (relative to **OUTPUT_BASE**)
 # and will contain the following file:
 #
-# * dump.out
+# * point_stat_0H0000L_20250519_0H0000V_mpr.txt
+# * point_stat_0H0000L_20250519_0H0000V.stat
 
 ##############################################################################
 # Keywords
@@ -162,7 +163,7 @@ model_applications/unstructured_grids/PointStat_fcstMPAS_UGRID_obsMESONET.conf
 #
 #   * PointStatToolUseCase 
 #   * PythonEmbeddingFileUseCase 
-#   * UnstructureGridsUseCase
+#   * UnstructuredGridUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

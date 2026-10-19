@@ -26,7 +26,9 @@ model_applications/unstructured_grids/GridStat_fcstMPAS_UGRID_obsMRMS.conf
 # NetCDF format, which follows the UGRID format and containing a regional
 # hexagonal grid. The demonstrated case is a small 12km domain over Oklahoma.
 # Observations used are MRMS files, allowing for verification of reflectivity
-# data in the MPAS forecast.
+# data in the MPAS forecast. In this use case, the MRMS files were reduced 
+# using wgrib2 from the complete MRMS domain to one immediately surrounding 
+# the forecast domain to facilitate shorter runtimes.
 
 ##############################################################################
 # Version Added
@@ -65,19 +67,19 @@ model_applications/unstructured_grids/GridStat_fcstMPAS_UGRID_obsMRMS.conf
 # METplus Workflow
 # ----------------
 #
-# **Beginning time (VALID_BEG):** 2025051700
+# **Beginning time (VALID_BEG):** 2025051900
 #
-# **End time (VALID_END):** 2025051700
+# **End time (VALID_END):** 2025051906
 #
 # **Increment between beginning and end times (VALID_INCREMENT):** 6H
 #
-# **Sequence of forecast leads to process (LEAD_SEQ):** 0
+# **Sequence of forecast leads to process (LEAD_SEQ):** 0,1,2,3,4,5,6
 #
 # GridStat is the only tool called in this example. It processes the following
 # run times:
 #
-# | **Valid:** 2025-05-17_00Z  
-# | **Forecast lead:** 06 hour
+# | **Valid:** 2025-05-19_00Z to  2025-05-19_06Z 
+# | **Forecast lead:** 00 to 06 hour
 
 ##############################################################################
 # METplus Configuration
@@ -126,10 +128,11 @@ model_applications/unstructured_grids/GridStat_fcstMPAS_UGRID_obsMRMS.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in GridStat_UGRID  (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in OK_12km_ugrid/grid_stat  (relative to **OUTPUT_BASE**)
 # and will contain the following file:
 #
-# * dump.out
+# * grid_stat_0H0000L_20250519_0H0000V_pairs.nc
+# * grid_stat_0H0000L_20250519_0H0000V.stat
 
 ##############################################################################
 # Keywords
@@ -138,7 +141,7 @@ model_applications/unstructured_grids/GridStat_fcstMPAS_UGRID_obsMRMS.conf
 # .. note::
 #
 #   * GridStatToolUseCase 
-#   * UnstructureGridsUseCase
+#   * UnstructuredGridUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
