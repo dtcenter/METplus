@@ -8,7 +8,7 @@ cycles of the METplus components included in a coordinated release.
 
 .. dropdown:: Instructions
 
-  * If creating a release for the first development cycle (e.g. beta1 release),
+  * If creating a release for the first development cycle (e.g., beta1 release),
     check to see if the
     `Release Acceptance Testing <https://github.com/dtcenter/METplus/discussions/categories/release-acceptance-testing>`_
     discussion for the next coordinated release has already been created.
@@ -33,7 +33,7 @@ cycles of the METplus components included in a coordinated release.
       * Create a *single table entry* for this development cycle.
       * Set the "Status" column to **PASS**.
       * Set the "|projectRepo| Issue" column to a list of links for all of the issues.
-      * Set the "Dev Cycle" column to the current development cycle name (e.g. beta1, beta2, beta3, rc1).
+      * Set the "Dev Cycle" column to the current development cycle name (e.g., beta1, beta2, beta3, rc1).
       * Leave the "Tester" column empty.
       * Set the "Acceptance Testing Comment Link" column to **No external testing required**.
 
@@ -42,7 +42,7 @@ cycles of the METplus components included in a coordinated release.
       * Create a *separate table entry* for each issue.
       * Set the "Status" column to **OPEN**.
       * Set the "|projectRepo| Issue" column to link to the issue.
-      * Set the "Dev Cycle" column to the current development cycle name (e.g. beta1, beta2, beta3, rc1).
+      * Set the "Dev Cycle" column to the current development cycle name (e.g., beta1, beta2, beta3, rc1).
       * Set the "Tester" column to a list of GitHub user name(s) to solicit their feedback.
       * Leave the "Acceptance Testing Comment Link" column empty.
 

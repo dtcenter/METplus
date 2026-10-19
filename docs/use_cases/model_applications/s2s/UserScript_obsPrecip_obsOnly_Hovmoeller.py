@@ -19,8 +19,8 @@ model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.py
 # This use case calls the METplotpy hovmoeller plot to create a sample Hovmoeller diagram
 # using sample data created by METcalcpy hovmoeller functions
 #
-# The Hovmoeller plot and hovmoeller calculations where created by Maria Gehne at the 
-# Physical Sciences Labratory in NOAA 
+# The Hovmoeller plot and hovmoeller calculations were created by Maria Gehne at the 
+# Physical Sciences Laboratory in NOAA 
 
 ##############################################################################
 # Version Added
@@ -58,7 +58,7 @@ model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.py
 # Clone the METcalcpy repository (https://github.com/dtcenter/METcalcpy) and the
 # METplotpy repository (https://github.com/dtcenter/METplotpy) under the same base
 # directory as the METPLUS_BASE directory so that the METplotpy, METcalcpy, and
-# METplotpy directories are under the same base directory (i.e. if the METPLUS_BASE directory is
+# METplotpy directories are under the same base directory (i.e., if the METPLUS_BASE directory is
 # /home/username/working/METplus, then clone the METcalcpy and METplotpy source
 # code into the /home/username/working directory).  
 

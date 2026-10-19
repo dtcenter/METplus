@@ -82,6 +82,7 @@ class GridStatWrapper(CompareGriddedWrapper):
         'NEIGHBORHOOD_SHAPE',
         'NEIGHBORHOOD_COV_THRESH',
         'OUTPUT_PREFIX',
+        'METPLUS_TIME_OFFSET_WARNING',
     ]
 
     OUTPUT_FLAGS = [

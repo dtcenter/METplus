@@ -238,13 +238,13 @@ OR::
     mamba install pygithub
 
 To run the script, first obtain a
-`GitHub personal access token <https://github.com/settings/tokens>`_.
+`GitHub personal access token <https://github.com/login?return_to=https%3A%2F%2Fgithub.com%2Fsettings%2Ftokens>`_.
 Set the environment variable GITHUB_TOKEN with this value::
 
     export GITHUB_TOKEN=gha_...
 
-Call the script, passing as arguments the name of the release, e.g. 6.0.0-rc1,
-and the date when the development cycle started, e.g. 20241019::
+Call the script, passing as arguments the name of the release, e.g., 6.0.0-rc1,
+and the date when the development cycle started, e.g., 20241019::
 
     ~/METplus/internal/scripts/dev_tools/generate_release_notes.py 6.0.0-rc1 20241019
 

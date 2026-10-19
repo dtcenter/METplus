@@ -117,16 +117,8 @@ ${METPLUS_SKIP_CONST}
 // Set dist_type to NONE to use the observation error table instead
 // May be set separately in each "obs.field" entry
 //
-obs_error = {
-   //flag =
-   ${METPLUS_OBS_ERROR_FLAG}
-   dist_type        = NONE;
-   dist_parm        = [];
-   inst_bias_scale  = 1.0;
-   inst_bias_offset = 0.0;
-   min              = NA;      // Valid range of data
-   max              = NA;
-}
+//obs_err = {
+${METPLUS_OBS_ERR_DICT}
 
 //
 // Mapping of message type group name to comma-separated list of values.

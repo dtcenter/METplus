@@ -11,7 +11,7 @@ Description
   Note: METAR data is also available via other sources (e.g., NCEP prepbufr files); METAR data from MADIS allows for verification over CONUS and OCONUS.
 
 Recommended use
-  METAR data are commonly used for near-surface verification of standard meteorological variables, such as temperatures, dew point temperature, wind speed, visibility, and precipitation, and precipitation type.
+  METAR data are commonly used for near-surface verification of standard meteorological variables, such as temperatures, dew point temperature, wind speed, visibility, precipitation, and precipitation type.
 
 File format
   NetCDF

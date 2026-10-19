@@ -33,7 +33,7 @@ met_tool_wrapper/EnsembleStat/EnsembleStat.conf
 # | **Point Observation:** 
 # |         met_test/out/ascii2nc/precip24_2010010112.nc 
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
+# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to go to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 # | **Data Source:** Unknown
 # |
@@ -63,7 +63,7 @@ met_tool_wrapper/EnsembleStat/EnsembleStat.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/EnsembleStat/EnsembleStat.conf
+# with the -c option, i.e., -c parm/use_cases/met_tool_wrapper/EnsembleStat/EnsembleStat.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/EnsembleStat/EnsembleStat.conf
@@ -95,7 +95,7 @@ met_tool_wrapper/EnsembleStat/EnsembleStat.conf
 #
 #   run_metplus.py /path/to/METplus/parm/use_cases/met_tool_wrapper/EnsembleStat/EnsembleStat.conf /path/to/user_system.conf
 #
-# The following METplus configuration variables must be set correctly to run this example.:
+# The following METplus configuration variables must be set correctly to run this example:
 #
 # * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs).
 # * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions

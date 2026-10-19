@@ -17,7 +17,7 @@ from inspect import getframeinfo, stack
 from typing import Any
 
 from ..util.constants import PYTHON_EMBEDDING_TYPES, COMPRESSION_EXTENSIONS
-from ..util.constants import MULTIPLE_INPUT_WRAPPERS, TIME_OFFSET_WARNING_WRAPPERS
+from ..util.constants import MULTIPLE_INPUT_WRAPPERS, TIME_OFFSET_WARN_WRAPPERS
 from ..util.constants import WARNING_CONFIGS
 from ..util import getlist, preprocess_file
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
@@ -102,31 +102,8 @@ class CommandBuilder:
             self.log_error("Could not parse config")
             return
 
-        # if wrapper has a config file, read MET config overrides variable
-        if 'CONFIG_FILE' in self.c_dict:
-            config_name = self.MET_OVERRIDES_KEY.replace('METPLUS',
-                                                         self.app_name.upper())
-            self.env_var_dict[self.MET_OVERRIDES_KEY] = (
-                self.config.getraw('config', config_name)
-            )
-
-            # add key to list of env vars to set
-            self.env_var_keys.append(self.MET_OVERRIDES_KEY)
-
-            if get_wrapper_name(self.app_name) in TIME_OFFSET_WARNING_WRAPPERS:
-                # add time_offset_warning env var
-                self.env_var_keys.append('METPLUS_TIME_OFFSET_WARNING')
-                time_offset_warning = self.get_wrapper_or_generic_config(
-                    'TIME_OFFSET_WARNING', var_type='int'
-                )
-                if time_offset_warning != '':
-                    self.env_var_dict['METPLUS_TIME_OFFSET_WARNING'] = (
-                        f'time_offset_warning = {time_offset_warning};'
-                    )
-
-            # warn if any environment variables set by the wrapper are not
-            # being utilized in the user's config file
-            self.check_for_unused_env_vars()
+        # if wrapper has a MET config file, handle config settings
+        self._handle_met_config_settings()
 
         # set MET_TMP_DIR environment variable that controls
         # where the MET tools write temporary files
@@ -146,6 +123,45 @@ class CommandBuilder:
         self.log_name = self.app_name if hasattr(self, 'app_name') else ''
 
         self.clear()
+
+    def _handle_met_config_settings(self):
+        if 'CONFIG_FILE' not in self.c_dict:
+            return
+
+        # read MET config overrides variable
+        config_name = self.MET_OVERRIDES_KEY.replace('METPLUS',
+                                                     self.app_name.upper())
+        self.env_var_dict[self.MET_OVERRIDES_KEY] = (
+            self.config.getraw('config', config_name)
+        )
+
+        # add key to list of env vars to set
+        self.env_var_keys.append(self.MET_OVERRIDES_KEY)
+
+        if get_wrapper_name(self.app_name) in TIME_OFFSET_WARN_WRAPPERS:
+            # add time_offset_warn env var
+            self.env_var_keys.append('METPLUS_TIME_OFFSET_WARN')
+            time_offset_warn = self.get_wrapper_or_generic_config(
+                'TIME_OFFSET_WARN', var_type='int'
+            )
+            # warn if legacy config variable names are used
+            for name in (f'{self.app_name}_TIME_OFFSET', 'TIME_OFFSET'):
+                self.warn_if_deprecated_config(f'{name.upper()}_WARNING',
+                                               f'{name.upper()}_WARN')
+
+            # check legacy config variable name if new name is not set
+            if time_offset_warn == '':
+                time_offset_warn = self.get_wrapper_or_generic_config(
+                    'TIME_OFFSET_WARNING', var_type='int'
+                )
+            if time_offset_warn != '':
+                self.env_var_dict['METPLUS_TIME_OFFSET_WARN'] = (
+                    f'time_offset_warn = {time_offset_warn};'
+                )
+
+        # warn if any environment variables set by the wrapper are not
+        # being utilized in the user's config file
+        self.check_for_unused_env_vars()
 
     def populate_var_options(self):
         return {}
@@ -1586,6 +1602,17 @@ class CommandBuilder:
         if var_type == 'int':
             return self.config.getint('config', name)
         return self.config.getstr('config', name)
+
+    def warn_if_deprecated_config(self, old_name, new_name):
+        """! Log a warning if a deprecated config variable name is set.
+
+        @param old_name deprecated name of METplus config variable
+        @param new_name name of METplus config variable that should be used
+        """
+        if not self.config.has_option('config', old_name):
+            return
+        self.logger.warning(f'{old_name} is deprecated. '
+                            f'Please use {new_name} instead.')
 
     def format_field(self, data_type, field_string, is_list=True):
         """! Set {data_type}_FIELD c_dict value to the formatted field string

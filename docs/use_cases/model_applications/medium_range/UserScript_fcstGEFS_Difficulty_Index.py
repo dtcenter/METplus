@@ -17,7 +17,7 @@ model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 #
 # This use case calls the UserScript wrapper to run a user provided script that calculates 
 # the difficulty index for wind speed. This use case allows for the user to change a variety 
-# of variables needed to run the difficulty index (i.e. threshold start and units) so that the
+# of variables needed to run the difficulty index (i.e., threshold start and units) so that the
 # user can run the script at different thresholds without needing to alter the code. This 
 # script run by the use case uses METcalcpy to provide the difficulty index calculation and
 # METplotpy to provide the plotting capability. 
@@ -26,7 +26,7 @@ model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 # difficulty index is to graphically represent the expected difficulty of a decision based on 
 # a set of forecasts (ensemble) of, e.g., wind speed as a function of space and 
 # time. There are two basic factors that can make a decision difficult. The first factor is the 
-# proximity of the ensemble mean forecast to a decision threshold, e.g. 34 knot winds. If the 
+# proximity of the ensemble mean forecast to a decision threshold, e.g., 34 knot winds. If the 
 # ensemble mean is either much lower or much higher than the threshold, the decision is easier; 
 # if it is closer to the threshold, the decision is harder. The second factor is the forecast 
 # precision, or ensemble spread. The greater the spread around the ensemble mean, the more likely 
@@ -36,9 +36,9 @@ model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 # these factors into a continuous function that allows the user to assess relative risk.
 #
 # Additional details on the computation of the Difficulty Index can be found in the `METcalcpy 
-# documentation <https://metcalcpy.readthedocs.io/en/latest/Users_Guide/difficulty_index.html>`_ 
+# documentation <https://metplus.readthedocs.io/projects/metcalcpy/en/latest/Users_Guide/difficulty_index.html>`_ 
 # and more information on plotting difficulty index can be found in the `METplotpy documentation
-# <https://metplotpy.readthedocs.io/en/latest/Users_Guide/difficulty_index.html>`_.
+# <https://metplus.readthedocs.io/projects/metplotpy/en/latest/Users_Guide/difficulty_index.html>`_.
 
 ##############################################################################
 # Version Added
@@ -107,7 +107,7 @@ model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
+# i.e., parm/use_cases/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf

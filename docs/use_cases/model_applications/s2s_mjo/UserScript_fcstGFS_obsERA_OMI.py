@@ -20,12 +20,12 @@ model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 # tropics and is characterized by eastward moving regions of enhanced and suppressed rainfall.  These
 # phases are typically grouped into numbers 1 - 8 based on the geographic location of the enhanced and 
 # suppressed rainfall.  The MJO affects global weather including summer monsoons, tropical cyclone 
-# development, and sudden stratospheric warming events, and has teloconnections to mid latitude weather
+# development, and sudden stratospheric warming events, and has teleconnections to mid latitude weather
 # systems.  
 # 
 # This use case uses outgoing longwave radiation (OLR) to compute the OLR based MJO Index (OMI), which is
 # a convective index of the MJO.  OMI is computed separately for the model and observations and then displayed
-# on phase diagrams to evaluate the model reprentation of this important oscillation.  The code for computing OMI
+# on phase diagrams to evaluate the model representation of this important oscillation.  The code for computing OMI
 # came from Maria Gehne at the NOAA Physical Science Laboratory (PSL).
 
 ##############################################################################
@@ -40,7 +40,7 @@ model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 #
 # **Forecast:** GFS Model Outgoing Longwave Radiation, 2017 - 2018
 #
-# **Observation:** ERA Reanlaysis Outgoing Longwave Radiation, 2017 - 2018
+# **Observation:** ERA Reanalysis Outgoing Longwave Radiation, 2017 - 2018
 #
 # **Climatology:** None
 #
@@ -87,7 +87,7 @@ model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** 0 hour
 #
-# This use case does not loop, but the UserScript to create and EOF filelist is run once and the UserScript which
+# This use case does not loop, but the UserScript to create an EOF filelist is run once and the UserScript which
 # runs the OMI driver script is also run once for both the model and observations across the entire time period.  
 # The EOF filelist is created separately since the EOF files are needed for each day of the year while the OMI 
 # calculation is on a separate time frame.  
@@ -111,7 +111,7 @@ model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.py
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.conf.
+# i.e., parm/use_cases/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.conf.
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s_mjo/UserScript_fcstGFS_obsERA_OMI.conf

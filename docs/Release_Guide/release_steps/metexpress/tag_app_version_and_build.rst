@@ -1,7 +1,7 @@
 Tag App Version and Build
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Tag the mains branches.
+Tag the main branches.
 
 .. dropdown:: Instructions
 
@@ -21,4 +21,4 @@ Tag the mains branches.
       git pull
       cd ../..
 
-  * This will cause github to automatically build the versioned app containers for the release.
+  * This will cause GitHub to automatically build the versioned app containers for the release.

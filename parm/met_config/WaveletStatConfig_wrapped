@@ -125,5 +125,5 @@ ${METPLUS_OUTPUT_PREFIX}
 
 ////////////////////////////////////////////////////////////////////////////////
 
-${METPLUS_TIME_OFFSET_WARNING}
+${METPLUS_TIME_OFFSET_WARN}
 ${METPLUS_MET_CONFIG_OVERRIDES}

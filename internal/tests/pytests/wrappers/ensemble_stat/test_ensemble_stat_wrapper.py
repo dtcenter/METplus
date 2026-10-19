@@ -928,6 +928,44 @@ def test_ensemble_stat_field_info(metplus_config, config_overrides,
          {'METPLUS_OBS_FIELD': f'{obs_fmt[0: -3]}obs_summary = PERC; }}];'}),
         ({'ENSEMBLE_STAT_OBS_VAR1_OBS_PERC_VALUE': '50;', },
          {'METPLUS_OBS_FIELD': f'{obs_fmt[0: -3]}obs_perc_value = 50; }}];'}),
+        ({'ENSEMBLE_STAT_MET_OBS_ERR_TABLE': '/some/err/table/path.txt'},
+         {'MET_OBS_ERR_TABLE': '/some/err/table/path.txt'}),
+        # legacy config variable name
+        ({'ENSEMBLE_STAT_MET_OBS_ERROR_TABLE': '/some/err/table/path.txt'},
+         {'MET_OBS_ERR_TABLE': '/some/err/table/path.txt'}),
+        ({'ENSEMBLE_STAT_OBS_ERR_FLAG': 'true'},
+         {'METPLUS_OBS_ERR_DICT': 'obs_err = {flag = TRUE;}'}),
+        # legacy config variable name
+        ({'ENSEMBLE_STAT_OBS_ERROR_FLAG': 'true'},
+         {'METPLUS_OBS_ERR_DICT': 'obs_err = {flag = TRUE;}'}),
+        ({'ENSEMBLE_STAT_OBS_ERR_DIST_TYPE': 'normal', },
+         {'METPLUS_OBS_ERR_DICT': 'obs_err = {dist_type = NORMAL;}'}),
+        ({'ENSEMBLE_STAT_OBS_ERR_DIST_PARM': '0.5, 1.5', },
+         {'METPLUS_OBS_ERR_DICT': 'obs_err = {dist_parm = [0.5, 1.5];}'}),
+        ({'ENSEMBLE_STAT_OBS_ERR_DIST_PARM': '', },
+         {'METPLUS_OBS_ERR_DICT': 'obs_err = {dist_parm = [];}'}),
+        ({'ENSEMBLE_STAT_OBS_ERR_INST_BIAS_SCALE': '1.5', },
+         {'METPLUS_OBS_ERR_DICT': 'obs_err = {inst_bias_scale = 1.5;}'}),
+        ({'ENSEMBLE_STAT_OBS_ERR_INST_BIAS_OFFSET': '-0.5', },
+         {'METPLUS_OBS_ERR_DICT': 'obs_err = {inst_bias_offset = -0.5;}'}),
+        ({'ENSEMBLE_STAT_OBS_ERR_MIN': '0', },
+         {'METPLUS_OBS_ERR_DICT': 'obs_err = {min = 0.0;}'}),
+        ({'ENSEMBLE_STAT_OBS_ERR_MAX': '100.5', },
+         {'METPLUS_OBS_ERR_DICT': 'obs_err = {max = 100.5;}'}),
+        ({
+           'ENSEMBLE_STAT_OBS_ERR_FLAG': 'true',
+           'ENSEMBLE_STAT_OBS_ERR_DIST_TYPE': 'gamma',
+           'ENSEMBLE_STAT_OBS_ERR_DIST_PARM': '0.5, 1.5',
+           'ENSEMBLE_STAT_OBS_ERR_INST_BIAS_SCALE': '1.5',
+           'ENSEMBLE_STAT_OBS_ERR_INST_BIAS_OFFSET': '-0.5',
+           'ENSEMBLE_STAT_OBS_ERR_MIN': '0',
+           'ENSEMBLE_STAT_OBS_ERR_MAX': '100',
+          },
+         {'METPLUS_OBS_ERR_DICT': ('obs_err = {flag = TRUE;dist_type = GAMMA;'
+                                   'dist_parm = [0.5, 1.5];'
+                                   'inst_bias_scale = 1.5;'
+                                   'inst_bias_offset = -0.5;'
+                                   'min = 0.0;max = 100.0;}')}),
     ]
 )
 @pytest.mark.wrapper_c
@@ -1034,3 +1072,48 @@ def test_ensemble_stat_fill_missing(metplus_config, config_overrides,
         actual_num_files = len(file_handle.read().splitlines()) - 1
 
     assert actual_num_files == expected_num_files
+
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_warnings', [
+        ({'ENSEMBLE_STAT_OBS_ERR_FLAG': 'true',
+          'ENSEMBLE_STAT_MET_OBS_ERR_TABLE': '/some/err/table/path.txt'}, []),
+        ({'ENSEMBLE_STAT_OBS_ERROR_FLAG': 'true'},
+         ['ENSEMBLE_STAT_OBS_ERROR_FLAG is deprecated. '
+          'Please use ENSEMBLE_STAT_OBS_ERR_FLAG instead.']),
+        ({'ENSEMBLE_STAT_MET_OBS_ERROR_TABLE': '/some/err/table/path.txt'},
+         ['ENSEMBLE_STAT_MET_OBS_ERROR_TABLE is deprecated. '
+          'Please use ENSEMBLE_STAT_MET_OBS_ERR_TABLE instead.']),
+    ]
+)
+@pytest.mark.wrapper_c
+def test_ensemble_stat_obs_err_deprecated(metplus_config, config_overrides,
+                                          expected_warnings):
+    config = metplus_config
+    set_minimum_config_settings(config)
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    wrapper = EnsembleStatWrapper(config)
+    assert wrapper.is_ok
+
+    warnings = [call.args[0] for call in config.logger.warning.call_args_list]
+    deprecated = [msg for msg in warnings if 'deprecated' in msg]
+    assert deprecated == expected_warnings
+
+
+@pytest.mark.parametrize(
+    'config_name, value', [
+        ('ENSEMBLE_STAT_OBS_ERR_MIN', 'NA'),
+        ('ENSEMBLE_STAT_OBS_ERR_MAX', 'bad'),
+        ('ENSEMBLE_STAT_OBS_ERR_INST_BIAS_SCALE', 'bad'),
+    ]
+)
+@pytest.mark.wrapper_c
+def test_ensemble_stat_obs_err_invalid(metplus_config, config_name, value):
+    config = metplus_config
+    set_minimum_config_settings(config)
+    config.set('config', config_name, value)
+
+    wrapper = EnsembleStatWrapper(config)
+    assert not wrapper.is_ok

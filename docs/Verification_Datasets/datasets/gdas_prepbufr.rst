@@ -7,14 +7,14 @@ Description
   Global Data Assimilation System (GDAS) prepbufr files contain a variety of upper-air and surface weather observations from around the globe, including radiosonde, profiler and US radar derived winds, land and marine surface reports, aircraft reports, and more.
 
   NOAA/NCEI:
-  https://www.ncdc.noaa.gov/data-access/model-data/model-datasets/global-data-assimilation-system-gdas
+  https://www.ncei.noaa.gov/products/weather-climate-models/global-data-assimilation
 
   Note: GDAS prepbufr data is also available via other sources (e.g., NOMADS, NOAA HPSS, and NCAR/Research Data Archive); however, NOAA/NCEI does not require an account and provides a long archive period.
 
   .. note:: Surface winds are by default encoded with a quality mark of 9, to avoid being used in data assimilation. To use surface winds from GDAS prepbufr, be sure to include quality mark values of 9 when running PB2NC, which can be controlled via the PB2NC configuration file.
 
 Recommended use
-  GDAS prepbufr data are commonly used for verification of standard meteorological variables, such as temperatures, dew point temperature, wind speed, visibility, and precipitation, and precipitation type.
+  GDAS prepbufr data are commonly used for verification of standard meteorological variables, such as temperatures, dew point temperature, wind speed, visibility, precipitation, and precipitation type.
 
 File format
   BUFR 

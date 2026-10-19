@@ -142,5 +142,5 @@ tmp_dir = "${MET_TMP_DIR}";
 
 ////////////////////////////////////////////////////////////////////////////////
 
-${METPLUS_TIME_OFFSET_WARNING}
+${METPLUS_TIME_OFFSET_WARN}
 ${METPLUS_MET_CONFIG_OVERRIDES}

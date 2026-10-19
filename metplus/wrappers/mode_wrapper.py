@@ -94,6 +94,7 @@ class MODEWrapper(CompareGriddedWrapper):
         'FCST_MERGE_FLAG',
         'OBS_MERGE_FLAG',
         'OUTPUT_PREFIX',
+        'METPLUS_TIME_OFFSET_WARNING',
     ]
 
     WEIGHTS = {
