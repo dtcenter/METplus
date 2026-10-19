@@ -31,13 +31,3 @@ Return to GitHub to finalize the details of this release.
 
     * Remove any remaining stale development branches from the new release.
 
-    * Update the repository settings by resetting the *Default branch* to the new main_vX.Y branch:
-
-    .. parsed-literal::
-
-       https://github.com/dtcenter/|projectRepo|
-       -> Settings
-       -> Scroll down to the *Default branch* section
-       -> Click the stacked arrows button next to default branch name
-       -> Select the new default branch from the dropdown list
-       -> Click the *Update* button
