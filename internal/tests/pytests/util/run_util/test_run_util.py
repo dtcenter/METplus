@@ -53,6 +53,15 @@ EXPECTED_CONFIG_KEYS = [
     'EXIT_IF_WARN',
 ]
 
+@pytest.fixture(autouse=True)
+def release_version():
+    """Use a release version number so the development version warning does
+    not appear in output checked by these tests"""
+    with mock.patch('metplus.util.config_metplus.get_metplus_version',
+                    return_value='13.0.0'):
+        yield
+
+
 def remove_output_base(config):
     config_output_base = config.getdir("OUTPUT_BASE")
     if config_output_base and os.path.exists(config_output_base):
