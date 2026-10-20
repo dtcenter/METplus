@@ -72,6 +72,11 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         if not c_dict['TEMPLATE_DICT']:
             self.log_error('Must set GRID_DIAG_INPUT_TEMPLATE to run')
 
+        # if True, pair each field with the corresponding input template,
+        # passing -data for each. If False, read all fields from all files
+        c_dict['PAIRED'] = self.config.getbool('config', 'GRID_DIAG_PAIRED',
+                                               True)
+
         c_dict['OUTPUT_DIR'] = self.config.getdir('GRID_DIAG_OUTPUT_DIR', '')
         c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('config', 'GRID_DIAG_OUTPUT_TEMPLATE')
 
@@ -133,8 +138,11 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         cmd = self.app_path
 
         # add input files
-        for infile in self.infiles:
-            cmd += f" -data {infile}"
+        if self.c_dict['PAIRED']:
+            for infile in self.infiles:
+                cmd += f" -data {infile}"
+        else:
+            cmd += f" -data {' '.join(self.infiles)}"
 
         # add other arguments
         cmd += f" {' '.join(self.args)}"
@@ -151,6 +159,8 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         for file_dict in self.c_dict['ALL_FILES']:
             if file_dict is None: continue
             self.clear()
+            if not self.c_dict['PAIRED']:
+                file_dict = self._merge_input_files(file_dict)
             self.add_to_infiles(file_dict, time_info)
 
         # get output path
@@ -161,6 +171,8 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         if not self.set_data_field(time_info):
             return
 
+        self._check_paired_inputs_match_fields()
+
         # get other configurations for command
         self.set_command_line_arguments(time_info)
 
@@ -169,6 +181,50 @@ class GridDiagWrapper(RuntimeFreqWrapper):
 
         # build command and run
         self.build()
+
+    @staticmethod
+    def _merge_input_files(file_dict):
+        """!Combine the files from all input templates into a single input
+        so that they are passed to a single -data argument. Duplicate files
+        are only included once.
+
+        @param file_dict dictionary of input files for each input template
+        @returns new file dictionary with all input files under a single key
+        """
+        merged_dict = {}
+        all_files = []
+        for key, value in file_dict.items():
+            if key in ('var_list', 'time_info', 'input_time_info'):
+                merged_dict[key] = value
+                continue
+            if not value:
+                continue
+            for item in value:
+                if item not in all_files:
+                    all_files.append(item)
+
+        merged_dict['input'] = all_files
+        return merged_dict
+
+    def _check_paired_inputs_match_fields(self):
+        """!If running in paired mode with multiple -data arguments, warn if
+        the number of -data arguments does not match the number of fields.
+        """
+        if not self.c_dict['PAIRED'] or len(self.infiles) < 2:
+            return
+
+        num_fields = self.c_dict.get('NUM_FIELDS', 0)
+        if len(self.infiles) == num_fields:
+            return
+
+        self.logger.warning(
+            f'Number of input templates ({len(self.infiles)}) does not match '
+            f'the number of fields ({num_fields}). When GRID_DIAG_PAIRED is '
+            'True and multiple input templates are set, grid_diag reads the '
+            'first field from the files of the first template, the second '
+            'field from the files of the second template, etc. Set '
+            'GRID_DIAG_PAIRED to False to read all fields from all files.'
+        )
 
     def set_data_field(self, time_info):
         """!Get list of fields from config to process. Build list of field info
@@ -186,6 +242,7 @@ class GridDiagWrapper(RuntimeFreqWrapper):
 
             all_fields.extend(field_info)
 
+        self.c_dict['NUM_FIELDS'] = len(all_fields)
         data_field = ','.join(all_fields)
         self.c_dict['DATA_FIELD_FMT'] = f"field = [ {data_field} ];"
 
