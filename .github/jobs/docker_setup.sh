@@ -66,7 +66,7 @@ echo Using MET_TAG=$MET_TAG
 echo Setting DOCKER_BUILDKIT=1
 export DOCKER_BUILDKIT=1
 
-time_command docker build --pull --cache-from ${DOCKERHUB_TAG} \
+time_command docker build --pull \
 -t ${DOCKERHUB_TAG} \
 --build-arg OBTAIN_SOURCE_CODE=copy \
 --build-arg MET_DOCKER_REPO=$MET_DOCKER_REPO \
