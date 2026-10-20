@@ -226,17 +226,11 @@ print_interest_thresh = 0.0;
 //
 met_data_dir = "MET_BASE";
 
-fcst_raw_plot = {
-   color_table      = "MET_BASE/colortables/met_default.ctable";
-   plot_min         = 0.0;
-   plot_max         = 0.0;
-}
+//fcst_raw_plot = {
+${METPLUS_FCST_RAW_PLOT_DICT}
 
-obs_raw_plot = {
-   color_table      = "MET_BASE/colortables/met_default.ctable";
-   plot_min         = 0.0;
-   plot_max         = 0.0;
-}
+//obs_raw_plot = {
+${METPLUS_OBS_RAW_PLOT_DICT}
 
 object_plot = {
    color_table      = "MET_BASE/colortables/mode_obj.ctable";
@@ -245,7 +239,8 @@ object_plot = {
 //
 // Boolean for plotting on the region of valid data within the domain
 //
-plot_valid_flag = FALSE;
+//plot_valid_flag =
+${METPLUS_PLOT_VALID_FLAG}
 
 //
 // Plot polyline edges using great circle arcs instead of straight lines
