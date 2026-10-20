@@ -42,7 +42,7 @@ config files.
   cannot simply replace the deprecated variable name with the value in *alt*.
   If True, easy-to-run sed commands are generated to help replace variables.
 * **upgrade**: optional item where the value is a keyword that will output
-  additional instructions for the user, e.g. *ensemble*.
+  additional instructions for the user, e.g., *ensemble*.
 
 If any of these old variables are found in any config file passed to
 METplus by the user, an error report will be displayed with the old

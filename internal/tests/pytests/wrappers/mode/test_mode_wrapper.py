@@ -375,12 +375,19 @@ def test_mode_missing_inputs(metplus_config, get_test_data_dir, run_all_and_chec
         ({'MODE_OBS_MULTIVAR_LEVEL': 'Z10', },
          {'METPLUS_OBS_MULTIVAR_LEVEL': 'multivar_level = "Z10";'}),
 
+        ({'MODE_TIME_OFFSET_WARN': 3},
+         {'METPLUS_TIME_OFFSET_WARN': 'time_offset_warn = 3;'}),
+        ({'TIME_OFFSET_WARN': 2},
+         {'METPLUS_TIME_OFFSET_WARN': 'time_offset_warn = 2;'}),
+        ({'TIME_OFFSET_WARN': 2, 'MODE_TIME_OFFSET_WARN': 4},
+         {'METPLUS_TIME_OFFSET_WARN': 'time_offset_warn = 4;'}),
+        # legacy config variable name
         ({'MODE_TIME_OFFSET_WARNING': 3},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
+         {'METPLUS_TIME_OFFSET_WARN': 'time_offset_warn = 3;'}),
         ({'TIME_OFFSET_WARNING': 2},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
-        ({'TIME_OFFSET_WARNING': 2, 'MODE_TIME_OFFSET_WARNING': 4},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
+         {'METPLUS_TIME_OFFSET_WARN': 'time_offset_warn = 2;'}),
+        ({'TIME_OFFSET_WARNING': 2, 'MODE_TIME_OFFSET_WARN': 4},
+         {'METPLUS_TIME_OFFSET_WARN': 'time_offset_warn = 4;'}),
     ]
 )
 @pytest.mark.wrapper_a

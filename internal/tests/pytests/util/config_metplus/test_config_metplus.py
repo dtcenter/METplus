@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import pytest
+from unittest import mock
 
 import pprint
 import os
@@ -70,6 +71,30 @@ def test_get_default_config_list():
     assert actual_old == expected_old
     assert actual_new == expected_new
     assert actual_both == expected_both
+
+
+@pytest.mark.parametrize(
+    'version, expected_release', [
+        ('13.0.0-rc1-dev', '13.0.0-rc1'),
+        ('13.0.0-dev', '13.0.0'),
+        ('13.0.0-rc1', None),
+        ('13.0.0', None),
+        ('13.0.0-development', None),
+    ]
+)
+@pytest.mark.util
+def test_warn_if_dev_version(version, expected_release):
+    logger = mock.Mock()
+    actual = config_metplus._warn_if_dev_version(logger, version)
+    assert actual == (expected_release is not None)
+    if expected_release is None:
+        logger.warning.assert_not_called()
+        return
+
+    logger.warning.assert_called_once()
+    msg = logger.warning.call_args[0][0]
+    assert f'(v{version})' in msg
+    assert f'v{expected_release} release' in msg
 
 
 @pytest.mark.parametrize(

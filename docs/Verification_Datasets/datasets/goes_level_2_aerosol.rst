@@ -12,7 +12,7 @@ Sample image
   .. image:: images/GOES_16_ADP.jpg
    :width: 600
 
-  Image frm NOAA/SSD
+  Image from NOAA/SSD
 
 Recommended use
   Evaluating air quality, visibility, and dust with remotely-sensed data
@@ -21,9 +21,9 @@ File format
   NetCDF
 
 Location of data
-  GOES-16: https://console.cloud.google.com/storage/browser/gcp-public-data-goes-16 
+  `GOES-16 <https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fconsole.cloud.google.com%2Fstorage%2Fbrowser%2Fgcp-public-data-goes-16&dsh=S-718939594%3A1784848066598324&followup=https%3A%2F%2Fconsole.cloud.google.com%2Fstorage%2Fbrowser%2Fgcp-public-data-goes-16&osid=1&passive=1209600&service=cloudconsole&flowName=GlifWebSignIn&flowEntry=ServiceLogin&ifkv=Ac50bxv_TDBYNVg1Jw9GPXz19lyuDRabtNq06Y6t7Qw4Y1W9lavJg7jjPTU7YUVdb0aSf3aAhn9yPg>`_
 
-  GOES-17: https://console.cloud.google.com/storage/browser/gcp-public-data-goes-17  
+  `GOES-17 <https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fconsole.cloud.google.com%2Fstorage%2Fbrowser%2Fgcp-public-data-goes-17&dsh=S2014722085%3A1784848066582303&followup=https%3A%2F%2Fconsole.cloud.google.com%2Fstorage%2Fbrowser%2Fgcp-public-data-goes-17&osid=1&passive=1209600&service=cloudconsole&flowName=GlifWebSignIn&flowEntry=ServiceLogin&ifkv=Ac50bxtyaKphIuIIexh-BPfguJOJku6jnGYdum9LcyWzvovJkm61YZp1yp4eNxfK6Yc1f7OOWh6sRg>`_
 
   Note: There are other government institutions, cloud providers, and research institutions that provide this data.
 

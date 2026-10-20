@@ -48,7 +48,7 @@ model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.
 # ------------------
 #
 # This use case runs grid_stat to create categorical statistics for 
-# Surrogate Severe derived from the HRRR model and Practially Perfect
+# Surrogate Severe derived from the HRRR model and Practically Perfect
 # Analysis derived from local storm reports.  
 
 ##############################################################################
@@ -77,7 +77,7 @@ model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
+# i.e., parm/use_cases/model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf

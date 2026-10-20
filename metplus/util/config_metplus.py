@@ -21,12 +21,14 @@ from pathlib import Path
 import uuid
 
 from .constants import RUNTIME_CONFS, MISSING_DATA_VALUE
+from .exceptions import MPWarningError
 from .string_template_substitution import do_string_sub
 from .string_manip import getlist, remove_quotes
 from .string_manip import validate_thresholds, find_indices_in_config_section
 from .system_util import mkdir_p
 from .config_util import is_loop_by_init
 from .config_validate import validate_field_info_configs
+from .. import get_metplus_version
 
 """!Creates the initial METplus directory structure,
 loads information into each job.
@@ -86,6 +88,16 @@ _MAX_INTERP_DEPTH = 10
 
 # set all loggers to use UTC
 logging.Formatter.converter = time.gmtime
+
+# logging handler for exiting on warnings if EXIT_IF_WARN is True
+class ExitOnWarningHandler(logging.Handler):
+    def __init__(self):
+        super().__init__(level=logging.WARNING)
+
+    def emit(self, record):
+        if record.levelno == logging.WARNING:
+            self.format(record)
+            raise MPWarningError()
 
 
 def setup(args, base_confs=None):
@@ -272,6 +284,15 @@ def launch(config_list):
     with open(final_conf, 'wt') as file_handle:
         config.write(file_handle)
 
+    # warn if using a development version. This must occur before the
+    # EXIT_IF_WARN handler is added so it does not cause the run to exit
+    _warn_if_dev_version(config.logger)
+
+    # add warning handler to exit when a warning occurs if EXIT_IF_WARN is True
+    if config.getbool('config', 'EXIT_IF_WARN', False):
+        warning_handler = ExitOnWarningHandler()
+        config.logger.addHandler(warning_handler)
+
     return config
 
 
@@ -319,6 +340,31 @@ def _set_logvars(config):
 
     # set LOG_METPLUS with timestamp substituted
     config.set('config', 'LOG_METPLUS', metplus_log)
+
+
+def _warn_if_dev_version(logger, version=None):
+    """!Log a warning if the METplus version is a development version, which
+    is indicated by a version number that ends with -dev, e.g. 13.0.0-rc1-dev
+    is development towards 13.0.0-rc1.
+
+        @param logger logger to write the warning
+        @param version METplus version number to check. Reads from
+         metplus/VERSION if not set (None)
+        @returns True if version is a development version, False otherwise
+    """
+    if version is None:
+        version = get_metplus_version()
+
+    if not version.endswith('-dev'):
+        return False
+
+    release = version.removesuffix('-dev')
+    logger.warning(f'Running a development version of METplus (v{version}) '
+                   f'that is working towards the v{release} release. '
+                   'Development versions may contain incomplete or '
+                   'untested features and should not be used for '
+                   'production.')
+    return True
 
 
 def get_logger(config):
@@ -1010,7 +1056,7 @@ class METplusConfig(object):
         @returns Name of first METplus config name in list that is set in the
         METplusConfig object. None if none keys in the list are set.
         """
-        if not isinstance(mp_config, list):
+        if isinstance(mp_config, str):
             mp_configs = [mp_config]
         else:
             mp_configs = mp_config

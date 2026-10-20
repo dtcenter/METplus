@@ -1,82 +1,84 @@
-{"name": "alert: NEED ACCOUNT KEY","color": "ffff33","description": "Need to assign an account key to this issue"}
-{"name": "alert: NEED MORE DEFINITION","color": "ffff33","description": "Not yet actionable, additional definition required"}
-{"name": "alert: NEED CYCLE ASSIGNMENT","color": "ffff33","description": "Need to assign to a release development cycle"}
-{"name": "component: CI/CD","color": "1d76db","description": "Continuous integration and deployment issues"}
-{"name": "component: build process","color": "1d76db","description": "Build process issue"}
-{"name": "component: code cleanup","color": "1d76db","description": "Code cleanup and maintenance issue"}
-{"name": "component: documentation","color": "1d76db","description": "Documentation issue"}
-{"name": "component: external dependency","color": "1d76db","description": "External dependency issue"}
-{"name": "component: code optimization","color": "1d76db","description": "Code optimization issue"}
-{"name": "component: input data","color": "1d76db","description": "Input data issue"}
-{"name": "component: release engineering","color": "1d76db","description": "Release engineering issue"}
-{"name": "component: repository maintenance","color": "1d76db","description": "Repository maintenance issue"}
-{"name": "component: testing","color": "1d76db","description": "Software testing issue"}
-{"name": "component: training","color": "1d76db","description": "Training issue"}
-{"name": "component: user support","color": "1d76db","description": "User support issue"}
-{"name": "pull request: MODIFIES CONFIG OPTIONS","color": "c2e0c6","description": "Adds new or modifies existing configuration options"}
-{"name": "pull request: MODIFIES OUTPUT DATA","color": "c2e0c6","description": "Modifies existing output data values"}
-{"name": "pull request: MODIFIES OUTPUT FORMAT","color": "c2e0c6","description": "Adds new or modifies existing output file formats"}
-{"name": "priority: blocker","color": "b60205","description": "Blocker"}
-{"name": "priority: high","color": "ed2939","description": "High Priority"}
-{"name": "priority: low","color": "cce88d","description": "Low Priority"}
-{"name": "priority: medium","color": "f8de7e","description": "Medium Priority"}
-{"name": "priority: bold for release notes","color": "ededed","description": "Issue should be bolded in release notes"}
-{"name": "reporting: DTC AF METplus","color": "fbca04","description": "Air Force METplus Project"}
-{"name": "reporting: DTC Benchmarking","color": "fbca04","description": "DTC Benchmarking T&E Project"}
-{"name": "reporting: DTC NCAR Base","color": "fbca04","description": "NCAR Base DTC Project"}
-{"name": "reporting: DTC NOAA BASE","color": "fbca04","description": "NOAA Office of Atmospheric Research DTC Project"}
-{"name": "reporting: DTC NOAA Base RRFS","color": "fbca04","description": "NOAA Base RRFS DTC Project"}
-{"name": "reporting: DTC NOAA EPIC","color": "fbca04","description": "NOAA Earth Prediction Innovation Center Project"}
-{"name": "reporting: DTC NOAA OAR","color": "fbca04","description": "NOAA Office of Atmospheric Research DTC Project"}
-{"name": "reporting: DTC NOAA R2O","color": "fbca04","description": "NOAA Research to Operations DTC Project"}
-{"name": "reporting: DTC R2O RRFS","color": "fbca04","description": "Research to Operations RRFS DTC Project"}
-{"name": "reporting: HSUP 1-3a","color": "fbca04","description": "Hurricane Supplemental Project 1-3a"}
-{"name": "reporting: HSUP 4-1b","color": "fbca04","description": "Hurricane Supplemental Project 4-1b"}
-{"name": "reporting: NRL METplus","color": "fbca04","description": "Naval Research Laboratory METplus Project"}
-{"name": "requestor: Army/ARL","color": "3101c1","description": "United States Army Research Laboratory"}
-{"name": "requestor: Australian BOM","color": "3101c1","description": "Australian Bureau of Meteorology"}
-{"name": "requestor: Community","color": "3101c1","description": "General Community"}
-{"name": "requestor: CSU/CIRA","color": "3101c1","description": "Colorado State University, Cooperative Institute for Research in the Atmosphere"}
-{"name": "requestor: DTC/AF V&V","color": "3101c1","description": "Air Force Verification and Validation Project"}
-{"name": "requestor: DTC/Containers","color": "3101c1","description": "DTC Containers and Cloud Computing Project"}
-{"name": "requestor: DTC/Ensembles","color": "3101c1","description": "DTC Ensembles Team"}
-{"name": "requestor: DTC/MRW","color": "3101c1","description": "DTC Medium Range Weather T&E"}
-{"name": "requestor: DTC/PAS","color": "3101c1","description": "DTC Physics Across Scales T&E"}
-{"name": "requestor: DTC/RRFS T&E","color": "3101c1","description": "DTC RRFS T&E"}
-{"name": "requestor: DTC/SRW","color": "3101c1","description": "DTC Short Range Weather T&E"}
-{"name": "requestor: DTC/T&E","color": "3101c1","description": "General DTC Testing and Evaluation work"}
-{"name": "requestor: NASA/CCMC","color": "3101c1","description": "NASA Community Coordinated Modeling Center"}
-{"name": "requestor: NASA/other","color": "3101c1","description": "NASA, not otherwise specified"}
-{"name": "requestor: NCAR","color": "3101c1","description": "National Center for Atmospheric Research"}
-{"name": "requestor: NCAR/RAL","color": "3101c1","description": "NCAR Research Applications Laboratory"}
-{"name": "requestor: NCAR/MMM","color": "3101c1","description": "NCAR Meso and Microscale Meteorology Laboratory"}
-{"name": "requestor: NCAR/SIMA","color": "3101c1","description": "NCAR System for Integrated Modeling of the Atmosphere"}
-{"name": "requestor: NOAA/CPC","color": "3101c1","description": "NOAA Climate Prediction Center"}
-{"name": "requestor: NOAA/EMC","color": "3101c1","description": "NOAA Environmental Modeling Center"}
-{"name": "requestor: NOAA/EPIC","color": "3101c1","description": "NOAA Earth Prediction Innovation Center"}
-{"name": "requestor: NOAA/GSL","color": "3101c1","description": "NOAA Global Systems Laboratory"}
-{"name": "requestor: NOAA/HFIP","color": "3101c1","description": "NOAA Hurricane Forecast Improvement Project"}
-{"name": "requestor: NOAA/MDL","color": "3101c1","description": "NOAA Meteorological Development Laboratory"}
-{"name": "requestor: NOAA/NHC","color": "3101c1","description": "NOAA National Hurricane Center"}
-{"name": "requestor: NOAA/NSSL","color": "3101c1","description": "NOAA National Severe Storms Laboratory"}
-{"name": "requestor: NOAA/NWS","color": "3101c1","description": "NOAA National Weather Service"}
-{"name": "requestor: NOAA/OPC","color": "3101c1","description": "NOAA Ocean Prediction Center"}
-{"name": "requestor: NOAA/other","color": "3101c1","description": "NOAA Laboratory, not otherwise specified"}
-{"name": "requestor: NOAA/PSD","color": "3101c1","description": "NOAA Physical Sciences Laboratory"}
-{"name": "requestor: NOAA/SWPC","color": "3101c1","description": "NOAA Space Weather Prediction Center"}
-{"name": "requestor: NOAA/WPC","color": "3101c1","description": "NOAA Weather Prediction Center"}
-{"name": "requestor: Navy/NRL","color": "3101c1","description": "Naval Research Laboratory"}
-{"name": "requestor: Navy/FNMOC","color": "3101c1","description": "Navy Fleet Numerical Meteorology and Oceanography Center"}
-{"name": "requestor: METplus Team","color": "3101c1","description": "METplus Development Team"}
-{"name": "requestor: UK Met Office","color": "3101c1","description": "United Kingdom Met Office"}
-{"name": "requestor: University/other","color": "3101c1","description": "University Collaborator, not otherwise specified"}
-{"name": "requestor: University/SBU","color": "3101c1","description": "Stony Brook University"}
-{"name": "requestor: University/UIUC","color": "3101c1","description": "University of Illinois, Urbana-Champaign"}
-{"name": "requestor: USAF","color": "3101c1","description": "United States Air Force"}
-{"name": "required: FOR DEVELOPMENT RELEASE", "color": "e400f5", "description": "Required to be completed in the development release for the assigned project"}
-{"name": "required: FOR OFFICIAL RELEASE", "color": "e400f5", "description": "Required to be completed in the official release for the assigned milestone"}
-{"name": "type: bug","color": "e5bf7e","description": "Fix something that is not working"}
-{"name": "type: enhancement","color": "e5bf7e","description": "Improve something that it is currently doing"}
-{"name": "type: new feature","color": "e5bf7e","description": "Make it do something new"}
-{"name": "type: sub-issue","color": "e5bf7e","description": "Break an issue down into smaller parts"}
-{"name": "type: task","color": "e5bf7e","description": "An actionable item of work"}
+{"name": "alert: NEED ACCOUNT KEY","color": "ffff33","description": "Need to assign an account key to this issue","archived": false}
+{"name": "alert: NEED MORE DEFINITION","color": "ffff33","description": "Not yet actionable, additional definition required","archived": false}
+{"name": "alert: NEED CYCLE ASSIGNMENT","color": "ffff33","description": "Need to assign to a release development cycle","archived": false}
+{"name": "component: CI/CD","color": "1d76db","description": "Continuous integration and deployment issues","archived": false}
+{"name": "component: build process","color": "1d76db","description": "Build process issue","archived": false}
+{"name": "component: code cleanup","color": "1d76db","description": "Code cleanup and maintenance issue","archived": false}
+{"name": "component: documentation","color": "1d76db","description": "Documentation issue","archived": false}
+{"name": "component: external dependency","color": "1d76db","description": "External dependency issue","archived": false}
+{"name": "component: code optimization","color": "1d76db","description": "Code optimization issue","archived": false}
+{"name": "component: input data","color": "1d76db","description": "Input data issue","archived": false}
+{"name": "component: release engineering","color": "1d76db","description": "Release engineering issue","archived": false}
+{"name": "component: repository maintenance","color": "1d76db","description": "Repository maintenance issue","archived": false}
+{"name": "component: testing","color": "1d76db","description": "Software testing issue","archived": false}
+{"name": "component: training","color": "1d76db","description": "Training issue","archived": false}
+{"name": "component: user support","color": "1d76db","description": "User support issue","archived": false}
+{"name": "pull request: MODIFIES CONFIG OPTIONS","color": "c2e0c6","description": "Adds new or modifies existing configuration options","archived": false}
+{"name": "pull request: MODIFIES OUTPUT DATA","color": "c2e0c6","description": "Modifies existing output data values","archived": false}
+{"name": "pull request: MODIFIES OUTPUT FORMAT","color": "c2e0c6","description": "Adds new or modifies existing output file formats","archived": false}
+{"name": "priority: blocker","color": "b60205","description": "Blocker","archived": false}
+{"name": "priority: high","color": "ed2939","description": "High Priority","archived": false}
+{"name": "priority: low","color": "cce88d","description": "Low Priority","archived": false}
+{"name": "priority: medium","color": "f8de7e","description": "Medium Priority","archived": false}
+{"name": "priority: bold for release notes","color": "ededed","description": "Issue should be bolded in release notes","archived": false}
+{"name": "reporting: DTC AF METplus","color": "fbca04","description": "Air Force METplus Project","archived": false}
+{"name": "reporting: DTC Benchmarking","color": "fbca04","description": "DTC Benchmarking T&E Project","archived": false}
+{"name": "reporting: DTC NCAR Base","color": "fbca04","description": "NCAR Base DTC Project","archived": false}
+{"name": "reporting: DTC NOAA BASE","color": "fbca04","description": "NOAA Office of Atmospheric Research DTC Project","archived": false}
+{"name": "reporting: DTC NOAA Base RRFS","color": "fbca04","description": "NOAA Base RRFS DTC Project","archived": false}
+{"name": "reporting: DTC NOAA EPIC","color": "fbca04","description": "NOAA Earth Prediction Innovation Center Project","archived": false}
+{"name": "reporting: DTC NOAA OAR","color": "fbca04","description": "NOAA Office of Atmospheric Research DTC Project","archived": false}
+{"name": "reporting: DTC NOAA R2O","color": "fbca04","description": "NOAA Research to Operations DTC Project","archived": false}
+{"name": "reporting: DTC R2O RRFS","color": "fbca04","description": "Research to Operations RRFS DTC Project","archived": false}
+{"name": "reporting: HSUP 1-3a","color": "fbca04","description": "Hurricane Supplemental Project 1-3a","archived": false}
+{"name": "reporting: HSUP 4-1b","color": "fbca04","description": "Hurricane Supplemental Project 4-1b","archived": false}
+{"name": "reporting: NRL METplus","color": "fbca04","description": "Naval Research Laboratory METplus Project","archived": false}
+{"name": "requestor: Army/ARL","color": "3101c1","description": "United States Army Research Laboratory","archived": false}
+{"name": "requestor: Australian BOM","color": "3101c1","description": "Australian Bureau of Meteorology","archived": false}
+{"name": "requestor: Community","color": "3101c1","description": "General Community","archived": false}
+{"name": "requestor: CSU/CIRA","color": "3101c1","description": "Colorado State University, Cooperative Institute for Research in the Atmosphere","archived": false}
+{"name": "requestor: DTC/AF V&V","color": "3101c1","description": "Air Force Verification and Validation Project","archived": false}
+{"name": "requestor: DTC/Containers","color": "3101c1","description": "DTC Containers and Cloud Computing Project","archived": false}
+{"name": "requestor: DTC/Ensembles","color": "3101c1","description": "DTC Ensembles Team","archived": false}
+{"name": "requestor: DTC/MRW","color": "3101c1","description": "DTC Medium Range Weather T&E","archived": false}
+{"name": "requestor: DTC/PAS","color": "3101c1","description": "DTC Physics Across Scales T&E","archived": false}
+{"name": "requestor: DTC/RRFS T&E","color": "3101c1","description": "DTC RRFS T&E","archived": false}
+{"name": "requestor: DTC/SRW","color": "3101c1","description": "DTC Short Range Weather T&E","archived": false}
+{"name": "requestor: DTC/T&E","color": "3101c1","description": "General DTC Testing and Evaluation work","archived": false}
+{"name": "requestor: NASA/CCMC","color": "3101c1","description": "NASA Community Coordinated Modeling Center","archived": false}
+{"name": "requestor: NASA/other","color": "3101c1","description": "NASA, not otherwise specified","archived": false}
+{"name": "requestor: NCAR","color": "3101c1","description": "National Center for Atmospheric Research","archived": false}
+{"name": "requestor: NCAR/RAL","color": "3101c1","description": "NCAR Research Applications Laboratory","archived": false}
+{"name": "requestor: NCAR/MMM","color": "3101c1","description": "NCAR Meso and Microscale Meteorology Laboratory","archived": false}
+{"name": "requestor: NCAR/SIMA","color": "3101c1","description": "NCAR System for Integrated Modeling of the Atmosphere","archived": false}
+{"name": "requestor: NOAA/CPC","color": "3101c1","description": "NOAA Climate Prediction Center (Archived 10/2026: Updated to NOAA/WPC)","archived": true}
+{"name": "requestor: NOAA/EMC","color": "3101c1","description": "NOAA Environmental Modeling Center (Archived 10/2026: Updated to NOAA/OMD)","archived": true}
+{"name": "requestor: NOAA/EPIC","color": "3101c1","description": "NOAA Earth Prediction Innovation Center","archived": false}
+{"name": "requestor: NOAA/GSL","color": "3101c1","description": "NOAA Global Systems Laboratory","archived": false}
+{"name": "requestor: NOAA/HFIP","color": "3101c1","description": "NOAA Hurricane Forecast Improvement Project","archived": false}
+{"name": "requestor: NOAA/MDL","color": "3101c1","description": "NOAA Meteorological Development Laboratory","archived": false}
+{"name": "requestor: NOAA/NHC","color": "3101c1","description": "NOAA National Hurricane Center","archived": false}
+{"name": "requestor: NOAA/NSSL","color": "3101c1","description": "NOAA National Severe Storms Laboratory","archived": false}
+{"name": "requestor: NOAA/NWS","color": "3101c1","description": "NOAA National Weather Service","archived": false}
+{"name": "requestor: NOAA/OMD","color": "3101c1","description": "NOAA Office of Modeling and Development","archived": false}
+{"name": "requestor: NOAA/OPC","color": "3101c1","description": "NOAA Ocean Prediction Center (Archived 10/2026: Updated to NOAA/OTC)","archived": true}
+{"name": "requestor: NOAA/OTC","color": "3101c1","description": "NOAA Ocean and Tsunami Center","archived": false}
+{"name": "requestor: NOAA/other","color": "3101c1","description": "NOAA Laboratory, not otherwise specified","archived": false}
+{"name": "requestor: NOAA/PSD","color": "3101c1","description": "NOAA Physical Sciences Laboratory","archived": false}
+{"name": "requestor: NOAA/SWPC","color": "3101c1","description": "NOAA Space Weather Prediction Center","archived": false}
+{"name": "requestor: NOAA/WPC","color": "3101c1","description": "NOAA Weather Prediction Center","archived": false}
+{"name": "requestor: Navy/NRL","color": "3101c1","description": "Naval Research Laboratory","archived": false}
+{"name": "requestor: Navy/FNMOC","color": "3101c1","description": "Navy Fleet Numerical Meteorology and Oceanography Center","archived": false}
+{"name": "requestor: METplus Team","color": "3101c1","description": "METplus Development Team","archived": false}
+{"name": "requestor: UK Met Office","color": "3101c1","description": "United Kingdom Met Office","archived": false}
+{"name": "requestor: University/other","color": "3101c1","description": "University Collaborator, not otherwise specified","archived": false}
+{"name": "requestor: University/SBU","color": "3101c1","description": "Stony Brook University","archived": false}
+{"name": "requestor: University/UIUC","color": "3101c1","description": "University of Illinois, Urbana-Champaign","archived": false}
+{"name": "requestor: USAF","color": "3101c1","description": "United States Air Force","archived": false}
+{"name": "required: FOR DEVELOPMENT RELEASE", "color": "e400f5", "description": "Required to be completed in the development release for the assigned project","archived": false}
+{"name": "required: FOR OFFICIAL RELEASE", "color": "e400f5", "description": "Required to be completed in the official release for the assigned milestone","archived": false}
+{"name": "type: bug","color": "e5bf7e","description": "Fix something that is not working","archived": false}
+{"name": "type: enhancement","color": "e5bf7e","description": "Improve something that it is currently doing","archived": false}
+{"name": "type: new feature","color": "e5bf7e","description": "Make it do something new","archived": false}
+{"name": "type: sub-issue","color": "e5bf7e","description": "Break an issue down into smaller parts","archived": false}
+{"name": "type: task","color": "e5bf7e","description": "An actionable item of work","archived": false}

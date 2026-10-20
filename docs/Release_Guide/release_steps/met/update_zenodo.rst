@@ -14,7 +14,7 @@ Update the DOI for this official release.
     - Navigate to the MET Zenodo software release page. This can be found on the
       `MET GitHub repository <https://github.com/dtcenter/MET>`_.
       Scroll down to the README file and click on the
-      `MET Digital Object Identifier (DOI) <https://doi.org/10.5281/zenodo.5565322>`_.
+      `MET Digital Object Identifier (DOI) <https://zenodo.org/records/17602755>`_.
 
     - Click the green **New version** button on the top right.
 

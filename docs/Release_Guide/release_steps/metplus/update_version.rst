@@ -10,7 +10,7 @@ Update Version Number for Release
     (in earlier releases, the file was located at docs/version or doc/version).
 
   * In the develop branch, the version should match the upcoming release with -dev
-    added to the end like X.Y.Z-betaN-dev, i.e. 4.0.0-beta1-dev
+    added to the end like X.Y.Z-betaN-dev, i.e., 4.0.0-beta1-dev
 
   * Remove **-dev** from the version number so that it matches the release you are creating.
 

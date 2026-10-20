@@ -25,7 +25,7 @@ Access restrictions
   Access to GES DISC data requires all users to be registered with the Earthdata Login system.
 
 Spatial resolution, grid, or coverage
-  Full global coverage on at 0.25 degree grid
+  Full global coverage on a 0.25 degree grid
 
 Temporal resolution
   1 day

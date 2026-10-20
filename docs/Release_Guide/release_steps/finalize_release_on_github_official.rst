@@ -17,9 +17,9 @@ Return to GitHub to finalize the details of this release.
 
     * Close the current milestone.
 
-    * Create a new milestone for the first bugfix release (e.g. first vX.Y.1 (bugfix) release).
+    * Create a new milestone for the first bugfix release (e.g., first vX.Y.1 (bugfix) release).
 
-    * If necessary, create a new milestone for the next official release (e.g. next vX.Y.Z release).
+    * If necessary, create a new milestone for the next official release (e.g., next vX.Y.Z release).
 
   * Update projects:
 
@@ -31,13 +31,3 @@ Return to GitHub to finalize the details of this release.
 
     * Remove any remaining stale development branches from the new release.
 
-    * Update the repository settings by resetting the *Default branch* to the new main_vX.Y branch:
-
-    .. parsed-literal::
-
-       https://github.com/dtcenter/|projectRepo|
-       -> Settings
-       -> Scroll down to the *Default branch* section
-       -> Click the stacked arrows button next to default branch name
-       -> Select the new default branch from the dropdown list
-       -> Click the *Update* button

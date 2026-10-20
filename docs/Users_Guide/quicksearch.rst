@@ -179,7 +179,7 @@ Use Cases by Feature:
    | `Series by Forecast Lead <../search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`_
    | `Times from Template <../search.html?q=TimesFromTemplateUseCase&check_keywords=yes&area=default>`_
    | `Tropical Cyclone <../search.html?q=TropicalCycloneUseCase&check_keywords=yes&area=default>`_
-   | `validation of models or analyses <../search.html?q=validationusecase&check_keywords=yes&area=default>`_
+   | `Validation of Models or Analyses <../search.html?q=ValidationUseCase&check_keywords=yes&area=default>`_
    | `Unstructured Grid <../search.html?q=UnstructuredGridUseCase&check_keywords=yes&area=default>`_
    | `User Defined Script <../search.html?q=UserScriptUseCase&check_keywords=yes&area=default>`_
 

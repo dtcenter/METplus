@@ -96,7 +96,7 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.co
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf
+# i.e., parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf
@@ -158,7 +158,7 @@ model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsOSTIA_iceCover.co
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for thisIce use case will be found in 20210305 (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in 20210305 (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # * grid_stat_north_000000L_20210305_120000V_cnt.txt

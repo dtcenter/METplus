@@ -95,7 +95,7 @@ def get_val_check_qc(nc_obj, field_name, idx_p, idx_l=None, error_max=None):
         if err:
             err = err[idx_p] if idx_l is None else err[idx_p][idx_l]
             if not is_masked(err) and err > error_max:
-                print(f"Skip {data_str} {field_name}_ERROR > {error_max}")
+                print(f"Skip {data_str} uncertainty value > {error_max}")
                 return None
 
     return numpy.float64(field)

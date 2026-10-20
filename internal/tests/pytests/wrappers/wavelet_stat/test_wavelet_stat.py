@@ -297,12 +297,19 @@ def test_wavelet_stat_is_prob(metplus_config, config_overrides, expected_values)
         ({'OBS_WAVELET_STAT_FILE_TYPE': 'NETCDF_NCCF', },
          {'METPLUS_OBS_FILE_TYPE': 'file_type = NETCDF_NCCF;'}),
 
+        ({'WAVELET_STAT_TIME_OFFSET_WARN': 3},
+         {'METPLUS_TIME_OFFSET_WARN': 'time_offset_warn = 3;'}),
+        ({'TIME_OFFSET_WARN': 2},
+         {'METPLUS_TIME_OFFSET_WARN': 'time_offset_warn = 2;'}),
+        ({'TIME_OFFSET_WARN': 2, 'WAVELET_STAT_TIME_OFFSET_WARN': 4},
+         {'METPLUS_TIME_OFFSET_WARN': 'time_offset_warn = 4;'}),
+        # legacy config variable name
         ({'WAVELET_STAT_TIME_OFFSET_WARNING': 3},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
+         {'METPLUS_TIME_OFFSET_WARN': 'time_offset_warn = 3;'}),
         ({'TIME_OFFSET_WARNING': 2},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
-        ({'TIME_OFFSET_WARNING': 2, 'WAVELET_STAT_TIME_OFFSET_WARNING': 4},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
+         {'METPLUS_TIME_OFFSET_WARN': 'time_offset_warn = 2;'}),
+        ({'TIME_OFFSET_WARNING': 2, 'WAVELET_STAT_TIME_OFFSET_WARN': 4},
+         {'METPLUS_TIME_OFFSET_WARN': 'time_offset_warn = 4;'}),
     ]
 )
 @pytest.mark.wrapper_b
@@ -357,3 +364,31 @@ def test_get_config_file(metplus_config):
     config.set('config', 'WAVELET_STAT_CONFIG_FILE', fake_config_name)
     wrapper = WaveletStatWrapper(config)
     assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
+
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_warnings', [
+        ({'WAVELET_STAT_TIME_OFFSET_WARN': 3}, []),
+        ({'TIME_OFFSET_WARN': 3}, []),
+        ({'WAVELET_STAT_TIME_OFFSET_WARNING': 3},
+         ['WAVELET_STAT_TIME_OFFSET_WARNING is deprecated. '
+          'Please use WAVELET_STAT_TIME_OFFSET_WARN instead.']),
+        ({'TIME_OFFSET_WARNING': 3},
+         ['TIME_OFFSET_WARNING is deprecated. '
+          'Please use TIME_OFFSET_WARN instead.']),
+    ]
+)
+@pytest.mark.wrapper_b
+def test_wavelet_stat_time_offset_deprecated(metplus_config, config_overrides,
+                                             expected_warnings):
+    config = metplus_config
+    set_minimum_config_settings(config)
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    wrapper = WaveletStatWrapper(config)
+    assert wrapper.is_ok
+
+    warnings = [call.args[0] for call in config.logger.warning.call_args_list]
+    deprecated = [msg for msg in warnings if 'deprecated' in msg]
+    assert deprecated == expected_warnings

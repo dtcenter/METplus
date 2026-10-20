@@ -1,10 +1,17 @@
+c_compiler_version:            # [unix]
+  - 15                         # [linux]
+  - 21                         # [osx]
+cxx_compiler_version:          # [unix]
+  - 15                         # [linux]
+  - 21                         # [osx]
+fortran_compiler_version:      # [unix]
+  - 15                         # [unix]
 c_stdlib:
   - sysroot                    # [linux]
   - macosx_deployment_target   # [osx]
   - vs                         # [win]
 c_stdlib_version:              # [unix]
   - 2.17                       # [linux]
-  - 10.13                      # [osx and x86_64]
-  - 11.0                       # [osx and arm64]
+  - 11.0                       # [osx]
 python:
-  - 3.10
+  - 3.14

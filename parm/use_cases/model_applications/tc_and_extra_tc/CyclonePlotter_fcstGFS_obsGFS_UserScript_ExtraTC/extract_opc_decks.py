@@ -113,7 +113,7 @@ for storm_name in all_storms:
     #    storm_bdeck.to_csv(bdeck_path, header=False, index=False)
         wrote_b = True
     #else:
-    #    print(f"BDECK for {storm_name} is empty. Skipping")
+    #    print(f"BDECK for {storm_name} has no data. Skipping")
 
     # filter out adeck data for given storm
     storm_a_match = adeck['STORMNAME'].apply(is_equal,
@@ -129,7 +129,7 @@ for storm_name in all_storms:
         wrote_a = True
     else:
         if debug:
-            print(f"ADECK for {storm_name} is empty. Skipping")
+            print(f"ADECK for {storm_name} has no data. Skipping")
 
     if wrote_a or wrote_b:
         index += 1

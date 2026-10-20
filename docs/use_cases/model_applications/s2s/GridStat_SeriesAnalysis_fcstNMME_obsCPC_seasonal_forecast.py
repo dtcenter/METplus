@@ -46,11 +46,11 @@ model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast
 #  conditions. Rather, seasonal forecasting focuses more on the statistical properties
 #  over a period of time, be it a 10-day interval, a month, or even a three month season.
 #  The verification of a new, forward looking seasonal forecast requires assessments of
-#  the forecast systems ability to appropriately forecast that longrange behavior of the
+#  the forecast system's ability to appropriately forecast that long-range behavior of the
 #  weather (here, only atmospheric verification is considered, but the same concept would
-#  apply ocean or any other longrange forecast system). Because weather properties
+#  apply to ocean or any other long-range forecast system). Because weather properties
 #  commonly change significantly over the course of the season, samples to verify the
-#  prognostic system can not be taken from the immediate days, weeks of months before the
+#  prognostic system can not be taken from the immediate days, weeks or months before the
 #  forecast. Hindcasting in the seasonal context requires a complete set of forecasts
 #  based on the same season but during past years. A current July-1 2019 forecast, therefore
 #  requires many July-1 forecasts for as many years in the past as possible, given that
@@ -58,7 +58,7 @@ model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast
 #  future. Operational centers offer hindcasts, also sometimes called "re-forecasts", with
 #  the current, most up-to-date forecast system. MET and METplus therefore need to be able
 #  to extract the appropriate collection of past forecasts. This includes the identification
-#  of the same Julian-day-of-Year init-dates from forecasts cycles from past years, and then
+#  of the same Julian-day-of-Year init-dates from forecast cycles from past years, and then
 #  identify the different lead-times of interest generally ranging from one to 6 or more
 #  months.
 #
@@ -69,9 +69,9 @@ model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast
 #  are representing a whole period of time. The verification then focuses on comparisons
 #  of these derivatives of the forecast simulations. In practice, a further step might be
 #  added prior to, or as a key step during verification: the formation of anomalies of the
-#  forecasts compared to long-term expected averages. A rainfall forecasts can therefore
+#  forecasts compared to long-term expected averages. A rainfall forecast can therefore
 #  be verified in both absolute as well as anomaly context where some analyses might focus
-#  on extreme rainfall threshold exeedance of, for example, 500mm per month. At the same
+#  on extreme rainfall threshold exceedance of, for example, 500mm per month. At the same
 #  time, the same forecast might be verified for the 3 months rainfall average in comparison
 #  with the long-term expected mean. The verification might then assess how well the system
 #  can foresee the occurrence of below average rainfall over the season, and possibly some
@@ -87,11 +87,11 @@ model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast
 #  craft conditional approaches.
 #
 #  Overall, seasonal forecasts don't require a new verification approach. It does however
-#  put demands on the flexibility of dealing with a significantly exapanded range of the
+#  put demands on the flexibility of dealing with a significantly expanded range of the
 #  time variable as well as logistic infrastructure to select appropriate hindcast samples
 #  from long hindcast or re-forecast archives. Scientifically, the challenges are mostly
-#  restricted in the appropriate formulation of verificaation questions that address
-#  specific forecast objectives. Compared to weather forecastsing, seasonal forecasts need
+#  restricted in the appropriate formulation of verification questions that address
+#  specific forecast objectives. Compared to weather forecasting, seasonal forecasts need
 #  to draw their skill from slowly changing components in the coupled Earth system while
 #  acknowledging the high-frequency noise of weather superposed on these 'climatologically'
 #  evolving background conditions. In many regions of the world, the noise might dominate
@@ -111,7 +111,7 @@ model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast
 # Datasets
 # --------
 #
-# All datasets are traditionally in netCDF format. Grids are either regular gaussian
+# All datasets are traditionally in netCDF format. Grids are either regular Gaussian
 # Latitude/Longitude grids or they are Lambert-conformal WRF grids.
 #
 # The forecast datasets contain weekly, monthly or seasonally integrated data. Here, the

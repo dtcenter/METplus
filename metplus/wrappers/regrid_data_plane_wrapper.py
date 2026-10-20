@@ -212,9 +212,10 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         # if there are any duplicates, clear list and build names using
         # input name and input level
         if len(output_names) != len(set(output_names)):
-            self.logger.warning("Duplicate output names found. "
-                                "Replacing output names to use "
-                                "{input_name}_{input_level} instead.")
+            self.logger.warning(
+                "Duplicate output names found. Replacing output names to use "
+                "{input_name}_{input_level} instead."
+            )
             output_names.clear()
             for field_info in var_list:
                 input_name = field_info[f'{data_type.lower()}_name']

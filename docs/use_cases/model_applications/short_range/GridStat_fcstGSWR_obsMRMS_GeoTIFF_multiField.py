@@ -18,7 +18,7 @@ model_applications/marine_and_cryosphere/GridStat_fcstGSWR_obsMRMS_GeoTIFF_multi
 # This use case provides an example for utilizing Python Embedding to read
 # an unsupported file format into METplus and leverage the verification 
 # capabilities. GeoTIFF format forecasts are read in via Python and verified against 
-# the MRMS dataset, providing useful evaulation statistics for a numerical forecast that
+# the MRMS dataset, providing useful evaluation statistics for a numerical forecast that
 # previously would not have been able to utilize METplus.
 
 ##############################################################################
@@ -90,7 +90,7 @@ model_applications/marine_and_cryosphere/GridStat_fcstGSWR_obsMRMS_GeoTIFF_multi
 #
 # METplus first loads all of the configuration files found in parm/metplus_config, 
 # then it loads any configuration files passed to METplus via the command line, 
-# i.e. parm/use_cases/model_applications/short_range/GridStat_fcstGSWR_obsMRMS_GeoTIFF_multiField.conf
+# i.e., parm/use_cases/model_applications/short_range/GridStat_fcstGSWR_obsMRMS_GeoTIFF_multiField.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/GridStat_fcstGSWR_obsMRMS_GeoTIFF_multiField.conf
