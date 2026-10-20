@@ -2,7 +2,7 @@
 PointStat: MPAS UGRID
 ====================================
 
-model_applications/unstructured_grids/PointStat_fcstMPAS_UGRID_obsMESONET.conf
+model_applications/unstructured_grids/PointStat_fcstMPAS_UGRID_obsMESONET_PyEmbed_OK12km.conf
 
 """
 ##############################################################################
@@ -87,10 +87,10 @@ model_applications/unstructured_grids/PointStat_fcstMPAS_UGRID_obsMESONET.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/unstructured_grids/PointStat_fcstMPAS_UGRID_obsMESONET.conf
+# i.e. parm/use_cases/model_applications/unstructured_grids/PointStat_fcstMPAS_UGRID_obsMESONET_PyEmbed_OK12km.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/unstructured_grids/PointStat_fcstMPAS_UGRID_obsMESONET.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/unstructured_grids/PointStat_fcstMPAS_UGRID_obsMESONET_PyEmbed_OK12km.conf
 
 ##############################################################################
 # MET Configuration
@@ -114,10 +114,10 @@ model_applications/unstructured_grids/PointStat_fcstMPAS_UGRID_obsMESONET.conf
 #
 # This use case uses a Python embedding script to read input data.
 #
-# .. dropdown:: parm/use_cases/model_applications/unstructured_grids/PointStat_fcstMPAS_UGRID_obsMESONET/read_OK_mesonet.py
+# .. dropdown:: parm/use_cases/model_applications/unstructured_grids/PointStat_fcstMPAS_UGRID_obsMESONET_PyEmbed_OK12km/read_OK_mesonet.py
 #
 #   .. highlight:: python
-#   .. literalinclude:: ../../../../parm/use_cases/model_applications/unstructured_grids/PointStat_fcstMPAS_UGRID_obsMESONET/read_OK_mesonet.py
+#   .. literalinclude:: ../../../../parm/use_cases/model_applications/unstructured_grids/PointStat_fcstMPAS_UGRID_obsMESONET_PyEmbed_OK12km/read_OK_mesonet.py
 #
 # For more information on the basic requirements to utilize Python Embedding in METplus, 
 # please refer to the MET User’s Guide section on
@@ -136,7 +136,7 @@ model_applications/unstructured_grids/PointStat_fcstMPAS_UGRID_obsMESONET.conf
 # Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired::
 #
-#   run_metplus.py /path/to/PointStat_fcstMPAS_UGRID_obsMESONET.conf /path/to/user_system.conf
+#   run_metplus.py /path/to/PointStat_fcstMPAS_UGRID_obsMESONET_PyEmbed_OK12km.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 
@@ -168,4 +168,4 @@ model_applications/unstructured_grids/PointStat_fcstMPAS_UGRID_obsMESONET.conf
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/unstructured_grids-PointStat_fcstMPAS_UGRID_obsMESONET.png'
+# sphinx_gallery_thumbnail_path = '_static/unstructured_grids-PointStat_fcstMPAS_UGRID_obsMESONET_PyEmbed_OK12km.png'

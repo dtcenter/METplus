@@ -2,7 +2,7 @@
 GridStat: MPAS UGRID
 ====================================
 
-model_applications/unstructured_grids/GridStat_fcstMPAS_UGRID_obsMRMS.conf
+model_applications/unstructured_grids/GridStat_fcstMPAS_UGRID_obsMRMS_OK12km.conf
 
 """
 ##############################################################################
@@ -87,10 +87,10 @@ model_applications/unstructured_grids/GridStat_fcstMPAS_UGRID_obsMRMS.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/unstructured_grids/GridStat_fcstMPAS_UGRID_obsMRMS.conf
+# i.e. parm/use_cases/model_applications/unstructured_grids/GridStat_fcstMPAS_UGRID_obsMRMS_OK12km.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/unstructured_grids/GridStat_fcstMPAS_UGRID_obsMRMS.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/unstructured_grids/GridStat_fcstMPAS_UGRID_obsMRMS_OK12km.conf
 
 ##############################################################################
 # MET Configuration
@@ -115,7 +115,7 @@ model_applications/unstructured_grids/GridStat_fcstMPAS_UGRID_obsMRMS.conf
 # Pass the use case configuration file to the run_metplus.py script along 
 # with any user-specific system configuration files if desired::
 #
-#   run_metplus.py /path/to/GridStat_fcstMPAS_UGRID_obsMRMS.conf /path/to/user_system.conf
+#   run_metplus.py /path/to/GridStat_fcstMPAS_UGRID_obsMRMS_OK12km.conf /path/to/user_system.conf
 #
 # See :ref:`running-metplus` for more information.
 
@@ -146,4 +146,4 @@ model_applications/unstructured_grids/GridStat_fcstMPAS_UGRID_obsMRMS.conf
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/unstructured_grids-GridStat_fcstMPAS_UGRID_obsMRMS.png'
+# sphinx_gallery_thumbnail_path = '_static/unstructured_grids-GridStat_fcstMPAS_UGRID_obsMRMS_OK12km.png'
