@@ -47,9 +47,9 @@ last_hour = last_hour[last_hour['STID'].isin(this_hour['STID'])]
 this_hour = this_hour.assign(FILTER='TRUE')
 
 #add columns to hold station lat/lon/elv info
-this_hour = this_hour.assign(LAT='0')
-this_hour = this_hour.assign(LON='0')
-this_hour = this_hour.assign(ELV='0')
+this_hour = this_hour.assign(LAT=0.0)
+this_hour = this_hour.assign(LON=0.0)
+this_hour = this_hour.assign(ELV=0.0)
 
 #do QA checks
 for index, rows in this_hour.iterrows():
