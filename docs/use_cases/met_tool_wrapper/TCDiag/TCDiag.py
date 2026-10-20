@@ -19,7 +19,7 @@ met_tool_wrapper/TCDiag/TCDiag.conf
 # output environmental diagnostics computed from callable Python scripts.
 #
 # The diagnostics are computed on a range-azimuth grid that follows the
-# projected storm track. For inputs, it uses 0.25 deg gridded GRIB files from the
+# projected storm track. For inputs, it uses 0.25 deg gridded GRIB files from
 # a retrospective reforecast of the Global Forecast System (GFS). For the track, it uses the
 # GFS's predicted track to ensure that the model's simulated storm doesn't
 # contaminate the diagnostics result as a result of the model's simulated
@@ -49,7 +49,7 @@ met_tool_wrapper/TCDiag/TCDiag.conf
 # **Track:** a-deck file (Automated Tropical Cyclone Forecast System format)
 #
 # **Location:** All of the input data required for this use case can be found
-# in the met_test sample data tarball. Click here to the METplus releases page
+# in the met_test sample data tarball. Click here to go to the METplus releases page
 # and download sample data for the appropriate release:
 # https://github.com/dtcenter/METplus/releases
 #
@@ -57,8 +57,8 @@ met_tool_wrapper/TCDiag/TCDiag.conf
 # value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
 # **Data source:** Users may obtain real-time data from the deterministic GFS runs from
-# NOAA's NOMADS server:
-# https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.YYYYMMDD/ZZ/atmos/
+# NOAA's `NOMADS server <https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/>`__:
+# ``https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/gfs.YYYYMMDD/ZZ/atmos/``
 # where YYYYMMDD is the date (4-digit year, 2-digit month, 2-digit day),
 # ZZ is the initialization hour of the desired model cycle (00, 06, 12, 18).
 

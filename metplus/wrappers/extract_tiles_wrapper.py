@@ -23,8 +23,8 @@ class ExtractTilesWrapper(LoopTimesWrapper):
     """! Takes tc-pairs data and regrids paired data to an n x m grid as
          specified in the config file.
     """
-    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
-    RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_FOR_EACH']
+    RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_PER_INIT_OR_VALID'
+    RUNTIME_FREQ_SUPPORTED = 'ALL'
 
     COLUMNS_OF_INTEREST = {
         'TC_STAT': [
@@ -154,6 +154,7 @@ class ExtractTilesWrapper(LoopTimesWrapper):
             overrides[f'{data_type}_{rdp}_OUTPUT_DIR'] = self.c_dict['OUTPUT_DIR']
 
         overrides[f'{rdp}_SKIP_IF_OUTPUT_EXISTS'] = self.c_dict['SKIP_IF_OUTPUT_EXISTS']
+        overrides[f'{rdp}_WARN_IF_DUPLICATE_OUTPUT'] = self.c_dict['WARN_IF_DUPLICATE_OUTPUT']
         overrides[f'{rdp}_ONCE_PER_FIELD'] = False
         overrides[f'{rdp}_MANDATORY'] = False
 

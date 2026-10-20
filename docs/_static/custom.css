@@ -29,3 +29,21 @@
 }
 
 
+
+/* Tables with the "wrap-table" class keep their fixed column widths and wrap
+   long text, rather than growing wide enough to need a horizontal scrollbar */
+.rst-content table.docutils.wrap-table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.rst-content table.docutils.wrap-table td,
+.rst-content table.docutils.wrap-table th {
+    white-space: normal;
+    word-wrap: break-word;
+}
+
+/* Keep inline code, such as option names, on a single line */
+.rst-content table.docutils.wrap-table code {
+    white-space: nowrap;
+}

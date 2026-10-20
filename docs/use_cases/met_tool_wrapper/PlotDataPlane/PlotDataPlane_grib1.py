@@ -18,7 +18,7 @@ met_tool_wrapper/PlotDataPlane/PlotDataPlane_grib1.conf
 #
 # | **Input:** Sample GRIB1 file
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
+# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to go to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
 # | **Data Source:** NAM
@@ -47,7 +47,7 @@ met_tool_wrapper/PlotDataPlane/PlotDataPlane_grib1.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PlotDataPlane/PlotDataPlane_grib1.conf
+# with the -c option, i.e., -c parm/use_cases/met_tool_wrapper/PlotDataPlane/PlotDataPlane_grib1.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PlotDataPlane/PlotDataPlane_grib1.conf

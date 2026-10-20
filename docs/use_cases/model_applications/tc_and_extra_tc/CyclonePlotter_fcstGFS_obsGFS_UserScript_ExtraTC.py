@@ -18,7 +18,7 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_Extr
 # Once this method is complete, a user-created extra TC track file
 # for the valid date of interest (YYYYMMDDHH) will have been created, 
 # paired up by TCPairs, and global storm tracks 
-# for the valid date of interest will be plotted by CyclonePlotter (PlateCaree projection)
+# for the valid date of interest will be plotted by CyclonePlotter (PlateCarree projection)
 
 ##############################################################################
 # Version Added
@@ -88,7 +88,7 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_Extr
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.conf
+# i.e., parm/use_cases/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.conf

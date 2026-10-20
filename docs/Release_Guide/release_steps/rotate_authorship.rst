@@ -17,11 +17,11 @@ for each official release.
     common format for citations.
 
   * The author list is typically found in the conf.py file in the documentation
-    directory, i.e. *docs/conf.py*.
+    directory, i.e., *docs/conf.py*.
     Most of the component repositories store the list of authors in a variable
     named **author_list**. Please ensure that changes to this list match the
     correct format listed above.
-    In the METplus repository, the conf.py file has variable named
+    In the METplus repository, the conf.py file has a variable named
     CURRENT_AUTHORS that is a list of the authors to rotate.
     To rotate, move the first item in the list to the end of the list.
     There is logic in this file to read the list and format it properly to match

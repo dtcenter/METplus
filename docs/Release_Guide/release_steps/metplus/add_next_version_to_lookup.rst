@@ -9,46 +9,32 @@ Update the latest official release variable.
   In the develop branch, modify the **metplus/component_versions.py** file to
   update the value for **LATEST_OFFICIAL_RELEASE** to reflect this X.Y release.
 
-  If the 6.1.0 release was just created, set the value to *6.1*.
+  If the 13.0.0 release was just created, set the value to *13.0*.
 
 Add version information for the next coordinated release.
 
 .. dropdown:: Instructions
 
   In the develop branch, modify the **metplus/component_versions.py** file to
-  add an entry for the next coordinated release if it has not already been added.
+  add an entry for the next planned X.Y coordinated release if it has not
+  already been added.
 
-  If the X.0 release was just created, add an entry for the X.1 release.
-
-  If the X.1 release was just created, add an entry for the X+1.0 release.
-
-  Set the appropriate X.Y.0 versions for each component.
-  Maybe sure to set the Z number to 0.
+  All METplus components, including METbaseimage, use consistent version
+  numbers. Set each component to the same X.Y.0 version as the coordinated
+  release. Make sure to set the Z number to 0.
 
   Set the version for metexpress to None (not a string).
 
-  For example, if the coordinated 6.0 release was just created, add::
+  For example, if the coordinated 13.0 release was just created and the next
+  planned release is 13.1, add::
 
-      '6.1': {
-          'metplus': '6.1.0',
-          'met': '12.1.0',
-          'metplotpy': '3.1.0',
-          'metcalcpy': '3.1.0',
-          'metdataio': '3.1.0',
-          'metviewer': '6.1.0',
+      '13.1': {
+          'metplus': '13.1.0',
+          'met': '13.1.0',
+          'metplotpy': '13.1.0',
+          'metcalcpy': '13.1.0',
+          'metdataio': '13.1.0',
+          'metviewer': '13.1.0',
           'metexpress': None,
-          'metbaseimage': '3.4.5',
-      },
-
-  For example, if the coordinated 6.1 release was just created, add::
-
-      '7.0': {
-          'metplus': '7.0.0',
-          'met': '13.0.0',
-          'metplotpy': '4.0.0',
-          'metcalcpy': '4.0.0',
-          'metdataio': '4.0.0',
-          'metviewer': '7.0.0',
-          'metexpress': None,
-          'metbaseimage': '3.5.0',
+          'metbaseimage': '13.1.0',
       },

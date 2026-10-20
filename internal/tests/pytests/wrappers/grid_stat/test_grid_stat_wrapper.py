@@ -693,12 +693,19 @@ def test_grid_stat_is_prob(metplus_config, config_overrides, expected_values):
          {'METPLUS_UGRID_COORDINATES_FILE': 'ugrid_coordinates_file = "/met/test/input/ugrid_data/mpas/static.40962_reduced.nc";'}),
         ({'GRID_STAT_UGRID_CONFIG_FILE': ugrid_config_file, }, {}),
 
+        ({'GRID_STAT_TIME_OFFSET_WARN': 3},
+         {'METPLUS_TIME_OFFSET_WARN': 'time_offset_warn = 3;'}),
+        ({'TIME_OFFSET_WARN': 2},
+         {'METPLUS_TIME_OFFSET_WARN': 'time_offset_warn = 2;'}),
+        ({'TIME_OFFSET_WARN': 2, 'GRID_STAT_TIME_OFFSET_WARN': 4},
+         {'METPLUS_TIME_OFFSET_WARN': 'time_offset_warn = 4;'}),
+        # legacy config variable name
         ({'GRID_STAT_TIME_OFFSET_WARNING': 3},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 3;'}),
+         {'METPLUS_TIME_OFFSET_WARN': 'time_offset_warn = 3;'}),
         ({'TIME_OFFSET_WARNING': 2},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 2;'}),
-        ({'TIME_OFFSET_WARNING': 2, 'GRID_STAT_TIME_OFFSET_WARNING': 4},
-         {'METPLUS_TIME_OFFSET_WARNING': 'time_offset_warning = 4;'}),
+         {'METPLUS_TIME_OFFSET_WARN': 'time_offset_warn = 2;'}),
+        ({'TIME_OFFSET_WARNING': 2, 'GRID_STAT_TIME_OFFSET_WARN': 4},
+         {'METPLUS_TIME_OFFSET_WARN': 'time_offset_warn = 4;'}),
         # fcst climo_mean
         ({'GRID_STAT_FCST_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt', },
          {'METPLUS_FCST_CLIMO_MEAN_DICT': 'climo_mean = {file_name = ["/some/climo_mean/file.txt"];}'}),
@@ -951,3 +958,48 @@ def test_get_config_file(metplus_config):
     config.set('config', 'GRID_STAT_CONFIG_FILE', fake_config_name)
     wrapper = GridStatWrapper(config)
     assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_warning, expected_path', [
+        ({}, False, 'grid_stat_120000L_20050808_000000V*'),
+        # run once per field without unique prefix
+        ({'GRID_STAT_ONCE_PER_FIELD': True},
+         True, 'grid_stat_120000L_20050808_000000V*'),
+        # run once per field with unique prefix
+        ({'GRID_STAT_ONCE_PER_FIELD': True, 'GRID_STAT_OUTPUT_PREFIX': '{fcst_name}_vs_{obs_name}'},
+         False, 'grid_stat_ABCD_vs_OBCD_120000L_20050808_000000V*'),
+    ]
+)
+@pytest.mark.wrapper_b
+def test_grid_stat_warn_on_overwrite(metplus_config, check_warn_output_overwrite,
+                                     config_overrides, expected_warning, expected_path):
+    config = metplus_config
+    set_minimum_config_settings(config)
+
+    # set additional settings
+    config.set('config', 'FCST_VAR2_NAME', 'FBCD')
+    config.set('config', 'FCST_VAR2_LEVELS', fcst_level)
+    config.set('config', 'OBS_VAR2_NAME', 'OBCD')
+    config.set('config', 'OBS_VAR2_LEVELS', obs_level)
+    config.set('config', 'BOTH_VAR2_THRESH', both_thresh)
+    config.set('config', 'GRID_STAT_OUTPUT_TEMPLATE', '')
+
+    # set config variable overrides
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    wrapper = GridStatWrapper(config)
+
+    # create one of the expected output files to ensure that the existence
+    # of this file does not affect the logging of the warning message
+    output_dir = wrapper.config.getdir('GRID_STAT_OUTPUT_DIR')
+    os.makedirs(output_dir, exist_ok=True)
+    for output_file in ('grid_stat_120000L_20050808_000000V.stat', 'grid_stat_FBCD_vs_OBCD_120000L_20050808_000000V.stat'):
+        output_path = os.path.join(output_dir, output_file)
+        with open(output_path, 'w') as file_handle:
+            file_handle.write('')
+        assert os.path.exists(output_path)
+
+    wrapper.run_all_times()
+
+    check_warn_output_overwrite(wrapper, expected_warning, expected_path)

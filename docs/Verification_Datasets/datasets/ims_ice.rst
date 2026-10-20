@@ -24,7 +24,7 @@ File format
   * GIF (images)
 
 Location of data
-  NSIDC: https://nsidc.org/data/G02156/versions/1
+  NSIDC: https://nsidc.org/data/g02156/versions/1
   Click on the "Download the Data" tab.
 
 Access restrictions

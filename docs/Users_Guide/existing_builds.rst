@@ -19,9 +19,9 @@ Select from the list below for instructions on using existing builds of
 the METplus components' software packages. Please note that the commands to 
 load the METplus components assume the user is using bash. If an installation 
 is needed on a machine not listed here, please follow the 
-`installation instructions <https://met.readthedocs.io/en/latest/Users_Guide/installation.html>`_ 
+`installation instructions <https://metplus.readthedocs.io/projects/met/en/latest/Users_Guide/installation.html>`_ 
 in the 
-`MET User’s Guide <https://met.readthedocs.io/en/latest>`_.
+`MET User’s Guide <https://metplus.readthedocs.io/projects/met/en/latest/>`_.
 
 .. dropdown:: NCAR machines 
 
@@ -145,13 +145,13 @@ in the
 
         | **NOAA machines Dogwood and Cactus (WCOSS2 - Cray)**
         | *Last updated:*
-	| *Compiler and version:*
+        | *Compiler and version:*
 
-	.. note::
+        .. note::
 
-	   For the most recent installation of the METplus components on WCOSS2
-	   see the loading instructions on the 6.1 Existing Builds page:
-	   https://metplus.readthedocs.io/en/main_v6.1/Users_Guide/release-notes.html
+           For the most recent installation of the METplus components on WCOSS2
+           see the loading instructions on the 6.1 Existing Builds page:
+           https://metplus.readthedocs.io/en/main_v6.1/Users_Guide/release-notes.html
 
         * **MET v13.0.0-beta2 / METplus v13.0.0-beta2 / METplus Analysis Tools v13.0.0-beta2**
 
@@ -221,7 +221,7 @@ in the
                   module use /contrib/METdataio/modulefiles
                   module load metdataio/13.0.0-beta2
 
-		   
+
      .. dropdown:: HERA - Coming Soon!
 
         | **NOAA MACHINE HERA**
@@ -289,7 +289,7 @@ in the
         | *Compiler and version: Intel oneAPI 2025.3.1*
         | **Before loading any of the modules below, it is necessary to load the following modules:**
 
-	.. code-block:: ini
+        .. code-block:: ini
 
            module load spack-managed-x86-64_v3
            module load intel-oneapi-compilers/2025.3.1
@@ -299,25 +299,25 @@ in the
 
           * METplus-13.0.0-beta2 Installation
 
-	    * /apps/contrib/MET/METplus/METplus-13.0.0-beta2
-	    
+            * /apps/contrib/MET/METplus/METplus-13.0.0-beta2
+
           * METplus-13.0 Sample Data
 
             * /work/noaa/ovp/jprestop/METplus/METplus-13.0_sample_data
 
           * To use METplus run:
 
-	      .. code-block:: ini
+              .. code-block:: ini
 
                  module load metplus/13.0.0-beta2
-		 
+
           * Users should create a file like /work/noaa/ovp/METplus/hercules.role-ovp.conf to set a personalized INPUT_BASE and OUTPUT_BASE.
 
         * **MET-13.0.0-beta2**
 
           * MODULES:
 
-	      .. code-block:: ini
+              .. code-block:: ini
 
                 module load met/13.0.0-beta2
 
@@ -325,7 +325,7 @@ in the
 
           * MODULES:
 
-	      .. code-block:: ini
+              .. code-block:: ini
 
                 module load metcalcpy/13.0.0-beta2
                 module load metplotpy/13.0.0-beta2
@@ -334,7 +334,7 @@ in the
 
           * MODULES:
 
-	      .. code-block:: ini
+              .. code-block:: ini
 
                  module load metdataio/13.0.0-beta2
 
@@ -343,7 +343,7 @@ in the
 
         | **NOAA MACHINE ORION (MANAGED BY MSU)**
         | *Last updated:*
-	    | *Compiler and version:*
+            | *Compiler and version:*
 
           * **METplus-13.0.0-beta2**
 
@@ -407,7 +407,7 @@ in the
 
         | **NOAA MACHINE GAEA**
         | *Last Updated:*
-    	| *Compiler and version:*
+        | *Compiler and version:*
 
           * **METplus-13.0.0-beta2**
 
@@ -472,7 +472,7 @@ in the
 
         | **TEXAS ADVANCED COMPUTING CENTER (TACC) FRONTERA**
         | *Last Updated:*
-	    | *Compiler and version:*
+            | *Compiler and version:*
 
           * **METplus-13.0.0-beta2**
 

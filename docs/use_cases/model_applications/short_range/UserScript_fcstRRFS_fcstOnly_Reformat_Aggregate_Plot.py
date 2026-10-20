@@ -83,10 +83,10 @@ model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_P
 # It also requires the METdataio, METcalcpy and METplotpy source code to reformat the MET .stat output,
 # perform aggregation, and generate the plot. Clone the METdataio repository
 # (https://github.com/dtcenter/METdataio),
-# METcalcpy repository (https://github.com/dtcenter/METcalcpy, and the METplotpy
+# METcalcpy repository (https://github.com/dtcenter/METcalcpy), and the METplotpy
 # repository (https://github.com/dtcenter/METplotpy) under the same base directory as the
 # METPLUS_BASE directory so that the METdataio, METcalcpy, and METplotpy directories are under the
-# same base directory (i.e. if the METPLUS_BASE directory is /home/username/working/METplus,
+# same base directory (i.e., if the METPLUS_BASE directory is /home/username/working/METplus,
 # then clone the METdataio, METcalcpy and METplotpy source code into the /home/username/working directory)
 #
 # Clone the METdataio, METcalcpy, and METplotpy source code from their repositories under a base directory. The
@@ -126,7 +126,7 @@ model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_P
 #
 # METplus first loads all the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e. parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.conf
+# i.e., parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot.conf
@@ -167,7 +167,7 @@ model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_P
 #   .. highlight:: python
 #   .. literalinclude:: ../../../../parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/aggregate_ecnt.py
 #
-# Finally,this Python script (from METplotpy) is used to generate a spread-skill plot using the METplotypy line plot code.
+# Finally, this Python script (from METplotpy) is used to generate a spread-skill plot using the METplotpy line plot code.
 #
 # .. dropdown:: parm/use_cases/model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_Plot/plot_spread_skill.py
 #
@@ -199,8 +199,8 @@ model_applications/short_range/UserScript_fcstRRFS_fcstOnly_Reformat_Aggregate_P
 #
 # The reformatted ensemble-stat ECNT linetype data should exist in the location specified in the user
 # configuration file (OUTPUT_BASE).  Verify that the ensemble_stat_ecnt.data file exists.  The file now has all
-# the statistics under the stat_name and stat_value columns, all ECNT statistic columns labelled with their
-# corresponding names (e.g. crps, crpss, rmse, etc.) and confidence level values under the
+# the statistics under the stat_name and stat_value columns, all ECNT statistic columns labeled with their
+# corresponding names (e.g., crps, crpss, rmse, etc.) and confidence level values under the
 # following columns:  stat_btcl and stat_btcu
 #
 #

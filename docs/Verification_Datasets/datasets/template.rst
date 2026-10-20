@@ -23,7 +23,7 @@ File format
   *Insert file format here*
 
 Location of data
-  *Insert data loation here*
+  *Insert data location here*
 
 Access restrictions
   *Insert access restrictions here*

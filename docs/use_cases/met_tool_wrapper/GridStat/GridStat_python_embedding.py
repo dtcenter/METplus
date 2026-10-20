@@ -45,7 +45,7 @@ met_tool_wrapper/GridStat/GridStat_python_embedding.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/GridStat/GridStat_python_embedding.conf
+# with the -c option, i.e., -c parm/use_cases/met_tool_wrapper/GridStat/GridStat_python_embedding.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/GridStat/GridStat_python_embedding.conf
@@ -72,9 +72,9 @@ met_tool_wrapper/GridStat/GridStat_python_embedding.conf
 # ----------------
 #
 # This use case calls a Python script to read the input data.
-# The Python script is stored in the MET repository: /path/to/MET/installation/share/met/python/read_ascii_numpy.py
+# The Python script is stored in the MET repository: /path/to/MET/installation/share/met/python/examples/read_ascii_numpy.py
 #
-# `read_ascii_numpy.py <https://github.com/dtcenter/MET/blob/develop/scripts/python/read_ascii_numpy.py>`_
+# `read_ascii_numpy.py <https://github.com/dtcenter/MET/blob/HEAD/scripts/python/examples/read_ascii_numpy.py>`_
 
 ##############################################################################
 # Running METplus

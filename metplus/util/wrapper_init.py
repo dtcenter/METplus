@@ -1,6 +1,7 @@
 from importlib import import_module
 
 from . import camel_to_underscore
+from .exceptions import MPWarningError
 
 
 def get_wrapper_class(config, process):
@@ -17,11 +18,14 @@ def get_wrapper_class(config, process):
         module = import_module(package_name)
         wrapper_class = getattr(module, f"{process}Wrapper")
     except AttributeError as err:
-        config.logger.error(f"There was a problem loading {process} wrapper: {err}")
+        config.logger.error(
+            f"There was a problem loading {process} wrapper: {err}"
+        )
         return None
     except ModuleNotFoundError:
-        config.logger.error(f"Could not load {process} wrapper. "
-                            "Wrapper may have been disabled.")
+        config.logger.error(
+            f"Could not load {process} wrapper. Wrapper may have been disabled."
+        )
         return None
 
     return wrapper_class
@@ -40,4 +44,11 @@ def get_wrapper_instance(config, process, instance=None):
     wrapper_class = get_wrapper_class(config, process)
     if wrapper_class is None:
         return None
-    return wrapper_class(config, instance=instance)
+
+    try:
+        wrapper_instance = wrapper_class(config, instance=instance)
+    except MPWarningError as err:
+        config.logger.error(f"{err} Could not initialize {process} wrapper.")
+        wrapper_instance = None
+
+    return wrapper_instance

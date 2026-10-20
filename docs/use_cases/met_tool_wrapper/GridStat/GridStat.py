@@ -92,7 +92,7 @@ met_tool_wrapper/GridStat/GridStat.conf
 # User Scripting
 # --------------
 #
-# This user case does not call a user-defined script.
+# This use case does not call a user-defined script.
 #
 
 ##############################################################################

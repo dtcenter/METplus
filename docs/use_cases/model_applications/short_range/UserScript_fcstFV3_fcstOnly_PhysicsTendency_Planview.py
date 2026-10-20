@@ -19,7 +19,7 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planv
 # To plot tendencies of temperature, moisture, and wind components averaged over 
 # a time window and spatial domain.  Tendencies are partitioned into physics 
 # parameterizations and dynamics.  Physics parameterizations include schemes like 
-# deep convection, convective gravity wave drag, short wave radiation, plantetary
+# deep convection, convective gravity wave drag, short wave radiation, planetary
 # boundary layer, microphysics, and others.  Non-physics tendencies (or dynamics)
 # are due to horizontal and vertical motion.  The residual (which should be zero)
 # is the difference between the actual change in the state variable over the
@@ -30,7 +30,7 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planv
 # sections). The METplotpy source code is needed to generate the plot.  
 # Clone the METplotpy repository (https://github.com/dtcenter/METplotpy) under the same base
 # directory as the METPLUS_BASE directory so that the METplus and
-# METplotpy directories are under the same base directory (i.e. if the METPLUS_BASE directory is
+# METplotpy directories are under the same base directory (i.e., if the METPLUS_BASE directory is
 # /home/username/working/METplus, then clone the METplotpy source
 # code into the /home/username/working directory).  
 
@@ -106,7 +106,7 @@ model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planv
 # METplus first loads all of the configuration files found in
 # parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line,
-# i.e.
+# i.e.,
 # parm/use_cases/model_applications/short_range/UserScript_fcstFV3_fcstOnly_PhysicsTendency_Planview.conf
 #
 # .. highlight:: bash

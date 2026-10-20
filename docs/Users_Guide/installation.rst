@@ -14,7 +14,7 @@ Supported Architectures
 
 METplus Wrappers was developed on Debian Linux and is supported on this
 platform. Each release listed on the
-`METplus Downloads <https://dtcenter.org/community-code/metplus/download>`_
+`METplus Downloads <https://dtcenter.org/software-tools/metplus/download>`_
 page includes a link to the **Existing Builds and Docker** for that version.
 The METplus team supports the installation of the METplus components on
 several operational and research high performance computing platforms,
@@ -118,13 +118,13 @@ The following wrappers require additional Python packages be installed to run.
 
 Cartopy, one of the dependencies of CyclonePlotter, attempts to download
 shapefiles from the internet to complete successfully.
-So if CyclonePlotter is run on a closed system (i.e. no internet),
+So if CyclonePlotter is run on a closed system (i.e., no internet),
 additional steps need to be taken.
 First, go to the
 `Natural Earth Data webpage <https://www.naturalearthdata.com/downloads>`_
 and download the small scale (1:110m)
 cultural and physical files that will have multiple extensions
-(e.g. .dbf, .shp, .shx). Untar these files in a noted location.
+(e.g., .dbf, .shp, .shx). Untar these files in a noted location.
 Finally, create an environment variable in the user-specific system
 configuration file for CARTOPY_DIR, setting it to the location where
 the shapefiles are located.
@@ -180,17 +180,31 @@ Tar File::
 Get the Source Code via Command Line
 ------------------------------------
 
+.. warning::
+   Cloning the repository without specifying a branch or tag will obtain the
+   **develop** branch, which contains a development version of the software
+   that may be incomplete, untested, or unstable.
+   **We strongly recommend using a stable release instead.**
+   See the
+   `METplus releases page <https://github.com/dtcenter/METplus/releases>`_
+   for a list of available releases.
+
 - Open a shell terminal
 
-- Clone the DTCenter/METplus GitHub repository:
+- Clone the DTCenter/METplus GitHub repository, replacing **vX.Y.Z** with the
+  tag of the desired release (e.g. v13.0.0):
 
 SSH::
 
-    git clone git@github.com:dtcenter/metplus
+    git clone --branch vX.Y.Z git@github.com:dtcenter/metplus
 
 HTTPS::
 
-    git clone https://github.com/dtcenter/metplus
+    git clone --branch vX.Y.Z https://github.com/dtcenter/metplus
+
+.. note::
+   If the repository has already been cloned, a release can be obtained by
+   running **git checkout vX.Y.Z** from within the cloned directory.
 
 .. _obtain_sample_input_data:
 
@@ -208,15 +222,15 @@ the example use cases, which illustrate how the wrappers work.
   `sample input data <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data>`_.
 
 - Click on the vX.Y version directory that corresponds to the release to
-  install, i.e. v4.0 directory for the v4.0.0 release.
+  install, i.e., v4.0 directory for the v4.0.0 release.
 
 - Click on the sample data tgz file for the desired use case category or
-  categories run and when prompted, save the file to the directory created
+  categories to run and when prompted, save the file to the directory created
   above.
 
 .. note::
     Files with the version number in the name,
-    i.e. sample_data-data_assimilation-4.0.tgz, have been updated since the
+    i.e., sample_data-data_assimilation-4.0.tgz, have been updated since the
     last major release. Files without the version number in the file name have
     not changed since the last major release and can be skipped if the data
     have already been obtained with a previous release.
@@ -274,14 +288,14 @@ GFDL Tracker (Optional)
   estimate of the vortex center position (latitude and longitude),
   and track the storm for the duration of the forecast.
 
-- Visit https://dtcenter.org/community-code/gfdl-vortex-tracker for
+- Visit https://dtcenter.org/community-code-legacy-tools for
   more information
 
     - See the manage externals section of this documentation to download
       the GFDL vortex tracker automatically as part of the system.
 
     - To download and install the tracker locally, get
-      http://dtcenter.org/sites/default/files/community-code/gfdl/standalone_gfdl-vortextracker_v3.9a.tar.gz
+      https://dtcenter.org/sites/default/files/community-code/gfdl/standalone_gfdl-vortextracker_v3.9a.tar.gz
       and follow the instructions listed in that archive to build on
       a local system.
 

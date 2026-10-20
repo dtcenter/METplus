@@ -20,11 +20,11 @@ Instructions are provided for the following types of software releases:
 
 #. **Coordinated Release** consisting of a group of software component releases
 
-#. **Official Release** (e.g. vX.Y.0) from the develop branch (becomes the new main_vX.Y branch)
+#. **Official Release** (e.g., vX.Y.0) from the develop branch (becomes the new main_vX.Y branch)
 
-#. **Bugfix Release** (e.g. vX.Y.Z) from the corresponding main_vX.Y branch
+#. **Bugfix Release** (e.g., vX.Y.Z) from the corresponding main_vX.Y branch
 
-#. **Development Release** (e.g. vX.Y.Z-betaN or vX.Y.Z-rcN) from the develop branch
+#. **Development Release** (e.g., vX.Y.Z-betaN or vX.Y.Z-rcN) from the develop branch
 
 The instructions that are common to all components are documented only once and then included
 in the release steps for all components.  However some instructions are specific to individual
@@ -60,7 +60,7 @@ Coordinated Release
 A METplus coordinated release is a group of official or bugfix releases for each
 of the METplus components that have been developed and tested in parallel.
 Coordinated release announcements on the
-`DTC METplus Downloads <https://dtcenter.org/community-code/metplus/download>`_
+`DTC METplus Downloads <https://dtcenter.org/software-tools/metplus/download>`_
 page link to the component releases that comprise the coordinated release.
 When bugfix releases are issued for any METplus component, the corresponding
 coordinated release announcement is updated to link to the most recent bugfix
@@ -92,7 +92,7 @@ larger group of users the opportunity to test the recently incorporated new
 features, enhancements, and bug fixes.  Beta releases allow for continued
 development and bug fixes before an official release.  There are many
 possible configurations of hardware and software that exist and installation
-of beta releases allow for testing of potential conflicts.
+of beta releases allows for testing of potential conflicts.
 
 Release Candidate (rc)
 ----------------------

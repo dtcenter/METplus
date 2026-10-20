@@ -1,5 +1,6 @@
 from .metplus_check import *
 from .constants import *
+from .exceptions import *
 from .string_manip import *
 from .system_util import *
 from .time_util import *
