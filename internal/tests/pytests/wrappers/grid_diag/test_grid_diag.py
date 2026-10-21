@@ -410,3 +410,75 @@ def test_check_var_lists(metplus_config, tmp_path_factory, make_dummy_empty):
 
     wrapper = GridDiagWrapper(config)
     wrapper.run_all_times()
+
+
+@pytest.mark.parametrize(
+    'paired, templates, add_field, expected_labels, expected_files, expected_warn', [
+        # default is paired: -data for each input template
+        (None, ['fcst.f{lead?fmt=%H}', 'obs.v{valid?fmt=%Y%m%d%H}'], False,
+         ['input0', 'input1'], None, False),
+        (True, ['fcst.f{lead?fmt=%H}', 'obs.v{valid?fmt=%Y%m%d%H}'], False,
+         ['input0', 'input1'], None, False),
+        # paired, number of templates does not match number of fields
+        (True, ['fcst.f{lead?fmt=%H}', 'obs.v{valid?fmt=%Y%m%d%H}'], True,
+         ['input0', 'input1'], None, True),
+        # paired with a single template does not warn
+        (True, ['fcst.f{lead?fmt=%H}'], True,
+         ['input0'], None, False),
+        # not paired: single -data with all files from all templates
+        (False, ['fcst.f{lead?fmt=%H}', 'obs.v{valid?fmt=%Y%m%d%H}'], True,
+         ['input'], ['fcst.f{lead}', 'obs.v{valid}'], False),
+        # not paired: duplicate files are only included once
+        (False, ['fcst.f{lead?fmt=%H}', 'fcst.f{lead?fmt=%H}'], False,
+         ['input'], ['fcst.f{lead}'], False),
+    ]
+)
+@pytest.mark.wrapper
+def test_grid_diag_paired(metplus_config, paired, templates, add_field,
+                          expected_labels, expected_files, expected_warn):
+    config = metplus_config
+    set_minimum_config_settings(config)
+    config.set('config', 'INIT_END', run_times[0])
+    config.set('config', 'GRID_DIAG_INPUT_TEMPLATE', ', '.join(templates))
+    if add_field:
+        config.set('config', 'BOTH_VAR3_NAME', 'TMP')
+        config.set('config', 'BOTH_VAR3_LEVELS', 'Z2')
+    if paired is not None:
+        config.set('config', 'GRID_DIAG_PAIRED', paired)
+
+    wrapper = GridDiagWrapper(config)
+    assert wrapper.is_ok
+    wrapper.logger.warning.reset_mock()
+
+    all_cmds = wrapper.run_all_times()
+    assert len(all_cmds) == 1
+    cmd = all_cmds[0][0]
+
+    file_list_dir = wrapper.config.getdir('FILE_LISTS_DIR')
+    list_files = [
+        os.path.join(file_list_dir,
+                     f'grid_diag_files_{label}_init_{run_times[0]}0000_valid_ALL_lead_ALL.txt')
+        for label in expected_labels
+    ]
+    if paired is False:
+        expected_data = f' -data {list_files[0]} -config '
+    else:
+        expected_data = ''.join(f' -data {item}' for item in list_files) + ' -config '
+    assert expected_data in cmd
+
+    if expected_files:
+        init = datetime.strptime(run_times[0], time_fmt)
+        expected_paths = []
+        for template in expected_files:
+            for lead in (141, 144, 147):
+                valid = init + relativedelta(hours=lead)
+                filename = template.format(lead=lead,
+                                           valid=valid.strftime(time_fmt))
+                expected_paths.append(os.path.join(data_dir, filename))
+        with open(list_files[0], 'r') as file_handle:
+            actual_paths = file_handle.read().splitlines()[1:]
+        assert sorted(actual_paths) == sorted(expected_paths)
+
+    warn_calls = [call for call in wrapper.logger.warning.call_args_list
+                  if 'GRID_DIAG_PAIRED' in call.args[0]]
+    assert bool(warn_calls) == expected_warn
