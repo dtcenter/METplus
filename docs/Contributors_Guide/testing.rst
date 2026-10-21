@@ -79,7 +79,9 @@ marker names, users can create their own custom marker names.
 
 The METplus team has defined various custom marker names for the unit tests
 and contributors can add to these markers.  These custom markers are listed
-with a brief description, in the *internal/tests/pytests/pytest.ini* file.
+with a brief description, in the **markers** list under
+*[tool.pytest.ini_options]* in the *pyproject.toml* file in the top level of
+the repository.
 Some examples include:
 
     * diff (custom marker for diff util tests that require additional packages)
@@ -95,13 +97,13 @@ the function definition in the Python test file::
     @pytest.mark.<MARKER-NAME>
 
 where <MARKER-NAME> is one of the custom marker strings listed in the
-*internal/tests/pytests/pytest.ini* file.
+*pyproject.toml* file.
 
 To see an example of the “util” custom marker (@pytest.mark.util),
 look in the file *internal/tests/pytests/util/time_util/test_time_util.py*.
 
-New pytest markers should be added to the *internal/tests/pytests/pytest.ini*
-file with a brief description. If they are not added to the markers list,
+New pytest markers should be added to the **markers** list in the
+*pyproject.toml* file with a brief description. If they are not added to the markers list,
 then a warning will be output when running the tests.
 
 **Using Pytest Markers**
