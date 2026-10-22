@@ -81,6 +81,33 @@ def test_find_data_not_a_path(metplus_config, data_type):
 
 
 @pytest.mark.wrapper
+def test_find_data_file_list_one_input(metplus_config, tmp_path):
+    """Explicit file list for one input should not prevent other inputs
+    from using their templates"""
+    pcw = CommandBuilder(metplus_config)
+    time_info = ti_calculate({
+        'valid': datetime.datetime.strptime("201802010000", '%Y%m%d%H%M'),
+        'lead': 0,
+    })
+    file_list = tmp_path / 'fcst_list_2018020100.txt'
+    file_list.write_text('file1\nfile2\n')
+    pcw.c_dict['EXPLICIT_FILE_LIST'] = True
+    pcw.c_dict['FCST_INPUT_FILE_LIST'] = (
+        f'{tmp_path}/fcst_list_{{valid?fmt=%Y%m%d%H}}.txt'
+    )
+    pcw.c_dict['FCST_INPUT_TEMPLATE'] = 'fcst_not_used'
+    pcw.c_dict['FCST_FILE_WINDOW_BEGIN'] = 0
+    pcw.c_dict['FCST_FILE_WINDOW_END'] = 0
+    pcw.c_dict['OBS_FILE_WINDOW_BEGIN'] = 0
+    pcw.c_dict['OBS_FILE_WINDOW_END'] = 0
+    pcw.c_dict['OBS_INPUT_DIR'] = ''
+    pcw.c_dict['OBS_INPUT_TEMPLATE'] = 'G003'
+
+    assert pcw.find_data(time_info, data_type='OBS_') == 'G003'
+    assert pcw.find_data(time_info, data_type='FCST_') == str(file_list)
+    assert pcw.errors == 0
+
+@pytest.mark.wrapper
 def test_find_obs_no_dated(metplus_config):
     config = metplus_config
 

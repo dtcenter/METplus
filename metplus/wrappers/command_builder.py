@@ -564,9 +564,11 @@ class CommandBuilder:
         input_template = self.c_dict.get(f'{data_type}INPUT_TEMPLATE', '')
         data_dir = self.c_dict.get(f'{data_type}INPUT_DIR', '')
 
-        # read explicit file list if set instead of template/dir
-        if self.c_dict.get('EXPLICIT_FILE_LIST', False):
-            input_template = self.c_dict.get(f'{data_type}INPUT_FILE_LIST', '')
+        # read explicit file list if set for this input instead of
+        # template/dir. Other inputs may still use a template
+        file_list = self.c_dict.get(f'{data_type}INPUT_FILE_LIST')
+        if file_list:
+            input_template = file_list
             data_dir = ''
 
         if not input_template:
