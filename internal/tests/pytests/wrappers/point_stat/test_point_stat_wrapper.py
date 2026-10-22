@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import pytest
+from unittest import mock
 
 import os
 from datetime import datetime, timedelta
@@ -1014,3 +1015,20 @@ def test_get_config_file(metplus_config):
     config.set('config', 'POINT_STAT_CONFIG_FILE', fake_config_name)
     wrapper = PointStatWrapper(config)
     assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
+
+
+@pytest.mark.wrapper_a
+def test_point_stat_multiple_fcst_files(metplus_config, fcst_and_obs_data):
+    config = metplus_config
+    set_minimum_config_settings(config, fcst_and_obs_data)
+    wrapper = PointStatWrapper(config)
+    file_dict = {
+        'FCST': ['fcst_a.nc', 'fcst_b.nc'],
+        'OBS': ['obs_1.nc', 'obs_2.nc'],
+        'var_list': [],
+    }
+    with mock.patch.object(wrapper.logger, 'warning') as mock_warning:
+        wrapper.add_to_infiles(file_dict, {})
+    mock_warning.assert_called_once()
+    assert wrapper.infiles == ['fcst_a.nc', 'obs_1.nc', 'obs_2.nc']
+    assert file_dict['FCST'] == ['fcst_a.nc', 'fcst_b.nc']

@@ -347,6 +347,19 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         return time_info
 
+    def _add_file(self, file_dict, time_info, data_type):
+        """!Only use the first forecast file because point_stat reads a
+        single forecast file and the next input is read as the observation.
+        """
+        file_list = file_dict.get(data_type)
+        if data_type == 'FCST' and file_list and len(file_list) > 1:
+            self.logger.warning(
+                'Multiple forecast files found. Using the first one'
+            )
+            file_dict = {**file_dict, data_type: file_list[:1]}
+
+        super()._add_file(file_dict, time_info, data_type)
+
     def get_command(self):
         """! Builds the command to run point_stat
            @rtype string
