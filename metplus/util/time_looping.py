@@ -62,6 +62,7 @@ def time_generator(config):
                                          config.logger)
             if not current_dt:
                 yield None
+                return
 
             time_info = _create_time_input_dict(prefix, current_dt, clock_dt)
             yield time_info

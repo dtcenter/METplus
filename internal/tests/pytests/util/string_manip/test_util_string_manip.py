@@ -308,6 +308,8 @@ def test_remove_quotes(before, after):
         # 14: list with line break at beginning
         ('\nsome_value,\n some_other_value',
          ["some_value", "some_other_value"]),
+        # 15: empty item between commas is skipped
+        ('0,,6', ['0', '6']),
     ]
 )
 @pytest.mark.util

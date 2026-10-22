@@ -210,6 +210,9 @@ def _fix_list(item_list):
     # remove extra quotation marks around string
     out_list = []
     for item in fixed_list:
+        # skip empty items, i.e. from a,,b
+        if not item:
+            continue
         if item[0] == '"' and item[-1] == '"':
             item = item.strip('"')
         out_list.append(item)

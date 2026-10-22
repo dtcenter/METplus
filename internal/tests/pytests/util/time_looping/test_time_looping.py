@@ -403,6 +403,15 @@ def test_time_generator_error_check_list(metplus_config, prefix):
     assert next(generator)[prefix.lower()] == expected_time
     assert next(generator) is None
 
+    # bad value in the middle of the list stops the generator
+    config.set('config', f'{prefix}_LIST',
+               '2021020104, 202102010412, 2021020106')
+    generator = tl.time_generator(config)
+    assert next(generator)[prefix.lower()] == expected_time
+    assert next(generator) is None
+    with pytest.raises(StopIteration):
+        next(generator)
+
     #  good _LIST
     config.set('config', f'{prefix}_LIST', '2021020104')
     assert next(tl.time_generator(config))[prefix.lower()] == expected_time
