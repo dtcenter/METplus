@@ -777,6 +777,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             # get formatted field dictionary to pass into the MET config file
             fcst_field, obs_field = self.get_formatted_fields(var_info, time_info)
             if fcst_field is None:
+                self.clear()
                 continue
 
             self.format_field('FCST', fcst_field)
@@ -786,7 +787,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
             self.set_command_line_arguments(time_info)
 
-            self.find_and_check_output_file(time_info)
+            if not self.find_and_check_output_file(time_info):
+                self.clear()
+                continue
 
             if not self.build():
                 success = False

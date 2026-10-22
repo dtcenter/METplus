@@ -591,9 +591,9 @@ class TCPairsWrapper(RuntimeFreqWrapper):
             return
 
         # find corresponding adeck or edeck files
+        # continue to next bdeck if one is skipped or missing inputs
         for bdeck_file in bdeck_files:
-            if not self._process_bdeck(bdeck_file, wildcard_used, time_info, basin, cyclone):
-                return
+            self._process_bdeck(bdeck_file, wildcard_used, time_info, basin, cyclone)
 
 
     def _process_bdeck(self, bdeck_file, wildcard_used, time_info, basin, cyclone):
