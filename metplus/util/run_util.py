@@ -310,7 +310,8 @@ def _run_processes(processes):
             all_commands.extend(process.all_commands)
             return all_commands
 
-        output_written.extend(process.output_written)
+        # process list already includes output from previous processes
+        output_written = process.output_written.copy()
         if new_commands:
             all_commands.extend(new_commands)
 
