@@ -249,11 +249,15 @@ def comparison_to_letter_format(expression):
      i.e. gt3 or <=5.4
     @returns letter comparison operator, i.e. gt3 or le5.4 or None if invalid
     """
+    # replace every operator so compound thresholds, i.e. >1&&<5, are fully
+    # converted. VALID_COMPARISONS lists >= and <= before > and <
+    found = False
     for symbol_comp, letter_comp in VALID_COMPARISONS.items():
         if letter_comp in expression or symbol_comp in expression:
-            return expression.replace(symbol_comp, letter_comp)
+            found = True
+            expression = expression.replace(symbol_comp, letter_comp)
 
-    return None
+    return expression if found else None
 
 
 def format_thresh(thresh_str):

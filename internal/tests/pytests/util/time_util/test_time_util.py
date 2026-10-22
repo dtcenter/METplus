@@ -119,6 +119,9 @@ def test_get_relativedelta(key, value):
         ('90M', None, '013000'),
         ('90S', None, '000130'),
         ('3723S', None, '010203'),
+        ('-3H', None, '-3'),
+        ('-90M', None, '-13000'),
+        ('-90S', None, '-00130'),
         ]
 )
 @pytest.mark.util

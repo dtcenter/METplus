@@ -111,6 +111,15 @@ def time_string_to_met_time(time_string, default_unit='S', force_hms=False):
 
 
 def seconds_to_met_time(total_seconds, force_hms=False):
+    # format negative values using the absolute value so units are not
+    # floored, e.g. -90 minutes is -13000 not -23000. The sign counts toward
+    # the hour padding to match previous behavior, e.g. -6 hours is -6
+    if total_seconds < 0:
+        met_time = seconds_to_met_time(-total_seconds, force_hms=force_hms)
+        if len(met_time) > 1 and met_time[0] == '0':
+            met_time = met_time[1:]
+        return f'-{met_time}'
+
     seconds_time_string = str(total_seconds % 60).zfill(2)
     minutes_time_string = str(total_seconds // 60 % 60).zfill(2)
     hour_time_string = str(total_seconds // 3600).zfill(2)
