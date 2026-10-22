@@ -234,6 +234,19 @@ def test_skip_time_no_valid():
 
 
 @pytest.mark.parametrize(
+    'c_dict', [
+        {'INC_INIT_TIMES': {'%Y%m%d%H': ['2005080700']}},
+        {'INC_VALID_TIMES': {'%H': ['12']}},
+        {'SKIP_INIT_TIMES': {'%Y%m%d%H': ['2005080700']}},
+    ]
+)
+@pytest.mark.util
+def test_skip_time_wildcard(c_dict):
+    time_info = {'init': '*', 'valid': '*', 'lead': 10800}
+    assert not tl.skip_time(time_info, c_dict)
+
+
+@pytest.mark.parametrize(
     'skip_times_conf, expected_dict', [
         ('"%d:30,31"', {'%d': ['30', '31']}),
         ('"%m:begin_end_incr(3,11,1)"', {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
@@ -919,3 +932,20 @@ def _create_dummy_files(make_dummy_empty, data_dir, data_num, add_subdir=False):
 
     for filename in files:
         make_dummy_empty(data_dir, filename)
+
+@pytest.mark.parametrize(
+    'time_type, expected', [
+        ('lead', [0, 21600]),
+        ('init', [datetime(2020, 1, 1, 0)]),
+    ]
+)
+@pytest.mark.util
+def test_get_unique_times(time_type, expected):
+    init = datetime(2020, 1, 1, 0)
+    files_and_time_info = [
+        ('f000', {'init': init, 'lead': 0}),
+        ('f006', {'init': init, 'lead': 21600}),
+        ('f006_dup', {'init': init, 'lead': 21600}),
+        ('no_lead', {'init': init}),
+    ]
+    assert tl.get_unique_times(files_and_time_info, time_type) == expected

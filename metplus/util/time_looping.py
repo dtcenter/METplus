@@ -424,7 +424,9 @@ def get_unique_times(files_and_time_info, time_type):
 
     for filepath, time_info in files_and_time_info:
         time_value = time_info.get(time_type.lower())
-        if not time_value: continue
+        # check for None because a lead of 0 is a valid value
+        if time_value is None:
+            continue
 
         if time_value not in seen:
             seen.add(time_value)
@@ -620,6 +622,13 @@ def skip_time(time_info, c_dict):
 
         # if no skip or include times were set, continue to not skip
         if not skip_list and not inc_list:
+            continue
+
+        # time cannot be checked if it is not set or is a wildcard, e.g.
+        # init and valid are * when running once per lead. Do not skip here
+        # so the times of each file can be checked instead
+        run_time = time_info.get(init_valid)
+        if not run_time or run_time == '*':
             continue
 
         # if any include times are listed, skip if the time doesn't match
