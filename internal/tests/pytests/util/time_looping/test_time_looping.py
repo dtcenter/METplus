@@ -961,10 +961,10 @@ def test_get_unique_times(time_type, expected):
     ]
 )
 @pytest.mark.util
-def test_get_lead_sequence_template_min_max(metplus_config, tmp_path_factory,
+def test_get_lead_sequence_template_min_max(metplus_config, tmp_path,
                                             make_dummy_empty, lead_min,
                                             lead_max, expected):
-    data_dir = tmp_path_factory.mktemp("data_dir")
+    data_dir = tmp_path
     for lead in ('000', '003', '006'):
         make_dummy_empty(data_dir, f'29122025_12Z_f{lead}.txt')
 
