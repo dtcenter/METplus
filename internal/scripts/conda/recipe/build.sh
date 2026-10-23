@@ -1,7 +1,7 @@
 #!/bin/bash
+set -ex
 # Get an updated config.sub and config.guess
 cp $BUILD_PREFIX/share/gnuconfig/config.* ./MET
-set -ex
 
 export CFLAGS="-I${PREFIX}/include $CFLAGS"
 export CPPFLAGS="-I${PREFIX}/include $CPPFLAGS"

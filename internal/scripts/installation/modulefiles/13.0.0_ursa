@@ -8,7 +8,7 @@ proc ModulesHelp { } {
 }
 
 prereq intel-oneapi-compilers/2026.1.0
-prepend-path PATH /scratch3/BMC/dtc/METplus/miniconda/miniconda3/envs/metplus_v13.0_py3.14/bin/python
+prepend-path PATH /scratch3/BMC/dtc/METplus/miniconda/miniconda3/envs/metplus_v13.0_py3.14/bin
 
 module use -a /contrib/met/modulefiles
 module load met/13.0.0
