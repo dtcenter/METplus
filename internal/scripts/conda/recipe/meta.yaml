@@ -68,6 +68,7 @@ requirements:
     - xarray
     - numpy
     - pandas
+    - python-dateutil
     - pyyaml
     - netcdf4
     - scipy
