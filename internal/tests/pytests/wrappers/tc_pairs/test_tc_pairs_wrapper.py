@@ -909,3 +909,28 @@ def test_read_modify_write_file(tmp_path_factory,
         actual = f.read()
     assert actual == expected
 
+
+
+@pytest.mark.wrapper
+def test_tc_pairs_skip_one_storm(metplus_config, get_test_data_dir):
+    """Skipping one storm because output exists should not skip the rest"""
+    config = metplus_config
+    set_minimum_config_settings(config)
+    test_data_dir = get_test_data_dir('tc_pairs')
+    config.set('config', 'TC_PAIRS_BDECK_INPUT_DIR',
+               os.path.join(test_data_dir, 'bdeck'))
+    config.set('config', 'TC_PAIRS_ADECK_INPUT_DIR',
+               os.path.join(test_data_dir, 'adeck'))
+    config.set('config', 'TC_PAIRS_SKIP_IF_OUTPUT_EXISTS', True)
+
+    wrapper = TCPairsWrapper(config)
+    assert wrapper.is_ok
+
+    out_dir = wrapper.c_dict.get('OUTPUT_DIR')
+    os.makedirs(out_dir, exist_ok=True)
+    with open(os.path.join(out_dir, 'mlq2014121318.gfso.0104.tcst'), 'w') as file_handle:
+        file_handle.write('')
+
+    all_cmds = wrapper.run_all_times()
+    assert len(all_cmds) == 1
+    assert all_cmds[0][0].endswith(f'-out {out_dir}/mlq2014121318.gfso.0106')

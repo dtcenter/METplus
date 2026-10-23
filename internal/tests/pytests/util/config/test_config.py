@@ -38,6 +38,24 @@ def test_getseconds(metplus_config, input_value, result):
         assert result is None
 
 
+
+@pytest.mark.parametrize(
+    'input_value, result', [
+        ('{TEST_STRINTERP}', '/log/metplus.log.20260101'),
+        ('{LOG_TIMESTAMP_TEMPLATE}', '20260101'),
+        ('{TEST_NESTED}', '/log/metplus.log.20260101/nested'),
+    ]
+)
+@pytest.mark.util
+def test_strinterp_nested_kwargs(metplus_config, input_value, result):
+    conf = metplus_config
+    conf.set('config', 'LOG_TIMESTAMP_TEMPLATE', '%Y%m%d')
+    conf.set('config', 'TEST_STRINTERP',
+             '/log/metplus.log.{LOG_TIMESTAMP_TEMPLATE}')
+    conf.set('config', 'TEST_NESTED', '{TEST_STRINTERP}/nested')
+    assert conf.strinterp('config', input_value,
+                          LOG_TIMESTAMP_TEMPLATE='20260101') == result
+
 # value = None -- config variable not set
 @pytest.mark.parametrize(
     'input_value, default, result', [

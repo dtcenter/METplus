@@ -682,10 +682,12 @@ class METplusConfig(object):
                 value = str(extra_vars[var_name])
             elif self.has_option(sec, var_name):
                 value = self.getraw(sec, var_name, default, count+1,
-                                    keep_double_slash=keep_double_slash)
+                                    keep_double_slash=keep_double_slash,
+                                    extra_vars=extra_vars)
             elif self.has_option('config', var_name):
                 value = self.getraw('config', var_name, default, count+1,
-                                    keep_double_slash=keep_double_slash)
+                                    keep_double_slash=keep_double_slash,
+                                    extra_vars=extra_vars)
             elif var_name.startswith('ENV[') and var_name.endswith(']'):
                 value = os.environ.get(var_name[4:-1])
             else:
@@ -735,7 +737,8 @@ class METplusConfig(object):
             raise
 
     # override get methods to perform additional error checking
-    def getraw(self, sec, opt, default='', count=0, sub_vars=True, keep_double_slash=False):
+    def getraw(self, sec, opt, default='', count=0, sub_vars=True,
+               keep_double_slash=False, extra_vars=None):
         """ parse parameter and replace any existing parameters
             referenced with the value (looking in same section, then
             config, dir, and os environment)
@@ -747,6 +750,9 @@ class METplusConfig(object):
             @param count Counter used to stop recursion to prevent infinite
             @param sub_vars If False, skip string template substitution,
              defaults to True
+            @param keep_double_slash If True, do not replace // with /
+            @param extra_vars dictionary of values to substitute that take
+             precedence over config variables at every level of recursion
             @returns Raw string or empty string if function calls itself too
              many times
         """
@@ -769,7 +775,8 @@ class METplusConfig(object):
                                              in_template,
                                              default=default,
                                              count=count,
-                                             keep_double_slash=keep_double_slash)
+                                             keep_double_slash=keep_double_slash,
+                                             extra_vars=extra_vars)
 
     def check_default(self, sec, name, default):
         """! helper function for get methods, report error and raise

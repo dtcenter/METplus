@@ -259,6 +259,7 @@ class TCDiagWrapper(TCBaseWrapper):
                 self.log_error(f'Must set {prefix}TECH_ID_LIST')
 
             data_dict = {
+                'index': index,
                 'template': template,
                 'directory': directory,
                 'file_list': file_list,
@@ -374,7 +375,9 @@ class TCDiagWrapper(TCBaseWrapper):
                 return False
 
             # create an ascii file with a list of the input files
-            list_file = f"{os.path.basename(deck_file)}_data_files.txt"
+            # include input index so each input writes a unique file
+            list_file = (f"{os.path.basename(deck_file)}_"
+                         f"input{data_dict['index']}_data_files.txt")
             list_file = self.write_list_file(list_file, all_input_files)
 
         # build argument with file list file, domain, and tech id list

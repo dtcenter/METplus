@@ -14539,6 +14539,8 @@ METplus Configuration Glossary
      Build list of runtimes to process using directory and template to extract
      time information. If set, INIT/VALID_BEG/END/INCREMENT time looping
      variables and forecast lead variables like :term:`LEAD_SEQ` are ignored.
+     :term:`LEAD_SEQ_MIN` and :term:`LEAD_SEQ_MAX` are still used to filter
+     the forecast leads found in the files.
      Used with :term:`TIME_GENERATOR_INPUT_DIR`.
      The :term:`LOOP_BY` variable determines whether to extract initialization
      or valid times to process. List of forecast leads to process are gathered

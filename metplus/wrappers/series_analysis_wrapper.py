@@ -17,7 +17,7 @@ from ..util import getlist, get_storms, mkdir_p, skip_time
 from ..util import do_string_sub, parse_template
 from ..util import get_lead_sequence, get_lead_sequence_groups
 from ..util import ti_get_hours_from_lead, ti_get_seconds_from_lead
-from ..util import ti_get_lead_string
+from ..util import ti_get_lead_string, ti_calculate
 from ..util import parse_var_list
 from ..util import add_to_time_input
 from ..util import field_read_prob_info, add_field_info_to_time_info
@@ -450,11 +450,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         all_files = []
         current_input_dict = input_dict.copy()
         for lead in leads:
-            if skip_time(current_input_dict, self.c_dict):
+            current_input_dict['lead'] = lead
+            if skip_time(ti_calculate(current_input_dict), self.c_dict):
                 self.logger.info(f'Skipping lead: {ti_get_lead_string(lead)}')
                 continue
 
-            current_input_dict['lead'] = lead
             new_files = self.get_all_files_for_lead(current_input_dict)
             self._update_list_with_new_files(new_files, all_files)
 
@@ -777,6 +777,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             # get formatted field dictionary to pass into the MET config file
             fcst_field, obs_field = self.get_formatted_fields(var_info, time_info)
             if fcst_field is None:
+                self.clear()
                 continue
 
             self.format_field('FCST', fcst_field)
@@ -786,7 +787,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
             self.set_command_line_arguments(time_info)
 
-            self.find_and_check_output_file(time_info)
+            if not self.find_and_check_output_file(time_info):
+                self.clear()
+                continue
 
             if not self.build():
                 success = False

@@ -119,11 +119,28 @@ def test_get_relativedelta(key, value):
         ('90M', None, '013000'),
         ('90S', None, '000130'),
         ('3723S', None, '010203'),
+        ('-3H', None, '-03'),
+        ('-90M', None, '-013000'),
+        ('-90S', None, '-000130'),
         ]
 )
 @pytest.mark.util
 def test_time_string_to_met_time(time_string, default_unit, met_time):
     assert time_util.time_string_to_met_time(time_string, default_unit) == met_time
+
+
+@pytest.mark.parametrize(
+    'total_seconds, force_hms, met_time', [
+        (21600, True, '060000'),
+        (-21600, False, '-06'),
+        (-21600, True, '-060000'),
+        (-5400, True, '-013000'),
+        (-90, False, '-000130'),
+    ]
+)
+@pytest.mark.util
+def test_seconds_to_met_time(total_seconds, force_hms, met_time):
+    assert time_util.seconds_to_met_time(total_seconds, force_hms=force_hms) == met_time
 
 
 @pytest.mark.parametrize(

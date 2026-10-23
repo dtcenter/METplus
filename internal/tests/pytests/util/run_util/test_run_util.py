@@ -572,3 +572,24 @@ def test_exit_on_warn(metplus_config_files, tmp_path_factory, make_dummy_empty, 
         ru._run_processes(processes)
         total_errors = ru._get_total_errors_and_log_counts(processes, config.logger)
         assert total_errors == expected_run_errors
+
+
+@pytest.mark.util
+def test_run_processes_output_written():
+    class FakeProcess:
+        def __init__(self, name):
+            self.name = name
+            self.output_written = []
+            self.all_commands = []
+            self.seen = None
+
+        def run_all_times(self):
+            self.seen = list(self.output_written)
+            self.output_written.append(self.name)
+            return [(self.name, {})]
+
+    processes = [FakeProcess(f'out{idx}') for idx in range(5)]
+    all_commands = ru._run_processes(processes)
+    assert [cmd for cmd, _ in all_commands] == [p.name for p in processes]
+    for idx, process in enumerate(processes):
+        assert process.seen == [f'out{num}' for num in range(idx)]
