@@ -576,7 +576,7 @@ class StatAnalysisWrapper(RuntimeFreqWrapper):
 
         # move empty lists in loop lists to group lists
         # loop over a copy because items are removed from the list
-        for list_name in list(c_dict['LOOP_LIST_ITEMS']):
+        for list_name in c_dict['LOOP_LIST_ITEMS'].copy():
             # skip if list has values
             if c_dict[list_name]:
                 continue
