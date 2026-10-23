@@ -334,11 +334,11 @@ def test_shift_before_fmt(templ, expected):
 
 @pytest.mark.parametrize(
     'templ, lead, expected', [
-        ('{lead?fmt=%H}', -21600, '-6'),
-        ('{lead?fmt=%3H}', -21600, '-06'),
-        ('{lead?fmt=%H%M}', -21600, '-600'),
-        ('{lead?fmt=%H%M}', -5400, '-130'),
-        ('{lead?fmt=%3H%M}', -5400, '-0130'),
+        ('{lead?fmt=%H}', -21600, '-06'),
+        ('{lead?fmt=%3H}', -21600, '-006'),
+        ('{lead?fmt=%H%M}', -21600, '-0600'),
+        ('{lead?fmt=%H%M}', -5400, '-0130'),
+        ('{lead?fmt=%3H%M}', -5400, '-00130'),
         ('{lead?fmt=%M}', -5400, '-90'),
         ('{lead?fmt=%H%M}', 5400, '0130'),
     ]

@@ -139,14 +139,9 @@ def format_time_offset(fmt, obj, month_len=None, year_len=None):
      @returns Formatted time value
     """
     # format negative values using the absolute value so units are not
-    # floored, e.g. -90 minutes with %H%M is -130 not -230. The sign counts
-    # toward the padding of the first unit to match previous behavior,
-    # e.g. -6 hours with %H is -6 and with %3H is -06
+    # floored and padding is kept, e.g. -90 minutes with %H%M is -0130
     if obj < 0:
-        out_str = format_time_offset(fmt, -obj, month_len, year_len)
-        if len(out_str) > 1 and out_str[0] == '0':
-            out_str = out_str[1:]
-        return f'-{out_str}'
+        return f'-{format_time_offset(fmt, -obj, month_len, year_len)}'
 
     out_str = ''
     fmt_split = fmt.split('%')[1:]
