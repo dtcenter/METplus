@@ -949,3 +949,34 @@ def test_get_unique_times(time_type, expected):
         ('no_lead', {'init': init}),
     ]
     assert tl.get_unique_times(files_and_time_info, time_type) == expected
+
+
+@pytest.mark.parametrize(
+    'lead_min, lead_max, expected', [
+        (None, None, [0, 3, 6]),
+        ('3', None, [3, 6]),
+        (None, '3', [0, 3]),
+        ('1', '5', [3]),
+        ('7', None, []),
+    ]
+)
+@pytest.mark.util
+def test_get_lead_sequence_template_min_max(metplus_config, tmp_path_factory,
+                                            make_dummy_empty, lead_min,
+                                            lead_max, expected):
+    data_dir = tmp_path_factory.mktemp("data_dir")
+    for lead in ('000', '003', '006'):
+        make_dummy_empty(data_dir, f'29122025_12Z_f{lead}.txt')
+
+    config = metplus_config
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'TIME_GENERATOR_INPUT_DIR', data_dir)
+    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', DATA_TEMPLATE1)
+    if lead_min is not None:
+        config.set('config', 'LEAD_SEQ_MIN', lead_min)
+    if lead_max is not None:
+        config.set('config', 'LEAD_SEQ_MAX', lead_max)
+
+    input_dict = {'init': datetime(2025, 12, 29, 12)}
+    actual = tl.get_lead_sequence(config, input_dict)
+    assert actual == [relativedelta(hours=hour) for hour in expected]

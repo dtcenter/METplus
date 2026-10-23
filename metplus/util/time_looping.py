@@ -683,7 +683,10 @@ def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
         config.logger.debug("Using TIME_GENERATOR_INPUT_DIR/TEMPLATE to find lead times")
         unique_leads = _get_intersected_unique_times(config, time_type='lead', sort_by='lead',
                                                      input_dict=input_dict)
-        lead_seq = _handle_lead_seq(config, unique_leads, default_unit='S')
+        # filter leads found in files by LEAD_SEQ_MIN and LEAD_SEQ_MAX
+        lead_min, lead_max, _ = _get_lead_min_max(config)
+        lead_seq = _handle_lead_seq(config, unique_leads, lead_min, lead_max,
+                                    default_unit='S')
         if lead_seq:
             leads_fmt = [ti_get_lead_string(lead, plural=False) for lead in lead_seq]
             config.logger.debug(f"Found {len(lead_seq)} lead times that match "
