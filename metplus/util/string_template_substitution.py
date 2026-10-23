@@ -141,8 +141,15 @@ def format_time_offset(fmt, obj, month_len=None, year_len=None):
     # format negative values using the absolute value so units are not
     # floored and padding is kept, e.g. -90 minutes with %H%M is -0130
     if obj < 0:
-        return f'-{format_time_offset(fmt, -obj, month_len, year_len)}'
+        return f'-{_format_abs_time_offset(fmt, -obj, month_len, year_len)}'
 
+    return _format_abs_time_offset(fmt, obj, month_len, year_len)
+
+
+def _format_abs_time_offset(fmt, obj, month_len=None, year_len=None):
+    """!Helper function for format_time_offset to format a time offset value
+     that is zero or positive. See format_time_offset for argument info.
+    """
     out_str = ''
     fmt_split = fmt.split('%')[1:]
     # split time into days, hours, minutes, and seconds
