@@ -1147,7 +1147,15 @@ def _copy_to_diff_dir(file_path, data_type, input_dir, output_dir):
     @returns True if success, False if there was a problem copying the file
     """
     # replace data dir with output directory and data type subdirectory
-    output_path = file_path.replace(input_dir, os.path.join(output_dir, data_type))
+    data_type_dir = os.path.join(output_dir, data_type)
+    output_path = file_path.replace(input_dir, data_type_dir)
+
+    # prevent writing files outside of the output directory
+    data_type_dir = os.path.realpath(data_type_dir)
+    real_output_path = os.path.realpath(output_path)
+    if os.path.commonpath([data_type_dir, real_output_path]) != data_type_dir:
+        print(f'Could not copy file to {output_path}. Path is not under {data_type_dir}')
+        return False
 
     # create output directory if it doesn't exist
     if not os.path.exists(os.path.dirname(output_path)):
