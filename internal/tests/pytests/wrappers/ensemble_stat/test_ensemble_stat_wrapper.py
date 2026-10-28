@@ -1117,3 +1117,24 @@ def test_ensemble_stat_obs_err_invalid(metplus_config, config_name, value):
 
     wrapper = EnsembleStatWrapper(config)
     assert not wrapper.is_ok
+
+
+@pytest.mark.wrapper_c
+def test_ensemble_stat_multiple_ens_mean_files(metplus_config):
+    """Only pass the first ensemble mean file because ensemble_stat only
+    reads the last -ens_mean argument"""
+    config = metplus_config
+    set_minimum_config_settings(config)
+    wrapper = EnsembleStatWrapper(config)
+    file_dict = {
+        'ENS_MEAN': ['ens_mean_a.nc', 'ens_mean_b.nc'],
+        'OBS_POINT': ['obs_1.nc', 'obs_2.nc'],
+        'var_list': [],
+    }
+    config.logger.warning.reset_mock()
+    wrapper.add_to_infiles(file_dict, {})
+    config.logger.warning.assert_called_once()
+    assert ('Using ens_mean_a.nc and ignoring ens_mean_b.nc'
+            in config.logger.warning.call_args[0][0])
+    assert wrapper.infiles == ['-ens_mean ens_mean_a.nc',
+                               '-point_obs obs_1.nc', '-point_obs obs_2.nc']
