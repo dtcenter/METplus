@@ -177,6 +177,7 @@ model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
 #   * PythonEmbeddingFileUseCase
 #   * PrecipitationAppUseCase
 #   * NETCDFFileUseCase
+#   * VxDataCoCoRaHS
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
