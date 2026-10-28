@@ -319,34 +319,6 @@ class PointStatWrapper(CompareGriddedWrapper):
                                           **time_info)
                 self.args.append(f"-obs_valid_{ext.lower()} {obs_valid}")
 
-    def find_input_files(self, time_info):
-        # get model from first var to compare
-        model_path = self.find_model(time_info,
-                                     mandatory=True,
-                                     return_list=True)
-        if not model_path:
-            return None
-
-        # if there is more than 1 file, create file list file
-        if len(model_path) > 1:
-            self.logger.warning(
-                'Multiple forecast files found. Using the first one'
-            )
-
-        self.infiles.append(model_path[0])
-
-        # get observation to from first var compare
-        obs_path, time_info = self.find_obs_offset(time_info,
-                                                   mandatory=True,
-                                                   return_list=True)
-        if obs_path is None:
-            return None
-
-        # add observation files found individually to use -point_obs argument
-        self.infiles.extend(obs_path)
-
-        return time_info
-
     def _add_file(self, file_dict, time_info, data_type):
         """!Only use the first forecast file because point_stat reads a
         single forecast file and the next input is read as the observation.
