@@ -132,6 +132,9 @@ class PointStatWrapper(CompareGriddedWrapper):
                                c_dict['VERBOSITY'])
         )
         c_dict['ALLOW_MULTIPLE_FILES'] = True
+        # point_stat reads a single forecast file, so use the closest file
+        # to the valid time if a file window is used
+        c_dict['FCST_ALLOW_MULTIPLE_FILES'] = False
         c_dict['SUPPORTS_FILE_LIST'] = False
 
         c_dict['OFFSETS'] = getlistint(
@@ -326,7 +329,8 @@ class PointStatWrapper(CompareGriddedWrapper):
         file_list = file_dict.get(data_type)
         if data_type == 'FCST' and file_list and len(file_list) > 1:
             self.logger.warning(
-                'Multiple forecast files found. Using the first one'
+                f'Multiple forecast files found. Using {file_list[0]} and '
+                f'ignoring {", ".join(file_list[1:])}'
             )
             file_dict = {**file_dict, data_type: file_list[:1]}
 

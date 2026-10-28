@@ -52,6 +52,36 @@ def test_find_data_no_dated(metplus_config, data_type, allow_multiple):
     assert obs_file == pcw.c_dict[f'{data_type}INPUT_DIR']+'/20180201_0045'
 
 
+@pytest.mark.parametrize(
+    'type_allow_multiple, expected', [
+        (None, ['20180131_2330', '20180201_0000', '20180201_0030']),
+        (True, ['20180131_2330', '20180201_0000', '20180201_0030']),
+        (False, ['20180201_0000']),
+    ]
+)
+@pytest.mark.wrapper
+def test_find_data_window_type_allow_multiple(metplus_config, tmp_path,
+                                              type_allow_multiple, expected):
+    """Data type specific ALLOW_MULTIPLE_FILES overrides the general setting
+    so only the closest file in the window is found"""
+    for name in ('20180131_2330', '20180201_0000', '20180201_0030'):
+        (tmp_path / name).touch()
+    pcw = CommandBuilder(metplus_config)
+    time_info = ti_calculate({
+        'valid': datetime.datetime.strptime("201802010000", '%Y%m%d%H%M'),
+        'lead': 0,
+    })
+    pcw.c_dict['FCST_FILE_WINDOW_BEGIN'] = -3600
+    pcw.c_dict['FCST_FILE_WINDOW_END'] = 3600
+    pcw.c_dict['FCST_INPUT_DIR'] = str(tmp_path)
+    pcw.c_dict['FCST_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}"
+    pcw.c_dict['ALLOW_MULTIPLE_FILES'] = True
+    if type_allow_multiple is not None:
+        pcw.c_dict['FCST_ALLOW_MULTIPLE_FILES'] = type_allow_multiple
+    actual = pcw.find_data(time_info, data_type='FCST_', return_list=True)
+    assert actual == [str(tmp_path / name) for name in expected]
+
+
 # if the input dir/template combination is not a path, then find_data should just return that string
 # i.e. for a grid definition G003, input dir is empty and input template is G003
 @pytest.mark.parametrize(
