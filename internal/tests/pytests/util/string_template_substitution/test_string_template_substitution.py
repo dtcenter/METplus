@@ -80,6 +80,26 @@ def test_parse_template(template, filepath, expected_valid):
     assert ftime == expected_valid
 
 
+@pytest.mark.parametrize(
+    'template, filepath, expected_valid', [
+        ("{valid?fmt=%Y%m%d%H%M%S}.nc",
+         "20170510123045.nc",
+         "20170510123045"),
+        ("{valid?fmt=%Y%m%d_%H%M%S}.nc",
+         "20170510_000059.nc",
+         "20170510000059"),
+        ("{init?fmt=%Y%m%d%H%M%S}_{lead?fmt=%3H}.nc",
+         "20170510123045_003.nc",
+         "20170510153045"),
+    ]
+)
+@pytest.mark.util
+def test_parse_template_seconds(template, filepath, expected_valid):
+    out = parse_template(template, filepath)
+    ftime = out['valid'].strftime('%Y%m%d%H%M%S')
+    assert ftime == expected_valid
+
+
 @pytest.mark.util
 def test_h_lead_no_pad_1_digit_sub():
     file_template = TEST_FILE_TEMPLATE_A

@@ -38,6 +38,9 @@ class RuntimeFreqWrapper(CommandBuilder):
         'RUN_ONCE_FOR_EACH'
     ]
 
+    # input template label that is searched using the OFFSETS list
+    OFFSET_INPUT_LABEL = 'OBS'
+
     def __init__(self, config, instance=None):
         super().__init__(config, instance=instance)
         self.run_count = 0
@@ -877,7 +880,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             self.c_dict[template_key] = template
             # if fill missing is true, data is not mandatory to find
             mandatory = required and not fill_missing
-            if label == 'OBS':
+            if label == self.OFFSET_INPUT_LABEL:
                 input_files, offset_time_info = (
                     self.find_obs_offset(time_info, mandatory=mandatory,
                                          return_list=True, allow_dir=self.c_dict.get('ALLOW_DIR', False))

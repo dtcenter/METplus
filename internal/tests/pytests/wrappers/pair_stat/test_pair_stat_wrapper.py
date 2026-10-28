@@ -3,6 +3,7 @@
 import pytest
 
 import os
+import datetime
 
 from metplus.wrappers.pair_stat_wrapper import PairStatWrapper
 
@@ -806,3 +807,46 @@ def test_get_config_file(metplus_config):
     config.set('config', 'PAIR_STAT_CONFIG_FILE', fake_config_name)
     wrapper = PairStatWrapper(config)
     assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
+
+
+@pytest.mark.parametrize(
+    'offsets, existing_offset, expected_offset', [
+        # 0: file found with first offset
+        ('0', 0, 0),
+        # 1: file only found with second offset
+        ('0, 3', 3, 3),
+        # 2: file only found with first offset
+        ('6, 3, 0', 6, 6),
+        # 3: no file found for offsets
+        ('0, 6', 3, None),
+    ]
+)
+@pytest.mark.wrapper_a
+def test_pair_stat_offsets(metplus_config, tmp_path_factory, fcst_and_obs_data,
+                           offsets, existing_offset, expected_offset):
+    config = metplus_config
+    set_minimum_config_settings(config, fcst_and_obs_data)
+    input_dir = tmp_path_factory.mktemp('pairs')
+    config.set('config', 'INPUT_MUST_EXIST', True)
+    config.set('config', 'PAIR_STAT_PAIRS_INPUT_DIR', str(input_dir))
+    config.set('config', 'PAIR_STAT_PAIRS_INPUT_TEMPLATE',
+               '{da_init?fmt=%Y%m%d%H}.txt')
+    config.set('config', 'PAIR_STAT_OFFSETS', offsets)
+
+    valid = datetime.datetime(2017, 5, 10, 12)
+    da_init = valid + datetime.timedelta(hours=existing_offset)
+    (input_dir / f"{da_init.strftime('%Y%m%d%H')}.txt").touch()
+
+    wrapper = PairStatWrapper(config)
+    assert wrapper.is_ok
+    time_info = {'valid': valid, 'lead': 0}
+    input_files, offset_time_info = wrapper.get_input_files(time_info)
+    if expected_offset is None:
+        assert input_files['PAIRS'] is None
+        last_err = wrapper.logger.error.call_args_list[-1][0][0]
+        assert f'using offsets {offsets.replace(" ", "")}' in last_err
+        return
+
+    assert input_files['PAIRS'] == [str(input_dir /
+                                         f"{da_init.strftime('%Y%m%d%H')}.txt")]
+    assert offset_time_info['offset_hours'] == expected_offset

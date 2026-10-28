@@ -46,7 +46,9 @@ def main():
         return True
 
     _prompt_sed_commands(sed_commands)
-    return True
+
+    # report failure because the configuration did not pass validation
+    return False
 
 
 def _prompt_sed_commands(sed_commands):

@@ -441,5 +441,6 @@ class ExtractTilesWrapper(LoopTimesWrapper):
                           f'lat: {lat} (track lat) => {lat0} (lat lower left), '
                           f'lon: {lon} (track lon) => {lon0} (lon lower left)')
 
-        grid_def = f"latlon {nlat} {nlon} {lat0} {lon0} {dlat} {dlon}"
+        # Nx is the number of longitude points, Ny is number of latitude points
+        grid_def = f"latlon {nlon} {nlat} {lat0} {lon0} {dlat} {dlon}"
         return grid_def
