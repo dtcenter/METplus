@@ -74,6 +74,7 @@ Keywords
       DataLevelUpperAir
       DataLevelSatellite
     Select at least one DataProvider label:
+      DataProviderCSU
       DataProviderEUMETNET
       DataProviderNASA
       DataProviderNOAA

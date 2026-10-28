@@ -6,6 +6,7 @@ Datasets
    :titlesonly:
 
    datasets/aeronet
+   datasets/cocorahs
    datasets/gdas_prepbufr
    datasets/goes_level_1b
    datasets/goes_level_2_aerosol
