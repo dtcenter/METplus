@@ -822,11 +822,11 @@ def test_get_config_file(metplus_config):
     ]
 )
 @pytest.mark.wrapper_a
-def test_pair_stat_offsets(metplus_config, tmp_path_factory, fcst_and_obs_data,
+def test_pair_stat_offsets(metplus_config, tmp_path, fcst_and_obs_data,
                            offsets, existing_offset, expected_offset):
     config = metplus_config
     set_minimum_config_settings(config, fcst_and_obs_data)
-    input_dir = tmp_path_factory.mktemp('pairs')
+    input_dir = tmp_path
     config.set('config', 'INPUT_MUST_EXIST', True)
     config.set('config', 'PAIR_STAT_PAIRS_INPUT_DIR', str(input_dir))
     config.set('config', 'PAIR_STAT_PAIRS_INPUT_TEMPLATE',

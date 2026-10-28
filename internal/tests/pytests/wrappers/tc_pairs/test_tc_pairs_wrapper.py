@@ -912,13 +912,13 @@ def test_read_modify_write_file(tmp_path_factory,
 
 
 @pytest.mark.wrapper
-def test_find_a_or_e_deck_files_model_in_path(metplus_config, tmp_path_factory):
+def test_find_a_or_e_deck_files_model_in_path(metplus_config, tmp_path):
     """! Check that deck files are found for each model when the first model
     name also appears elsewhere in the path, e.g. GFS in GFS_data and GFSO
     """
     config = metplus_config
     set_minimum_config_settings(config)
-    deck_dir = tmp_path_factory.mktemp('tc_pairs') / 'GFS_data'
+    deck_dir = tmp_path / 'GFS_data'
     config.set('config', 'TC_PAIRS_ADECK_INPUT_DIR', str(deck_dir))
     config.set('config', 'TC_PAIRS_ADECK_TEMPLATE',
                '{model}/a{basin?fmt=%s}_{model}.dat')

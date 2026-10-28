@@ -141,10 +141,10 @@ def test_cyclone_plotter_init_date_and_hour(metplus_config, init_date,
     ]
 )
 @pytest.mark.wrapper
-def test_cyclone_plotter_retrieve_data(metplus_config, tmp_path_factory,
+def test_cyclone_plotter_retrieve_data(metplus_config, tmp_path,
                                        init_date, init_hr, model,
                                        expected_storms):
-    input_dir = tmp_path_factory.mktemp('cyclone_input')
+    input_dir = tmp_path
     with open(input_dir / 'tracks.tcst', 'w') as file_handle:
         file_handle.write(TCST_HEADER)
         file_handle.writelines(TCST_LINES)
