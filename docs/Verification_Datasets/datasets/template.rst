@@ -51,9 +51,7 @@ METplus Use Cases
   ..
    [Delete this comment section]
    Replace VxData in the search URL with the VxData label defined below.
-   Search for that label and nothing else. Sphinx has no AND operator, so
-   a query with more than one term matches only pages containing every
-   term and returns no results here.
+   Search for that label.
 
 Keywords
   ..
