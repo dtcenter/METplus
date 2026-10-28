@@ -33,6 +33,9 @@ jobs:
           token: ${{ secrets.METPLUS_BOT_TOKEN }}
       - name: Resolve conflicts between branch and branch-ref
         id: resolve_conflicts
+        env:
+          PULL_REQUESTS: ${{ github.event.inputs.pull_requests }}
+          CHANGE_SUMMARY: ${{ github.event.inputs.change_summary }}
         run: |
           branch_name=${{ env.branch_name }}
           cd ${GITHUB_WORKSPACE}
@@ -69,7 +72,7 @@ jobs:
 
           # create or append to file to track truth data changes
           # and ensure that PR merge into *-ref branch triggered testing workflow
-          change_entry='[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] ${{ github.event.inputs.pull_requests }} - ${{ github.event.inputs.change_summary }}'
+          change_entry="[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] ${PULL_REQUESTS} - ${CHANGE_SUMMARY}"
           echo "${change_entry}" >> ${change_log_path}
 
           # add file if it does not already exist
@@ -79,7 +82,7 @@ jobs:
 
           # commit changes to change log file
           echo git commit ${change_log_path}
-          git commit -m "added entry to update truth change log: ${branch_name} ${{ github.event.inputs.pull_requests }}" ${change_log_path}
+          git commit -m "added entry to update truth change log: ${branch_name} ${PULL_REQUESTS}" ${change_log_path}
 
           # push changes to update branch on GitHub
           cmd="git push origin ${update_branch}"
