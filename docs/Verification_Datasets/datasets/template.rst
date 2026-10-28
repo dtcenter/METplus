@@ -45,12 +45,15 @@ Variables available
 
 METplus Use Cases
   Link to
-  `METplus Use Cases <https://metplus.readthedocs.io/en/develop/search.html?q=VxData%26%26UseCase&check_keywords=yes&area=default>`_
+  `METplus Use Cases <https://metplus.readthedocs.io/en/develop/search.html?q=VxData&check_keywords=yes&area=default>`_
   for this dataset.
 
-  .. 
+  ..
    [Delete this comment section]
-   Update search terms with the VxData label defined above.
+   Replace VxData in the search URL with the VxData label defined below.
+   Search for that label and nothing else. Sphinx has no AND operator, so
+   a query with more than one term matches only pages containing every
+   term and returns no results here.
 
 Keywords
   ..
