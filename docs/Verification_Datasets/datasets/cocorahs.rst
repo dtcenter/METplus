@@ -7,11 +7,18 @@ Description
   The Community Collaborative Rain, Hail and Snow Network (CoCoRaHS) is a
   volunteer network of observers who measure precipitation at their homes,
   schools, and workplaces and report it through the CoCoRaHS website. Each
-  observer uses a manual 4-inch diameter gauge read once per day, with
-  supplemental reports submitted when hail or intense precipitation occurs.
-  The network originated with the Colorado Climate Center at Colorado State
+  observer uses a manual 4-inch diameter gauge read once per day. The
+  network originated with the Colorado Climate Center at Colorado State
   University in 1998, following the July 1997 Fort Collins flood, and now
   comprises more than 28,000 active observers.
+
+  The daily 24-hour precipitation report is the primary product and the one
+  used for verification. CoCoRaHS collects several other report types
+  alongside it, including multiple-day accumulation, significant weather,
+  hail, condition monitoring, evapotranspiration, and soil moisture, which
+  are submitted as events occur or on their own schedules rather than
+  daily. These are browsable through the same interface but are far less
+  complete than the daily precipitation record.
 
   Because observers report from wherever they live rather than from sites
   selected for a measurement program, station spacing is driven by where
@@ -27,6 +34,9 @@ Description
   See https://www.cocorahs.org for more information.
 
 Sample image
+  Daily precipitation reported by CoCoRaHS observers for the 24 hours
+  ending the morning of September 14, 2022. Grey markers are stations
+  reporting zero, which show the density of the network.
 
   .. image:: images/cocorahs.png
    :width: 600
@@ -64,6 +74,16 @@ Location of data
   moisture views. Station histories are searchable through the CoCoRaHS Data
   Explorer at https://dex.cocorahs.org. CoCoRaHS observations are also
   distributed as part of NCEI's GHCN-Daily.
+
+  Daily reports can also be retrieved in bulk as CSV, with no account
+  required. Omitting the state parameter returns every reporting station.
+  The following request retrieves all daily reports for the date shown in
+  the sample image above, which returned 15,749 observations:
+
+  .. code-block:: none
+
+     curl -o cocorahs_20220914.csv \
+       "https://data.cocorahs.org/cocorahs/export/exportreports.aspx?ReportType=Daily&Format=CSV&StartDate=2022-09-14&EndDate=2022-09-14"
 
 Access restrictions
   None for viewing or retrieving data; an account is needed only to submit
