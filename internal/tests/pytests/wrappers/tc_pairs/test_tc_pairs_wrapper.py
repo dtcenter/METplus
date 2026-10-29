@@ -832,7 +832,6 @@ def test_validate_runtime_freq_loop_order(metplus_config, set_loop_order, expect
         assert 'LOOP_ORDER has been deprecated.' in err_msg
 
 
-
 @pytest.mark.parametrize(
     'bool_value, expected_config',
        [
@@ -875,6 +874,7 @@ csv_out3 = '''STM, 050006, -9.1
 STM, 050005, -9999
 STM1, 05-9, -9999\n'''
 
+
 @pytest.mark.parametrize(
     'replace_tuple, content, expected',
        [
@@ -890,6 +890,7 @@ STM1, 05-9, -9999\n'''
          (('foo', 'bar'),'',''),
        ]
 )
+@pytest.mark.wrapper
 def test_read_modify_write_file(tmp_path_factory,
                                 metplus_config,
                                 replace_tuple,
@@ -908,7 +909,6 @@ def test_read_modify_write_file(tmp_path_factory,
     with open(out_file, 'r') as f:
         actual = f.read()
     assert actual == expected
-
 
 
 @pytest.mark.wrapper
@@ -934,3 +934,30 @@ def test_tc_pairs_skip_one_storm(metplus_config, get_test_data_dir):
     all_cmds = wrapper.run_all_times()
     assert len(all_cmds) == 1
     assert all_cmds[0][0].endswith(f'-out {out_dir}/mlq2014121318.gfso.0106')
+
+    
+@pytest.mark.wrapper
+def test_find_a_or_e_deck_files_model_in_path(metplus_config, tmp_path):
+    """! Check that deck files are found for each model when the first model
+    name also appears elsewhere in the path, e.g. GFS in GFS_data and GFSO
+    """
+    config = metplus_config
+    set_minimum_config_settings(config)
+    deck_dir = tmp_path / 'GFS_data'
+    config.set('config', 'TC_PAIRS_ADECK_INPUT_DIR', str(deck_dir))
+    config.set('config', 'TC_PAIRS_ADECK_TEMPLATE',
+               '{model}/a{basin?fmt=%s}_{model}.dat')
+    config.set('config', 'MODEL', 'GFS, GFSO')
+
+    expected_files = []
+    for model in ('GFS', 'GFSO'):
+        model_dir = deck_dir / model
+        model_dir.mkdir(parents=True)
+        deck_file = model_dir / f'aal_{model}.dat'
+        deck_file.touch()
+        expected_files.append(str(deck_file))
+
+    wrapper = TCPairsWrapper(config)
+    assert wrapper.is_ok
+    time_info = {'init': datetime(2014, 12, 13, 18), 'basin': 'al'}
+    assert sorted(wrapper.find_a_or_e_deck_files('A', time_info)) == expected_files

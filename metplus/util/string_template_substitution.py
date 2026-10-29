@@ -229,7 +229,8 @@ def set_output_dict_from_time_info(time_dict, output_dict, key):
                                              time_dict['m'],
                                              time_dict['d'],
                                              time_dict['H'],
-                                             time_dict['M'])
+                                             time_dict['M'],
+                                             time_dict['S'])
 
 
 def add_to_dict(match, match_dict, filepath, new_len):
@@ -896,6 +897,7 @@ def add_date_matches_to_output_dict(match_dict, output_dict, time_type, valid_sh
         'j': -1,
         'H': 0,
         'M': 0,
+        'S': 0,
         'b': -1,
     }
 

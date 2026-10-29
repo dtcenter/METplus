@@ -814,7 +814,9 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`CYCLONE_PLOTTER_INIT_DATE` instead.
 
    CYCLONE_PLOTTER_INIT_DATE
-     Initialization date for the cyclone forecasts in YYYYMMDD format.
+     Initialization date for the cyclone forecasts in YYYYMMDD or YYYYMMDDHH
+     format. If :term:`CYCLONE_PLOTTER_INIT_HR` is not set, the hour is read
+     from this value, or 00 is used if it does not include the hour.
 
      | *Used by:*  CyclonePlotter
 
