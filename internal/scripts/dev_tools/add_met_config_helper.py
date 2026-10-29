@@ -308,8 +308,9 @@ def _print_add_met_config(var):
     met_var = var['name']
     dict_items = var['dict_items']
     if not dict_items:
-        print(f"        self.add_met_config(name='{met_var}',\n"
-              "                            data_type='DATA_TYPE')")
+        print(
+            f"        self.add_met_config(name='{met_var}', data_type='DATA_TYPE')"
+        )
     else:
         print(f"        self.add_met_config_dict('{met_var}', {{")
         for item in dict_items:
@@ -405,7 +406,7 @@ def _print_unit_test(var):
 
 def _get_output_item(dict_items, met_config_name):
     if not dict_items:
-        return 'VALUE'
+        return 'VALUE;'
 
     item_name, *rest = met_config_name.split('.')[1:]
     child_name = rest[0] if rest else None

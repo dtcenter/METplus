@@ -246,33 +246,33 @@ The METplus Wrappers source code contains the following directory structure::
     internal/
     metplus/
     parm/
-    produtil/
     ush/
 
-The top-level METplus Wrappers directory consists of a README.md file
+The top-level METplus Wrappers directory contains a README.md file,
+a LICENSE.md file, files used to install the METplus Python package
+(pyproject.toml, requirements.txt, and environment.yml),
 and several subdirectories.
 
-The **docs/** directory contains documentation for users and contributors
-(HTML) and Doxygen
-files that are used to create the METplus wrapper API documentation. The
-Doxygen documentation can be created and viewed via web browser if the
-developer has Doxygen installed on the host.
-The Doxygen documentation is useful to
-contributors and is not necessary for METplus end-users.
+The **docs/** directory contains the source files used to build this
+documentation, including the User's Guide, Contributor's Guide,
+Release Guide, and Verification Datasets Guide.
 
-The **internal/** directory contains scripts that are only
-relevant to METplus developers and contributors, such as tests and files
-used with Docker.
+The **internal/** directory contains files that are mainly relevant to
+METplus developers and contributors, such as scripts used with Docker and
+conda and the use case test suite. It also contains the unit tests and the
+test data they use, which can be run to verify that METplus was installed
+correctly. Some of these files are not included in the release.
 
-The **metplus/** directory contains the wrapper scripts and utilities.
+The **metplus/** directory contains the METplus Python package, including
+the wrappers, utilities, and the produtil package.
 
 The **parm/** directory contains all the configuration files for MET and
 METplus Wrappers.
 
-The **produtil/** directory contains part of the external utility produtil.
-
 The **ush/** directory contains the run_metplus.py script that is
-executed to run use cases.
+executed to run use cases and the validate_config.py script that is used
+to update configuration files to the current version
+(see :ref:`validate_config`).
 
 
 External Components

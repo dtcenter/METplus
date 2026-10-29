@@ -308,6 +308,8 @@ def test_remove_quotes(before, after):
         # 14: list with line break at beginning
         ('\nsome_value,\n some_other_value',
          ["some_value", "some_other_value"]),
+        # 15: empty item between commas is skipped
+        ('0,,6', ['0', '6']),
     ]
 )
 @pytest.mark.util
@@ -416,6 +418,10 @@ def test_list_to_str(input_list, add_quotes, expected_output):
         ('<=3.5', 'le3.5'),
         ('==4', 'eq4'),
         ('!=3.5', 'ne3.5'),
+        ('>1&&<5', 'gt1&&lt5'),
+        ('<=1||>=5', 'le1||ge5'),
+        ('gt1&&<5', 'gt1&&lt5'),
+        ('3', None),
     ]
 )
 @pytest.mark.util
@@ -435,6 +441,7 @@ def test_comparison_to_letter_format(expression, expected_result):
          'gt0.05,gt0.05,ge1,ge1,lt5,lt5,le10,le10,eq15,eq15,ne20,ne20'),
         ('<805, <1609, <4828, <8045, >=8045, <16090',
          'lt805,lt1609,lt4828,lt8045,ge8045,lt16090'),
+        ('>1&&<5, <=1||>=5', 'gt1&&lt5,le1||ge5'),
     ]
 )
 @pytest.mark.util

@@ -3,6 +3,7 @@
 import pytest
 
 import os
+import datetime
 
 from metplus.wrappers.plot_point_obs_wrapper import PlotPointObsWrapper
 
@@ -321,3 +322,22 @@ def test_get_config_file(metplus_config):
     config.set('config', 'PLOT_POINT_OBS_CONFIG_FILE', fake_config_name)
     wrapper = PlotPointObsWrapper(config)
     assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
+
+
+@pytest.mark.wrapper_c
+def test_plot_point_obs_multiple_grid_files(metplus_config):
+    config = metplus_config
+    set_minimum_config_settings(config)
+    config.set('config', 'PLOT_POINT_OBS_GRID_INPUT_DIR', grid_dir)
+    config.set('config', 'PLOT_POINT_OBS_GRID_INPUT_TEMPLATE',
+               'grid_one.nc, grid_two.nc')
+    wrapper = PlotPointObsWrapper(config)
+    assert wrapper.is_ok
+
+    wrapper.infiles = []
+    time_info = {'valid': datetime.datetime(2012, 4, 9, 12), 'lead': 0}
+    assert wrapper.find_input_files(time_info) is None
+    last_err = wrapper.logger.error.call_args_list[-1][0][0]
+    assert 'More than one file found' in last_err
+    assert os.path.join(grid_dir, 'grid_one.nc') in last_err
+    assert os.path.join(grid_dir, 'grid_two.nc') in last_err

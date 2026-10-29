@@ -598,8 +598,11 @@ def test_set_lists_as_loop_or_group(metplus_config):
         'CONFIG_FILE': 'PARM_BASE/grid_to_grid/met_config/STATAnalysisConfig',
         'OUTPUT_DIR': 'OUTPUT_BASE/stat_analysis',
         'GROUP_LIST_ITEMS': ['FCST_INIT_HOUR_LIST'],
-        # add FCST_VAR_LIST to loop list even though it is empty to test that it is moved to group list
-        'LOOP_LIST_ITEMS': ['FCST_VALID_HOUR_LIST', 'MODEL_LIST', 'FCST_VAR_LIST'],
+        # add FCST_VAR_LIST and OBS_VAR_LIST to loop list even though they are
+        # empty to test that they are moved to group list. Consecutive empty
+        # lists are included to test that the 2nd one is not skipped
+        'LOOP_LIST_ITEMS': ['FCST_VALID_HOUR_LIST', 'FCST_VAR_LIST',
+                            'OBS_VAR_LIST', 'MODEL_LIST'],
         'FCST_VAR_LIST': [],
         'OBS_VAR_LIST': [],
         'FCST_LEVEL_LIST': [],
@@ -629,7 +632,7 @@ def test_set_lists_as_loop_or_group(metplus_config):
     test_lists_to_group = config_dict['GROUP_LIST_ITEMS']
 
     assert(all(elem in expected_lists_to_group for elem in test_lists_to_group))
-    assert(all(elem in expected_lists_to_loop for elem in test_lists_to_loop))
+    assert sorted(test_lists_to_loop) == sorted(expected_lists_to_loop)
 
 
 @pytest.mark.parametrize(

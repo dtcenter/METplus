@@ -234,6 +234,19 @@ def test_skip_time_no_valid():
 
 
 @pytest.mark.parametrize(
+    'c_dict', [
+        {'INC_INIT_TIMES': {'%Y%m%d%H': ['2005080700']}},
+        {'INC_VALID_TIMES': {'%H': ['12']}},
+        {'SKIP_INIT_TIMES': {'%Y%m%d%H': ['2005080700']}},
+    ]
+)
+@pytest.mark.util
+def test_skip_time_wildcard(c_dict):
+    time_info = {'init': '*', 'valid': '*', 'lead': 10800}
+    assert not tl.skip_time(time_info, c_dict)
+
+
+@pytest.mark.parametrize(
     'skip_times_conf, expected_dict', [
         ('"%d:30,31"', {'%d': ['30', '31']}),
         ('"%m:begin_end_incr(3,11,1)"', {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
@@ -402,6 +415,15 @@ def test_time_generator_error_check_list(metplus_config, prefix):
     generator = tl.time_generator(config)
     assert next(generator)[prefix.lower()] == expected_time
     assert next(generator) is None
+
+    # bad value in the middle of the list stops the generator
+    config.set('config', f'{prefix}_LIST',
+               '2021020104, 202102010412, 2021020106')
+    generator = tl.time_generator(config)
+    assert next(generator)[prefix.lower()] == expected_time
+    assert next(generator) is None
+    with pytest.raises(StopIteration):
+        next(generator)
 
     #  good _LIST
     config.set('config', f'{prefix}_LIST', '2021020104')
@@ -910,3 +932,51 @@ def _create_dummy_files(make_dummy_empty, data_dir, data_num, add_subdir=False):
 
     for filename in files:
         make_dummy_empty(data_dir, filename)
+
+@pytest.mark.parametrize(
+    'time_type, expected', [
+        ('lead', [0, 21600]),
+        ('init', [datetime(2020, 1, 1, 0)]),
+    ]
+)
+@pytest.mark.util
+def test_get_unique_times(time_type, expected):
+    init = datetime(2020, 1, 1, 0)
+    files_and_time_info = [
+        ('f000', {'init': init, 'lead': 0}),
+        ('f006', {'init': init, 'lead': 21600}),
+        ('f006_dup', {'init': init, 'lead': 21600}),
+        ('no_lead', {'init': init}),
+    ]
+    assert tl.get_unique_times(files_and_time_info, time_type) == expected
+
+
+@pytest.mark.parametrize(
+    'lead_min, lead_max, expected', [
+        (None, None, [0, 3, 6]),
+        ('3', None, [3, 6]),
+        (None, '3', [0, 3]),
+        ('1', '5', [3]),
+        ('7', None, []),
+    ]
+)
+@pytest.mark.util
+def test_get_lead_sequence_template_min_max(metplus_config, tmp_path,
+                                            make_dummy_empty, lead_min,
+                                            lead_max, expected):
+    data_dir = tmp_path
+    for lead in ('000', '003', '006'):
+        make_dummy_empty(data_dir, f'29122025_12Z_f{lead}.txt')
+
+    config = metplus_config
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'TIME_GENERATOR_INPUT_DIR', data_dir)
+    config.set('config', 'TIME_GENERATOR_INPUT_TEMPLATE', DATA_TEMPLATE1)
+    if lead_min is not None:
+        config.set('config', 'LEAD_SEQ_MIN', lead_min)
+    if lead_max is not None:
+        config.set('config', 'LEAD_SEQ_MAX', lead_max)
+
+    input_dict = {'init': datetime(2025, 12, 29, 12)}
+    actual = tl.get_lead_sequence(config, input_dict)
+    assert actual == [relativedelta(hours=hour) for hour in expected]

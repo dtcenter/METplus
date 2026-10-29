@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import pytest
+from unittest import mock
 
 import os
 import datetime
@@ -144,3 +145,35 @@ def test_run_gen_vx_mask_twice(metplus_config):
 
     assert test_passed
 
+
+
+@pytest.mark.wrapper
+def test_run_gen_vx_mask_twice_two_times(metplus_config):
+    """Temp file reused for each run time should not be tracked as
+    duplicate output"""
+    cmd_args = [
+        "-type lat -thresh 'ge30&&le50'",
+        "-type lon -thresh 'le-70&&ge-130' -intersection -name lat_lon_mask"
+    ]
+    config = metplus_config
+    output_dir = os.path.join(config.getdir('OUTPUT_BASE'), 'GenVxMask_test')
+    config.set('config', 'GEN_VX_MASK_INPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}_ZENITH')
+    config.set('config', 'GEN_VX_MASK_INPUT_MASK_TEMPLATE', 'LAT, LON')
+    config.set('config', 'GEN_VX_MASK_OUTPUT_DIR', output_dir)
+    config.set('config', 'GEN_VX_MASK_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}_ZENITH_LAT_LON_MASK.nc')
+    config.set('config', 'GEN_VX_MASK_OPTIONS', ','.join(cmd_args))
+    wrap = gen_vx_mask_wrapper(config)
+
+    for valid in ('2018020100', '2018020106'):
+        time_info = time_util.ti_calculate({
+            'valid': datetime.datetime.strptime(valid, '%Y%m%d%H'),
+            'lead': 0,
+        })
+        wrap.c_dict['ALL_FILES'] = wrap.get_all_files_for_each(time_info)
+        with mock.patch.object(wrap.logger, 'warning') as mock_warning:
+            wrap.run_at_time_once(time_info)
+        mock_warning.assert_not_called()
+
+    assert len(wrap.all_commands) == 4
+    assert not any('temp_0.nc' in path for path in wrap.output_written)
+    assert wrap.errors == 0

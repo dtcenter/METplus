@@ -1437,3 +1437,29 @@ def test_series_analysis_warn_on_overwrite(metplus_config, check_warn_output_ove
     _run_processes(processes)
     for wrapper in processes:
         check_warn_output_overwrite(wrapper, expected_warning, expected_path)
+
+
+@pytest.mark.parametrize(
+    'skip, expected_cmds', [
+        (True, 1),
+        (False, 2),
+    ]
+)
+@pytest.mark.wrapper_b
+def test_series_analysis_skip_if_output_exists(metplus_config, skip,
+                                               expected_cmds):
+    config = metplus_config
+    set_minimum_config_settings(config)
+    config.set('config', 'SERIES_ANALYSIS_SKIP_IF_OUTPUT_EXISTS', skip)
+
+    output_dir = config.getdir('SERIES_ANALYSIS_OUTPUT_DIR')
+    os.makedirs(output_dir, exist_ok=True)
+    with open(os.path.join(output_dir, f'sa_{run_times[0]}.nc'), 'w') as file_handle:
+        file_handle.write('')
+
+    wrapper = SeriesAnalysisWrapper(config)
+    assert wrapper.is_ok
+    all_cmds = wrapper.run_all_times()
+    assert len(all_cmds) == expected_cmds
+    if skip:
+        assert f'sa_{run_times[1]}.nc' in all_cmds[0][0]

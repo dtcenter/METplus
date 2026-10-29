@@ -1,0 +1,31 @@
+name: Check Use Case Groups
+
+# Fail pull requests to develop and main_vX.Y branches if any use case group
+# in .github/parm/use_case_groups.json is set to run on every push.
+# No paths filter so this check always reports and can be a required check.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - develop
+      - 'main_v**'
+
+jobs:
+  check:
+    name: Check use case groups are not set to run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          sparse-checkout: .github/parm/use_case_groups.json
+          sparse-checkout-cone-mode: false
+      - name: Fail if any use case group has run set to true
+        run: |
+          enabled=$(jq -r '.[] | select(.run == true) | "\(.category): \(.index_list)"' .github/parm/use_case_groups.json)
+          if [ -n "$enabled" ]; then
+            echo "::error::Set \"run\" to false in .github/parm/use_case_groups.json for these groups before merging:"
+            echo "$enabled"
+            exit 1
+          fi
+          echo "All use case groups have run set to false"

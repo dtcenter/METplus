@@ -591,9 +591,9 @@ class TCPairsWrapper(RuntimeFreqWrapper):
             return
 
         # find corresponding adeck or edeck files
+        # continue to next bdeck if one is skipped or missing inputs
         for bdeck_file in bdeck_files:
-            if not self._process_bdeck(bdeck_file, wildcard_used, time_info, basin, cyclone):
-                return
+            self._process_bdeck(bdeck_file, wildcard_used, time_info, basin, cyclone)
 
 
     def _process_bdeck(self, bdeck_file, wildcard_used, time_info, basin, cyclone):
@@ -772,14 +772,10 @@ class TCPairsWrapper(RuntimeFreqWrapper):
         template = os.path.join(self.c_dict[deck+'DECK_DIR'],
                                 self.c_dict[deck+'DECK_TEMPLATE'])
 
-        # get matching adeck wildcard expression for first model
-        deck_expr = do_string_sub(template,
-                                  model=self.c_dict['MODEL_LIST'][0],
-                                  **time_info)
-
         # add adeck files if they exist for each model
         for model in self.c_dict['MODEL_LIST']:
-            deck_glob = deck_expr.replace(self.c_dict['MODEL_LIST'][0], model)
+            # get matching deck wildcard expression for model
+            deck_glob = do_string_sub(template, model=model, **time_info)
             self.logger.debug(f'Looking for {deck}DECK file: {deck_glob} '
                               f'for model ({model}) using template {template}')
             deck_files = glob.glob(deck_glob)

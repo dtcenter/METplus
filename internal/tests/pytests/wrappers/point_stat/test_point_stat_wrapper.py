@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 
 import pytest
+from unittest import mock
 
 import os
 from datetime import datetime, timedelta
 
 from metplus.wrappers.point_stat_wrapper import PointStatWrapper
+from metplus.util import ti_calculate
 from internal.tests.pytests.conftest import stat_runtime_freq_test_params
 
 fcst_dir = '/some/path/fcst'
@@ -1014,3 +1016,50 @@ def test_get_config_file(metplus_config):
     config.set('config', 'POINT_STAT_CONFIG_FILE', fake_config_name)
     wrapper = PointStatWrapper(config)
     assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
+
+
+@pytest.mark.wrapper_a
+def test_point_stat_multiple_fcst_files(metplus_config, fcst_and_obs_data):
+    config = metplus_config
+    set_minimum_config_settings(config, fcst_and_obs_data)
+    wrapper = PointStatWrapper(config)
+    file_dict = {
+        'FCST': ['fcst_a.nc', 'fcst_b.nc'],
+        'OBS': ['obs_1.nc', 'obs_2.nc'],
+        'var_list': [],
+    }
+    with mock.patch.object(wrapper.logger, 'warning') as mock_warning:
+        wrapper.add_to_infiles(file_dict, {})
+    mock_warning.assert_called_once()
+    assert 'Using fcst_a.nc and ignoring fcst_b.nc' in mock_warning.call_args[0][0]
+    assert wrapper.infiles == ['fcst_a.nc', 'obs_1.nc', 'obs_2.nc']
+    assert file_dict['FCST'] == ['fcst_a.nc', 'fcst_b.nc']
+
+
+@pytest.mark.wrapper
+def test_point_stat_fcst_window_closest_file(metplus_config, fcst_and_obs_data,
+                                             tmp_path):
+    """With a file window, use the forecast file closest to the valid time
+    and keep all observation files in the window"""
+    names = ('20180131_2330', '20180201_0000', '20180201_0030')
+    for name in names:
+        (tmp_path / name).touch()
+    config = metplus_config
+    set_minimum_config_settings(config, fcst_and_obs_data)
+    config.set('config', 'FILE_WINDOW_BEGIN', -3600)
+    config.set('config', 'FILE_WINDOW_END', 3600)
+    wrapper = PointStatWrapper(config)
+    time_info = ti_calculate({
+        'valid': datetime.strptime("201802010000", '%Y%m%d%H%M'),
+        'lead': 0,
+    })
+    for data_type in ('FCST_', 'OBS_'):
+        wrapper.c_dict[f'{data_type}INPUT_DIR'] = str(tmp_path)
+        wrapper.c_dict[f'{data_type}INPUT_TEMPLATE'] = (
+            '{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}'
+        )
+
+    fcst = wrapper.find_data(time_info, data_type='FCST_', return_list=True)
+    obs = wrapper.find_data(time_info, data_type='OBS_', return_list=True)
+    assert fcst == [str(tmp_path / '20180201_0000')]
+    assert obs == [str(tmp_path / name) for name in names]

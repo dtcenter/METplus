@@ -814,7 +814,9 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`CYCLONE_PLOTTER_INIT_DATE` instead.
 
    CYCLONE_PLOTTER_INIT_DATE
-     Initialization date for the cyclone forecasts in YYYYMMDD format.
+     Initialization date for the cyclone forecasts in YYYYMMDD or YYYYMMDDHH
+     format. If :term:`CYCLONE_PLOTTER_INIT_HR` is not set, the hour is read
+     from this value, or 00 is used if it does not include the hour.
 
      | *Used by:*  CyclonePlotter
 
@@ -14539,6 +14541,8 @@ METplus Configuration Glossary
      Build list of runtimes to process using directory and template to extract
      time information. If set, INIT/VALID_BEG/END/INCREMENT time looping
      variables and forecast lead variables like :term:`LEAD_SEQ` are ignored.
+     :term:`LEAD_SEQ_MIN` and :term:`LEAD_SEQ_MAX` are still used to filter
+     the forecast leads found in the files.
      Used with :term:`TIME_GENERATOR_INPUT_DIR`.
      The :term:`LOOP_BY` variable determines whether to extract initialization
      or valid times to process. List of forecast leads to process are gathered
@@ -15698,3 +15702,38 @@ METplus Configuration Glossary
      Specify the value for 'write_weights' in the MET configuration file for PairStat.
 
      | *Used by:* PairStat
+
+   MODE_PLOT_VALID_FLAG
+     Specify the value for 'plot_valid_flag' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_FCST_RAW_PLOT_COLOR_TABLE
+     Specify the value for 'fcst_raw_plot.color_table' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_FCST_RAW_PLOT_PLOT_MIN
+     Specify the value for 'fcst_raw_plot.plot_min' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_FCST_RAW_PLOT_PLOT_MAX
+     Specify the value for 'fcst_raw_plot.plot_max' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_OBS_RAW_PLOT_COLOR_TABLE
+     Specify the value for 'obs_raw_plot.color_table' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_OBS_RAW_PLOT_PLOT_MIN
+     Specify the value for 'obs_raw_plot.plot_min' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_OBS_RAW_PLOT_PLOT_MAX
+     Specify the value for 'obs_raw_plot.plot_max' in the MET configuration file for MODE.
+
+     | *Used by:* MODE

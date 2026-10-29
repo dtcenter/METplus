@@ -1262,9 +1262,12 @@ When ``TIME_GENERATOR_INPUT_TEMPLATE`` is set, the following traditional time lo
 
 * ``INIT_BEG``, ``INIT_END``, ``INIT_INCREMENT``, ``INIT_TIME_FMT``
 * ``VALID_BEG``, ``VALID_END``, ``VALID_INCREMENT``, ``VALID_TIME_FMT``
-* ``LEAD_SEQ``, ``INIT_SEQ``, ``LEAD_SEQ_MIN``, ``LEAD_SEQ_MAX``
+* ``LEAD_SEQ``, ``INIT_SEQ``
 
 The time information is instead derived entirely from the file paths matching the specified templates.
+:term:`LEAD_SEQ_MIN` and :term:`LEAD_SEQ_MAX` can be set to only process the forecast leads found
+in the files that are within that range, e.g. to skip a 0 hour forecast lead that does not contain
+an accumulation field.
 
 Basic Template Configuration
 """"""""""""""""""""""""""""

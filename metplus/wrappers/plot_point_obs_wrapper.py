@@ -208,7 +208,7 @@ class PlotPointObsWrapper(LoopTimesWrapper):
             if len(grid_file) > 1:
                 self.log_error('More than one file found from '
                                'PLOT_POINT_OBS_GRID_INPUT_TEMPLATE: '
-                               f'{grid_file.split(",")}')
+                               f'{grid_file}')
                 return None
 
             self.c_dict['GRID_INPUT_PATH'] = grid_file[0]

@@ -62,6 +62,7 @@ def time_generator(config):
                                          config.logger)
             if not current_dt:
                 yield None
+                return
 
             time_info = _create_time_input_dict(prefix, current_dt, clock_dt)
             yield time_info
@@ -423,7 +424,9 @@ def get_unique_times(files_and_time_info, time_type):
 
     for filepath, time_info in files_and_time_info:
         time_value = time_info.get(time_type.lower())
-        if not time_value: continue
+        # check for None because a lead of 0 is a valid value
+        if time_value is None:
+            continue
 
         if time_value not in seen:
             seen.add(time_value)
@@ -621,6 +624,13 @@ def skip_time(time_info, c_dict):
         if not skip_list and not inc_list:
             continue
 
+        # time cannot be checked if it is not set or is a wildcard, e.g.
+        # init and valid are * when running once per lead. Do not skip here
+        # so the times of each file can be checked instead
+        run_time = time_info.get(init_valid)
+        if not run_time or run_time == '*':
+            continue
+
         # if any include times are listed, skip if the time doesn't match
         if inc_list and not _found_time_match(time_info, inc_list, init_valid):
             return True
@@ -673,7 +683,10 @@ def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
         config.logger.debug("Using TIME_GENERATOR_INPUT_DIR/TEMPLATE to find lead times")
         unique_leads = _get_intersected_unique_times(config, time_type='lead', sort_by='lead',
                                                      input_dict=input_dict)
-        lead_seq = _handle_lead_seq(config, unique_leads, default_unit='S')
+        # filter leads found in files by LEAD_SEQ_MIN and LEAD_SEQ_MAX
+        lead_min, lead_max, _ = _get_lead_min_max(config)
+        lead_seq = _handle_lead_seq(config, unique_leads, lead_min, lead_max,
+                                    default_unit='S')
         if lead_seq:
             leads_fmt = [ti_get_lead_string(lead, plural=False) for lead in lead_seq]
             config.logger.debug(f"Found {len(lead_seq)} lead times that match "

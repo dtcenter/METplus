@@ -151,22 +151,30 @@ class CyclonePlotterWrapper(CommandBuilder):
         )
 
         # Check for unconfigured lons and lats needed for defining the extent
+        missing_extent = False
         if not west_lon:
             self.log_error("Missing CYCLONE_PLOTTER_WEST_LON in config file. ")
+            missing_extent = True
         else:
             self.west_lon = (float(west_lon))
         if not east_lon:
             self.log_error("Missing CYCLONE_PLOTTER_EAST_LON in config file. ")
+            missing_extent = True
         else:
             self.east_lon = (float(east_lon))
         if not south_lat:
             self.log_error("Missing CYCLONE_PLOTTER_SOUTH_LAT in config file. ")
+            missing_extent = True
         else:
             self.south_lat = float(south_lat)
         if not north_lat:
             self.log_error("Missing CYCLONE_PLOTTER_NORTH_LAT in config file. ")
+            missing_extent = True
         else:
             self.north_lat = float(north_lat)
+
+        if missing_extent:
+            return
 
         self.extent_region = [self.west_lon, self.east_lon, self.south_lat, self.north_lat]
         self.logger.debug(f"extent region: {self.extent_region}")
@@ -247,8 +255,9 @@ class CyclonePlotterWrapper(CommandBuilder):
 
         # Subset the dataframe to include only the data relevant to the user's criteria as
         # specified in the configuration file.
-        init_date = int(self.init_date)
-        init_hh = int(self.init_hr)
+        init_date, init_hh = self._get_init_date_and_hour()
+        if init_date is None:
+            return None
         model_name = self.model
 
         if model_name:
@@ -298,6 +307,31 @@ class CyclonePlotterWrapper(CommandBuilder):
            final_sorted_df.to_csv(final_df_filename)
 
         return final_sorted_df
+
+    def _get_init_date_and_hour(self):
+        """! Get the init date (YYYYMMDD) and hour (HH) used to subset the
+             tracks. CYCLONE_PLOTTER_INIT_DATE can be YYYYMMDD or YYYYMMDDHH.
+             If CYCLONE_PLOTTER_INIT_HR is not set, the hour is read from
+             CYCLONE_PLOTTER_INIT_DATE. If no hour is found, 0 is used.
+
+             @returns tuple of init date and init hour as integers or
+              (None, None) if the values are invalid
+        """
+        init_date = str(self.init_date).strip()
+        init_hr = str(self.init_hr).strip() if self.init_hr else ''
+        if not init_hr and len(init_date) >= 10:
+            init_hr = init_date[8:10]
+
+        try:
+            init_ymd = int(init_date[:8])
+            init_hh = int(init_hr) if init_hr else 0
+        except ValueError:
+            self.log_error("Invalid CYCLONE_PLOTTER_INIT_DATE "
+                           f"({self.init_date}) or CYCLONE_PLOTTER_INIT_HR "
+                           f"({self.init_hr}). Must be YYYYMMDD[HH] and HH")
+            return None, None
+
+        return init_ymd, init_hh
 
     def _get_storm_track_dict(self, user_criteria_df):
         # Keep track of the unique storm tracks by their storm_id

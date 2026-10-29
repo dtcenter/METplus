@@ -38,6 +38,9 @@ class RuntimeFreqWrapper(CommandBuilder):
         'RUN_ONCE_FOR_EACH'
     ]
 
+    # input template label that is searched using the OFFSETS list
+    OFFSET_INPUT_LABEL = 'OBS'
+
     def __init__(self, config, instance=None):
         super().__init__(config, instance=instance)
         self.run_count = 0
@@ -877,7 +880,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             self.c_dict[template_key] = template
             # if fill missing is true, data is not mandatory to find
             mandatory = required and not fill_missing
-            if label == 'OBS':
+            if label == self.OFFSET_INPUT_LABEL:
                 input_files, offset_time_info = (
                     self.find_obs_offset(time_info, mandatory=mandatory,
                                          return_list=True, allow_dir=self.c_dict.get('ALLOW_DIR', False))
@@ -1063,12 +1066,19 @@ class RuntimeFreqWrapper(CommandBuilder):
         # add quotation marks around the file path if there is a space
         file_list = [f'"{remove_quotes(item)}"' if ' ' in item else item for item in file_list]
 
+        # MET only reads one ensemble mean file
+        if data_type == 'ENS_MEAN' and len(file_list) > 1:
+            self.logger.warning(
+                f'Multiple ensemble mean files found. Using {file_list[0]} '
+                f'and ignoring {", ".join(file_list[1:])}'
+            )
+
         # Dictionary to map data types to their corresponding commands
         data_type_handlers = {
             'CTRL': lambda files: self.infiles.append(f'-ctrl {files[0]}'),
             'OBS_GRID': lambda files: self.infiles.extend(f'-grid_obs {file}' for file in files),
             'OBS_POINT': lambda files: self.infiles.extend(f'-point_obs {file}' for file in files),
-            'ENS_MEAN': lambda files: self.infiles.extend(f'-ens_mean {file}' for file in files),
+            'ENS_MEAN': lambda files: self.infiles.append(f'-ens_mean {files[0]}'),
             'PAIRS': lambda files: self.infiles.extend(f'-pairs {file}' for file in files),
         }
 

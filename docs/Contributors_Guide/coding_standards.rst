@@ -25,6 +25,16 @@ require Python packages that are allowed on operational high performance
 computers (HPCs). The process of approval for some HPCs can take months and
 some packages have been denied.
 
+Where a new Python package is listed depends on where it is used:
+
+  * **METplus wrappers code** (under *metplus/*): add the package to
+    requirements.txt and to the :ref:`metplus_components_python_packages`
+    table in Appendix A.
+  * **A use case** (under *parm/use_cases/model_applications/*): add the
+    package to the :ref:`metplus_components_python_packages` table in
+    Appendix A, but do **not** add it to requirements.txt. Use cases can
+    require packages that the METplus wrappers do not.
+
 Proceed with caution and request approval before starting development with a
 new Python package. Some general guidelines to consider when choosing new
 potential Python packages are:

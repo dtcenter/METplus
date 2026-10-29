@@ -564,9 +564,11 @@ class CommandBuilder:
         input_template = self.c_dict.get(f'{data_type}INPUT_TEMPLATE', '')
         data_dir = self.c_dict.get(f'{data_type}INPUT_DIR', '')
 
-        # read explicit file list if set instead of template/dir
-        if self.c_dict.get('EXPLICIT_FILE_LIST', False):
-            input_template = self.c_dict.get(f'{data_type}INPUT_FILE_LIST', '')
+        # read explicit file list if set for this input instead of
+        # template/dir. Other inputs may still use a template
+        file_list = self.c_dict.get(f'{data_type}INPUT_FILE_LIST')
+        if file_list:
+            input_template = file_list
             data_dir = ''
 
         if not input_template:
@@ -789,9 +791,14 @@ class CommandBuilder:
             self.log_error('Must set INPUT_DIR if looking for files within a time window')
             return None
 
+        allow_multiple = self.c_dict.get(
+            f'{data_type}ALLOW_MULTIPLE_FILES',
+            self.c_dict.get('ALLOW_MULTIPLE_FILES', False)
+        )
         closest_files = self._get_closest_files(data_dir, template, valid_time,
                                                 valid_range_lower,
-                                                valid_range_upper)
+                                                valid_range_upper,
+                                                allow_multiple)
         if not closest_files:
             msg = (f"Could not find {data_type}INPUT files under {data_dir} within range "
                    f"[{valid_range_lower},{valid_range_upper}] using template {template}")
@@ -828,7 +835,8 @@ class CommandBuilder:
         return out
 
     def _get_closest_files(self, data_dir, template, valid_time,
-                           valid_range_lower, valid_range_upper):
+                           valid_range_lower, valid_range_upper,
+                           allow_multiple=False):
         closest_files = []
 
         # get time of each file, compare to valid time, save best within range
@@ -862,7 +870,7 @@ class CommandBuilder:
                 continue
 
             # if multiple files are allowed, get all files within range
-            if self.c_dict.get('ALLOW_MULTIPLE_FILES', False):
+            if allow_multiple:
                 closest_files.append(fullpath)
                 continue
 
