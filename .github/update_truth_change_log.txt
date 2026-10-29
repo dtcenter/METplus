@@ -1,0 +1,72 @@
+[20240523_17:36:49 develop] No PR - Testing that the truth data will update even if there are no changes to the METplus repository since the last update
+[20240612_13:45:41 develop] #2610 - #2610 changed the input data for 3 short range use cases (10-12).
+[20240627_18:08:16 develop] dtcenter/MET#2921 - Re-defines azimuths definitions and corrects the logic for deriving radial and tangential winds.
+[20240801_02:56:51 develop] dtcenter/MET#2939 - Changes CDP to OCDP, for observation climo distribution percentiles.
+[20240822_16:27:31 develop] #2657 - Update 3 Python embedding scripts for 3 additional MPR data columns in Stat-Analysis
+[20240830_21:30:39 develop] dtcenter/MET#2951 - Modifies Series-Analysis output variable names for PSTD statistics by including the observation threshold string, as is done for PCT and PRC outputs.
+[20240905_16:45:56 develop] dtcenter/MET#2959 - Correct bugs in SEDI and BAGSS contingency table statistics found in the CTS line type
+[20240910_19:03:38 develop] dtcenter/MET#2967 - Fixes integer overflow bug in the computation of the CTS and NBRCTS ORSS, ORSS_NCL, and ORSS_NCU columns.
+[20240926_16:50:38 develop] #2701 - #2701 added a new use case (SeriesAnalysis_aggr) that produces new output
+[20241014_19:42:56 develop] dtcenter/MET#2988 - dtcenter/MET#2988 -- see issue #2719 for details -- retry because there was an issue with convert not being available in the ubuntu image that runs the unit tests
+[20241015_17:11:29 develop] dtcenter/MET#2988 - dtcenter/MET#2988 -- see issue #2719 for details -- retry (again) because there was an issue with convert not being available in the ubuntu image that runs the unit tests and METdbLoad use cases were broken
+[20241016_20:39:30 develop] #2710 - #2710 fixed a bug in a use case
+[20241113_21:34:39 develop] #2769 and #2785 - #2769 adds new use case for fire weather, #2785 turns on land_surface use case that was previously reporting differences that was resolved by bugfix dtcenter/MET#2899
+[20241120_22:40:11 develop] dtcenter/METplotpy#476 - dtcenter/METplotpy#476 appears to have caused differences in an output image that is not noticeable upon visual review
+[20241203_22:42:18 develop] dtcenter/MET#3008 - Adds new units attribute to Gen-Vx-Mask output
+[20241216_17:51:33 develop] #2836 - #2836 modified a use case to sort files to produce consistent results for each run
+[20241219_21:00:20 develop] #2817 - #2817 changed the output file name for the s2s_mid_lat/UserScript_fcstGFS_obsERA_Blocking use case
+[20250116_21:23:24 develop] dtcenter/MET#3036 - dtcenter/MET#3036 adds new columns
+[20250124_16:42:17 develop] dtcenter/MET#3057 - Small change to climo-based statistics from Point-Stat after correcting the timestamps for "monthly" NetCDF climo input data.
+[20250128_21:39:09 develop] #2872 - #2872 adds PairStat basic use case output and changes the name of the file_list files for a few use cases (see PR description for complete list)
+[20250221_18:18:32 develop] #2901 - Files from single use case contain different (i.e. new) data due to new settings in config
+[20250314_18:43:35 develop] dtcenter/MET#3105 - dtcenter/MET#3105 changes python version to 3.12 which causes minor differences in 2 use cases
+[20250319_21:47:10 develop] #2930, #2926 and dtcenter/MET#3105 - See update truth issue #2925 for details
+[20250324_20:47:47 develop] dtcenter/MET#3097 - Updates to range/azimuth values in NetCDF output from tc_rmw and tc_diag.
+[20250326_19:47:57 develop] dtcenter/MET#3097, #2850, #2922 - dtcenter/MET#3097 includes updates to range/azimuth values in NetCDF output from tc_rmw and tc_diag. #2850 and #2922 adds new use cases clouds 7-8
+[20250327_23:06:35 develop] #2938 - #2938 modified 3 use cases
+[20250423_19:12:04 develop] #2954, #2956, dtcenter/METplotpy#505 - #2954 added 2 s2s_soil_moisture use cases, #2956 slightly modified fire use case output, dtcenter/METplotpy#505 changed images for clouds:8 and s2s:2
+[20250513_18:41:07 develop] no PR - One of the clouds use cases started producing diffs in the reformatted data (using METdataio). The output plots produce no differences 
+[20250515_22:55:07 develop] dtcenter/MET#3152 - Adds unit and description strings for observations derived by PB2NC.
+[20250522_22:30:56 develop] #2985 and #2987 - #2985 added the RMWAnalysis basic use case and #2987 added a new short_range use case
+[20250523_02:40:02 develop] #2985 and #2987 - attempt 2 - #2985 added the RMWAnalysis basic use case and #2987 added a new short_range use case - attempt 2
+[20250523_17:18:38 develop] #2985 and #2987 - attempt 3 - #2985 added the RMWAnalysis basic use case and #2987 added a new short_range use case - attempt 3
+[20250523_17:24:19 develop] #2985 and #2987 - attempt 4 - #2985 added the RMWAnalysis basic use case and #2987 added a new short_range use case
+[20250528_20:36:39 develop] #2989 - Use case produces new output files and values.
+[20250529_13:18:37 develop] dtcenter/METdataio af0bb28b - The clouds:8 use case is producing differences sporadically, so a fix to METdataio was added to sort the directory listing in an attempt to prevent these differences going forward.
+[20250603_16:52:55 develop] #3009 - #3009 changed the output of the {lead} filename template tag to support months and years if they are possible to compute. This changed the output file names in the s2s:0 use case. It did not affect the results.
+[20250611_15:22:49 develop] #2985 - Moved use case added from #2985 to another group
+[20250618_16:29:54 develop] #3019 - #3019 changes the extension of one output file in the marine_and_cryosphere/UserScript_fcstRTOFS_obsAOML_calcTransport use case
+[20250630_21:39:40 develop] #2981, #3020, #3030 - #2981 adds land_surface:1 #3020 updates s2s_soil_moisture:0-1 #3030 adds s2s:6 clouds:8 and s2s:2 have image diffs that do not appear to be different upon visual review that are likely caused by https://github.com/dtcenter/METplotpy/commit/4d576d32cfc568d185810d7c41b40b981748553d
+[20250702_14:29:29 develop] #3036 - #3036 adds the tc_and_extra_tc:6 use case for WRF Hurricane Matthew
+[20250710_20:40:44 develop] #3051 - Adds new ISMN use case to the land_surface model_applications category.
+[20250730_20:36:24 develop] no PR - See PR #3071 for main_v6.1 for details
+[20250811_20:55:13 develop] dtcenter/MET#3202 - dtcenter/MET#3202 included changes relating to madis2nc
+[20250815_13:57:19 develop] dtcenter/MET#3185 - dtcenter/MET#3185 added the TrackPoint_count variable to the rmw_analysis NetCDF output
+[20250822_20:23:24 develop] #3084 - #3084 adds new basic use case for DataIngest wrapper that has produces new output data
+[20250903_23:10:01 develop] #3037 - Updating files, truth data for v6.2
+[20250918_14:47:27 develop] #3089 - #3089 adds a new use case for running GridStat using the template-based time generation utility. Also moved this use case and the DataIngest use case to another met_tool_wrapper use case group
+[20250922_18:55:18 develop] #3108 - #3108 fixed a bug in the MJO ENSO use case
+[20250926_13:35:45 develop] #3114 - #3114 changed ASCII2NC wrapper to write out a file list text file if the inputs are all file paths (not directories or python script calls). The marine_and_cryosphere:7 use case now produces a file list text file in its output. Also, diffs in METplus Analysis reformatter output due to MET version change are found in clouds:8, s2s_soil_moisture:1, tc_and_extra_tc:6
+[20251014_17:25:50 develop] #3120 - #3120 added 2 new medium_range use cases
+[20251016_21:10:40 develop] unknown - in the tc_and_extra_tc:6 (I-WRF Hurricane Matthew) use case, a few pixels are flagging differences. These differences are not visible upon review.
+[20251021_17:30:29 develop] #3133 - #3133 introduced image diffs in the tc_and_extra_tc:6 (I-WRF Hurricane Matthew) use case. These differences are not noticeable visually
+[20251219_17:28:32 develop] #3181 - #3181 changed the output directories of the weather regime use cases
+[20260105_21:57:42 develop] dtcenter/MET#3302 - Increased precision in PB2NC causes minor numeric differences.
+[20260117_01:51:31 develop] #3164 - Adding truth data for 3 new fire use cases, updating medium range use cases due to inconsistent location
+[20260123_15:45:13 develop] 8aecb0e1 - hotfix 8aecb0e1 combined the 4 fire weather use cases into 1 use case group
+[20260130_23:54:58 develop] dtcenter/MET#3321 - Remove FULL from the default list of masking regions.
+[20260204_19:23:55 develop] #3212 and #3143 - #3212 added FULL output back and #3143 renamed land_surface use case category to land
+[20260206_15:24:58 develop] dtcenter/MET#3330 - dtcenter/MET#3330 changed multi-variate MODE PS output to only list the merge thresh if merge_flag != NONE
+[20260331_15:20:10 develop] #3253 - New use case added
+[20260331_20:02:44 develop] #3253 - attempt 2 - retry with fix to download artifact logic
+[20260421_20:06:47 develop] dtcenter/METplotpy#576 - dtcenter/METplotpy#576 replaced plotly with matplotlib in METplotpy which caused some slight formatting differences in the plots generated by a few use cases
+[20260504_17:14:29 develop] #3293 - #3293 updated the conda environments used to run use case tests to use python 3.14 and updated packages, which caused some slight image diffs and rounding differences in metpy calculations
+[20260504_21:08:45 develop] dtcenter/MET#3369 - Improved precision in Gen-Ens-Prod `RANGE` output variables causes minor numeric differences in output.
+[20260514_22:47:40 develop] #3299 - new use case
+[20260601_19:55:26 develop] #3297 for Feature Branch #3226 - Adding truth data for Zarr use case
+[20260722_14:31:45 develop] dtcenter/MET#3403 - MET changes to wind derivation. See PR for details dtcenter/MET#3403
+[20260916_18:52:20 develop] #3332 - #3332 included minor changes to use cases to prevent warnings, as the PR also turned on a setting that causes use cases to fail upon warning
+[20260917_20:08:04 develop] dtcenter/MET#3411 - dtcenter/MET#3411 sets level and units attributes in GridDiag output
+[20261011_19:55:17 develop] #3360 - Correct `tc_and_extra_tc:3-5` to write output to `model_applications` instead of `model_application`
+[20261015_18:28:27 develop] #3368 - #3368 turns on detrending for the s2s_mme detrend use case, which changes the results slightly
+[20261029_16:39:13 develop] #3396 - #3396 changes the naming convention for file list files generated by TCDiag
