@@ -21,6 +21,9 @@ class PairStatWrapper(CompareGriddedWrapper):
     RUNTIME_FREQ_DEFAULT = 'RUN_ONCE_FOR_EACH'
     RUNTIME_FREQ_SUPPORTED = ['RUN_ONCE_FOR_EACH']
 
+    # apply PAIR_STAT_OFFSETS when searching for the pairs input files
+    OFFSET_INPUT_LABEL = 'PAIRS'
+
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
         'METPLUS_DESC',
@@ -237,6 +240,24 @@ class PairStatWrapper(CompareGriddedWrapper):
             self.log_error('Must set PAIR_STAT_OUTPUT_DIR in config file')
 
         return c_dict
+
+    def find_obs(self, time_info, mandatory=True, return_list=False,
+                 allow_dir=False):
+        """! Find the pairs input files. Called by find_obs_offset to apply
+        PAIR_STAT_OFFSETS. Overrides CommandBuilder function that looks for
+        OBS input files because PairStat reads pairs input instead.
+
+        @param time_info dictionary containing timing information
+        @param mandatory if True, report error if not found, warning if not
+        @param return_list if True, return a list of files
+        @param allow_dir if True, allow directory to be returned
+        @returns path or list of paths to pairs input files or None
+        """
+        return self.find_data(time_info,
+                              data_type='PAIRS',
+                              mandatory=mandatory,
+                              return_list=return_list,
+                              allow_dir=allow_dir)
 
     def set_command_line_arguments(self, time_info):
         """!Set command line arguments in self.args to add to command to run.

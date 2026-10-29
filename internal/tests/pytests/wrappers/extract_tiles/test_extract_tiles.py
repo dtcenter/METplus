@@ -204,6 +204,16 @@ def test_get_grid_info(metplus_config, lat, lon, expected_result):
     assert(wrapper.get_grid_info(lat, lon, 'FCST') == expected_result)
 
 
+@pytest.mark.wrapper
+def test_get_grid_info_nx_ny_order(metplus_config):
+    """! Nx (number of lon points) must come before Ny (number of lat points)"""
+    wrapper = extract_tiles_wrapper(metplus_config)
+    wrapper.c_dict['NLAT'] = 40
+    wrapper.c_dict['NLON'] = 80
+    expected = 'latlon 80 40 -70.0 -183.5 0.5 0.5'
+    assert wrapper.get_grid_info(-54.9, -168.6, 'FCST') == expected
+
+
 @pytest.mark.parametrize(
     'lat, lon, expected_result', [
         (-54.9, -168.6, 'latlon 60 60 -70.0 -183.5 0.5 0.5'),
