@@ -339,6 +339,35 @@ def test_shift_time_lead_negative():
     filename = do_string_sub(templ, init=init_string, lead=lead_string)
     assert(filename == expected_filename)
 
+@pytest.mark.parametrize(
+    'templ, expected', [
+        ('{valid?fmt=%Y%m%d%H?shift=-1H}', '2017060405'),
+        ('{valid?shift=-1H?fmt=%Y%m%d%H}', '2017060405'),
+        ('{valid?shift=1d?fmt=%Y%m%d%H}', '2017060506'),
+    ]
+)
+@pytest.mark.util
+def test_shift_before_fmt(templ, expected):
+    valid = datetime.datetime.strptime("2017060406", '%Y%m%d%H')
+    assert do_string_sub(templ, valid=valid) == expected
+
+
+@pytest.mark.parametrize(
+    'templ, lead, expected', [
+        ('{lead?fmt=%H}', -21600, '-06'),
+        ('{lead?fmt=%3H}', -21600, '-006'),
+        ('{lead?fmt=%H%M}', -21600, '-0600'),
+        ('{lead?fmt=%H%M}', -5400, '-0130'),
+        ('{lead?fmt=%3H%M}', -5400, '-00130'),
+        ('{lead?fmt=%M}', -5400, '-90'),
+        ('{lead?fmt=%H%M}', 5400, '0130'),
+    ]
+)
+@pytest.mark.util
+def test_negative_lead_format(templ, lead, expected):
+    assert do_string_sub(templ, lead=lead) == expected
+
+
 def test_shift_time_extract():
     valid_dt = datetime.datetime.strptime("2017060406", '%Y%m%d%H')
     templ = "{valid?fmt=%Y%m%d%H?shift=-21600}"

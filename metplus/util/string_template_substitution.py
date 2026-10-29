@@ -138,6 +138,18 @@ def format_time_offset(fmt, obj, month_len=None, year_len=None):
      @param year_len (optional) number of seconds in the year being processed
      @returns Formatted time value
     """
+    # format negative values using the absolute value so units are not
+    # floored and padding is kept, e.g. -90 minutes with %H%M is -0130
+    if obj < 0:
+        return f'-{_format_abs_time_offset(fmt, -obj, month_len, year_len)}'
+
+    return _format_abs_time_offset(fmt, obj, month_len, year_len)
+
+
+def _format_abs_time_offset(fmt, obj, month_len=None, year_len=None):
+    """!Helper function for format_time_offset to format a time offset value
+     that is zero or positive. See format_time_offset for argument info.
+    """
     out_str = ''
     fmt_split = fmt.split('%')[1:]
     # split time into days, hours, minutes, and seconds
@@ -311,7 +323,7 @@ def handle_format_delimiter(split_string, idx, shift_seconds, truncate_seconds, 
 
     obj = kwargs.get(split_string[0], None)
 
-    fmt = format_split_string[idx]
+    fmt = format_split_string[1]
     # if input is datetime object, format appropriately
     if isinstance(obj, datetime.datetime):
         # shift date time if set

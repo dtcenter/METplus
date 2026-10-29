@@ -44,6 +44,10 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                                  'LOG_PCP_COMBINE_VERBOSITY',
                                                  c_dict['VERBOSITY'])
 
+        # each field may use a different lookback, so find files and build
+        # a command for each field separately
+        c_dict['ONCE_PER_FIELD'] = True
+
         if c_dict['FCST_RUN']:
             c_dict = self._set_fcst_or_obs_dict_items('FCST', c_dict)
 
@@ -899,7 +903,13 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                                name=accum_dict['name'],
                                                level=accum_dict['level'],
                                                extra=accum_dict['extra'])
-            input_files = self.find_data(time_info, data_type=data_src, return_list=True)
+            input_files = self.find_data(
+                time_info, data_type=data_src, return_list=True,
+                mandatory=not self.c_dict['ALLOW_MISSING_INPUTS']
+            )
+            if not input_files:
+                return files_and_fields
+
             for input_file in input_files:
                 files_and_fields.append((input_file, field_info))
         else:

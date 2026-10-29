@@ -1036,3 +1036,94 @@ def test_pcp_combine_user_defined(metplus_config, get_test_data_dir):
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
         assert cmd == expected_cmd
+
+
+@pytest.mark.parametrize(
+    'allow_missing, expected_errors', [
+        (False, 1),
+        (True, 0),
+    ]
+)
+@pytest.mark.wrapper
+def test_derive_no_lookback_missing_input(metplus_config, allow_missing,
+                                          expected_errors):
+    config = metplus_config
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+    config.set('config', 'INPUT_MUST_EXIST', True)
+    set_pcp_combine_by_init(config, '%Y%m%d%H', '2019100200')
+    config.set('config', 'INIT_INCREMENT', '3H')
+    config.set('config', 'LEAD_SEQ', '3')
+    config.set('config', 'FCST_PCP_COMBINE_RUN', True)
+    config.set('config', 'FCST_PCP_COMBINE_METHOD', 'DERIVE')
+    config.set('config', 'FCST_PCP_COMBINE_STAT_LIST', 'sum')
+    config.set('config', 'PCP_COMBINE_ALLOW_MISSING_INPUTS', allow_missing)
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_DIR', SOME_INPUT_DIR)
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_TEMPLATE',
+               'missing_{init?fmt=%Y%m%d%H}_f{lead?fmt=%3H}.nc')
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_DIR', '/some/output/dir')
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_TEMPLATE',
+               'out_{valid?fmt=%Y%m%d%H}.nc')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_ACCUMS', '3H')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_NAMES', 'APCP')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_LEVELS', 'A03')
+
+    wrapper = PCPCombineWrapper(config)
+    assert wrapper.is_ok
+
+    all_cmds = wrapper.run_all_times()
+    assert all_cmds == []
+    assert wrapper.errors == expected_errors
+
+
+@pytest.mark.wrapper
+def test_add_method_two_fields(metplus_config):
+    """Each field should use its own lookback and command line arguments"""
+    config = metplus_config
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+    config.set('config', 'INPUT_MUST_EXIST', False)
+    set_pcp_combine_by_init(config, '%Y%m%d%H', '2019100200')
+    config.set('config', 'INIT_INCREMENT', '3H')
+    config.set('config', 'LEAD_SEQ', '6')
+    config.set('config', 'FCST_PCP_COMBINE_RUN', True)
+    config.set('config', 'FCST_PCP_COMBINE_METHOD', 'ADD')
+    config.set('config', 'FCST_PCP_COMBINE_CONSTANT_INIT', True)
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_DIR', SOME_INPUT_DIR)
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_TEMPLATE',
+               '{init?fmt=%Y%m%d}_prec_1hracc_75hrfcst_e00.nc')
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_DIR', '/some/output/dir')
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_TEMPLATE',
+               '{valid?fmt=%Y%m%d%H}_prec_{level?fmt=%H}hracc_e00.nc')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_ACCUMS', '1H')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_NAMES', 'rf')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_LEVELS',
+               '"({valid?fmt=%Y%m%d_%H},*,*)"')
+    config.set('config', 'FCST_VAR1_NAME', 'APCP')
+    config.set('config', 'FCST_VAR1_LEVELS', 'A02')
+    config.set('config', 'FCST_VAR2_NAME', 'APCP')
+    config.set('config', 'FCST_VAR2_LEVELS', 'A03')
+
+    wrapper = PCPCombineWrapper(config)
+    assert wrapper.is_ok
+
+    all_cmds = wrapper.run_all_times()
+
+    app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
+    verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
+    out_dir = wrapper.c_dict.get('FCST_OUTPUT_DIR')
+    in_file = f"{SOME_INPUT_DIR}/20191002_prec_1hracc_75hrfcst_e00.nc"
+    expected_cmds = [
+        (f"{app_path} -add "
+         f"{in_file} 'name=\"rf\"; level=\"(20191002_06,*,*)\";' "
+         f"{in_file} 'name=\"rf\"; level=\"(20191002_05,*,*)\";' "
+         f"-name \"APCP\" "
+         f"{out_dir}/2019100206_prec_02hracc_e00.nc {verbosity}"),
+        (f"{app_path} -add "
+         f"{in_file} 'name=\"rf\"; level=\"(20191002_06,*,*)\";' "
+         f"{in_file} 'name=\"rf\"; level=\"(20191002_05,*,*)\";' "
+         f"{in_file} 'name=\"rf\"; level=\"(20191002_04,*,*)\";' "
+         f"-name \"APCP\" "
+         f"{out_dir}/2019100206_prec_03hracc_e00.nc {verbosity}"),
+    ]
+    for cmd, _ in all_cmds:
+        print(cmd)
+    assert [cmd for cmd, _ in all_cmds] == expected_cmds

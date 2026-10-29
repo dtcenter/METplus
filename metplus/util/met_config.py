@@ -873,9 +873,12 @@ def handle_climo_dict(config, app_name, output_dict, sub_groups):
             dict_name = f'climo_{climo_type.lower()}'
             if sub_group_prefix:
                 dict_name = f'{sub_group_prefix}_{dict_name}'
-            add_met_config_dict(config=config, app_name=app_name,
-                                output_dict=output_dict,
-                                dict_name=dict_name, items=items)
+            if not add_met_config_dict(config=config, app_name=app_name,
+                                       output_dict=output_dict,
+                                       dict_name=dict_name, items=items):
+                is_ok = False
+                continue
+
             # remove fcst_ or obs_ prefix from dictionary name
             if sub_group_prefix:
                 value = output_dict[f'METPLUS_{dict_name.upper()}_DICT']

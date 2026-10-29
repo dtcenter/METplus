@@ -184,6 +184,42 @@ def test_grid_diag_runtime_freq(metplus_config, runtime_freq, init_or_valid, exp
             assert sorted(file_list) == sorted(expected_files_full)
 
 
+
+@pytest.mark.wrapper
+def test_grid_diag_run_once_per_lead_inc_init(metplus_config):
+    """! Test that INC_INIT_TIMES filters files instead of skipping every
+    lead when running once per lead
+    """
+    config = metplus_config
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'GRID_DIAG_RUNTIME_FREQ', 'RUN_ONCE_PER_LEAD')
+    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H%M%S')
+    config.set('config', 'INIT_INCREMENT', '12H')
+    config.set('config', 'INIT_BEG', '20141031213015')
+    config.set('config', 'INIT_END', '20141101093015')
+    config.set('config', 'LEAD_SEQ', '0H, 24H')
+    config.set('config', 'INC_INIT_TIMES', '"%Y%m%d%H%M%S:20141031213015"')
+    config.set('config', 'FCST_VAR1_NAME', 'FCST')
+    config.set('config', 'FCST_VAR1_LEVELS', 'L0')
+    input_dir = os.path.join(config.getdir('METPLUS_BASE'),
+                             'internal', 'tests', 'data', 'user_script')
+    config.set('config', 'GRID_DIAG_INPUT_DIR', input_dir)
+    config.set('config', 'GRID_DIAG_INPUT_TEMPLATE',
+               ('init_{init?fmt=%Y%m%d%H%M%S}_valid_{valid?fmt=%Y%m%d%H%M%S}_'
+                'lead_{lead?fmt=%3H}.nc'))
+    config.set('config', 'GRID_DIAG_OUTPUT_DIR', config.getdir('OUTPUT_BASE'))
+
+    wrapper = GridDiagWrapper(config)
+    wrapper.run_all_times()
+    expected_files = [
+        'init_20141031213015_valid_20141031213015_lead_000.nc',
+        'init_20141031213015_valid_20141101213015_lead_024.nc',
+    ]
+    assert len(wrapper.all_commands) == len(expected_files)
+    for (cmd, _), expected_file in zip(wrapper.all_commands, expected_files):
+        match = re.search(r'-data\s+([^\s]+)', cmd)
+        assert match.group(1) == os.path.join(input_dir, expected_file)
+
 @pytest.mark.parametrize(
     'time_info, expected_filename', [
         # all wildcard

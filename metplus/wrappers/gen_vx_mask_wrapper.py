@@ -12,7 +12,7 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import getlist
+from ..util import getlist, mkdir_p
 from ..util import do_string_sub, remove_quotes
 from . import LoopTimesWrapper
 
@@ -152,11 +152,14 @@ class GenVxMaskWrapper(LoopTimesWrapper):
                 break
 
             # if not the last iteration, write to temporary file
-            temp_file = os.path.join(self.config.getdir('STAGING_DIR'),
-                                     'gen_vx_mask',
-                                     f'temp_{index}.nc')
-            self.find_and_check_output_file(time_info,
-                                            output_path_template=temp_file)
+            # temp file is reused for each run time, so set the output path
+            # directly instead of checking if it exists or has been written
+            temp_dir = os.path.join(self.config.getdir('STAGING_DIR'),
+                                    'gen_vx_mask')
+            temp_file = os.path.join(temp_dir, f'temp_{index}.nc')
+            if not self.c_dict.get('DO_NOT_RUN_EXE', False):
+                mkdir_p(temp_dir)
+            self.set_output_path(temp_file)
 
             # run GenVxMask
             self.build()

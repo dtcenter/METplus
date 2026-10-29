@@ -1066,12 +1066,19 @@ class RuntimeFreqWrapper(CommandBuilder):
         # add quotation marks around the file path if there is a space
         file_list = [f'"{remove_quotes(item)}"' if ' ' in item else item for item in file_list]
 
+        # MET only reads one ensemble mean file
+        if data_type == 'ENS_MEAN' and len(file_list) > 1:
+            self.logger.warning(
+                f'Multiple ensemble mean files found. Using {file_list[0]} '
+                f'and ignoring {", ".join(file_list[1:])}'
+            )
+
         # Dictionary to map data types to their corresponding commands
         data_type_handlers = {
             'CTRL': lambda files: self.infiles.append(f'-ctrl {files[0]}'),
             'OBS_GRID': lambda files: self.infiles.extend(f'-grid_obs {file}' for file in files),
             'OBS_POINT': lambda files: self.infiles.extend(f'-point_obs {file}' for file in files),
-            'ENS_MEAN': lambda files: self.infiles.extend(f'-ens_mean {file}' for file in files),
+            'ENS_MEAN': lambda files: self.infiles.append(f'-ens_mean {files[0]}'),
             'PAIRS': lambda files: self.infiles.extend(f'-pairs {file}' for file in files),
         }
 

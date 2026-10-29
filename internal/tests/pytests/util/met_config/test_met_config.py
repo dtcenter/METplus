@@ -148,6 +148,22 @@ def test_handle_climo_dict(metplus_config, config_overrides, expected_value):
         assert output_dict[expected_var] == expected_sub
 
 
+
+@pytest.mark.parametrize(
+    'config_name', [
+        'APP_CLIMO_MEAN_REGRID_WIDTH',
+        'APP_FCST_CLIMO_MEAN_REGRID_WIDTH',
+        'APP_OBS_CLIMO_STDEV_REGRID_WIDTH',
+    ]
+)
+@pytest.mark.util
+def test_handle_climo_dict_bad_value(metplus_config, config_name):
+    config = metplus_config
+    config.set('config', config_name, 'abc')
+    output_dict = {}
+    assert not mc.handle_climo_dict(config, 'app', output_dict,
+                                    sub_groups=('fcst', 'obs'))
+
 @pytest.mark.parametrize(
     'name, data_type, mp_configs, extra_args', [
         ('beg', 'int', 'BEG', None),

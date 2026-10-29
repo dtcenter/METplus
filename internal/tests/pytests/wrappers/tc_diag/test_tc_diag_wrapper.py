@@ -252,7 +252,7 @@ def test_tc_diag_run(metplus_config, config_overrides,
     assert wrapper.is_ok
 
     file_list_dir = wrapper.config.getdir('FILE_LISTS_DIR')
-    file_list_file = f"{file_list_dir}/aal142016_short.dat_data_files.txt"
+    file_list_file = f"{file_list_dir}/aal142016_short.dat_input1_data_files.txt"
     if os.path.exists(file_list_file):
         os.remove(file_list_file)
 
@@ -292,3 +292,33 @@ def test_get_config_file(metplus_config):
     config.set('config', 'TC_DIAG_CONFIG_FILE', fake_config_name)
     wrapper = TCDiagWrapper(config)
     assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
+
+
+@pytest.mark.wrapper
+def test_tc_diag_two_inputs(metplus_config):
+    config = metplus_config
+    set_minimum_config_settings(config)
+    deck_dir = os.path.join(get_data_dir(config), 'bdeck')
+    config.set('config', 'TC_DIAG_DECK_INPUT_DIR', deck_dir)
+    config.set('config', 'TC_DIAG_INPUT2_TEMPLATE', 'nest.subset.f*')
+    config.set('config', 'TC_DIAG_INPUT2_DOMAIN', 'nest')
+    config.set('config', 'TC_DIAG_INPUT2_TECH_ID_LIST', input_tech_id_list)
+
+    wrapper = TCDiagWrapper(config)
+    assert wrapper.is_ok
+
+    file_list_dir = wrapper.config.getdir('FILE_LISTS_DIR')
+    list_files = [
+        f"{file_list_dir}/aal142016_short.dat_input1_data_files.txt",
+        f"{file_list_dir}/aal142016_short.dat_input2_data_files.txt",
+    ]
+    all_cmds = wrapper.run_all_times()
+    assert len(all_cmds) == 1
+    cmd = all_cmds[0][0]
+    assert f"-data {input_domain} {input_tech_id_list} {list_files[0]}" in cmd
+    assert f"-data nest {input_tech_id_list} {list_files[1]}" in cmd
+    for list_file, template in zip(list_files, (input_template, 'nest.subset.f*')):
+        with open(list_file, 'r') as file_handle:
+            lines = file_handle.read().splitlines()[1:]
+        assert lines
+        assert all(template.rstrip('*') in line for line in lines)
