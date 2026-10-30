@@ -132,6 +132,12 @@ def process_parsed_logs(parsed_items, output_dir, id_str):
             target_path = os.path.join(output_dir, target_name)
             counter += 1
 
+        # prevent writing files outside of the output directory
+        real_output_dir = os.path.realpath(output_dir)
+        if os.path.dirname(os.path.realpath(target_path)) != real_output_dir:
+            print(f"ERROR: Output path is not in {real_output_dir}: {target_path}")
+            continue
+
         # Write the processed file
         os.makedirs(output_dir, exist_ok=True)
         try:
@@ -160,6 +166,12 @@ def main():
     filename = sys.argv[1]
     output_dir = sys.argv[2]
     id_str = sys.argv[3]
+
+    # id string is used in output filenames, so it must not contain a path
+    if os.path.basename(id_str) != id_str or id_str in ('.', '..'):
+        print(f"ERROR: ID string must not contain a path: {id_str}")
+        print_usage()
+        sys.exit(1)
 
     try:
         with open(filename, 'r') as file_handle:

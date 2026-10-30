@@ -14,6 +14,24 @@ import os
 import glob
 import tarfile
 
+
+def safe_extract(tar, dest_dir):
+  """Extract tar file members, preventing writes outside of dest_dir."""
+  # data filter is available in Python 3.10.12+
+  if hasattr(tarfile, 'data_filter'):
+    tar.extractall(dest_dir, filter='data')
+    return
+
+  dest_dir = os.path.realpath(dest_dir)
+  for member in tar.getmembers():
+    member_path = os.path.realpath(os.path.join(dest_dir, member.name))
+    if (os.path.commonpath([dest_dir, member_path]) != dest_dir or
+            member.issym() or member.islnk()):
+      print(f"Skipping tar member outside of output directory: {member.name}")
+      continue
+    tar.extract(member, dest_dir)
+
+
 if len(sys.argv) == 4:
   path = sys.argv[1]
   date = sys.argv[2]
@@ -26,7 +44,7 @@ if len(sys.argv) == 4:
        print (name)
 
        drop_tar = tarfile.open(name)
-       drop_tar.extractall(outdir + '/'+str(date))
+       safe_extract(drop_tar, outdir + '/'+str(date))
        drop_files = os.listdir(outdir + '/'+str(date))
        print(drop_files)
        drop_tar.close()

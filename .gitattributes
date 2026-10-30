@@ -5,8 +5,6 @@
 .coveragerc export-ignore
 .readthedocs.yaml export-ignore
 .idea/ export-ignore
-AGENTS.md export-ignore
-CLAUDE.md export-ignore
 
 internal/scripts/ export-ignore
 internal/tests/use_cases export-ignore
