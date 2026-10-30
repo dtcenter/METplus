@@ -8,9 +8,9 @@ Description
   volunteer network of observers who measure precipitation at their homes,
   schools, and workplaces and report it through the CoCoRaHS website. Each
   observer uses a manual 4-inch diameter gauge read once per day. The
-  network originated with the Colorado Climate Center at Colorado State
-  University in 1998, following the July 1997 Fort Collins flood, and now
-  comprises more than 28,000 active observers.
+  network is housed at the Colorado Climate Center at Colorado State
+  University, where it began in 1998 following the July 1997 Fort Collins
+  flood, and now comprises tens of thousands of active observers.
 
   The daily 24-hour precipitation report is the primary product and the one
   used for verification. CoCoRaHS collects several other report types
@@ -48,6 +48,11 @@ Recommended use
   interest. Several characteristics of the network matter when configuring a
   verification task:
 
+  * Precipitation is reported in inches, to the nearest hundredth, while
+    model output is typically in millimeters. The values have to be
+    converted before they are compared, either by requesting the metric
+    export described below or by scaling the observations after they are
+    read.
   * Observation times are not uniform. A daily report covers the 24 hours
     ending at the observer's own reading time. 7:00 AM local is the
     preferred time, but reports taken through the morning are accepted, so
@@ -84,6 +89,11 @@ Location of data
 
      curl -o cocorahs_20220914.csv \
        "https://data.cocorahs.org/cocorahs/export/exportreports.aspx?ReportType=Daily&Format=CSV&StartDate=2022-09-14&EndDate=2022-09-14"
+
+  Appending :code:`&Units=Metric` to that request returns the same reports
+  in millimeters rather than inches. The CSV header names the columns but
+  not their units, so which of the two was requested has to be tracked
+  outside the file.
 
 Access restrictions
   None for viewing or retrieving data; an account is needed only to submit
