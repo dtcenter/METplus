@@ -51,6 +51,8 @@ model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
 # This use case calls a Python script in ASCII2NC for the observation dataset.
 # PCPCombine is called for a user-defined summation of the forecast accumulation fields.
 # Finally, PointStat processes the forecast and observation fields, and outputs the requested line types.
+# CoCoRaHS reports precipitation in inches while the URMA forecast is in kg/m^2, so the observations are converted to millimeters
+# with convert(x) = IN_to_MM(x) before PointStat compares them.
 
 ##############################################################################
 # METplus Workflow
