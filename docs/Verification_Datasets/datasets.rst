@@ -6,6 +6,7 @@ Datasets
    :titlesonly:
 
    datasets/aeronet
+   datasets/cocorahs
    datasets/gdas_prepbufr
    datasets/gleam
    datasets/goes_level_1b

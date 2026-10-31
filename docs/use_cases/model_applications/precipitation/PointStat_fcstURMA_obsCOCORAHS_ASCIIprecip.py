@@ -51,6 +51,8 @@ model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
 # This use case calls a Python script in ASCII2NC for the observation dataset.
 # PCPCombine is called for a user-defined summation of the forecast accumulation fields.
 # Finally, PointStat processes the forecast and observation fields, and outputs the requested line types.
+# CoCoRaHS reports precipitation in inches while the URMA forecast is in kg/m^2, so the observations are converted to millimeters
+# with convert(x) = IN_to_MM(x) before PointStat compares them.
 
 ##############################################################################
 # METplus Workflow
@@ -113,7 +115,15 @@ model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
 # Python Embedding
 # ----------------
 #
-# This use case does not use Python embedding.
+# This use case uses one Python embedding script, read_cocorahs_point.py, to read the CoCoRaHS daily precipitation CSV file into ASCII2NC.
+# The script selects the observation date and time, station number, latitude, longitude, and total precipitation amount columns,
+# converts the CoCoRaHS time stamps into the YYYYMMDD_HHMMSS form that MET expects, treats a trace report of "T" as 0.0,
+# and fills in the message type (ADPSFC), elevation, variable name (TotalPrecipAmt), level, height, and QC string that the
+# 11-column MET point observation format requires.
+#
+# The script passes the precipitation values through unchanged, so they reach ASCII2NC in inches, the units CoCoRaHS reports.
+# That format carries no units of its own, so the conversion to millimeters and the units label are both applied in the
+# PointStat field configuration rather than in the script.
 
 ##############################################################################
 # User Scripting
@@ -177,6 +187,7 @@ model_applications/precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip.conf
 #   * PythonEmbeddingFileUseCase
 #   * PrecipitationAppUseCase
 #   * NETCDFFileUseCase
+#   * VxDataCoCoRaHS
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

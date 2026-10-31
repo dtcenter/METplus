@@ -20,6 +20,7 @@ Dataset Levels
 Dataset Providers
 =================
 
+| `CSU <../search.html?q=DataProviderCSU&check_keywords=yes&area=default>`_
 | `EUMETNET <../search.html?q=DataProviderEUMETNET&check_keywords=yes&area=default>`_
 | `ISU <../search.html?q=DataProviderISU&check_keywords=yes&area=default>`_
 | `NOAA <../search.html?q=DataProviderNOAA&check_keywords=yes&area=default>`_
