@@ -1,17 +1,13 @@
-name: Update and Upload Truth Data
+name: Upload Truth Data (automatic)
 
+# Do not add workflow_dispatch. This workflow runs when the pull request
+# created by update_reference_branch.yml is merged into a -ref branch.
+# To rerun all use case groups, check run_all_groups in that workflow.
 on:
   push:
     branches:
       - develop-ref
       - 'main_v*-ref'
-
-  workflow_dispatch:
-    inputs:
-      run_all_groups:
-        description: 'Force run all use case groups instead of only those with differences'
-        type: boolean
-        default: false
 
 jobs:
   identify_diff_groups:
@@ -24,6 +20,21 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+
+      - name: Check if all use case groups were requested
+        id: check-run-all
+        run: |
+          # update_reference_branch.yml adds this flag to the new change log
+          # entry, so only check lines added by the commit that was pushed
+          change_log_path=.github/update_truth_change_log.txt
+          if git diff HEAD^ HEAD -- ${change_log_path} | grep '^+' | \
+             grep -qF '[run all use case groups]'; then
+            echo "run_all_groups=true" >> $GITHUB_OUTPUT
+          else
+            echo "run_all_groups=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Set base branch
         id: set-base-branch
@@ -57,10 +68,10 @@ jobs:
         run: |
           RUN_ID="${{ steps.find-run.outputs.run_id }}"
 
-          if [[ "${{ github.event.inputs.run_all_groups }}" == "true" || "${{ steps.find-run.outputs.run_all }}" == "true" ]]; then
+          if [[ "${{ steps.check-run-all.outputs.run_all_groups }}" == "true" || "${{ steps.find-run.outputs.run_all }}" == "true" ]]; then
             echo "Running all use case groups because:"
-            if [[ "${{ github.event.inputs.run_all_groups }}" == "true" ]]; then
-              echo "- run_all_groups input parameter was set to true"
+            if [[ "${{ steps.check-run-all.outputs.run_all_groups }}" == "true" ]]; then
+              echo "- run_all_groups was requested by the Update Reference Branch workflow"
             fi
             if [[ "${{ steps.find-run.outputs.run_all }}" == "true" ]]; then
               echo "- No completed workflow runs found for the base branch"

@@ -58,7 +58,7 @@ For rc1 development releases, create a new reference branch for the upcoming off
   * Monitor GitHub Actions Workflow
 
     * Navigate to https://github.com/dtcenter/METplus/actions and verify that a
-      *Update and Upload Truth Data* workflow was triggered on the
+      *Upload Truth Data (automatic)* workflow was triggered on the
       *main_vX.Y-ref* branch and all of the use cases are run.
 
     .. figure:: /Release_Guide/release_steps/metplus/metplus-automation-reference-data.png
