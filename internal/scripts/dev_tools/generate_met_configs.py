@@ -133,6 +133,8 @@ def process_parsed_logs(parsed_items, output_dir, id_str):
             counter += 1
 
         # prevent writing files outside of the output directory
+        # main() already checks id_str, but this function can be imported
+        # and called directly without that check
         real_output_dir = os.path.realpath(output_dir)
         if os.path.dirname(os.path.realpath(target_path)) != real_output_dir:
             print(f"ERROR: Output path is not in {real_output_dir}: {target_path}")

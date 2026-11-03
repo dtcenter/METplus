@@ -16,17 +16,27 @@ import tarfile
 
 
 def safe_extract(tar, dest_dir):
-  """Extract tar file members, preventing writes outside of dest_dir."""
+  """Extract regular files and directories from a tar file, skipping any
+  member that would be written outside of dest_dir."""
   # data filter is available in Python 3.10.12+
   if hasattr(tarfile, 'data_filter'):
-    tar.extractall(dest_dir, filter='data')
+    for member in tar.getmembers():
+      try:
+        tar.extract(member, dest_dir, filter='data')
+      except tarfile.FilterError as err:
+        print(f"Skipping tar member {member.name}: {err}")
     return
 
   dest_dir = os.path.realpath(dest_dir)
   for member in tar.getmembers():
+    if member.issym() or member.islnk():
+      print(f"Skipping tar member that is a link: {member.name}")
+      continue
+    if not (member.isfile() or member.isdir()):
+      print(f"Skipping tar member that is not a file or directory: {member.name}")
+      continue
     member_path = os.path.realpath(os.path.join(dest_dir, member.name))
-    if (os.path.commonpath([dest_dir, member_path]) != dest_dir or
-            member.issym() or member.islnk()):
+    if os.path.commonpath([dest_dir, member_path]) != dest_dir:
       print(f"Skipping tar member outside of output directory: {member.name}")
       continue
     tar.extract(member, dest_dir)

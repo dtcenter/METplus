@@ -24,6 +24,6 @@ mamba install -y --name ${ENV_NAME} -c conda-forge \
   pytest-cov
 
 # install documentation requirements using requirements.txt file from docs directory
-curl https://raw.githubusercontent.com/dtcenter/METplus/refs/heads/develop/docs/requirements.txt --output docs_requirements.txt
+curl -fsSL --proto '=https' --proto-redir '=https' https://raw.githubusercontent.com/dtcenter/METplus/refs/heads/develop/docs/requirements.txt --output docs_requirements.txt
 conda install --force-reinstall -y --name ${ENV_NAME} -c conda-forge --file docs_requirements.txt
 rm docs_requirements.txt
