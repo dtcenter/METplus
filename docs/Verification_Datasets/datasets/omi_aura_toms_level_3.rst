@@ -40,7 +40,7 @@ Variables available
   Total Column Ozone
 
 METplus Use Cases
-  Link to `METplus Use Cases <https://metplus.readthedocs.io/en/develop/search.html?q=VxDataOMIAURATOMSLEV3%26%26UseCase&check_keywords=yes&area=default>`_ for this dataset.
+  Link to `METplus Use Cases <https://metplus.readthedocs.io/en/develop/search.html?q=VxDataOMIAURATOMSLEV3&check_keywords=yes&area=default>`_ for this dataset.
 
 Keywords
   .. note:: **Current Dataset:** VxDataOMIAURATOMSLEV3

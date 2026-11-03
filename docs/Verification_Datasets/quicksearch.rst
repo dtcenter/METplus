@@ -20,6 +20,7 @@ Dataset Levels
 Dataset Providers
 =================
 
+| `CSU <../search.html?q=DataProviderCSU&check_keywords=yes&area=default>`_
 | `EUMETNET <../search.html?q=DataProviderEUMETNET&check_keywords=yes&area=default>`_
 | `ISU <../search.html?q=DataProviderISU&check_keywords=yes&area=default>`_
 | `NOAA <../search.html?q=DataProviderNOAA&check_keywords=yes&area=default>`_
@@ -27,6 +28,7 @@ Dataset Providers
 | `OU <../search.html?q=DataProviderOU&check_keywords=yes&area=default>`_
 | `USAF <../search.html?q=DataProviderUSAF&check_keywords=yes&area=default>`_
 | `NSIDC <../search.html?q=DataProviderNSIDC&check_keywords=yes&area=default>`_
+| `Ghent University <../search.html?q=DataProviderUGent&check_keywords=yes&area=default>`_
 
 Dataset Applications
 ====================

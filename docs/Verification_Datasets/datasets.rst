@@ -6,7 +6,9 @@ Datasets
    :titlesonly:
 
    datasets/aeronet
+   datasets/cocorahs
    datasets/gdas_prepbufr
+   datasets/gleam
    datasets/goes_level_1b
    datasets/goes_level_2_aerosol
    datasets/gpm_imerg
@@ -19,6 +21,7 @@ Datasets
    datasets/nexrad_level_3
    datasets/omi_aura_toms_level_3.rst
    datasets/opera_eumetnet
+   datasets/smops
    datasets/gdas_ice
    datasets/ims_ice
    datasets/viirs
