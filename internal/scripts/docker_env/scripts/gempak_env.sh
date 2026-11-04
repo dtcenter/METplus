@@ -17,4 +17,4 @@ apt -y upgrade
 apt install -y openjdk-17-jdk
 
 mkdir -p /data/input
-curl -L -o /data/input/GempakToCF.jar https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
+curl -fL --proto '=https' --proto-redir '=https' -o /data/input/GempakToCF.jar https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
