@@ -278,7 +278,7 @@ The **Update Reference Branch** workflow is available to handle this step.
 * Click "Confirm squash and merge." It is not necessary to wait for the
   automation checks to complete for this step.
 * Click the button to delete the *update_develop_XXXXXXXX* branch.
-* Monitor the `Upload Truth Data (automatic) <https://github.com/dtcenter/METplus/actions/workflows/update_truth_data.yml>`_
+* Monitor the `Update Truth Data (automatic) <https://github.com/dtcenter/METplus/actions/workflows/update_truth_data.yml>`_
   workflow run for the develop-ref branch and ensure that
   all of the use cases run successfully and the final job named
   "Create Output Docker Data Volumes" completed successfully.
@@ -319,7 +319,7 @@ by reviewing the log output from the workflow run.
 
 .. _cg-ci-update-truth-data:
 
-Upload Truth Data (automatic) (update_truth_data.yml)
+Update Truth Data (automatic) (update_truth_data.yml)
 -----------------------------------------------------
 
 This workflow is triggered by pushes to reference branches (e.g., **develop-ref**

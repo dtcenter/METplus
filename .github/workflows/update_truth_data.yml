@@ -1,4 +1,4 @@
-name: Upload Truth Data (automatic)
+name: Update Truth Data (automatic)
 
 # Do not add workflow_dispatch. This workflow runs when the pull request
 # created by update_reference_branch.yml is merged into a -ref branch.
