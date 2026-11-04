@@ -1409,8 +1409,11 @@ The addition of a new use case results in new output data. When this happens,
 the reference branch needs to be updated so that future pull requests will
 compare their results to a "truth" data set that contains the new files.
 
-Follow the instructions for using the :ref:`cg-ci-update-truth-data` GitHub
-Actions workflow to perform this step.
+Follow the instructions for using the :ref:`cg-ci-update-reference-branch`
+GitHub Actions workflow to perform this step.
+The :ref:`cg-ci-update-truth-data` workflow that regenerates the truth data
+runs automatically when the pull request created by the
+**Update Reference Branch** workflow is merged.
 
 
 Clean Up DTC Web Server
