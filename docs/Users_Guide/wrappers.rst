@@ -3374,9 +3374,50 @@ Description
 
 Used to configure the MET tool grid_diag.
 
+The fields to process are set with :term:`BOTH_VAR<n>_NAME`,
+:term:`BOTH_VAR<n>_LEVELS`, and :term:`BOTH_VAR<n>_OPTIONS`.
+:term:`FCST_VAR<n>_NAME`, :term:`FCST_VAR<n>_LEVELS`, and
+:term:`FCST_VAR<n>_OPTIONS` can be used instead.
+Set the n_bins and range values for each field in the
+OPTIONS variable, e.g.::
+
+    BOTH_VAR1_NAME = APCP
+    BOTH_VAR1_LEVELS = L0
+    BOTH_VAR1_OPTIONS = n_bins = 55; range = [0, 55];
+
+    BOTH_VAR2_NAME = PWAT
+    BOTH_VAR2_LEVELS = L0
+    BOTH_VAR2_OPTIONS = n_bins = 35; range = [35, 70];
+
+:term:`GRID_DIAG_INPUT_TEMPLATE` can be set to a comma-separated list of
+templates. :term:`GRID_DIAG_PAIRED` controls how these input files are
+passed to grid_diag:
+
+* If :term:`GRID_DIAG_PAIRED` is True (default), a separate -data argument
+  is passed for each input template. Fields are paired with input templates
+  in order: the first field is read from the files that match the first
+  template, the second field is read from the files that match the second
+  template, and so on. A typical use case is to read the first field from
+  forecast files and the second field from observation files. If more than one
+  template is set, the number of templates should match the number of fields.
+  The wrapper logs a warning if they do not match.
+  If only one template is set, all fields are read from each file.
+
+* If :term:`GRID_DIAG_PAIRED` is False, every file that matches any of the
+  input templates is passed to a single -data argument and all fields are
+  read from each file. If a file matches more than one template, it is only
+  included once.
+
 METplus Configuration
 ---------------------
 
+| :term:`BOTH_VAR<n>_NAME`
+| :term:`BOTH_VAR<n>_LEVELS`
+| :term:`BOTH_VAR<n>_OPTIONS`
+| :term:`FCST_VAR<n>_NAME`
+| :term:`FCST_VAR<n>_LEVELS`
+| :term:`FCST_VAR<n>_OPTIONS`
+| :term:`GRID_DIAG_PAIRED`
 | :term:`GRID_DIAG_INPUT_DIR`
 | :term:`GRID_DIAG_OUTPUT_DIR`
 | :term:`GRID_DIAG_INPUT_TEMPLATE`
