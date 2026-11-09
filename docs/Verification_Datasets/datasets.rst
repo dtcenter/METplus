@@ -14,6 +14,7 @@ Datasets
    datasets/gpm_imerg
    datasets/ismn
    datasets/madis
+   datasets/merra2
    datasets/metar_isu
    datasets/mping
    datasets/mrms_composite_reflectivity
