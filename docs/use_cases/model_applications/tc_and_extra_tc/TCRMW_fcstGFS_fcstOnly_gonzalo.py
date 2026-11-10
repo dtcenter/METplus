@@ -16,6 +16,11 @@ model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly_gonzalo.conf
 # --------------------
 #
 # The TC-RMW tool regrids tropical cyclone model data onto a moving range-azimuth grid centered on points along the storm track. This capability replicates the NOAA Hurricane Research Division DIA-Post module.
+#
+# This use case requests both the UGRD and VGRD fields on the same set of
+# pressure levels. TC-RMW uses those paired wind components to derive the
+# radial and tangential winds relative to the storm center and writes them to
+# the output file along with the other requested fields.
 
 ##############################################################################
 # Version Added
@@ -130,7 +135,7 @@ model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly_gonzalo.conf
 # Output for this use case will be found in model_applications/tc_and_extra_tc/TCRMW_gonzalo (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * tc_rmw_aal142016.nc
+# * tc_rmw_gonzalo08l.2014101312.nc
 #
 
 ##############################################################################
