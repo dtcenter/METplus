@@ -46,6 +46,87 @@ describes the bugfix, enhancement, or new feature.
 Important issues are listed **in bold** for emphasis.
 
 
+METplus Version 13.0.0 RC 1 Release Notes (2026-11-10)
+------------------------------------------------------
+
+  .. dropdown:: Enhancements
+
+     * Add option to exit on warning
+       (`#1655 <https://github.com/dtcenter/METplus/issues/1655>`_)
+     * Add config option to fail if output already exists
+       (`#2110 <https://github.com/dtcenter/METplus/issues/2110>`_)
+     * GridDiag add option for pairing fields and files
+       (`#3168 <https://github.com/dtcenter/METplus/issues/3168>`_)
+     * Create WARNING message for operations that overwrite output files
+       (`#3218 <https://github.com/dtcenter/METplus/issues/3218>`_)
+     * SeriesAnalysis - make netcdf python package optional
+       (`#3255 <https://github.com/dtcenter/METplus/issues/3255>`_)
+     * MODE - add support for plotting configs
+       (`#3308 <https://github.com/dtcenter/METplus/issues/3308>`_)
+     * PCPCombine - set level to input accum if unset
+       (`#3317 <https://github.com/dtcenter/METplus/issues/3317>`_)
+     * Enhance the Point-Stat, Ensemble-Stat, and Pair-Stat wrappers to support KDE point weighting options
+       (`#3339 <https://github.com/dtcenter/METplus/issues/3339>`_)
+     * **Rename METplus configuration options to avoid names like `warning` and `error`**
+       (`#3358 <https://github.com/dtcenter/METplus/issues/3358>`_)
+
+  .. dropdown:: Bugfix
+
+     * Fix SeriesAnalysis input file list functionality
+       (`#3348 <https://github.com/dtcenter/METplus/issues/3348>`_)
+     * Invalid config values crash METplus instead of reporting an error
+       (`#3389 <https://github.com/dtcenter/METplus/issues/3389>`_)
+     * Template and threshold formatting errors
+       (`#3390 <https://github.com/dtcenter/METplus/issues/3390>`_)
+     * Valid run times are skipped: lead 0 from template files and every lead when INC_*_TIMES is used with RUN_ONCE_PER_LEAD
+       (`#3391 <https://github.com/dtcenter/METplus/issues/3391>`_)
+     * PCPCombine builds wrong commands for multiple fields and crashes on a missing input when no lookback is set
+       (`#3392 <https://github.com/dtcenter/METplus/issues/3392>`_)
+     * Wrong input files passed to PointStat and EnsembleStat when multiple files match and to TCDiag when multiple data inputs are used
+       (`#3393 <https://github.com/dtcenter/METplus/issues/3393>`_)
+     * SKIP_IF_OUTPUT_EXISTS is ignored by SeriesAnalysis and skips all remaining storms in TCPairs
+       (`#3394 <https://github.com/dtcenter/METplus/issues/3394>`_)
+     * StatAnalysis keeps an empty list in LOOP_LIST_ITEMS when two empty lists are adjacent and builds no commands
+       (`#3395 <https://github.com/dtcenter/METplus/issues/3395>`_)
+
+  .. dropdown:: New Wrappers
+
+     None
+
+  .. dropdown:: New Use Cases
+
+     * End-to-End Zarr-Based Gridded Data Workflow
+       (`#3226 <https://github.com/dtcenter/METplus/issues/3226>`_)
+     * Add 3 S2S use cases in support of CPO-U. Miami project
+       (`#3233 <https://github.com/dtcenter/METplus/issues/3233>`_)
+     * Demonstrate information theory metrics in Grid-Diag
+       (`#3345 <https://github.com/dtcenter/METplus/issues/3345>`_)
+
+  .. dropdown:: Documentation
+
+     * Add search keyword for AI use cases
+       (`#3289 <https://github.com/dtcenter/METplus/issues/3289>`_)
+     * Enhance the documentation by correcting broken links and typos
+       (`#3326 <https://github.com/dtcenter/METplus/issues/3326>`_)
+
+  .. dropdown:: Build, repository, and test
+
+     * Revise GHA automation logic and documentation to handle changes to the dtcenter.org website configuration
+       (`#3227 <https://github.com/dtcenter/METplus/issues/3227>`_)
+     * Automate link checking with Sphinx
+       (`#3247 <https://github.com/dtcenter/METplus/issues/3247>`_)
+     * Add a metplus_components_v13.0_py3.14.sh script, update the modulefiles and the Existing Builds documentation
+       (`#3302 <https://github.com/dtcenter/METplus/issues/3302>`_)
+     * Enhance the METplus GitHub label handling utility to support renaming operations
+       (`#3356 <https://github.com/dtcenter/METplus/issues/3356>`_)
+     * **Change default branch to develop**
+       (`#3362 <https://github.com/dtcenter/METplus/issues/3362>`_)
+     * Add use case groups PR check and development rules
+       (`#3376 <https://github.com/dtcenter/METplus/issues/3376>`_)
+     * Packaging and CI fixes for 13.0.0 release
+       (`#3397 <https://github.com/dtcenter/METplus/issues/3397>`_)
+
+
 METplus Version 13.0.0 Beta 2 Release Notes (2026-05-08)
 --------------------------------------------------------
 
@@ -69,7 +150,7 @@ METplus Version 13.0.0 Beta 2 Release Notes (2026-05-08)
 
   .. dropdown:: New Use Cases
 
-     * **Add new use case to evaluate GFS soil moisture using SMOPS observations**
+     * **GFS soil moisture using SMOPS observations**
        (`#3195 <https://github.com/dtcenter/METplus/issues/3195>`_)
 
   .. dropdown:: Documentation
