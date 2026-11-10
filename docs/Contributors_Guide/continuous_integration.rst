@@ -220,9 +220,10 @@ Differences can also occur when a new use case is added, as the new use case
 creates output that does not yet exist in the truth dataset.
 
 Once all differences are confirmed to be expected,
-the reference branch, e.g., develop-ref, needs to be updated. This triggers a
-:ref:`cg-ci-testing-workflow` that runs all of the use cases, creates
-Docker images with the new truth data, and pushes them to DockerHub.
+the reference branch, e.g., develop-ref, needs to be updated. This triggers the
+:ref:`cg-ci-update-truth-data` workflow, which reruns the use case groups that
+had differences, creates Docker images with the new truth data,
+and pushes them to DockerHub.
 This is done so that future pull requests will
 compare their results to the updated truth dataset.
 
@@ -255,6 +256,10 @@ The **Update Reference Branch** workflow is available to handle this step.
   the repository name before '#' symbol.
 * Enter a brief summary of the changes.
   Developers can navigate to the PRs for more information.
+* Leave the box to regenerate truth data for all use case groups unchecked
+  unless the truth data for every use case group needs to be recreated,
+  e.g., after a change to the Docker image or the testing environment that
+  is not reflected in the latest testing workflow run.
 
 .. figure:: figure/update_reference_branch.png
 
@@ -273,12 +278,13 @@ The **Update Reference Branch** workflow is available to handle this step.
 * Click "Confirm squash and merge." It is not necessary to wait for the
   automation checks to complete for this step.
 * Click the button to delete the *update_develop_XXXXXXXX* branch.
-* Monitor the `Update Input Test Data <https://github.com/dtcenter/METplus/actions/workflows/update_input_data.yml>`_ workflow run for the develop-ref branch and ensure that
-  all of the use cases run successfully and the final step named
+* Monitor the `Update Truth Data (automatic) <https://github.com/dtcenter/METplus/actions/workflows/update_truth_data.yml>`_
+  workflow run for the develop-ref branch and ensure that
+  all of the use cases run successfully and the final job named
   "Create Output Docker Data Volumes" completed successfully.
 * If any use cases fail, check that the input data has been updated following
   the instructions under :ref:`update-the-develop-data-directory` and rerun
-  all of the jobs of the -ref workflow.
+  all of the jobs of the -ref workflow run.
 
 .. _cg-ci-update-input-test-data:
 
@@ -313,8 +319,8 @@ by reviewing the log output from the workflow run.
 
 .. _cg-ci-update-truth-data:
 
-Update and Upload Truth Data (update_truth_data.yml)
-----------------------------------------------------
+Update Truth Data (automatic) (update_truth_data.yml)
+-----------------------------------------------------
 
 This workflow is triggered by pushes to reference branches (e.g., **develop-ref**
 or **main_vX.Y-ref**). It locates the most recent testing workflow run from the
@@ -322,6 +328,15 @@ corresponding base branch (e.g., **develop** or **main_vX.Y**). For each use cas
 group in which differences were flagged, rerun those use cases to generate
 updated output files, save that output as the new truth dataset, and push
 the new truth Docker data volume to DockerHub.
+All use case groups are run instead if no completed testing workflow run is
+found for the base branch, or if the box to regenerate truth data for all use
+case groups was checked when the :ref:`cg-ci-update-reference-branch`
+workflow was run.
+
+This workflow cannot be run manually. To update the truth data, use the
+:ref:`cg-ci-update-reference-branch` workflow, which records the change in the
+truth change log and creates the pull request into the reference branch that
+triggers this workflow when it is merged.
 
 .. _cg-ci-create-conda-envs:
 

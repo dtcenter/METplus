@@ -9,6 +9,10 @@ on:
       change_summary:
         description: 'Summary of changes to truth data'
         required: true
+      run_all_groups:
+        description: 'Regenerate truth data for all use case groups instead of only those with differences'
+        type: boolean
+        default: false
 
 jobs:
   update_truth:
@@ -36,6 +40,7 @@ jobs:
         env:
           PULL_REQUESTS: ${{ github.event.inputs.pull_requests }}
           CHANGE_SUMMARY: ${{ github.event.inputs.change_summary }}
+          RUN_ALL_GROUPS: ${{ inputs.run_all_groups }}
         run: |
           branch_name=${{ env.branch_name }}
           cd ${GITHUB_WORKSPACE}
@@ -73,6 +78,10 @@ jobs:
           # create or append to file to track truth data changes
           # and ensure that PR merge into *-ref branch triggered testing workflow
           change_entry="[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] ${PULL_REQUESTS} - ${CHANGE_SUMMARY}"
+          # flag read by update_truth_data.yml to rerun all use case groups
+          if [[ "${RUN_ALL_GROUPS}" == "true" ]]; then
+            change_entry="${change_entry} [run all use case groups]"
+          fi
           echo "${change_entry}" >> ${change_log_path}
 
           # add file if it does not already exist

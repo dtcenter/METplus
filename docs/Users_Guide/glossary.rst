@@ -1642,7 +1642,7 @@ METplus Configuration Glossary
 
      See :ref:`Field_Info` for more information.
 
-     | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
+     | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine, GridDiag
 
    FCST_VAR<n>_NAME
      Define the name for the <n>th forecast variable to be used in the analysis where <n> is an integer >= 1. If :term:`FCST_VAR<n>_NAME` is set, then :term:`OBS_VAR<n>_NAME` must be set. If the same value applies to both forecast and observation data, use :term:`BOTH_VAR<n>_NAME`. There can be <n> number of these variables defined in configuration files, simply increment the VAR1 string to match the total number of variables being used, e.g.:
@@ -1656,7 +1656,7 @@ METplus Configuration Glossary
 
      This value can be set to a call to a python script with arguments to supply data to the MET tools via Python Embedding. Filename template syntax can be used here to specify time information of an input file, i.e., {valid?fmt=%Y%m%d%H}. See the `MET User's Guide <https://dtcenter.org/software-tools/model-evaluation-tools-met/documentation>`_ for more information about Python Embedding in the MET tools.
 
-     | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
+     | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine, GridDiag
 
    FCST_VAR<n>_OPTIONS
      Define the options for the <n>th forecast variable to be used in the analysis where <n> is an integer >= 1. These additional options will be applied to every name/level/threshold combination for VAR<n>. There can be <n> number of these variables defined in configuration files, simply increment the VAR1  string to match the total number of variables being used, e.g.:
@@ -1668,7 +1668,7 @@ METplus Configuration Glossary
 
      See :ref:`Field_Info` for more information.
 
-     | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
+     | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine, GridDiag
 
    FCST_VAR<n>_THRESH
      Define the threshold(s) for the <n>th forecast variable to be used in the analysis where <n> is an integer >= 1. The value can be a single item or a comma separated list of items that must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le). If :term:`FCST_VAR<n>_THRESH` is not set but :term:`OBS_VAR<n>_THRESH` is, the same information will be used for both variables. There can be <n> number of these variables defined in configuration files, simply increment the VAR1 string to match the total number of variables being used, e.g.:
@@ -1686,17 +1686,17 @@ METplus Configuration Glossary
    BOTH_VAR<n>_LEVELS
      Define the levels for the <n>th forecast and observation variables to be used in the analysis where <n> is an integer >= 1. See :term:`FCST_VAR<n>_LEVELS`, :term:`OBS_VAR<n>_LEVELS`, or :ref:`Field_Info` for more information.
 
-     | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
+     | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine, GridDiag
 
    BOTH_VAR<n>_NAME
      Define the name for the <n>th forecast and observation variables to be used in the analysis where <n> is an integer >= 1. See :term:`FCST_VAR<n>_NAME`, :term:`OBS_VAR<n>_NAME`, or :ref:`Field_Info` for more information.
 
-     | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
+     | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine, GridDiag
 
    BOTH_VAR<n>_OPTIONS
      Define the extra options for the <n>th forecast and observation variables to be used in the analysis where <n> is an integer >= 1. See :term:`FCST_VAR<n>_OPTIONS`, :term:`OBS_VAR<n>_OPTIONS`, or :ref:`Field_Info` for more information.
 
-     | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
+     | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine, GridDiag
 
    BOTH_VAR<n>_THRESH
      Define the threshold list for the <n>th forecast and observation variables to be used in the analysis where <n> is an integer >= 1. See :term:`FCST_VAR<n>_THRESH`, :term:`OBS_VAR<n>_THRESH`, or :ref:`Field_Info` for more information.
@@ -15509,6 +15509,18 @@ METplus Configuration Glossary
    GRID_DIAG_WARN_IF_OUTPUT_EXISTS
      Log a warning message when an output file already exists for GridDiag.
      Set to True to output warning. See also :term:`WARN_IF_OUTPUT_EXISTS`.
+
+     | *Used by:* GridDiag
+
+   GRID_DIAG_PAIRED
+     If True or unset, pass a separate -data argument to grid_diag for each
+     item in :term:`GRID_DIAG_INPUT_TEMPLATE`. The first field
+     (e.g. :term:`BOTH_VAR<n>_NAME` with n=1) is read from the files that
+     match the first template, the second field is read from the files that
+     match the second template, and so on. The number of templates should
+     match the number of fields. If False, all files that match any of the
+     input templates are passed to a single -data argument and every field
+     is read from each file. Default is True.
 
      | *Used by:* GridDiag
 
