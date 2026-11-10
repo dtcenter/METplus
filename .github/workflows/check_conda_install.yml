@@ -8,6 +8,10 @@ on:
   schedule:
     - cron: "17 08 * * *"
   workflow_dispatch:
+  # TEMPORARY: run on pushes to the feature branch for testing.
+  # Remove before the pull request is marked ready for review.
+  push:
+    branches: [feature_3414_conda_install_check]
 
 permissions:
   contents: read
