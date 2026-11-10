@@ -13,6 +13,7 @@ are pushed to GitHub. These tasks include:
 * Running use cases
 * Comparing use case output to truth data
 * Creating/Updating Docker data volumes with truth data to use in comparisons
+* Checking that the metplus package from conda-forge installs and runs
 
 GitHub Actions Workflows
 ========================
@@ -376,6 +377,33 @@ run on a schedule from the default branch of the METplus repositories to recreat
 Docker images for the currently supported versions of that component.
 By default, the most recent bugfix version of each supported 'vX.Y' release is
 rebuilt, but this workflow can also be triggered manually for any 'vX.Y.Z' version.
+
+.. _cg-ci-check-conda-install:
+
+Check Conda Install (check_conda_install.yml)
+---------------------------------------------
+
+The **metplus** package on conda-forge can stop working without any change to
+its recipe. The recipe tests only run when the package is built, so a
+dependency released later that is incompatible with an existing build,
+e.g. a shared library that changes its name in a patch release, is not caught.
+This workflow runs daily from the default branch of the METplus repository
+and can also be triggered manually. On Linux (x86_64 and ARM) and macOS (ARM),
+it installs the latest **metplus** package from conda-forge into a new Conda
+environment and runs **.github/jobs/check_conda_install.sh**, which:
+
+* Runs each MET executable in the package with *-\-help* and fails if the
+  dynamic loader reports a missing library or symbol.
+* Runs gen_vx_mask and plot_data_plane on a named grid to write and read a
+  NetCDF file.
+* Checks that the installed metplus Python package can be imported and that
+  *run_metplus.py* runs.
+
+If a scheduled run fails, the workflow opens an issue titled
+*Scheduled check of the conda-forge metplus package failed*, or adds a comment
+to that issue if it is already open. Manually triggered runs do not open or
+update the issue. Close the issue once the package is fixed so that the next
+failure opens a new one.
 
 .. _cg-ci-build-docker-and-trigger-metplus:
 

@@ -1,0 +1,78 @@
+name: Check Conda Install
+
+# Install the published metplus package from conda-forge and check that it
+# runs. A dependency released after the package was built can break it without
+# any change to the recipe, so this runs on a schedule.
+
+on:
+  schedule:
+    - cron: "17 08 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  ISSUE_TITLE: 'Scheduled check of the conda-forge metplus package failed'
+
+jobs:
+  check:
+    name: Check metplus on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest]
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          sparse-checkout: .github/jobs
+          sparse-checkout-cone-mode: false
+
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniforge-version: latest
+          channels: conda-forge
+          conda-remove-defaults: "true"
+          activate-environment: metplus
+          auto-activate-base: false
+
+      - name: Install metplus
+        run: conda install -y metplus
+
+      - name: Check metplus
+        run: .github/jobs/check_conda_install.sh
+        env:
+          WORK_DIR: ${{ runner.temp }}/check_conda_install
+
+  report:
+    name: Report failure
+    needs: check
+    if: failure() && github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Open or update issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          body="The scheduled install check of the metplus package from conda-forge failed on $(date -u +%Y-%m-%d).
+
+          See ${RUN_URL} for the logs, including the installed package versions."
+
+          number=$(gh issue list -R "${GITHUB_REPOSITORY}" --state open \
+            --search "in:title \"${ISSUE_TITLE}\"" --json number,title \
+            --jq ".[] | select(.title == \"${ISSUE_TITLE}\") | .number" | head -1)
+
+          if [ -n "${number}" ]; then
+            gh issue comment "${number}" -R "${GITHUB_REPOSITORY}" --body "${body}"
+          else
+            gh issue create -R "${GITHUB_REPOSITORY}" --title "${ISSUE_TITLE}" \
+              --label 'type: bug' --label 'component: CI/CD' --body "${body}"
+          fi
