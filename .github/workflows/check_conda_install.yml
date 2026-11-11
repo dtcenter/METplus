@@ -37,13 +37,13 @@ jobs:
           sparse-checkout: .github/jobs
           sparse-checkout-cone-mode: false
 
-      - uses: conda-incubator/setup-miniconda@v3
+      - uses: conda-incubator/setup-miniconda@v4
         with:
           miniforge-version: latest
           channels: conda-forge
           conda-remove-defaults: "true"
           activate-environment: metplus
-          auto-activate-base: false
+          auto-activate: false
 
       - name: Install metplus
         run: conda install -y metplus
