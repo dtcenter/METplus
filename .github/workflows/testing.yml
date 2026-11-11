@@ -1,5 +1,5 @@
 name: Testing
-run-name: ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.title || github.event.inputs.repository || 'Manual Trigger Testing')) || (github.event_name == 'pull_request' && github.event.pull_request.title) || (github.event_name == 'push' && github.event.head_commit.message) || github.workflow }}
+run-name: ${{ (github.event_name == 'workflow_dispatch' && (github.event.inputs.title || github.event.inputs.repository || 'Manual Trigger Testing')) || (github.event_name == 'pull_request' && github.event.pull_request.title) || (github.event_name == 'push' && github.event.head_commit.message) || (github.event_name == 'release' && format('Release {0}', github.event.release.tag_name)) || github.workflow }}
 on:
 
   push:
@@ -53,6 +53,14 @@ on:
         description: 'User that triggered the event (used by external repo triggering)'
       pusher_email:
         description: 'Email address of user who triggered push event (used by external repo triggering)'
+
+  # Run the full suite against the official release of every METplus component
+  # when a METplus release is published. Pre-releases, e.g. a release
+  # candidate, are excluded because the official releases of the other
+  # components do not exist until the coordinated release is created.
+  release:
+    types:
+      - released
 
 jobs:
 
