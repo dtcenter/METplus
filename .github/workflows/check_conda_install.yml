@@ -8,6 +8,15 @@ on:
   schedule:
     - cron: "17 08 * * *"
   workflow_dispatch:
+    inputs:
+      versions:
+        description: >-
+          Comma-separated list of METplus versions to check, as X.Y for the
+          latest X.Y.Z release or X.Y.Z, e.g. 6.2,6.1.0. Leave blank for the
+          latest official release and the release before it.
+        default: ''
+        required: false
+        type: string
   # TEMPORARY: run on pushes to the feature branch for testing.
   # Remove before the pull request is marked ready for review.
   push:
@@ -20,14 +29,38 @@ env:
   ISSUE_TITLE: 'Scheduled check of the conda-forge metplus package failed'
 
 jobs:
+  define-matrix:
+    name: Get versions to check
+    runs-on: ubuntu-latest
+    outputs:
+      versions: ${{ steps.get-versions.outputs.versions }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            .github/jobs/get_conda_check_versions.py
+            metplus/component_versions.py
+          sparse-checkout-cone-mode: false
+
+      - name: Get versions to check
+        id: get-versions
+        run: |
+          versions=$(.github/jobs/get_conda_check_versions.py "${INPUT_VERSIONS}")
+          echo "Versions to check: ${versions}"
+          echo "versions=${versions}" >> $GITHUB_OUTPUT
+        env:
+          INPUT_VERSIONS: ${{ inputs.versions }}
+
   check:
-    name: Check metplus on ${{ matrix.os }}
+    name: metplus ${{ matrix.version }} on ${{ matrix.os }}
+    needs: define-matrix
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest]
+        version: ${{ fromJSON(needs.define-matrix.outputs.versions) }}
     defaults:
       run:
         shell: bash -el {0}
@@ -45,12 +78,10 @@ jobs:
           activate-environment: metplus
           auto-activate: false
 
-      - name: Install metplus
-        run: conda install -y metplus
-
-      - name: Check metplus
+      - name: Install and check metplus
         run: .github/jobs/check_conda_install.sh
         env:
+          METPLUS_VERSION: ${{ matrix.version }}
           WORK_DIR: ${{ runner.temp }}/check_conda_install
 
   report:
@@ -59,6 +90,7 @@ jobs:
     if: failure() && github.event_name == 'schedule'
     runs-on: ubuntu-latest
     permissions:
+      actions: read
       issues: write
     steps:
       - name: Open or update issue
@@ -66,9 +98,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          body="The scheduled install check of the metplus package from conda-forge failed on $(date -u +%Y-%m-%d).
+          failed_jobs=$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/jobs" \
+            --paginate --jq '.jobs[] | select(.conclusion == "failure") | "- \(.name)"')
 
-          See ${RUN_URL} for the logs, including the installed package versions."
+          body="The scheduled install check of the metplus package from conda-forge failed on $(date -u +%Y-%m-%d) for:
+
+          ${failed_jobs:-- (could not list the failed jobs)}
+
+          See the summary of ${RUN_URL} for details."
 
           number=$(gh issue list -R "${GITHUB_REPOSITORY}" --state open \
             --search "in:title \"${ISSUE_TITLE}\"" --json number,title \

@@ -388,16 +388,32 @@ its recipe. The recipe tests only run when the package is built, so a
 dependency released later that is incompatible with an existing build,
 e.g. a shared library that changes its name in a patch release, is not caught.
 This workflow runs daily from the default branch of the METplus repository
-and can also be triggered manually. On Linux (x86_64 and ARM) and macOS (ARM),
-it installs the latest **metplus** package from conda-forge into a new Conda
-environment and runs **.github/jobs/check_conda_install.sh**, which:
+and can also be triggered manually.
 
+The versions to check are found by **.github/jobs/get_conda_check_versions.py**.
+By default, it uses the latest official release (*LATEST_OFFICIAL_RELEASE*)
+and the release before it from **metplus/component_versions.py**, each
+converted to its latest X.Y.Z bugfix version, so the list moves forward when
+that file is updated for a release. A manual run can instead be given a
+comma-separated list of X.Y or X.Y.Z versions.
+
+For each version, on Linux (x86_64 and ARM) and macOS (ARM), the workflow
+runs **.github/jobs/check_conda_install.sh** in a new Conda environment, which:
+
+* Installs that version of the **metplus** package from conda-forge.
+  If that X.Y.Z version has not been published there, e.g. a bugfix release
+  of an older X.Y, it adds a warning and checks the latest X.Y.Z that is
+  available instead. It fails only if no release of that X.Y is available.
 * Runs each MET executable in the package with *-\-help* and fails if the
   dynamic loader reports a missing library or symbol.
 * Runs gen_vx_mask and plot_data_plane on a named grid to write and read a
   NetCDF file.
 * Checks that the installed metplus Python package can be imported and that
   *run_metplus.py* runs.
+
+Each failed check is reported as an error annotation on the workflow run, and
+each job adds a table of the checks, the installed versions of key packages,
+and the output of any failures to the run's summary page.
 
 If a scheduled run fails, the workflow opens an issue titled
 *Scheduled check of the conda-forge metplus package failed*, or adds a comment
