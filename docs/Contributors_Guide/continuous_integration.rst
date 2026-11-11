@@ -429,8 +429,8 @@ Event Control
 -------------
 
 The **on** keyword defines which events trigger the workflow
-to run. There are currently 3 types of events that trigger this workflow:
-**push**, **pull_request**, and **workflow_dispatch**.
+to run. There are currently 4 types of events that trigger this workflow:
+**push**, **pull_request**, **workflow_dispatch**, and **release**.
 The jobs that are run in this workflow depend on which event has triggered it.
 Many jobs are common to multiple events.
 To avoid creating multiple workflow .yml files that contain redundant jobs,
@@ -546,15 +546,45 @@ The inputs include:
 * The GitHub username that triggered the event in the external repository
   (optional)
 
-The MET, METcalcpy, and METplotpy repositories are configured to
+The MET, METcalcpy, METplotpy, and METdataio repositories are configured to
 trigger this workflow since they are used in 1 or more METplus use cases.
-Currently all 3 repositories only trigger when changes are pushed to their
-develop branch.
+Each of them triggers the workflow when changes are pushed to its *develop*
+branch or to one of its *main_vX.Y* branches. The 'ref' input is used to
+determine which METplus branch to run, e.g. changes pushed to *dtcenter/MET*
+main_v12.2 trigger a testing workflow that runs on the METplus main_v6.2
+branch.
 
-Future work is planned to support main_v* branches, which
-will involve using the 'ref' input to determine what to obtain in the workflow.
-For example, changes pushed to *dtcenter/MET* main_v10.1 should trigger a
-testing workflow that runs on the METplus main_v4.1 branch.
+In all of these cases the run tests the branch that triggered it. The MET
+Docker image is read from the *dtcenter/met-dev* DockerHub repository, which
+holds an image for each MET branch, rather than from the *dtcenter/met*
+repository, which holds the official releases.
+
+.. _cg-ci-event-release:
+
+Release
+^^^^^^^
+
+::
+
+      release:
+        types:
+          - released
+
+This configuration triggers the workflow when an official METplus release is
+published. Pre-releases, such as a release candidate, do not trigger the
+workflow because the official releases of the other METplus components do not
+exist until the coordinated release is created.
+
+A METplus release is always created after every other METplus component has
+been released, so this is the only event that can test the full set of
+released components together. Unlike the other events, which test the branch
+that triggered the run, a release run obtains the official release of each
+component: the *dtcenter/met:X.Y-latest* Docker image and the *vX.Y.Z* tag of
+METcalcpy, METplotpy, and METdataio. The *X.Y-latest* MET image is the same
+image that is used to build the published METplus release image, and it always
+refers to the most recent MET release in that series. The tags of the analysis
+components are read from the **metplus/component_versions.py** lookup table,
+so that table must be up to date on the branch the release is created from.
 
 Jobs
 ----
@@ -746,6 +776,18 @@ In addition to the jobs run for a push, the scripts will:
 
 See :ref:`cg-ci-create-output-data-volumes` for more information.
 
+.. _cg-ci-release-behavior:
+
+On Release
+""""""""""
+
+When an official METplus release is published, all of the use cases are run
+and their output is compared to the truth data for the corresponding
+*main_vX.Y* branch. The official release of each METplus component is used
+instead of the branch, so this run reports whether the released set of
+components works together. See :ref:`cg-ci-event-release` for more
+information.
+
 .. _cg-ci-commit-message-keywords:
 
 Commit Message Keywords
@@ -807,9 +849,11 @@ into the script that needs them using the **env** keyword.
 Force MET Version Used for Tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The tests typically use the develop version tag of the MET Docker image for
-development testing. If testing is done on a stable release, then the
-corresponding MET stable release will be used. However, there may be an
+The tests use the MET Docker image that matches the branch being tested: the
+*develop* tag for a development version and the *main_vX.Y* tag for a release
+branch, both from the dtcenter/met-dev DockerHub repository. When an official
+METplus release is published, the *dtcenter/met:X.Y-latest* release image is
+used instead. However, there may be an
 instance where a change in MET breaks something in another METplus component,
 i.e., METplotpy or METviewer, until a corresponding change is made to that
 component. If this occurs then some of the METplus use cases may break.

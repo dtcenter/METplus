@@ -28,6 +28,10 @@ elif [ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]; then
     run_all_use_cases=true
     run_diff=true
     external_trigger=true
+# run all use cases and diff logic for a published release
+elif [ "${GITHUB_EVENT_NAME}" == "release" ]; then
+    run_all_use_cases=true
+    run_diff=true
 # if -ref branch and not PR, do not run anything
 elif [ "${GITHUB_REF: -4}" == -ref ]; then
       run_get_image=false
