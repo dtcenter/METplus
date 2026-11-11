@@ -403,7 +403,10 @@ runs **.github/jobs/check_conda_install.sh** in a new Conda environment, which:
 * Installs that version of the **metplus** package from conda-forge.
   If that X.Y.Z version has not been published there, e.g. a bugfix release
   of an older X.Y, it adds a warning and checks the latest X.Y.Z that is
-  available instead. It fails only if no release of that X.Y is available.
+  available instead. If no release of that X.Y was built for the platform,
+  e.g. a platform added to the recipe after that release, it adds a warning
+  and skips the remaining checks. It fails only if no release of that X.Y is
+  available for any platform.
 * Runs each MET executable in the package with *-\-help* and fails if the
   dynamic loader reports a missing library or symbol.
 * Runs gen_vx_mask and plot_data_plane on a named grid to write and read a

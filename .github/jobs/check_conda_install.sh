@@ -79,7 +79,9 @@ report_failure() {
 # Write the job summary and exit with status 1 if any check failed.
 finish() {
   {
-    if [ ${num_failures} -eq 0 ]; then
+    if [ -n "${skipped}" ]; then
+      echo "### :warning: ${LABEL}: skipped"
+    elif [ ${num_failures} -eq 0 ]; then
       echo "### :white_check_mark: ${LABEL}"
     else
       echo "### :x: ${LABEL}: ${num_failures} check(s) failed"
@@ -104,7 +106,11 @@ finish() {
     echo "ERROR: ${num_failures} check(s) failed for ${LABEL}"
     exit 1
   fi
-  echo "All checks passed for ${LABEL}"
+  if [ -n "${skipped}" ]; then
+    echo "Checks skipped for ${LABEL}"
+  else
+    echo "All checks passed for ${LABEL}"
+  fi
   exit 0
 }
 
@@ -129,6 +135,7 @@ report_warning() {
 package_table=""
 results_table=""
 notes=""
+skipped=""
 
 # If the requested version was never published to conda-forge, e.g. a bugfix
 # release of an older X.Y that the feedstock bot did not pick up, check the
@@ -139,9 +146,24 @@ xy=$(echo "${requested_version}" | cut -d. -f1,2)
 available=$(conda search --override-channels -c conda-forge "metplus=${xy}" 2>/dev/null \
             | awk '$1 == "metplus" {print $2}' | sort -uV)
 if [ -z "${available}" ]; then
-  report_failure "Install" \
-    "no metplus ${xy}.x release is available on conda-forge for this platform"
-  add_result "Install" ":x: no ${xy}.x release on conda-forge"
+  # a platform added to the feedstock after an X.Y release has no build of it,
+  # so only fail if no platform has one
+  other_platforms=""
+  for subdir in linux-64 linux-aarch64 osx-64 osx-arm64; do
+    if conda search --override-channels -c conda-forge --subdir "${subdir}" \
+         "metplus=${xy}" 2>/dev/null | awk '$1 == "metplus"' | grep -q .; then
+      other_platforms+="${other_platforms:+, }${subdir}"
+    fi
+  done
+  if [ -z "${other_platforms}" ]; then
+    report_failure "Install" "no metplus ${xy}.x release is available on conda-forge"
+    add_result "Install" ":x: no ${xy}.x release on conda-forge"
+    finish
+  fi
+  report_warning "No build for this platform" \
+    "no metplus ${xy}.x release is available on conda-forge for this platform, so skipping the checks. It is available for ${other_platforms}"
+  add_result "Install" ":warning: skipped, no ${xy}.x build for this platform"
+  skipped=true
   finish
 fi
 if ! echo "${available}" | grep -qx "${requested_version}"; then
