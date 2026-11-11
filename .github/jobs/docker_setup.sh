@@ -33,14 +33,12 @@ export DOCKERFILE_PATH=${GITHUB_WORKSPACE}/internal/scripts/docker/Dockerfile
 
 metplus_version=$(head -n 1 "${GITHUB_WORKSPACE}/metplus/VERSION")
 
-# if rc is in version number, get main_vX.Y, otherwise get X.Y-latest or develop
-if [[ "${metplus_version}" =~ rc ]]; then
-  tag_format="main_v{X}.{Y}"
-else
-  tag_format="{X}.{Y}-latest"
-fi
-
-MET_TAG=$("${GITHUB_WORKSPACE}"/metplus/component_versions.py -v "${metplus_version}" -o MET -f ${tag_format} --no-get_dev_version)
+# Determine the MET branch that corresponds to this METplus version: develop for
+# a development version, otherwise main_vX.Y. This matches how METcalcpy,
+# METplotpy, and METdataio are resolved in get_use_case_commands.py, so that all
+# METplus components are tested against the branch that triggered the workflow
+# rather than against the last official release.
+MET_TAG=$("${GITHUB_WORKSPACE}"/metplus/component_versions.py -v "${metplus_version}" -o MET -f 'main_v{X}.{Y}' --no-get_dev_version)
 
 MET_DOCKER_REPO=met-dev
 if [ "${MET_TAG}" != "develop" ] && ! [[ "${MET_TAG}" =~ ^main_v[0-9]+\.[0-9]+ ]]; then
