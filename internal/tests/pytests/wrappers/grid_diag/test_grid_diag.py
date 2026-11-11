@@ -536,9 +536,10 @@ def test_grid_diag(metplus_config, config_overrides, env_var_values,
 
 
 @pytest.mark.wrapper
-def test_check_var_lists(metplus_config, tmp_path_factory, make_dummy_empty):
+def test_check_var_lists(metplus_config, tmp_path, make_dummy_empty):
     """!Recreate failure outlined in #3100 to prove that it has been fixed."""
-    fake_data_dir = tmp_path_factory.mktemp("data_dir")
+    fake_data_dir = tmp_path / "data_dir"
+    fake_data_dir.mkdir()
     make_dummy_empty(fake_data_dir, 'step12_2020010100Z_create_date_20250715.nc')
 
     config = metplus_config
