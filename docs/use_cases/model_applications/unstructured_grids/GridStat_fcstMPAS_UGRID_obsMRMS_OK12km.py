@@ -78,7 +78,7 @@ model_applications/unstructured_grids/GridStat_fcstMPAS_UGRID_obsMRMS_OK12km.con
 # GridStat is the only tool called in this example. It processes the following
 # run times:
 #
-# | **Init:** 2025-05-19_00Z to 2025-05-19_06Z 
+# | **Valid:** 2025-05-19_00Z to 2025-05-19_06Z 
 # | **Forecast lead:** 00 to 06 hour
 
 ##############################################################################
