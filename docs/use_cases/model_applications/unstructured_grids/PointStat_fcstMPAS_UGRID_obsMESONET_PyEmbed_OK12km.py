@@ -67,11 +67,11 @@ model_applications/unstructured_grids/PointStat_fcstMPAS_UGRID_obsMESONET_PyEmbe
 # METplus Workflow
 # ----------------
 #
-# **Beginning time (VALID_BEG):** 2025051900
+# **Beginning time (INIT_BEG):** 2025051900
 #
-# **End time (VALID_END):** 2025051900
+# **End time (INIT_END):** 2025051900
 #
-# **Increment between beginning and end times (VALID_INCREMENT):** 6H
+# **Increment between beginning and end times (INIT_INCREMENT):** 6H
 #
 # **Sequence of forecast leads to process (LEAD_SEQ):** 0,1,2,3,4,5,6
 #
