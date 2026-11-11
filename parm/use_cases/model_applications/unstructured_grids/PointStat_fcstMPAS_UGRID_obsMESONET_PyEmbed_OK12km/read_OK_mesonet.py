@@ -12,11 +12,9 @@ input_base = sys.argv[2]
 input_path = os.path.join(f'{input_base}','obs','mesonet')
 meso_obs_varname = sys.argv[3]
 
-#get the names of the previous file and current file
+#get the name of the current file
 curr_file = f'{input_path}/mesonet_'+time.strftime("%Y%m%d_%H%M")+'.csv'
-prev_file = f'{input_path}/mesonet_'+(time-datetime.timedelta(hours=1)).strftime("%Y%m%d_%H%M")+'.csv'
 print("Current file name: ", curr_file)
-print("previous file name: ", prev_file)
 #read in the station id static file to gather station ID, lat/lon, and elevation
 holder = pd.read_csv(f'{input_path}/geoinfo.csv',usecols=['stid','nlat','elon','elev'])
 stid_list = holder['stid'].values.tolist()
@@ -32,17 +30,11 @@ if any(len(lst) != length_check for lst in [lat_list, lon_list, elv_list]):
         print(len(lst))
     sys.exit()
 
-#Get the previous hour's data
-last_hour = pd.read_csv(prev_file,usecols=['STID','TIME',meso_obs_varname])
-#remove any stations that had bad values. This may create STIDs that "didn't report out", but that will be caught in later QA
-last_hour = last_hour[last_hour[meso_obs_varname] > -1]
-
 #get current hour's data, stids, time
 this_hour = pd.read_csv(curr_file, usecols=['STID','TIME',meso_obs_varname,'PRES'])
-#remove any stations that had bad values.
-this_hour = this_hour[this_hour[meso_obs_varname] > -1]
-#remove any stations from last_hour that did not report this_hour
-last_hour = last_hour[last_hour['STID'].isin(this_hour['STID'])]
+#remove any stations that had bad values. 
+MISSING_THRESHOLD = -990 # Mesonet missing flags are large negatives (-990 to -999)
+this_hour = this_hour[this_hour[meso_obs_varname] > MISSING_THRESHOLD]
 #add a Boolean column for easier filtering after QA
 this_hour = this_hour.assign(FILTER='TRUE')
 
@@ -53,10 +45,6 @@ this_hour = this_hour.assign(ELV=0.0)
 
 #do QA checks
 for index, rows in this_hour.iterrows():
-    #check that current hour STID reported in previous hour
-    #this line is essentially a boolean if the station ID reported last time: 0 if no, 1 if yes
-    if rows['STID'] not in last_hour['STID'].values:
-        this_hour.at[index,'FILTER'] = 'FALSE'
     #capture station metadata
     try:
         ind_finder = stid_list.index(rows['STID'])
@@ -66,19 +54,11 @@ for index, rows in this_hour.iterrows():
     except ValueError:
         print(rows['STID']+' was not found in the master list of station IDs. Will filter out')
         this_hour.at[index,'FILTER'] = 'FALSE'
-    #ind = stid_list.index(rows['STID'])
 
 #remove all entries in current data where Boolean was flagged
 this_hour = this_hour[this_hour['FILTER'].str.contains('TRUE')]
 
-if meso_obs_varname=='RAIN':
-  #calculate rainfall for the hour
-  obs = this_hour['RAIN'].values - last_hour['RAIN'].values
-  #if there are any negative values, it is from the previous hour's file being 00UTC, which is 24 hour accumumation amounts
-  #remove all negative values and replace them with 0.
-  obs[obs < 0.] = 0.
-else:
-  obs = this_hour[meso_obs_varname]
+obs = this_hour[meso_obs_varname]
 
 #variables to set at the end when there's a final count
 msg_typ = np.full(len(obs),'MSONET').tolist()
