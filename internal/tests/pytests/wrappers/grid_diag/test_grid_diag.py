@@ -381,11 +381,33 @@ def test_get_config_file(metplus_config):
         ({'GRID_DIAG_OUTPUT_FLAG_INFO_THEORY': 'True', },
          {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {info_theory = TRUE;}'}),
 
+        ({'GRID_DIAG_OUTPUT_FLAG_POWER_SPECTRUM': 'true', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {power_spectrum = TRUE;}'}),
+
         ({'GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_1D': 'true',
           'GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_2D': 'false',
           'GRID_DIAG_OUTPUT_FLAG_INFO_THEORY': 'True',
+          'GRID_DIAG_OUTPUT_FLAG_POWER_SPECTRUM': 'false',
          },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {histogram_1d = TRUE;histogram_2d = FALSE;info_theory = TRUE;}'}),
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {histogram_1d = TRUE;histogram_2d = FALSE;info_theory = TRUE;power_spectrum = FALSE;}'}),
+
+        ({'GRID_DIAG_POWER_SPECTRUM_MISSING_FLAG': 'mean', },
+         {'METPLUS_POWER_SPECTRUM_DICT': 'power_spectrum = {missing_flag = MEAN;}'}),
+
+        ({'GRID_DIAG_POWER_SPECTRUM_MISSING_FLAG': '"VALUE"', },
+         {'METPLUS_POWER_SPECTRUM_DICT': 'power_spectrum = {missing_flag = VALUE;}'}),
+
+        ({'GRID_DIAG_POWER_SPECTRUM_MISSING_VALUE': '1.5', },
+         {'METPLUS_POWER_SPECTRUM_DICT': 'power_spectrum = {missing_value = 1.5;}'}),
+
+        ({'GRID_DIAG_POWER_SPECTRUM_VLD_THRESH': '0.75', },
+         {'METPLUS_POWER_SPECTRUM_DICT': 'power_spectrum = {vld_thresh = 0.75;}'}),
+
+        ({'GRID_DIAG_POWER_SPECTRUM_MISSING_FLAG': 'VALUE',
+          'GRID_DIAG_POWER_SPECTRUM_MISSING_VALUE': '0',
+          'GRID_DIAG_POWER_SPECTRUM_VLD_THRESH': '0.5',
+          },
+         {'METPLUS_POWER_SPECTRUM_DICT': 'power_spectrum = {missing_flag = VALUE;missing_value = 0.0;vld_thresh = 0.5;}'}),
     ]
 )
 @pytest.mark.wrapper
