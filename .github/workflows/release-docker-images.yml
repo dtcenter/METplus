@@ -87,7 +87,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           ref: ${{ matrix.version }}
-          path: ${{ matrix.version }}
+          path: release/${{ matrix.version }}
           sparse-checkout: internal/scripts/docker
           sparse-checkout-cone-mode: false
 
@@ -110,6 +110,7 @@ jobs:
         env:
           SOURCE_BRANCH: ${{ matrix.version }}
           METPLUS_VERSION: ${{ env.VERSION_NO_V }}
+          DOCKERFILE_DIR: ${{ github.workspace }}/release/${{ matrix.version }}/internal/scripts/docker
           DOCKERHUB_BASE_REPO: ${{ env.DOCKERHUB_BASE_REPO }}
           DOCKERHUB_ANALYSIS_REPO: ${{ env.DOCKERHUB_ANALYSIS_REPO }}
 
