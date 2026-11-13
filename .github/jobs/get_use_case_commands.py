@@ -84,6 +84,13 @@ def handle_automation_env(host_name, reqs):
     # If stable release, get main branch, otherwise get develop
     metplus_version = get_metplus_version()
 
+    # a published release is tested against the released version of each
+    # component, e.g. v3.2.0, instead of the head of its main_vX.Y branch
+    if os.environ.get('GITHUB_EVENT_NAME') == 'release':
+        output_format = 'v{X}.{Y}.{Z}'
+    else:
+        output_format = 'main_v{X}.{Y}'
+
     # if any metplotpy/metcalcpy keywords are in requirements list,
     # add command to obtain and install METplotpy and METcalcpy
     components = []
@@ -102,7 +109,7 @@ def handle_automation_env(host_name, reqs):
             version = get_component_version(input_component='METplus',
                                             input_version=metplus_version,
                                             output_component=component,
-                                            output_format='main_v{X}.{Y}',
+                                            output_format=output_format,
                                             get_dev=False)
         setup_env.extend((
             'git --version',

@@ -91,7 +91,9 @@ def get_branch_name():
     if github_ref is None:
         return None
 
-    return github_ref.replace('refs/heads/', '').replace('/', '_')
+    # a release event sets GITHUB_REF to the tag, e.g. refs/tags/v6.2.1
+    return (github_ref.replace('refs/heads/', '').replace('refs/tags/', '')
+            .replace('/', '_'))
 
 
 def run_commands(commands):
