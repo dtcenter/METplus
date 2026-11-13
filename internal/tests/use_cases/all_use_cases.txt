@@ -230,4 +230,5 @@ Category: tc_and_extra_tc
 
 Category: unstructured_grids
 0::StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEmbed:: model_applications/unstructured_grids/StatAnalysis_fcstLFRIC_UGRID_obsASCII_PyEmbed.conf:: geovista_env, py_embed
-
+1::GridStat_fcstMPAS_UGRID_obsMRMS_OK12km:: model_applications/unstructured_grids/GridStat_fcstMPAS_UGRID_obsMRMS_OK12km.conf
+2::PointStat_fcstMPAS_UGRID_obsMESONET_PyEmbed_OK12km:: model_applications/unstructured_grids/PointStat_fcstMPAS_UGRID_obsMESONET_PyEmbed_OK12km.conf

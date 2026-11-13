@@ -180,6 +180,7 @@ Use Cases by Feature:
    | `Times from Template <../search.html?q=TimesFromTemplateUseCase&check_keywords=yes&area=default>`_
    | `Tropical Cyclone <../search.html?q=TropicalCycloneUseCase&check_keywords=yes&area=default>`_
    | `Validation of Models or Analyses <../search.html?q=ValidationUseCase&check_keywords=yes&area=default>`_
+   | `Unstructured Grid <../search.html?q=UnstructuredGridUseCase&check_keywords=yes&area=default>`_
    | `User Defined Script <../search.html?q=UserScriptUseCase&check_keywords=yes&area=default>`_
 
 .. only:: latex
@@ -215,6 +216,7 @@ Use Cases by Feature:
    | **Times from Template**: *TimesFromTemplateUseCase*
    | **Tropical Cyclone**: *TropicalCycloneUseCase*
    | **Validation of Models or Analyses**: *ValidationUseCase*
+   | **Unstructured Grid**: *UnstructuredGridUseCase*
    | **User Defined Script**: *UserScriptUseCase*
 
 Use cases by File Format:
