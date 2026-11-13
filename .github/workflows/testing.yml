@@ -86,6 +86,27 @@ jobs:
       - name: Build URL for commit that triggered workflow
         if: github.event_name == 'workflow_dispatch' && startsWith(github.event.inputs.repository, 'dtcenter/') && github.event.inputs.sha
         run: echo https://github.com/${{ github.event.inputs.repository }}/commit/${{ github.event.inputs.sha }}
+      - uses: actions/checkout@v6
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          sparse-checkout: .github/jobs
+      # show the commit and pull request that triggered the run on the run's
+      # summary page. Continue if this step fails, since it is informational
+      - name: Summarize what triggered workflow
+        if: github.event_name == 'workflow_dispatch'
+        continue-on-error: true
+        run: .github/jobs/write_trigger_summary.sh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_REPOSITORY: ${{ github.event.inputs.repository }}
+          INPUT_SHA: ${{ github.event.inputs.sha }}
+          INPUT_REF: ${{ github.event.inputs.ref }}
+          INPUT_ACTOR: ${{ github.event.inputs.actor }}
+          INPUT_TITLE: ${{ github.event.inputs.title }}
+          INPUT_FORCE_MET_IMAGE: ${{ github.event.inputs.force_met_image }}
+          INPUT_METPLOTPY_BRANCH: ${{ github.event.inputs.metplotpy_branch }}
+          INPUT_METCALCPY_BRANCH: ${{ github.event.inputs.metcalcpy_branch }}
+          INPUT_METDATAIO_BRANCH: ${{ github.event.inputs.metdataio_branch }}
 
   job_control:
     name: Determine which jobs to run
