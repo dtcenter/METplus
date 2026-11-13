@@ -10,15 +10,13 @@ CI_JOBS_DIR=.github/jobs
 
 source ${GITHUB_WORKSPACE}/${CI_JOBS_DIR}/bash_functions.sh
 
-# get branch name for push or pull request events
-# add -pull_request if pull request event to keep separated
-branch_name=$(${GITHUB_WORKSPACE}/${CI_JOBS_DIR}/print_branch_name.py)
-if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
-  branch_name=${branch_name}-pull_request
-fi
+# get image tag from branch name, adding -pull_request for a pull request or
+# the triggering repository for a run triggered by another repository to keep
+# them separated
+image_tag=$(${GITHUB_WORKSPACE}/${CI_JOBS_DIR}/print_metplus_image_tag.py)
 
 # try to pull image from DockerHub
-DOCKERHUBTAG=dtcenter/metplus-dev:${branch_name}
+DOCKERHUBTAG=dtcenter/metplus-dev:${image_tag}
 time_command docker pull $DOCKERHUBTAG
 
 # if unsuccessful (i.e. pull request from a fork)

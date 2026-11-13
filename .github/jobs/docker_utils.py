@@ -1,3 +1,4 @@
+import json
 import os
 import re
 import subprocess
@@ -94,6 +95,50 @@ def get_branch_name():
     # a release event sets GITHUB_REF to the tag, e.g. refs/tags/v6.2.1
     return (github_ref.replace('refs/heads/', '').replace('refs/tags/', '')
             .replace('/', '_'))
+
+
+def get_trigger_repository():
+    """Get the repository that triggered a workflow_dispatch run, e.g.
+    dtcenter/MET, from the repository input in the event payload.
+
+    @returns repository name or None if not a workflow_dispatch run or the
+     input was not set
+    """
+    if os.environ.get('GITHUB_EVENT_NAME') != 'workflow_dispatch':
+        return None
+
+    event_path = os.environ.get('GITHUB_EVENT_PATH')
+    if not event_path or not os.path.exists(event_path):
+        return None
+
+    with open(event_path, 'r') as file_handle:
+        event = json.load(file_handle)
+    return (event.get('inputs') or {}).get('repository') or None
+
+
+def get_metplus_image_tag():
+    """Get the tag of the dtcenter/metplus-dev Docker image for this run.
+    The tag is the branch name, with -pull_request added for a pull request
+    and the repository that triggered the run added for a run triggered by
+    another repository, e.g. develop-dtcenter_MET. Runs for the same branch
+    that were triggered by different repositories can run at the same time,
+    so each must use its own image.
+
+    @returns image tag or None if the branch name could not be determined
+    """
+    branch_name = get_branch_name()
+    if branch_name is None:
+        return None
+
+    if os.environ.get('GITHUB_EVENT_NAME') == 'pull_request':
+        return f'{branch_name}-pull_request'
+
+    repository = get_trigger_repository()
+    if repository and repository != os.environ.get('GITHUB_REPOSITORY'):
+        # Docker tags may only contain letters, digits, _, ., and -
+        return f"{branch_name}-{re.sub(r'[^A-Za-z0-9_.-]', '_', repository)}"
+
+    return branch_name
 
 
 def run_commands(commands):
