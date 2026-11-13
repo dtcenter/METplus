@@ -164,28 +164,30 @@ def print_issues_by_category(repo_name, issues_by_category):
 
 
 def get_issues_by_category(all_issues):
+    # categories with no issues stay None so they are listed as 'None'
     issues_by_category = dict.fromkeys(CATEGORIES)
     issues_by_category['none'] = []
     for issue in all_issues:
-        found_cat = False
-        for category in CATEGORIES:
-            if issue.title.startswith(f"{category}:"):
-                if issues_by_category[category] is None:
-                    issues_by_category[category] = []
-                issues_by_category[category].append(issue)
-                found_cat = True
-                break
-        if not found_cat:
-            category = get_category_from_labels(issue)
-            if category:
-                if issues_by_category[category] is None:
-                    issues_by_category[category] = []
-                issues_by_category[category].append(issue)
-                continue
-            if issues_by_category['none'] is None:
-                issues_by_category['none'] = []
-            issues_by_category['none'].append(issue)
+        category = get_category(issue)
+        if issues_by_category[category] is None:
+            issues_by_category[category] = []
+        issues_by_category[category].append(issue)
     return issues_by_category
+
+
+def get_category(issue):
+    """Get the category of an issue from its title prefix or, if it has none,
+    from its labels. Returns 'none' if neither gives a category."""
+    return (get_category_from_title(issue) or
+            get_category_from_labels(issue) or
+            'none')
+
+
+def get_category_from_title(issue):
+    for category in CATEGORIES:
+        if issue.title.startswith(f"{category}:"):
+            return category
+    return None
 
 
 def get_category_from_labels(issue):
