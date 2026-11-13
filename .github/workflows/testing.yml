@@ -62,9 +62,12 @@ on:
     types:
       - released
 
-# Group by workflow name and branch/PR reference
+# Group by workflow name, branch/PR reference, and the repository that
+# triggered the run, so a run triggered by a change in another METplus
+# component (workflow_dispatch with the repository input set) does not cancel
+# a run for a change to this repository, or a run triggered by another component
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event.inputs.repository || github.repository }}
   cancel-in-progress: true
 
 jobs:
