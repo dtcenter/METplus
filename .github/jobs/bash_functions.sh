@@ -32,12 +32,18 @@ function time_command {
 # utility function to call the GitHub API with gh api, retrying on failure.
 # Arguments are passed to gh api. GH_TOKEN must be set.
 # gh api exits non-zero on an HTTP error, unlike curl -s, so a failed request
-# is not passed to jq as if it were the response
+# is not passed to jq as if it were the response.
+# Output is written only after a request succeeds, because gh api --paginate
+# writes each page as it is fetched, so a request that fails partway would
+# otherwise write the earlier pages again on the next attempt
 function gh_api_retry {
   local max_attempts=3
   local attempt
   local arg
   local endpoint=""
+  # declared separately so the if below tests the exit status of gh api,
+  # not of local, which is always 0
+  local output
   # find endpoint (first argument that is not an option) for log messages
   for arg in "$@"; do
     if [[ "${arg}" != -* ]]; then
@@ -46,7 +52,8 @@ function gh_api_retry {
     fi
   done
   for attempt in $(seq 1 ${max_attempts}); do
-    if gh api "$@"; then
+    if output=$(gh api "$@"); then
+      [ -n "${output}" ] && echo "${output}"
       return 0
     fi
     if [ ${attempt} -lt ${max_attempts} ]; then
