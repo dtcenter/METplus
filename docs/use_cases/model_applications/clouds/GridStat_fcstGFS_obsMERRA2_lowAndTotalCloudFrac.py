@@ -190,6 +190,7 @@ model_applications/clouds/GridStat_fcstGFS_obsMERRA2_lowAndTotalCloudFrac.conf
 #   * NetCDFFileUseCase
 #   * CloudsAppUseCase
 #   * PythonEmbeddingFileUseCase
+#   * VxDataMERRA2
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
