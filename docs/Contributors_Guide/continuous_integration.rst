@@ -554,6 +554,13 @@ determine which METplus branch to run, e.g. changes pushed to *dtcenter/MET*
 main_v12.2 trigger a testing workflow that runs on the METplus main_v6.2
 branch.
 
+A new testing workflow run cancels an in-progress run for the same branch or
+pull request only if both were triggered by the same repository. A run
+triggered by a change to MET does not cancel a run for a change pushed to
+METplus on the same branch, or a run triggered by METplotpy, but it does
+cancel an earlier run triggered by MET. A manual run with no repository
+input is treated as triggered by METplus.
+
 In all of these cases the run tests the branch that triggered it. The MET
 Docker image is read from the *dtcenter/met-dev* DockerHub repository, which
 holds an image for each MET branch, rather than from the *dtcenter/met*
@@ -640,6 +647,15 @@ the workflow. This is useful to see what information is available to use
 in the workflow based on the event.
 
 .. figure:: figure/ci-github-context.png
+
+For a **workflow_dispatch** event, this job also writes a summary to the
+workflow run's summary page using **.github/jobs/write_trigger_summary.sh**.
+For a run triggered by another repository, it lists the pull request that the
+commit was merged from (or notes that the commit was pushed directly), the
+commit and its author, the branch, and the user who pushed it. For a run
+started by hand, it lists who started it and on which branch. In both cases
+it also lists any inputs that override the default MET Docker image or
+METplotpy, METcalcpy, or METdataio branch.
 
 .. _cg-ci-job-control:
 
