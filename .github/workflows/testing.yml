@@ -62,9 +62,12 @@ on:
     types:
       - released
 
-# Group by workflow name and branch/PR reference
+# Group by workflow name, branch/PR reference, and the repository that
+# triggered the run, so a run triggered by a change in another METplus
+# component (workflow_dispatch with the repository input set) does not cancel
+# a run for a change to this repository, or a run triggered by another component
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event.inputs.repository || github.repository }}
   cancel-in-progress: true
 
 jobs:
@@ -83,6 +86,27 @@ jobs:
       - name: Build URL for commit that triggered workflow
         if: github.event_name == 'workflow_dispatch' && startsWith(github.event.inputs.repository, 'dtcenter/') && github.event.inputs.sha
         run: echo https://github.com/${{ github.event.inputs.repository }}/commit/${{ github.event.inputs.sha }}
+      - uses: actions/checkout@v6
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          sparse-checkout: .github/jobs
+      # show the commit and pull request that triggered the run on the run's
+      # summary page. Continue if this step fails, since it is informational
+      - name: Summarize what triggered workflow
+        if: github.event_name == 'workflow_dispatch'
+        continue-on-error: true
+        run: .github/jobs/write_trigger_summary.sh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_REPOSITORY: ${{ github.event.inputs.repository }}
+          INPUT_SHA: ${{ github.event.inputs.sha }}
+          INPUT_REF: ${{ github.event.inputs.ref }}
+          INPUT_ACTOR: ${{ github.event.inputs.actor }}
+          INPUT_TITLE: ${{ github.event.inputs.title }}
+          INPUT_FORCE_MET_IMAGE: ${{ github.event.inputs.force_met_image }}
+          INPUT_METPLOTPY_BRANCH: ${{ github.event.inputs.metplotpy_branch }}
+          INPUT_METCALCPY_BRANCH: ${{ github.event.inputs.metcalcpy_branch }}
+          INPUT_METDATAIO_BRANCH: ${{ github.event.inputs.metdataio_branch }}
 
   job_control:
     name: Determine which jobs to run
@@ -255,7 +279,7 @@ jobs:
 
       - name: Upload error logs artifact
         uses: actions/upload-artifact@v7
-        if: ${{ always() && steps.save-errors.outputs.upload_error_logs }}
+        if: ${{ always() && steps.save-errors.outputs.upload_error_logs == 'true' }}
         with:
           name: error_logs-${{ steps.get-artifact-name.outputs.artifact_name }}
           path: artifact/error_logs
@@ -275,16 +299,29 @@ jobs:
     needs: use_case_tests
     if: ${{ always() && needs.use_case_tests.result == 'failure' }}
     steps:
+      - uses: actions/checkout@v6
+        with:
+          sparse-checkout: .github/jobs
       - name: Check for error logs
         id: check-for-error-logs
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          json_data=$(curl -s -H "Authorization: Bearer ${{ github.token }}" \
-                 "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs?per_page=100")
-          error_log_jobs=($(echo "$json_data" | jq -r '.jobs[] | select(.name | startswith("Use Case Tests")) | .steps[] | select(.name | startswith("Save error logs")) | select(.conclusion | startswith("success"))'))
+          source .github/jobs/bash_functions.sh
+          # check for error log artifacts rather than the jobs that create
+          # them. The list of jobs and their steps for a full run can be
+          # large enough that the API returns HTTP 502, and a job that saves
+          # error logs may find none to upload
+          error_logs=$(gh_api_retry --paginate \
+            "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts?per_page=100" \
+            --jq '.artifacts[].name | select(startswith("error_logs-"))')
           # save output variable to merge error logs if any error logs were created
-          if [ ! -z "${error_log_jobs}" ]; then
+          if [ -n "${error_logs}" ]; then
+              echo "Found error logs:"
+              echo "${error_logs}"
               echo "has_error_logs=true" >> $GITHUB_OUTPUT
           else
+              echo "No error logs found"
               echo "has_error_logs=false" >> $GITHUB_OUTPUT
           fi
       - name: Merge Artifacts

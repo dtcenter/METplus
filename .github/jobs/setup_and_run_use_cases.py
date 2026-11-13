@@ -13,7 +13,7 @@ import sys
 
 import get_use_case_commands
 import get_data_volumes
-from docker_utils import get_branch_name, VERSION_EXT, run_commands
+from docker_utils import get_metplus_image_tag, VERSION_EXT, run_commands
 
 RUNNER_WORKSPACE = os.environ.get('RUNNER_WORKSPACE')
 GITHUB_WORKSPACE = os.environ.get('GITHUB_WORKSPACE')
@@ -56,9 +56,7 @@ def main():
     print(f"Input Volumes: {volumes_from}")
 
     # build Docker image with conda environment and METplus branch image
-    branch_name = get_branch_name()
-    if os.environ.get('GITHUB_EVENT_NAME') == 'pull_request':
-        branch_name = f"{branch_name}-pull_request"
+    image_tag = get_metplus_image_tag()
 
     # use BuildKit to build image
     os.environ['DOCKER_BUILDKIT'] = '1'
@@ -74,7 +72,7 @@ def main():
 
         docker_build_cmd = (
             f"docker build -t {RUN_TAG} "
-            f"--build-arg METPLUS_IMG_TAG={branch_name} "
+            f"--build-arg METPLUS_IMG_TAG={image_tag} "
             f"--build-arg METPLUS_ENV_TAG={env_tag} "
             f"-f {DOCKERFILE_DIR}/{dockerfile_name} ."
         )
@@ -91,7 +89,7 @@ def main():
         cleanup_commands = ['docker images']
         if os.environ.get('METPLUS_IMG_BUILT_LOCALLY') != 'true':
             cleanup_commands.append(
-                f'docker image rm dtcenter/metplus-dev:{branch_name} -f'
+                f'docker image rm dtcenter/metplus-dev:{image_tag} -f'
             )
         cleanup_commands.append('docker image prune -f')
         run_commands(cleanup_commands)
