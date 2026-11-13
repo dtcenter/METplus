@@ -4,8 +4,13 @@
 # SOURCE_BRANCH is METplus branch or tag used to clone METplus repo
 # METPLUS_VERSION is branch or tag with v prefix removed used to get
 #   component versions and set Docker tag names
+# DOCKERFILE_DIR is the directory containing the Dockerfiles to use. Set it to
+#   the release's own copy so each release is built with the Dockerfiles it
+#   shipped with. Defaults to the Dockerfiles in the current checkout.
 
 source "${GITHUB_WORKSPACE}"/.github/jobs/bash_functions.sh
+
+dockerfile_dir=${DOCKERFILE_DIR:-${GITHUB_WORKSPACE}/internal/scripts/docker}
 
 dockerhub_repo=${DOCKERHUB_BASE_REPO}
 dockerhub_repo_analysis=${DOCKERHUB_ANALYSIS_REPO}
@@ -37,7 +42,7 @@ if ! time_command docker build -t "$METPLUS_IMAGE_NAME" \
        --build-arg SOURCE_VERSION="$SOURCE_BRANCH" \
        --build-arg MET_TAG="$met_tag" \
        --build-arg MET_DOCKER_REPO="$MET_DOCKER_REPO" \
-       -f "${GITHUB_WORKSPACE}"/internal/scripts/docker/Dockerfile \
+       -f "${dockerfile_dir}"/Dockerfile \
        "${GITHUB_WORKSPACE}"; then
     exit 1
 fi
@@ -49,7 +54,7 @@ if ! time_command docker build -t "$METPLUS_A_IMAGE_NAME" \
        --build-arg METDATAIO_VERSION="${METDATAIO_VERSION}" \
        --build-arg METCALCPY_VERSION="${METCALCPY_VERSION}" \
        --build-arg METPLOTPY_VERSION="${METPLOTPY_VERSION}" \
-       -f "${GITHUB_WORKSPACE}"/internal/scripts/docker/Dockerfile.metplus-analysis \
+       -f "${dockerfile_dir}"/Dockerfile.metplus-analysis \
        "${GITHUB_WORKSPACE}"; then
     exit 1
 fi

@@ -27,6 +27,10 @@ if ! docker inspect --type=image $DOCKERHUBTAG > /dev/null; then
    # if docker pull fails, build locally
    echo docker pull failed. Building Docker image locally...
    ${GITHUB_WORKSPACE}/${CI_JOBS_DIR}/docker_setup.sh
+
+   # flag that image cannot be pulled again so it is not removed
+   # after creating the run image for each use case group
+   export METPLUS_IMG_BUILT_LOCALLY=true
 fi
 
 # running use case tests

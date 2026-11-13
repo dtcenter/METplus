@@ -85,12 +85,16 @@ def main():
             continue
 
         # print list of existing docker images,
-        # remove docker image after creating run env or prune untagged images
-        run_commands([
-            'docker images',
-            f'docker image rm dtcenter/metplus-dev:{branch_name} -f',
-            'docker image prune -f',
-        ])
+        # remove docker image after creating run env and prune untagged images.
+        # keep METplus image if it was built locally (i.e. pull request from
+        # a fork) because it cannot be pulled again for the next group
+        cleanup_commands = ['docker images']
+        if os.environ.get('METPLUS_IMG_BUILT_LOCALLY') != 'true':
+            cleanup_commands.append(
+                f'docker image rm dtcenter/metplus-dev:{branch_name} -f'
+            )
+        cleanup_commands.append('docker image prune -f')
+        run_commands(cleanup_commands)
 
         # list docker images again after removal,
         # start interactive container in the background,

@@ -73,3 +73,4 @@
 [20261103_20:12:00 develop] #3402, #3351 - #3402 fixes a bug with inconsistent units in the CoCoRaHS use case     precipitation/PointStat_fcstURMA_obsCOCORAHS_ASCIIprecip. #3351 changes a land use case to run GridDiag in addition to the existing processing.
 [20261110_17:46:46 develop] #3384 - Renames one TC-RMW output file name
 [20261111_15:53:04 develop] dtcenter/MET#3504 - Correcting the Gaussian grid delta lon to divide by Nx rather than Nx-1 causes small numeric differences in 10 METplus Use Cases.
+[20261113_19:27:42 develop] #3379 - Add new use cases GridStat_fcstMPAS_UGRID_obsMRMS_OK12km and PointStat_fcstMPAS_UGRID_obsMESONET_PyEmbed_OK12km
