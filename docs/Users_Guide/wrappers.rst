@@ -3449,6 +3449,10 @@ METplus Configuration
 | :term:`GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_1D`
 | :term:`GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_2D`
 | :term:`GRID_DIAG_OUTPUT_FLAG_INFO_THEORY`
+| :term:`GRID_DIAG_OUTPUT_FLAG_POWER_SPECTRUM`
+| :term:`GRID_DIAG_POWER_SPECTRUM_MISSING_FLAG`
+| :term:`GRID_DIAG_POWER_SPECTRUM_MISSING_VALUE`
+| :term:`GRID_DIAG_POWER_SPECTRUM_VLD_THRESH`
 | :term:`GRID_DIAG_WARN_IF_DUPLICATE_OUTPUT`
 | :term:`GRID_DIAG_WARN_IF_OUTPUT_EXISTS`
 
@@ -3540,6 +3544,22 @@ ${METPLUS_CENSOR_VAL}
    * - :term:`GRID_DIAG_CENSOR_VAL`
      - censor_val
 
+${METPLUS_POWER_SPECTRUM_DICT}
+""""""""""""""""""""""""""""""
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 1
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_DIAG_POWER_SPECTRUM_MISSING_FLAG`
+     - power_spectrum.missing_flag
+   * - :term:`GRID_DIAG_POWER_SPECTRUM_MISSING_VALUE`
+     - power_spectrum.missing_value
+   * - :term:`GRID_DIAG_POWER_SPECTRUM_VLD_THRESH`
+     - power_spectrum.vld_thresh
+
 
 ${METPLUS_DATA_DICT}
 """"""""""""""""""""
@@ -3590,6 +3610,8 @@ ${METPLUS_OUTPUT_FLAG_DICT}
      - output_flag.histogram_2d
    * - :term:`GRID_DIAG_OUTPUT_FLAG_INFO_THEORY`
      - output_flag.info_theory
+   * - :term:`GRID_DIAG_OUTPUT_FLAG_POWER_SPECTRUM`
+     - output_flag.power_spectrum
 
 ${METPLUS_MET_CONFIG_OVERRIDES}
 """""""""""""""""""""""""""""""
