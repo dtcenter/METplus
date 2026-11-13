@@ -29,6 +29,35 @@ function time_command {
   return $error
 }
 
+# utility function to call the GitHub API with gh api, retrying on failure.
+# Arguments are passed to gh api. GH_TOKEN must be set.
+# gh api exits non-zero on an HTTP error, unlike curl -s, so a failed request
+# is not passed to jq as if it were the response
+function gh_api_retry {
+  local max_attempts=3
+  local attempt
+  local arg
+  local endpoint=""
+  # find endpoint (first argument that is not an option) for log messages
+  for arg in "$@"; do
+    if [[ "${arg}" != -* ]]; then
+      endpoint=${arg}
+      break
+    fi
+  done
+  for attempt in $(seq 1 ${max_attempts}); do
+    if gh api "$@"; then
+      return 0
+    fi
+    if [ ${attempt} -lt ${max_attempts} ]; then
+      echo "WARNING: gh api ${endpoint} failed (attempt ${attempt} of ${max_attempts}), retrying in 30 seconds" >&2
+      sleep 30
+    fi
+  done
+  echo "ERROR: gh api ${endpoint} failed after ${max_attempts} attempts" >&2
+  return 1
+}
+
 # utility function to scan a Docker image for vulnerabilities
 function cve_scan_image {
   echo "Scanning image $1"

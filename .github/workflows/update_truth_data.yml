@@ -45,13 +45,19 @@ jobs:
 
       - name: Find latest workflow run for base branch
         id: find-run
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          source .github/jobs/bash_functions.sh
           BASE_BRANCH="${{ steps.set-base-branch.outputs.base_branch }}"
-          
-          # Get the latest completed not cancelled workflow run for the base branch
-          LATEST_RUN_ID=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/testing.yml/runs?branch=${BASE_BRANCH}&status=completed&per_page=10" \
-            | jq -r '.workflow_runs[] | select(.conclusion != "cancelled") | .id' | head -n 1)
+
+          # Get the latest completed not cancelled workflow run for the base branch.
+          # Fail if the request fails, since an empty result would otherwise
+          # be read as no completed runs and regenerate every use case group
+          RUN_IDS=$(gh_api_retry \
+            "repos/${{ github.repository }}/actions/workflows/testing.yml/runs?branch=${BASE_BRANCH}&status=completed&per_page=10" \
+            --jq '.workflow_runs[] | select(.conclusion != "cancelled") | .id')
+          LATEST_RUN_ID=$(echo "${RUN_IDS}" | head -n 1)
 
           if [ -z "${LATEST_RUN_ID}" ]; then
             echo "No completed workflow runs found for branch ${BASE_BRANCH}"
@@ -65,7 +71,10 @@ jobs:
 
       - name: Identify groups with differences
         id: set-matrix
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          source .github/jobs/bash_functions.sh
           RUN_ID="${{ steps.find-run.outputs.run_id }}"
 
           if [[ "${{ steps.check-run-all.outputs.run_all_groups }}" == "true" || "${{ steps.find-run.outputs.run_all }}" == "true" ]]; then
@@ -84,17 +93,18 @@ jobs:
             exit 0
           fi
           
-          # Get all jobs from the workflow run
-          JOBS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/actions/runs/${RUN_ID}/jobs?per_page=100")
-          
-          # Extract use case test jobs that failed with differences
-          DIFF_JOBS=$(echo "${JOBS}" | jq -r '.jobs[] | 
-            select(.name | startswith("Use Case Tests")) | 
-            select(.conclusion == "failure") | 
-            select(.steps[] | 
-              select(.name == "Run difference tests" and .conclusion == "failure")) | 
-            .name')
+          # Get the use case test jobs from the workflow run that failed with
+          # differences. Request smaller pages, since the full list of jobs
+          # and their steps can be large enough that the API returns HTTP 502.
+          # Fail if the request fails, since an empty result would otherwise
+          # be read as no differences
+          DIFF_JOBS=$(gh_api_retry --paginate \
+            "repos/${{ github.repository }}/actions/runs/${RUN_ID}/jobs?per_page=30" \
+            --jq '.jobs[] |
+              select(.name | startswith("Use Case Tests")) |
+              select(.conclusion == "failure") |
+              select(any(.steps[]; .name == "Run difference tests" and .conclusion == "failure")) |
+              .name')
           
           if [ -z "${DIFF_JOBS}" ]; then
             echo "No use case groups with differences found in the latest run"
