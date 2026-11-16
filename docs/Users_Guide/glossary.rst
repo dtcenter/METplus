@@ -15087,6 +15087,27 @@ METplus Configuration Glossary
 
      | *Used by:* GridDiag
 
+   GRID_DIAG_OUTPUT_FLAG_POWER_SPECTRUM
+     Specify the value for 'output_flag.power_spectrum' in the MET configuration file for GridDiag.
+
+     | *Used by:* GridDiag
+
+   GRID_DIAG_POWER_SPECTRUM_MISSING_FLAG
+     Specify the value for 'power_spectrum.missing_flag' in the MET configuration file for GridDiag.
+     Valid values are NONE, MEAN, or VALUE.
+
+     | *Used by:* GridDiag
+
+   GRID_DIAG_POWER_SPECTRUM_MISSING_VALUE
+     Specify the value for 'power_spectrum.missing_value' in the MET configuration file for GridDiag.
+
+     | *Used by:* GridDiag
+
+   GRID_DIAG_POWER_SPECTRUM_VLD_THRESH
+     Specify the value for 'power_spectrum.vld_thresh' in the MET configuration file for GridDiag.
+
+     | *Used by:* GridDiag
+
    ENSEMBLE_STAT_OBS_SUMMARY
      Specify the value for 'obs_summary' in the MET configuration file for EnsembleStat.
 

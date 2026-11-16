@@ -31,6 +31,12 @@ ${METPLUS_CENSOR_THRESH}
 ${METPLUS_CENSOR_VAL}
 
 //
+// Power spectrum missing data handling
+//
+//power_spectrum = {
+${METPLUS_POWER_SPECTRUM_DICT}
+
+//
 // Data fields
 //
 //data = {

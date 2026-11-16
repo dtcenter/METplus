@@ -31,6 +31,7 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         'METPLUS_REGRID_DICT',
         'METPLUS_CENSOR_THRESH',
         'METPLUS_CENSOR_VAL',
+        'METPLUS_POWER_SPECTRUM_DICT',
         'METPLUS_DATA_DICT',
         'METPLUS_MASK_DICT',
         'METPLUS_OUTPUT_FLAG_DICT',
@@ -48,6 +49,7 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         'histogram_1d',
         'histogram_2d',
         'info_theory',
+        'power_spectrum',
     ]
 
     def __init__(self, config, instance=None):
@@ -97,6 +99,12 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         self.handle_mask(single_value=False)
 
         self.handle_censor_val_and_thresh()
+
+        self.add_met_config_dict('power_spectrum', {
+            'missing_flag': ('string', 'constant'),
+            'missing_value': 'float',
+            'vld_thresh': 'float',
+        })
 
         self.handle_flags('OUTPUT')
 

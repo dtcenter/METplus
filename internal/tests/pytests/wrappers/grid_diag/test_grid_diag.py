@@ -220,6 +220,92 @@ def test_grid_diag_run_once_per_lead_inc_init(metplus_config):
         match = re.search(r'-data\s+([^\s]+)', cmd)
         assert match.group(1) == os.path.join(input_dir, expected_file)
 
+@pytest.mark.wrapper
+def test_grid_diag_keng_power_spectrum(metplus_config,
+                                       compare_command_and_env_vars):
+    """! Configure GridDiag to compute the power spectrum of kinetic energy
+    (KENG) from forecast and analysis files, mirroring the MET unit test
+    grid_diag_KENG_FCST_OBS. KENG is the field that triggers MET to read and
+    process the U and V wind components together. Each input template is
+    paired with a field so the forecast and analysis files are passed to
+    separate -data arguments, which MET uses to compute the error power
+    spectrum between them.
+    """
+    config = metplus_config
+    set_minimum_config_settings(config, set_fields=False)
+
+    init = '2012040900'
+    config.set('config', 'INIT_BEG', init)
+    config.set('config', 'INIT_END', init)
+    config.set('config', 'LEAD_SEQ', '6, 12, 18, 24')
+    config.set('config', 'GRID_DIAG_INPUT_TEMPLATE',
+               ('gfs/gfs_{init?fmt=%Y%m%d%H}_F{lead?fmt=%3H}.grib2, '
+                'gfsanl/gfsanl_4_{valid?fmt=%Y%m%d_%H%M}_000.grb2'))
+    config.set('config', 'GRID_DIAG_OUTPUT_TEMPLATE', 'grid_diag_KENG_Z10.nc')
+    config.set('config', 'GRID_DIAG_DESC', 'FCST_vs_OBS')
+    config.set('config', 'GRID_DIAG_MASK_POLY', 'MET_BASE/poly/CONUS.poly')
+
+    keng_options = 'n_bins = 140; range = [0,140];'
+    for index in (1, 2):
+        config.set('config', f'BOTH_VAR{index}_NAME', 'KENG')
+        config.set('config', f'BOTH_VAR{index}_LEVELS', 'Z10')
+        config.set('config', f'BOTH_VAR{index}_OPTIONS', keng_options)
+
+    config.set('config', 'GRID_DIAG_POWER_SPECTRUM_MISSING_FLAG', 'VALUE')
+    config.set('config', 'GRID_DIAG_POWER_SPECTRUM_MISSING_VALUE', '0.0')
+    config.set('config', 'GRID_DIAG_POWER_SPECTRUM_VLD_THRESH', '0.5')
+    for flag in ('HISTOGRAM_1D', 'HISTOGRAM_2D', 'INFO_THEORY',
+                 'POWER_SPECTRUM'):
+        config.set('config', f'GRID_DIAG_OUTPUT_FLAG_{flag}', True)
+
+    wrapper = GridDiagWrapper(config)
+    assert wrapper.is_ok
+
+    app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
+    file_list_dir = wrapper.config.getdir('FILE_LISTS_DIR')
+    out_dir = wrapper.c_dict.get('OUTPUT_DIR')
+    list_files = [
+        os.path.join(file_list_dir,
+                     f'grid_diag_files_{label}_init_{init}0000_valid_ALL_lead_ALL.txt')
+        for label in ('input0', 'input1')
+    ]
+    expected_cmds = [
+        (f"{app_path} -data {list_files[0]} -data {list_files[1]}"
+         f" -config {wrapper.c_dict.get('CONFIG_FILE')}"
+         f" -out {out_dir}/grid_diag_KENG_Z10.nc"
+         f" -v {wrapper.c_dict['VERBOSITY']}"),
+    ]
+
+    keng_field = f'{{ name="KENG"; level="Z10"; {keng_options} }}'
+    env_var_values = {
+        'METPLUS_DESC': 'desc = "FCST_vs_OBS";',
+        'METPLUS_DATA_DICT': f'data = {{field = [ {keng_field},{keng_field} ];}}',
+        'METPLUS_MASK_DICT': 'mask = {poly = ["MET_BASE/poly/CONUS.poly"];}',
+        'METPLUS_POWER_SPECTRUM_DICT': ('power_spectrum = {missing_flag = VALUE;'
+                                        'missing_value = 0.0;vld_thresh = 0.5;}'),
+        'METPLUS_OUTPUT_FLAG_DICT': ('output_flag = {histogram_1d = TRUE;'
+                                     'histogram_2d = TRUE;info_theory = TRUE;'
+                                     'power_spectrum = TRUE;}'),
+    }
+
+    all_cmds = wrapper.run_all_times()
+    compare_command_and_env_vars(all_cmds, expected_cmds, env_var_values,
+                                 wrapper)
+
+    # forecast and analysis files are listed separately, matching the
+    # file lists passed to grid_diag in the MET unit test
+    expected_files = [
+        [f'gfs/gfs_2012040900_F{lead:03d}.grib2' for lead in (6, 12, 18, 24)],
+        [f'gfsanl/gfsanl_4_{valid}_000.grb2'
+         for valid in ('20120409_0600', '20120409_1200',
+                       '20120409_1800', '20120410_0000')],
+    ]
+    for list_file, expected in zip(list_files, expected_files):
+        with open(list_file, 'r') as file_handle:
+            actual = file_handle.read().splitlines()[1:]
+        assert actual == [os.path.join(data_dir, item) for item in expected]
+
+
 @pytest.mark.parametrize(
     'time_info, expected_filename', [
         # all wildcard
@@ -381,11 +467,33 @@ def test_get_config_file(metplus_config):
         ({'GRID_DIAG_OUTPUT_FLAG_INFO_THEORY': 'True', },
          {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {info_theory = TRUE;}'}),
 
+        ({'GRID_DIAG_OUTPUT_FLAG_POWER_SPECTRUM': 'true', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {power_spectrum = TRUE;}'}),
+
         ({'GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_1D': 'true',
           'GRID_DIAG_OUTPUT_FLAG_HISTOGRAM_2D': 'false',
           'GRID_DIAG_OUTPUT_FLAG_INFO_THEORY': 'True',
+          'GRID_DIAG_OUTPUT_FLAG_POWER_SPECTRUM': 'false',
          },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {histogram_1d = TRUE;histogram_2d = FALSE;info_theory = TRUE;}'}),
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {histogram_1d = TRUE;histogram_2d = FALSE;info_theory = TRUE;power_spectrum = FALSE;}'}),
+
+        ({'GRID_DIAG_POWER_SPECTRUM_MISSING_FLAG': 'mean', },
+         {'METPLUS_POWER_SPECTRUM_DICT': 'power_spectrum = {missing_flag = MEAN;}'}),
+
+        ({'GRID_DIAG_POWER_SPECTRUM_MISSING_FLAG': '"VALUE"', },
+         {'METPLUS_POWER_SPECTRUM_DICT': 'power_spectrum = {missing_flag = VALUE;}'}),
+
+        ({'GRID_DIAG_POWER_SPECTRUM_MISSING_VALUE': '1.5', },
+         {'METPLUS_POWER_SPECTRUM_DICT': 'power_spectrum = {missing_value = 1.5;}'}),
+
+        ({'GRID_DIAG_POWER_SPECTRUM_VLD_THRESH': '0.75', },
+         {'METPLUS_POWER_SPECTRUM_DICT': 'power_spectrum = {vld_thresh = 0.75;}'}),
+
+        ({'GRID_DIAG_POWER_SPECTRUM_MISSING_FLAG': 'VALUE',
+          'GRID_DIAG_POWER_SPECTRUM_MISSING_VALUE': '0',
+          'GRID_DIAG_POWER_SPECTRUM_VLD_THRESH': '0.5',
+          },
+         {'METPLUS_POWER_SPECTRUM_DICT': 'power_spectrum = {missing_flag = VALUE;missing_value = 0.0;vld_thresh = 0.5;}'}),
     ]
 )
 @pytest.mark.wrapper
@@ -428,9 +536,10 @@ def test_grid_diag(metplus_config, config_overrides, env_var_values,
 
 
 @pytest.mark.wrapper
-def test_check_var_lists(metplus_config, tmp_path_factory, make_dummy_empty):
+def test_check_var_lists(metplus_config, tmp_path, make_dummy_empty):
     """!Recreate failure outlined in #3100 to prove that it has been fixed."""
-    fake_data_dir = tmp_path_factory.mktemp("data_dir")
+    fake_data_dir = tmp_path / "data_dir"
+    fake_data_dir.mkdir()
     make_dummy_empty(fake_data_dir, 'step12_2020010100Z_create_date_20250715.nc')
 
     config = metplus_config
