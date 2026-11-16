@@ -551,8 +551,10 @@ trigger this workflow since they are used in 1 or more METplus use cases.
 Each of them triggers the workflow when changes are pushed to its *develop*
 branch or to one of its *main_vX.Y* branches. The 'ref' input is used to
 determine which METplus branch to run, e.g. changes pushed to *dtcenter/MET*
-main_v12.2 trigger a testing workflow that runs on the METplus main_v6.2
-branch.
+main_v13.0 trigger a testing workflow that runs on the METplus main_v13.0
+branch. Before the 13.0 coordinated release, the component version numbers
+differed, so changes pushed to *dtcenter/MET* main_v12.2 ran on the METplus
+main_v6.2 branch.
 
 A new testing workflow run cancels an in-progress run for the same branch or
 pull request only if both were triggered by the same repository. A run

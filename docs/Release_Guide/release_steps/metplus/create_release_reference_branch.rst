@@ -7,8 +7,9 @@ For rc1 development releases, create a new reference branch for the upcoming off
 
   * For METplus, the corresponding MET release must be created before starting
     this step. Specifically, a DockerHub tag on dtcenter/met-dev that is named
-    main_v(X+6).Y must already exist. For example, for METplus 6.2.0-rc1,
-    the MET-Dev DockerHub tag for main_v12.2 must be built.
+    main_vX.Y must already exist. All METplus components share the same
+    X.Y version, so for METplus 13.0.0-rc1, the MET-Dev DockerHub tag for
+    main_v13.0 must be built.
     See https://hub.docker.com/r/dtcenter/met-dev/tags for
     a list of existing tags.
 

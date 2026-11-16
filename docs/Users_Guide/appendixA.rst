@@ -543,3 +543,17 @@ METplus Components Python Packages
   Description:
     To load, read, and write YAML files with PyYAML
 
+.. dropdown:: zarr >=3.2.1
+
+  METplus Component:
+    Select METplus Use Cases
+
+  Source:
+    https://zarr.readthedocs.io/
+
+  Description:
+    Reads and writes chunked, compressed, N-dimensional arrays stored in the Zarr format
+
+  Use Case:
+    `GridStat: Read Zarr Files and Compute Statistics <../generated/model_applications/short_range/GridStat_fcstHRRRCast_obsHRRRanal_zarr.html>`_
+

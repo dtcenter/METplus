@@ -51,7 +51,7 @@ Describe the steps to reproduce the behavior:
 ### Milestone and Projects ###
 - [ ] Select **Milestone** as the next bugfix version
 - [ ] Select **Coordinated METplus-X.Y Support** project for support of the current coordinated release
-- [ ] Select **METplus-Wrappers-X.Y.Z Development** project for development toward the next official release
+- [ ] Select **METplus-X.Y Development** project for development toward the next official release
 
 ## Define Related Issue(s) ##
 Consider the impact to the other METplus components.
@@ -82,6 +82,6 @@ Branch name:  `bugfix_<Issue Number>_develop_<Description>`
 Pull request: `bugfix <Issue Number> develop <Description>`
 Select: **Reviewer(s)** and **Development** issue
 Select: **Milestone** as the next official version
-Select: **METplus-Wrappers-X.Y.Z Development** project for development toward the next official release
+Select: **METplus-X.Y Development** project for development toward the next official release
 
 - [ ] Close this issue.

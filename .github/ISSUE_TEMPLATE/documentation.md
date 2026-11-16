@@ -38,8 +38,8 @@ Consider breaking the task down into sub-issues.
 - [ ] Select **requestor(s)**
 
 ### Milestone and Projects ###
-- [ ] Select **Milestone** as a **METplus-Wrappers-X.Y.Z** version, **Consider for Next Release**, or **Backlog of Development Ideas**
-- [ ] For a **METplus-Wrappers-X.Y.Z** version, select the **METplus-Wrappers-X.Y.Z Development** project
+- [ ] Select **Milestone** as a **METplus-X.Y.Z** version, **Consider for Next Release**, or **Backlog of Development Ideas**
+- [ ] For a **METplus-X.Y.Z** version, select the **METplus-X.Y Development** project
 
 ## Define Related Issue(s) ##
 Consider the impact to the other METplus components.
@@ -62,7 +62,7 @@ Pull request: `feature <Issue Number> <Description>`
 - [ ] Define the pull request metadata, as permissions allow.
 Select: **Reviewer(s)** and **Development** issue
 Select: **Milestone** as the next official version
-Select: **METplus-Wrappers-X.Y.Z Development** project for development toward the next official release
+Select: **METplus-X.Y Development** project for development toward the next official release
 - [ ] Iterate until the reviewer(s) accept and merge your changes.
 - [ ] Delete your fork or branch.
 - [ ] Close this issue.

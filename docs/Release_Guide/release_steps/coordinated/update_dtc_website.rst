@@ -69,5 +69,6 @@ Add or update information about software releases on the website.
     * Click on **Save** at the bottom of the page.
 
   * In the develop branch, update the docs/Users_Guide/existing_builds.rst file
-    by copying the template from docs/Users_Guide/existing_builds_templates.rst.
-    Replace X.Y with the appropriate version for each component.
+    by copying the template from docs/Users_Guide/existing_builds_template.rst.
+    Replace X.Y with the next coordinated release version, which is shared by
+    all METplus components.

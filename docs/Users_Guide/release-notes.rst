@@ -18,8 +18,8 @@ is broken down into the following development cycles for each component:
 
 1. **Beta1** releases for the METplus components occurred around 2026-02-05.
 2. **Beta2** releases for the METplus components occurred around 2026-05-08.
-3. **Release Candidate 1** releases are scheduled for the week of 2026-09-09.
-4. **Official Release** releases are scheduled for the week of 2026-10-07.
+3. **Release Candidate 1** releases occurred around 2026-11-16.
+4. **Official Release** releases are scheduled for the week of 2026-12-09.
 
 .. include:: existing_builds.rst
 
@@ -46,7 +46,7 @@ describes the bugfix, enhancement, or new feature.
 Important issues are listed **in bold** for emphasis.
 
 
-METplus Version 13.0.0 RC 1 Release Notes (2026-11-10)
+METplus Version 13.0.0 RC 1 Release Notes (2026-11-16)
 ------------------------------------------------------
 
   .. dropdown:: Enhancements
@@ -69,11 +69,17 @@ METplus Version 13.0.0 RC 1 Release Notes (2026-11-10)
        (`#3339 <https://github.com/dtcenter/METplus/issues/3339>`_)
      * **Rename METplus configuration options to avoid names like `warning` and `error`**
        (`#3358 <https://github.com/dtcenter/METplus/issues/3358>`_)
+     * Resolve SonarQube findings for 13.0.0
+       (`#3367 <https://github.com/dtcenter/METplus/issues/3367>`_)
+     * Update the Grid-Diag wrapper to support the new power spectrum configuration options
+       (`#3422 <https://github.com/dtcenter/METplus/issues/3422>`_)
 
   .. dropdown:: Bugfix
 
      * Fix SeriesAnalysis input file list functionality
        (`#3348 <https://github.com/dtcenter/METplus/issues/3348>`_)
+     * Correct duplicate BOTH_VAR5 settings in the TCRMW_fcstGFS_fcstOnly_gonzalo use case
+       (`#3383 <https://github.com/dtcenter/METplus/issues/3383>`_)
      * Invalid config values crash METplus instead of reporting an error
        (`#3389 <https://github.com/dtcenter/METplus/issues/3389>`_)
      * Template and threshold formatting errors
@@ -101,6 +107,8 @@ METplus Version 13.0.0 RC 1 Release Notes (2026-11-10)
        (`#3233 <https://github.com/dtcenter/METplus/issues/3233>`_)
      * Demonstrate information theory metrics in Grid-Diag
        (`#3345 <https://github.com/dtcenter/METplus/issues/3345>`_)
+     * MPAS UGRID use cases with MRMS and MESONET observations
+       (`#3346 <https://github.com/dtcenter/METplus/issues/3346>`_)
 
   .. dropdown:: Documentation
 
@@ -115,6 +123,8 @@ METplus Version 13.0.0 RC 1 Release Notes (2026-11-10)
        (`#3227 <https://github.com/dtcenter/METplus/issues/3227>`_)
      * Automate link checking with Sphinx
        (`#3247 <https://github.com/dtcenter/METplus/issues/3247>`_)
+     * **Migrate to consistent numbering convention of 13.0 for all METplus components**
+       (`#3272 <https://github.com/dtcenter/METplus/issues/3272>`_)
      * Add a metplus_components_v13.0_py3.14.sh script, update the modulefiles and the Existing Builds documentation
        (`#3302 <https://github.com/dtcenter/METplus/issues/3302>`_)
      * Enhance the METplus GitHub label handling utility to support renaming operations
@@ -125,6 +135,10 @@ METplus Version 13.0.0 RC 1 Release Notes (2026-11-10)
        (`#3376 <https://github.com/dtcenter/METplus/issues/3376>`_)
      * Packaging and CI fixes for 13.0.0 release
        (`#3397 <https://github.com/dtcenter/METplus/issues/3397>`_)
+     * Fix the testing workflow to test METplus release branches against the MET branch that triggered the run
+       (`#3418 <https://github.com/dtcenter/METplus/issues/3418>`_)
+     * GitHub Actions jobs API request fails with HTTP 502 for large testing runs, failing Merge Error Logs and Update Truth Data
+       (`#3427 <https://github.com/dtcenter/METplus/issues/3427>`_)
 
 
 METplus Version 13.0.0 Beta 2 Release Notes (2026-05-08)
