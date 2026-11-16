@@ -123,6 +123,8 @@ METplus Version 13.0.0 RC 1 Release Notes (2026-11-16)
        (`#3227 <https://github.com/dtcenter/METplus/issues/3227>`_)
      * Automate link checking with Sphinx
        (`#3247 <https://github.com/dtcenter/METplus/issues/3247>`_)
+     * **Migrate to consistent numbering convention of 13.0 for all METplus components**
+       (`#3272 <https://github.com/dtcenter/METplus/issues/3272>`_)
      * Add a metplus_components_v13.0_py3.14.sh script, update the modulefiles and the Existing Builds documentation
        (`#3302 <https://github.com/dtcenter/METplus/issues/3302>`_)
      * Enhance the METplus GitHub label handling utility to support renaming operations
