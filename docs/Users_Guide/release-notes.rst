@@ -18,8 +18,8 @@ is broken down into the following development cycles for each component:
 
 1. **Beta1** releases for the METplus components occurred around 2026-02-05.
 2. **Beta2** releases for the METplus components occurred around 2026-05-08.
-3. **Release Candidate 1** releases are scheduled for the week of 2026-09-09.
-4. **Official Release** releases are scheduled for the week of 2026-10-07.
+3. **Release Candidate 1** releases occurred around 2026-11-16.
+4. **Official Release** releases are scheduled for the week of 2026-12-14.
 
 .. include:: existing_builds.rst
 
@@ -69,6 +69,8 @@ METplus Version 13.0.0 RC 1 Release Notes (2026-11-10)
        (`#3339 <https://github.com/dtcenter/METplus/issues/3339>`_)
      * **Rename METplus configuration options to avoid names like `warning` and `error`**
        (`#3358 <https://github.com/dtcenter/METplus/issues/3358>`_)
+     * Update the Grid-Diag wrapper to support the new power spectrum configuration options
+       (`#3422 <https://github.com/dtcenter/METplus/issues/3422>`_)
 
   .. dropdown:: Bugfix
 
@@ -101,6 +103,8 @@ METplus Version 13.0.0 RC 1 Release Notes (2026-11-10)
        (`#3233 <https://github.com/dtcenter/METplus/issues/3233>`_)
      * Demonstrate information theory metrics in Grid-Diag
        (`#3345 <https://github.com/dtcenter/METplus/issues/3345>`_)
+     * MPAS UGRID use cases with MRMS and MESONET observations
+       (`#3346 <https://github.com/dtcenter/METplus/issues/3346>`_)
 
   .. dropdown:: Documentation
 
