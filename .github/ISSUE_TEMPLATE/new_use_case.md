@@ -52,8 +52,8 @@ Consider breaking the new feature down into sub-issues.
 - [ ] Select **privacy**
 
 ### Milestone and Projects ###
-- [ ] Select **Milestone** as a **METplus-Wrappers-X.Y.Z** version, **Consider for Next Release**, or **Backlog of Development Ideas**
-- [ ] For a **METplus-Wrappers-X.Y.Z** version, select the **METplus-Wrappers-X.Y.Z Development** project
+- [ ] Select **Milestone** as a **METplus-X.Y.Z** version, **Consider for Next Release**, or **Backlog of Development Ideas**
+- [ ] For a **METplus-X.Y.Z** version, select the **METplus-X.Y Development** project
 
 ## Define Related Issue(s) ##
 Consider the impact to the other METplus components.
@@ -76,7 +76,7 @@ Pull request: `feature <Issue Number> <Description>`
 - [ ] Define the pull request metadata, as permissions allow.
 Select: **Reviewer(s)** and **Development** issue
 Select: **Milestone** as the next official version
-Select: **METplus-Wrappers-X.Y.Z Development** project for development toward the next official release
+Select: **METplus-X.Y Development** project for development toward the next official release
 - [ ] Iterate until the reviewer(s) accept your changes. Merge branch into **develop**.
 - [ ] Create a second pull request to merge **develop** into **develop-ref**, following the same steps for the first pull request.
 - [ ] Delete your fork or branch.

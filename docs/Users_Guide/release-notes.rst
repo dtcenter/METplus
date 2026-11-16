@@ -46,7 +46,7 @@ describes the bugfix, enhancement, or new feature.
 Important issues are listed **in bold** for emphasis.
 
 
-METplus Version 13.0.0 RC 1 Release Notes (2026-11-10)
+METplus Version 13.0.0 RC 1 Release Notes (2026-11-16)
 ------------------------------------------------------
 
   .. dropdown:: Enhancements
@@ -69,6 +69,8 @@ METplus Version 13.0.0 RC 1 Release Notes (2026-11-10)
        (`#3339 <https://github.com/dtcenter/METplus/issues/3339>`_)
      * **Rename METplus configuration options to avoid names like `warning` and `error`**
        (`#3358 <https://github.com/dtcenter/METplus/issues/3358>`_)
+     * Resolve SonarQube findings for 13.0.0
+       (`#3367 <https://github.com/dtcenter/METplus/issues/3367>`_)
      * Update the Grid-Diag wrapper to support the new power spectrum configuration options
        (`#3422 <https://github.com/dtcenter/METplus/issues/3422>`_)
 
@@ -76,6 +78,8 @@ METplus Version 13.0.0 RC 1 Release Notes (2026-11-10)
 
      * Fix SeriesAnalysis input file list functionality
        (`#3348 <https://github.com/dtcenter/METplus/issues/3348>`_)
+     * Correct duplicate BOTH_VAR5 settings in the TCRMW_fcstGFS_fcstOnly_gonzalo use case
+       (`#3383 <https://github.com/dtcenter/METplus/issues/3383>`_)
      * Invalid config values crash METplus instead of reporting an error
        (`#3389 <https://github.com/dtcenter/METplus/issues/3389>`_)
      * Template and threshold formatting errors
@@ -129,6 +133,10 @@ METplus Version 13.0.0 RC 1 Release Notes (2026-11-10)
        (`#3376 <https://github.com/dtcenter/METplus/issues/3376>`_)
      * Packaging and CI fixes for 13.0.0 release
        (`#3397 <https://github.com/dtcenter/METplus/issues/3397>`_)
+     * Fix the testing workflow to test METplus release branches against the MET branch that triggered the run
+       (`#3418 <https://github.com/dtcenter/METplus/issues/3418>`_)
+     * GitHub Actions jobs API request fails with HTTP 502 for large testing runs, failing Merge Error Logs and Update Truth Data
+       (`#3427 <https://github.com/dtcenter/METplus/issues/3427>`_)
 
 
 METplus Version 13.0.0 Beta 2 Release Notes (2026-05-08)
