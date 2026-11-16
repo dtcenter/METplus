@@ -9,12 +9,12 @@ Update the list of versions whose Docker images should be rebuilt on schedule.
 
   * In the 'workflow_dispatch' section, consider updating the *default* 'release_version' to be built.
 
-  * In the 'define-matrix' job, update the 'version_list' for **schedule** events:
+  * In the 'define-matrix' job, update the 'version_string' for **schedule** events:
 
-    * Add the new vX.Y.Z version to the list of versions.
+    * For official releases, add the new vX.Y version to the list of versions.
 
-    * For bugfix releases, remove the previous bugfix version, e.g. vX.Y.Z-1. 
-      Only the most recent 'vX.Y.Z' bugfix version for each 'vX.Y' release can
-      be listed to avoid ambiguity when updating 'X.Y-latest' tags on Docker Hub.
+    * For official releases, remove earlier vX.Y versions only if their support has ended.
 
-    * For official releases, remove earlier versions only if their support has ended. 
+    * For bugfix releases, no change is needed since the most recent bugfix version for
+      each supported release is automatically built.
+

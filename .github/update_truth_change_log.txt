@@ -1,1 +1,2 @@
 [$(date +%Y%m%d_%H:%M:%S) ${branch_name}] #3120 - #3120 added 2 new medium_range use cases
+[$(date +%Y%m%d_%H:%M:%S) ${branch_name}] dtcenter/MET#3538 - dtcenter/MET#3538 fixed gaussian grid longitude spacing

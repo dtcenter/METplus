@@ -7,7 +7,7 @@ Update the details in the development timeline.
 
   * For the METplus repository, update the **development timeline** under the
     `METplus Release Information <https://metplus.readthedocs.io/en/develop/Users_Guide/release-notes.html#metplus-release-information>`_
-    section.
+    section in *docs/Users_Guide/release-notes.rst*.
 
     * If you are creating an **official** release, edit the actual
       release date for the release and remove development timeline

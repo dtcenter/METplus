@@ -59,6 +59,7 @@ SKIP_KEYWORDS = [
     'CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC/cyclone/20201007',
     'plots/MAKE_MAKI_timeseries',
     'UserScript_fcstGFS_obsERA_WeatherRegime',
+    'PointStat_fcstWRF_obsMADIS_hurricane_matthew/wrf_plot',
 ]
 
 

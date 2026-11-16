@@ -113,9 +113,11 @@ ${METPLUS_ALPHA}
 //line_type = [
 ${METPLUS_LINE_TYPE}
 
-column = [];
+//column = [
+${METPLUS_COLUMN}
 
-weight = [];
+//weight = [
+${METPLUS_WEIGHT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -152,6 +154,16 @@ wmo_sqrt_stats   = [ "CNT:FSTDEV",  "CNT:OSTDEV",  "CNT:ESTDEV",
 
 wmo_fisher_stats = [ "CNT:PR_CORR", "CNT:SP_CORR",
                      "CNT:KT_CORR", "CNT:ANOM_CORR" ];
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Skill score index options
+//
+//ss_index_name =
+${METPLUS_SS_INDEX_NAME}
+//ss_index_vld_thresh =
+${METPLUS_SS_INDEX_VLD_THRESH}
 
 ////////////////////////////////////////////////////////////////////////////////
 

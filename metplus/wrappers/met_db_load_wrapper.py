@@ -119,7 +119,7 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
         success = True
 
         # if lead and either init or valid are set, compute other string sub
-        if time_info.get('lead') != '*':
+        if not isinstance(time_info.get('lead'), str) or time_info.get('lead') != '*':
             if (time_info.get('init') != '*'
                     or time_info.get('valid') != '*'):
                 time_info = ti_calculate(time_info)

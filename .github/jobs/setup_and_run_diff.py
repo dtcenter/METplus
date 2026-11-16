@@ -37,6 +37,11 @@ else:
     match = re.match(r'.*(main_v\d+\.\d+).*', branch_name)
     if match:
         output_data_branch = match.group(1)
+    elif os.environ.get('GITHUB_EVENT_NAME') == 'release':
+        # a release tag, e.g. v6.2.1, uses the truth data that was created for
+        # the corresponding main_vX.Y branch, e.g. output-main_v6.2-*
+        version = re.match(r'^v?(\d+\.\d+)', branch_name)
+        output_data_branch = f'main_v{version.group(1)}' if version else 'develop'
     else:
         output_data_branch = 'develop'
 
