@@ -19,7 +19,7 @@ is broken down into the following development cycles for each component:
 1. **Beta1** releases for the METplus components occurred around 2026-02-05.
 2. **Beta2** releases for the METplus components occurred around 2026-05-08.
 3. **Release Candidate 1** releases occurred around 2026-11-16.
-4. **Official Release** releases are scheduled for the week of 2026-12-14.
+4. **Official Release** releases are scheduled for the week of 2026-12-09.
 
 .. include:: existing_builds.rst
 
