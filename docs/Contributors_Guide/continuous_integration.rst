@@ -377,6 +377,16 @@ Docker images for the currently supported versions of that component.
 By default, the most recent bugfix version of each supported 'vX.Y' release is
 rebuilt, but this workflow can also be triggered manually for any 'vX.Y.Z' version.
 
+The METplus image is built on a released MET image so that its content is
+determined by the release alone. An official release, e.g. 13.0.0, uses the
+*dtcenter/met:X.Y-latest* image, so a scheduled rebuild picks up any MET bugfix
+release in that series. A beta or release candidate, e.g. 13.0.0-rc1, uses the
+MET release with the same suffix, e.g. *dtcenter/met:13.0.0-rc1*, found in the
+**metplus/component_versions.py** lookup table on the develop branch. The
+workflow fails if that MET image is not found on DockerHub, which happens when
+the METplus release is published before the MET release image is pushed. Run
+the workflow manually for that version once the MET image is available.
+
 .. _cg-ci-build-docker-and-trigger-metplus:
 
 Build Docker Image and Trigger METplus Workflow (build_docker_and_trigger_metplus.yml)
