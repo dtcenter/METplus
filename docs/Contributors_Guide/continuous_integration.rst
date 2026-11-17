@@ -452,15 +452,16 @@ A review is **not** performed:
   created by the :ref:`cg-ci-update-reference-branch` workflow, which merge
   accumulated history rather than code written for review.
 - For draft pull requests, until they are marked ready for review.
-- For pull requests opened from a fork. GitHub withholds repository secrets
+- For pull requests opened from a fork. GitHub withholds secrets
   from such runs on public repositories, so the workflow cannot authenticate.
 
 Authentication and Resource Use
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Both workflows authenticate using the :code:`CLAUDE_CODE_OAUTH_TOKEN`
-repository secret, which must be added to each repository by a repository
-administrator. This token is tied to the Claude subscription of the person who
+secret, which is defined once for the dtcenter organization. An organization
+administrator selects which repositories may use it, so a new repository that
+adds these workflows must also be granted access to it. This token is tied to the Claude subscription of the person who
 generated it, and usage from both workflows counts against that person's
 account rather than being billed to an organization. Anyone changing how often
 these workflows run should be aware of whose account is paying for them.
