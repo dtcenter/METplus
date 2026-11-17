@@ -1,0 +1,57 @@
+name: Claude Code Review
+
+# The review itself (checkout, prompt, effort level, and allowed tools) is
+# defined in the shared dtcenter/metplus-action-claude-code-review action so
+# that every METplus component repository gets the same review. This file
+# decides when a review runs and grants the permissions it needs. The
+# repository-specific conventions the review checks are in AGENTS.md.
+
+on:
+  pull_request:
+    types: [opened, ready_for_review, labeled]
+    # Skip the automated "Update <branch>-ref after #NNNN" sync pull
+    # requests, which are bot-authored merges of accumulated history
+    # rather than code written for review.
+    branches-ignore:
+      - '*-ref'
+
+  # Manual re-review. GitHub restricts workflow_dispatch to users with
+  # write access to the repository, so no additional guard is needed.
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'Pull request number to review'
+        required: true
+        type: string
+
+concurrency:
+  group: claude-review-${{ github.event.pull_request.number || inputs.pr_number }}
+  cancel-in-progress: true
+
+jobs:
+  claude-review:
+    # Review once when a pull request is opened or marked ready for
+    # review. Re-review on demand by applying the "claude-review" label
+    # (remove and re-add it to trigger again) or from the Actions tab.
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.draft == false &&
+       (github.event.action != 'labeled' ||
+        github.event.label.name == 'claude-review'))
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      # Write access is required to post the review: the inline comments on
+      # the diff and the single top-level summary comment in the pull request
+      # conversation. Nothing else in the repository is written.
+      pull-requests: write
+      issues: read
+      id-token: write
+
+    steps:
+      - uses: dtcenter/metplus-action-claude-code-review@v1
+        with:
+          claude-code-oauth-token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          pr-number: ${{ github.event.pull_request.number || inputs.pr_number }}
