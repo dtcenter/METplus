@@ -70,6 +70,33 @@ are in the new use cases, and updates the truth data. Merging and updating the
 truth data need write access to dtcenter/METplus; a contributor without it
 should ask the reviewer to run it.
 
+## Release notes and upgrade instructions
+
+Add an entry to `docs/Users_Guide/release-notes.rst` under the current version,
+and update the upgrade instructions when someone upgrading from the last
+release would have to do something differently.
+
+A pull request that only changes **unreleased** functionality needs neither.
+Both exist to tell someone upgrading from the last release what is different for
+them, so a defect introduced and fixed within the same development cycle is
+invisible to them. The test is whether a user of the previous release would
+notice, not whether the work fixed something.
+
+- Judge it by behavior a user can observe: output values, file contents, column
+  meanings, configuration syntax, command line arguments, exit status, or
+  messages at the default verbosity. Changes visible only at raised verbosity,
+  in debug output, or in the build and test machinery do not count.
+- Say so explicitly in the pull request description, with the reasoning, so a
+  reviewer does not have to work out whether the omission was deliberate.
+- To settle whether a defect is unreleased, check whether the commit that
+  introduced it ever reached a release branch:
+  `git branch -r --contains <commit> | grep main_v` returning nothing, together
+  with the affected file on `origin/main_vX.Y` still showing the old behavior,
+  is enough to state it without hedging.
+- When it is genuinely unclear whether a user would notice, ask the author
+  rather than writing an entry just to be safe. A release note for something
+  nobody experienced makes the real entries harder to find.
+
 ## Before creating a pull request
 
 1. **Turn off use case tests.** In `.github/parm/use_case_groups.json`, every
