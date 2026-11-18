@@ -1,0 +1,119 @@
+name: Check Conda Install
+
+# Install the published metplus package from conda-forge and check that it
+# runs. A dependency released after the package was built can break it without
+# any change to the recipe, so this runs on a schedule.
+
+on:
+  schedule:
+    - cron: "17 08 * * *"
+  workflow_dispatch:
+    inputs:
+      versions:
+        description: >-
+          Comma-separated list of METplus versions to check, as X.Y for the
+          latest X.Y.Z release or X.Y.Z, e.g. 6.2,6.1.0. Leave blank for the
+          latest official release and the release before it.
+        default: ''
+        required: false
+        type: string
+  # TEMPORARY: run on pushes to the feature branch for testing.
+  # Remove before the pull request is marked ready for review.
+  push:
+    branches: [feature_3414_conda_install_check]
+
+permissions:
+  contents: read
+
+env:
+  ISSUE_TITLE: 'Scheduled check of the conda-forge metplus package failed'
+
+jobs:
+  define-matrix:
+    name: Get versions to check
+    runs-on: ubuntu-latest
+    outputs:
+      versions: ${{ steps.get-versions.outputs.versions }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            .github/jobs/get_conda_check_versions.py
+            metplus/component_versions.py
+          sparse-checkout-cone-mode: false
+
+      - name: Get versions to check
+        id: get-versions
+        run: |
+          versions=$(.github/jobs/get_conda_check_versions.py "${INPUT_VERSIONS}")
+          echo "Versions to check: ${versions}"
+          echo "versions=${versions}" >> $GITHUB_OUTPUT
+        env:
+          INPUT_VERSIONS: ${{ inputs.versions }}
+
+  check:
+    name: metplus ${{ matrix.version }} on ${{ matrix.os }}
+    needs: define-matrix
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest]
+        version: ${{ fromJSON(needs.define-matrix.outputs.versions) }}
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          sparse-checkout: .github/jobs
+          sparse-checkout-cone-mode: false
+
+      - uses: conda-incubator/setup-miniconda@v4
+        with:
+          miniforge-version: latest
+          channels: conda-forge
+          conda-remove-defaults: "true"
+          activate-environment: metplus
+          auto-activate: false
+
+      - name: Install and check metplus
+        run: .github/jobs/check_conda_install.sh
+        env:
+          METPLUS_VERSION: ${{ matrix.version }}
+          WORK_DIR: ${{ runner.temp }}/check_conda_install
+
+  report:
+    name: Report failure
+    needs: check
+    if: failure() && github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      issues: write
+    steps:
+      - name: Open or update issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          failed_jobs=$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/jobs" \
+            --paginate --jq '.jobs[] | select(.conclusion == "failure") | "- \(.name)"')
+
+          body="The scheduled install check of the metplus package from conda-forge failed on $(date -u +%Y-%m-%d) for:
+
+          ${failed_jobs:-- (could not list the failed jobs)}
+
+          See the summary of ${RUN_URL} for details."
+
+          number=$(gh issue list -R "${GITHUB_REPOSITORY}" --state open \
+            --search "in:title \"${ISSUE_TITLE}\"" --json number,title \
+            --jq ".[] | select(.title == \"${ISSUE_TITLE}\") | .number" | head -1)
+
+          if [ -n "${number}" ]; then
+            gh issue comment "${number}" -R "${GITHUB_REPOSITORY}" --body "${body}"
+          else
+            gh issue create -R "${GITHUB_REPOSITORY}" --title "${ISSUE_TITLE}" \
+              --label 'type: bug' --label 'component: CI/CD' --body "${body}"
+          fi
