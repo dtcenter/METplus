@@ -42,11 +42,16 @@ jobs:
   linkcheck:
     name: Check Links
     runs-on: ubuntu-latest
+    # trial of dtcenter/metplus-action-linkcheck#9 (link check history), on a
+    # throwaway branch so a reviewer can watch it run. Not for merging.
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v6
       - name: Check links
-        uses: dtcenter/metplus-action-linkcheck@v1
+        uses: dtcenter/metplus-action-linkcheck@feature_8_history
         with:
+          history-branch: 'linkcheck-history-test'
           fail-on-broken-links: 'true'
           upload-artifact: 'true'
           install-package: 'true'
