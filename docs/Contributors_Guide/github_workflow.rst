@@ -663,6 +663,20 @@ local repository.
 
     * Add documentation
 
+* If the changes affect what users of the last release will see:
+
+    * Add an entry for the GitHub issue to the release notes under the
+      current version in the :ref:`release-notes`. Adding entries as the
+      work is done reduces the work needed when the release is created.
+
+    * Update the :ref:`upgrade-instructions` if users upgrading from the
+      last release will need to change anything, such as their configuration
+      files.
+
+    * Neither is needed for changes to functionality that has not been
+      released yet, such as a fix for a bug introduced during the current
+      development cycle.
+
 * If working in a forked repository, keep the fork in sync with the origin
   repository:
 

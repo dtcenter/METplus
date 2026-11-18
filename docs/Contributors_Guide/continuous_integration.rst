@@ -13,6 +13,7 @@ are pushed to GitHub. These tasks include:
 * Running use cases
 * Comparing use case output to truth data
 * Creating/Updating Docker data volumes with truth data to use in comparisons
+* Reviewing pull requests and responding to requests with Claude Code
 
 GitHub Actions Workflows
 ========================
@@ -390,6 +391,105 @@ workflow to build an updated Docker image, push it to DockerHub, and send a trig
 for the METplus repository to run the testing workflow. This testing workflow run
 confirms that all of the METplus use cases still run and produce the expected output
 after the change to this component.
+
+.. _cg-ci-claude:
+
+Claude Code (claude.yml and claude-code-review.yml)
+---------------------------------------------------
+
+Two workflows run `Claude Code <https://claude.com/claude-code>`_ in the
+METplus component repositories. They perform different jobs and are invoked in
+different ways.
+
+Claude Code (claude.yml)
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+This workflow is an on-demand assistant. It runs only when the trigger phrase
+:code:`@claude` appears in an issue, a pull request comment, or a pull request
+review, and it then carries out whatever that comment asks. It has no fixed
+prompt, so it may be asked to explain a failing job, summarize a change, or
+draft a suggestion. It is granted read access to workflow results so that it
+can inspect CI output when asked about it.
+
+Claude Code Review (claude-code-review.yml)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This workflow is an automated reviewer. It runs a fixed code review prompt
+against the changes in a pull request. Its output is a set of review comments
+anchored to specific lines of the diff, followed by one top-level comment in
+the pull request conversation that summarizes what the review flagged. When
+the review finds nothing, that summary comment is the only comment it posts,
+so a review that found no issues reads differently from one that never ran.
+
+The review itself, meaning the prompt, the effort level, and the tools Claude
+may use, is defined in the shared
+`metplus-action-claude-code-review <https://github.com/dtcenter/metplus-action-claude-code-review>`_
+action, so every repository gets the same review and a change to it is made
+once. The **claude-code-review.yml** workflow in each repository only decides
+when a review runs and grants the permissions it needs.
+
+The summary judges the pull request against the conventions recorded in the
+**AGENTS.md** file at the top level of the repository, so repository-specific
+conventions belong in that file rather than in the action. Keep it up to date
+when those conventions change.
+
+A review is performed:
+
+- Automatically, once per pull request, when the pull request is opened or
+  marked ready for review. It does not run again when more commits are pushed,
+  so an iterative review cycle produces one review rather than one review per
+  push.
+- On demand, when the **claude-review** label is applied to a pull request.
+  Remove and re-apply the label to request another review. This label is one
+  of the common labels defined in *.github/labels/common_labels.txt*.
+- On demand, from the **Run workflow** menu on the **Actions** tab, which takes
+  the pull request number as an input. GitHub only offers this menu to users
+  with write access to the repository.
+
+A review is **not** performed:
+
+- For pull requests whose base branch name ends in :code:`-ref`, such as those
+  created by the :ref:`cg-ci-update-reference-branch` workflow, which merge
+  accumulated history rather than code written for review.
+- For draft pull requests, until they are marked ready for review.
+- For pull requests opened from a fork. GitHub withholds secrets
+  from such runs on public repositories, so the workflow cannot authenticate.
+
+Authentication and Resource Use
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Both workflows authenticate using the :code:`CLAUDE_CODE_OAUTH_TOKEN`
+secret, which is defined once for the dtcenter organization. An organization
+administrator selects which repositories may use it, so a new repository that
+adds these workflows must also be granted access to it. This token is tied to the Claude subscription of the person who
+generated it, and usage from both workflows counts against that person's
+account rather than being billed to an organization. Anyone changing how often
+these workflows run should be aware of whose account is paying for them.
+
+The assistant workflow requests read-only repository scopes. The review
+workflow additionally requests :code:`pull-requests: write`, which is what
+allows it to post its inline comments and its summary comment. Neither
+workflow writes to the contents of the repository.
+
+The review action also names the tools Claude is allowed to use, which are
+the ones the code review needs: the inline comment tool, the read-only
+:code:`gh` and :code:`git` commands that read the pull request and the history
+of the files it changes, tools to read the checked-out source, and
+:code:`gh pr comment` for the summary. Note that the action runs in its auto
+permission mode, in which that list is an allow rule rather than a hard
+restriction. A tool call the list does not cover is decided by the action's own
+safety review rather than refused outright, so the list should be read as what
+the review is expected to need rather than as a boundary it cannot cross.
+
+The review workflow passes the token to the review action as an input. The
+action runs in the workflow's own job, so it can reach nothing the job could
+not reach already. Anyone who can push to the action repository can change the
+code that receives the token, so write access to it is limited to the
+maintainers of the METplus component repositories.
+
+Each workflow sets a job timeout. The review workflow additionally cancels any
+superseded run for the same pull request, and the review action limits the
+number of turns Claude may take.
 
 Release Published (release_published.yml) - DEPRECATED
 ------------------------------------------------------

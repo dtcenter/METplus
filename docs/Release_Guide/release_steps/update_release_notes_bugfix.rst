@@ -31,6 +31,9 @@ Update the release notes for this release.
     that may not appear in the METplus Version X.Y Support project board.
 
   * Update the release-notes.rst file found in the User's Guide directory.
+    Entries may already have been added by pull requests during
+    development. Compare the existing entries to the closed issues and add
+    any that are missing.
 
   * Consider organizing release notes into logical groups
     (e.g., Enhancements, Bugfixes, Documentation, etc.) and modifying
