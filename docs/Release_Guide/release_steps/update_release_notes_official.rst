@@ -19,6 +19,9 @@ Update the release notes for this release.
     see :ref:`wo-development-project` to create it.
 
   * Update the release-notes.rst file found in the User's Guide directory.
+    Entries may already have been added by pull requests during
+    development. Compare the existing entries to the closed issues and add
+    any that are missing.
 
   * Consider organizing release notes into logical groups
     (e.g., Enhancements, Bugfixes, Documentation, etc.) and modifying

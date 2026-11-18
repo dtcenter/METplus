@@ -29,14 +29,14 @@ in the
 
        | **NCAR MACHINE CASPER** (see 
           `Casper Information <https://ncar-hpc-docs.readthedocs.io/en/latest/compute-systems/casper/>`_)
-       | *Last Updated: May 11, 2026*
+       | *Last Updated: November 17, 2026*
        | *Compiler and version: Intel oneAPI 2025.2.1*
 
-       * METplus-13.0.0-beta2
+       * METplus-13.0.0-rc1
 
-          * METplus-13.0.0-beta2 Installation:
+          * METplus-13.0.0-rc1 Installation:
 
-            * /glade/work/dtcrt/METplus/casper/components/METplus/installation
+            * /glade/work/dtcrt/METplus/casper/components/METplus/installations
 
        * METplus-13.0 Sample Data:
 
@@ -52,9 +52,9 @@ in the
 
             module load ncarenv/25.10
             module use /glade/work/dtcrt/METplus/casper/components/METplus/installations/modulefiles
-            module load metplus/13.0.0-beta2
+            module load metplus/13.0.0-rc1
 
-       * MET-13.0.0-beta2
+       * MET-13.0.0-rc1
 
          * MODULES:
 
@@ -62,9 +62,9 @@ in the
 
               module load ncarenv/25.10
               module use /glade/work/dtcrt/METplus/casper/components/MET/installations/modulefiles
-              module load met/13.0.0-beta2
+              module load met/13.0.0-rc1
 
-       * METdataio-13.0.0-beta2
+       * METdataio-13.0.0-rc1
 
          * MODULES:
 
@@ -72,9 +72,9 @@ in the
 
               module load ncarenv/25.10
               module use /glade/work/dtcrt/METplus/casper/components/METdataio/installations/modulefiles
-              module load metdataio/13.0.0-beta2
+              module load metdataio/13.0.0-rc1
               
-       * METcalcpy-13.0.0-beta2
+       * METcalcpy-13.0.0-rc1
       
          * MODULES:
 
@@ -82,9 +82,9 @@ in the
 
               module load ncarenv/25.10
               module use /glade/work/dtcrt/METplus/casper/components/METcalcpy/installations/modulefiles
-              module load metcalcpy/13.0.0-beta2
+              module load metcalcpy/13.0.0-rc1
 
-       * METplotpy-13.0.0-beta2
+       * METplotpy-13.0.0-rc1
 
          * MODULES:
 
@@ -92,7 +92,7 @@ in the
 
               module load ncarenv/25.10
               module use /glade/work/dtcrt/METplus/casper/components/METplotpy/installations/modulefiles
-              module load metplotpy/13.0.0-beta2
+              module load metplotpy/13.0.0-rc1
 
     .. dropdown:: DERECHO - Only if necessary - See warning below
 
@@ -164,14 +164,14 @@ in the
      .. dropdown:: URSA
 
         | **NOAA MACHINE URSA**
-        | *Last updated: June 18, 2026*
+        | *Last updated: November 17, 2026*
         | *Compiler and version: Intel oneAPI 2025.1.1*
 
-          * **METplus-13.0.0-beta2**
+          * **METplus-13.0.0-rc1**
 
-            * METplus-13.0.0-beta2 Installation
+            * METplus-13.0.0-rc1 Installation
 
-              * /contrib/METplus/METplus-13.0.0-beta2
+              * /contrib/METplus/METplus-13.0.0-rc1
 
             * METplus-13.0 Sample Data
 
@@ -187,9 +187,9 @@ in the
 
                   module load intel-oneapi-compilers/2025.1.1
                   module use /contrib/METplus/modulefiles
-                  module load metplus/13.0.0-beta2
+                  module load metplus/13.0.0-rc1
 
-          * **MET-13.0.0-beta2**
+          * **MET-13.0.0-rc1**
 
             * MODULES:
 
@@ -197,9 +197,9 @@ in the
 
                   module load intel-oneapi-compilers/2025.1.1
                   module use -a /contrib/met/modulefiles/
-                  module load met/13.0.0-beta2
+                  module load met/13.0.0-rc1
 
-          * **METcalcpy-13.0.0-beta2 / METplotpy-13.0.0-beta2**
+          * **METcalcpy-13.0.0-rc1 / METplotpy-13.0.0-rc1**
 
             * MODULES:
 
@@ -207,11 +207,11 @@ in the
 
                   module load intel-oneapi-compilers/2025.1.1
                   module use /contrib/METcalcpy/modulefiles
-                  module load metcalcpy/13.0.0-beta2
+                  module load metcalcpy/13.0.0-rc1
                   module use /contrib/METplotpy/modulefiles
-                  module load metplotpy/13.0.0-beta2
+                  module load metplotpy/13.0.0-rc1
 
-          * **METdataio-13.0.0-beta2**
+          * **METdataio-13.0.0-rc1**
 
             * MODULES:
 
@@ -219,7 +219,7 @@ in the
 
                   module load intel-oneapi-compilers/2025.1.1
                   module use /contrib/METdataio/modulefiles
-                  module load metdataio/13.0.0-beta2
+                  module load metdataio/13.0.0-rc1
 
 
      .. dropdown:: HERA - Coming Soon!
