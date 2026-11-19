@@ -59,8 +59,10 @@ and to check the documentation for broken links
 
 This workflow is triggered by pushes that change files under the
 **docs** directory of the METplus repository, by every pull request,
-manually with a **workflow_dispatch** event, and nightly on a schedule,
-when it checks the links without building the documentation.
+manually with a **workflow_dispatch** event, and nightly on a schedule.
+The nightly run uses the **develop** branch only, because GitHub runs
+scheduled workflows from the default branch, and it checks the links
+without building the documentation.
 It builds the documentation by running "make clean html" and
 makes the files available to download at the end of the workflow
 as a GitHub Actions artifact. This step is no longer mandatory because
@@ -117,10 +119,10 @@ The action keeps a history of every link it checks on the
 because of a temporary network problem is reported as a warning until it has
 been failing for longer than a grace period, 14 days by default, and only then
 fails the workflow job. Links that are broken outright, such as those that
-return 404, still fail the job at once. Pull requests read the history but do
-not write it. See the action's
-`README <https://github.com/dtcenter/metplus-action-linkcheck#link-check-history>`_
-for details.
+return 404, still fail the job at once. The nightly run, pushes, and manual
+runs all write the history, while pull requests read it but do not write it.
+See the "Link Check History" section of the action's
+`README <https://github.com/dtcenter/metplus-action-linkcheck>`_ for details.
 
 Some links may be intentionally excluded from this check. For example, a link
 may be valid but block automated/non-browser requests, or may point to a
