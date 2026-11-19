@@ -1,1 +1,11 @@
-{"http://10.255.255.1/": {"failure_count": 3, "first_failure": "2026-11-01T00:00:00Z"},}
+{
+  "http://10.255.255.1/": {
+    "last_seen": "2026-11-19T15:52:45Z",
+    "last_checked": "2026-11-19T15:52:45Z",
+    "first_failure": "2026-11-19T15:52:45Z",
+    "failure_count": 1,
+    "last_status": "unreachable",
+    "last_code": 0,
+    "last_info": "HTTPConnectionPool(host='10.255.255.1', port=80): Max retries exceeded with url: / (Caused by ConnectTimeoutError(<HTTPConnection(host='10.255.255.1', port=80) at 0x7243b95f2720>, 'Connection to 10.255.255.1 timed out. (connect timeout=30)'))"
+  }
+}
