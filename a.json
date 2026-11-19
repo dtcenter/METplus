@@ -1,8 +1,8 @@
 {
   "https://www.example.com/": {
-    "last_seen": "2026-11-19T15:50:37Z",
-    "last_checked": "2026-11-19T15:50:37Z",
-    "last_success": "2026-11-19T15:50:37Z",
+    "last_seen": "2026-11-19T15:52:33Z",
+    "last_checked": "2026-11-19T15:52:33Z",
+    "last_success": "2026-11-19T15:52:33Z",
     "failure_count": 0,
     "last_status": "ok"
   }
