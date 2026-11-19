@@ -1,19 +1,19 @@
 {
   "https://expired.badssl.com/": {
-    "last_seen": "2026-11-19T15:50:38Z",
-    "last_checked": "2026-11-19T15:50:38Z",
+    "last_seen": "2026-11-19T15:52:45Z",
+    "last_checked": "2026-11-19T15:52:45Z",
     "first_failure": "2026-11-19T15:50:38Z",
-    "failure_count": 1,
-    "last_status": "broken",
+    "failure_count": 2,
+    "last_status": "unreachable",
     "last_code": 0,
     "last_info": "HTTPSConnectionPool(host='expired.badssl.com', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired (_ssl.c:1011)')))"
   },
   "https://wrong.host.badssl.com/": {
-    "last_seen": "2026-11-19T15:50:38Z",
-    "last_checked": "2026-11-19T15:50:38Z",
+    "last_seen": "2026-11-19T15:52:45Z",
+    "last_checked": "2026-11-19T15:52:45Z",
     "first_failure": "2026-11-19T15:50:38Z",
-    "failure_count": 1,
-    "last_status": "broken",
+    "failure_count": 2,
+    "last_status": "unreachable",
     "last_code": 0,
     "last_info": "HTTPSConnectionPool(host='wrong.host.badssl.com', port=443): Max retries exceeded with url: / (Caused by SSLError(SSLCertVerificationError(1, \"[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'wrong.host.badssl.com'. (_ssl.c:1011)\")))"
   }
