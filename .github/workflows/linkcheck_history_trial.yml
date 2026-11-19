@@ -1,0 +1,243 @@
+# Trial of dtcenter/metplus-action-linkcheck#9 (link check history) against
+# the review findings, on a throwaway branch. Not for merging.
+#
+# Each job runs the action with continue-on-error and then asserts the outcome
+# it should have, so a green job means the behavior matched the expectation.
+# Jobs with a "ref" matrix also run v1.6.0 as the baseline.
+#
+# Run it twice: the first run creates linkcheck-trial-tls, and the second
+# shows the grace period taking over once a history exists.
+name: Linkcheck History Trial
+
+on:
+  push:
+    branches:
+      - feature_linkcheck8_history
+    paths:
+      - .github/workflows/linkcheck_history_trial.yml
+      - .github/linkcheck_trial/**
+  workflow_dispatch:
+
+env:
+  TRIAL: .github/linkcheck_trial
+  GIT_AUTHOR_NAME: github-actions[bot]
+  GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+  GIT_COMMITTER_NAME: github-actions[bot]
+  GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+
+jobs:
+  # Finding 1: with the history off, TLS failures fail at once, as in v1.6.0
+  tls-no-history:
+    name: "1: TLS, history off (${{ matrix.ref }})"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        ref: [v1.6.0, feature_8_history]
+    steps:
+      - uses: actions/checkout@v6
+      - id: old
+        if: matrix.ref == 'v1.6.0'
+        continue-on-error: true
+        uses: dtcenter/metplus-action-linkcheck@v1.6.0
+        with:
+          docs-path: ${{ env.TRIAL }}/tls
+          requirements-file: none.txt
+          upload-artifact: 'false'
+          fail-on-transient: 'false'
+      - id: new
+        if: matrix.ref == 'feature_8_history'
+        continue-on-error: true
+        uses: dtcenter/metplus-action-linkcheck@feature_8_history
+        with:
+          docs-path: ${{ env.TRIAL }}/tls
+          requirements-file: none.txt
+          upload-artifact: 'false'
+          fail-on-transient: 'false'
+          history-branch: ''
+      - name: Expect failure
+        run: |
+          outcome="${{ steps.old.outcome }}${{ steps.new.outcome }}"
+          echo "outcome: $outcome"
+          [[ "$outcome" == *failure* ]]
+
+  # Finding 3: a workflow that cannot write the history still fails on a
+  # persistent transient failure, and the branch is never created
+  read-only:
+    name: "3: read-only token (${{ matrix.ref }})"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        ref: [v1.6.0, feature_8_history]
+    steps:
+      - uses: actions/checkout@v6
+      - id: old
+        if: matrix.ref == 'v1.6.0'
+        continue-on-error: true
+        uses: dtcenter/metplus-action-linkcheck@v1.6.0
+        with:
+          docs-path: ${{ env.TRIAL }}/timeout
+          requirements-file: none.txt
+          upload-artifact: 'false'
+          recheck-attempts: '1'
+          recheck-delay: '5'
+      - id: new
+        if: matrix.ref == 'feature_8_history'
+        continue-on-error: true
+        uses: dtcenter/metplus-action-linkcheck@feature_8_history
+        with:
+          docs-path: ${{ env.TRIAL }}/timeout
+          requirements-file: none.txt
+          upload-artifact: 'false'
+          recheck-attempts: '1'
+          recheck-delay: '5'
+          history-branch: linkcheck-trial-ro
+          update-history: 'true'
+      - name: Expect failure and no history branch
+        run: |
+          outcome="${{ steps.old.outcome }}${{ steps.new.outcome }}"
+          echo "outcome: $outcome"
+          [[ "$outcome" == *failure* ]]
+          if git ls-remote --exit-code --heads origin linkcheck-trial-ro; then
+            echo "linkcheck-trial-ro should not exist"
+            exit 1
+          fi
+
+  # Findings 1 and 3: with no history yet, TLS failures fail at once; once a
+  # run has written the history, they are transient and held by the grace
+  # period
+  tls-history:
+    name: "1+3: TLS, history on"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - id: before
+        run: |
+          if git ls-remote --exit-code --heads origin linkcheck-trial-tls; then
+            echo "expect=success" >> "$GITHUB_OUTPUT"
+          else
+            echo "expect=failure" >> "$GITHUB_OUTPUT"
+          fi
+      - id: new
+        continue-on-error: true
+        uses: dtcenter/metplus-action-linkcheck@feature_8_history
+        with:
+          docs-path: ${{ env.TRIAL }}/tls
+          requirements-file: none.txt
+          upload-artifact: 'false'
+          recheck-attempts: '1'
+          recheck-delay: '5'
+          history-branch: linkcheck-trial-tls
+          update-history: 'true'
+      - name: Expect ${{ steps.before.outputs.expect }}
+        run: |
+          echo "outcome: ${{ steps.new.outcome }}"
+          [ "${{ steps.new.outcome }}" = "${{ steps.before.outputs.expect }}" ]
+
+  # Finding 2: two history files on one branch both survive
+  shared-a:
+    name: "2: shared branch, a.json"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtcenter/metplus-action-linkcheck@feature_8_history
+        with:
+          docs-path: ${{ env.TRIAL }}/ok
+          requirements-file: none.txt
+          upload-artifact: 'false'
+          history-branch: linkcheck-trial-shared
+          history-file: a.json
+          update-history: 'true'
+
+  shared-b:
+    name: "2: shared branch, b.json"
+    needs: shared-a
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtcenter/metplus-action-linkcheck@feature_8_history
+        with:
+          docs-path: ${{ env.TRIAL }}/ok
+          requirements-file: none.txt
+          upload-artifact: 'false'
+          history-branch: linkcheck-trial-shared
+          history-file: b.json
+          update-history: 'true'
+      - name: Expect a.json and b.json on the branch
+        run: |
+          git fetch --quiet --depth=1 origin linkcheck-trial-shared
+          git ls-tree --name-only FETCH_HEAD | tee files.txt
+          grep -qx a.json files.txt
+          grep -qx b.json files.txt
+
+  # Finding 5: a damaged history file is reported, the run falls back to its
+  # own results, and the damaged copy stays in the branch's log
+  damaged:
+    name: "5: damaged history file"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - name: Seed the branch with a damaged history file
+        run: |
+          blob=$(printf '{"http://10.255.255.1/": {"failure_count": 3, "first_failure": "2026-11-01T00:00:00Z"},}\n' \
+              | git hash-object -w --stdin)
+          tree=$(printf '100644 blob %s\tlinkcheck-history.json\n' "$blob" | git mktree)
+          commit=$(git commit-tree "$tree" -m 'Damaged history for the trial')
+          git push --force origin "$commit:refs/heads/linkcheck-trial-damaged"
+      - id: new
+        continue-on-error: true
+        uses: dtcenter/metplus-action-linkcheck@feature_8_history
+        with:
+          docs-path: ${{ env.TRIAL }}/timeout
+          requirements-file: none.txt
+          upload-artifact: 'false'
+          recheck-attempts: '1'
+          recheck-delay: '5'
+          history-branch: linkcheck-trial-damaged
+          update-history: 'true'
+      - name: Expect failure, a valid file, and the damaged copy in the log
+        run: |
+          echo "outcome: ${{ steps.new.outcome }}"
+          [ "${{ steps.new.outcome }}" = failure ]
+          git fetch --quiet --depth=2 origin linkcheck-trial-damaged
+          git show FETCH_HEAD:linkcheck-history.json | python3 -m json.tool > /dev/null
+          echo "Damaged copy in the parent commit:"
+          git show FETCH_HEAD^:linkcheck-history.json
+
+  # Finding 7: a malformed number names the input and fails the step, even
+  # with fail-on-broken-links 'false'
+  bad-input:
+    name: "7: malformed grace-period"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+      - id: new
+        continue-on-error: true
+        uses: dtcenter/metplus-action-linkcheck@feature_8_history
+        with:
+          docs-path: ${{ env.TRIAL }}/ok
+          requirements-file: none.txt
+          upload-artifact: 'false'
+          fail-on-broken-links: 'false'
+          history-branch: linkcheck-trial-badinput
+          update-history: 'false'
+          grace-period: '14d'
+      - name: Expect failure
+        run: |
+          echo "outcome: ${{ steps.new.outcome }}"
+          [ "${{ steps.new.outcome }}" = failure ]
