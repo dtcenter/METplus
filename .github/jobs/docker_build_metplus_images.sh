@@ -43,8 +43,8 @@ echo "Using MET image: ${met_image}"
 # The MET release image may be pushed to DockerHub after the METplus release
 # is published. Fail instead of building on a different image.
 if ! docker manifest inspect "${met_image}" > /dev/null; then
-  echo "ERROR: MET image ${met_image} was not found on DockerHub."
-  echo "Run this workflow manually for ${SOURCE_BRANCH} once it is available."
+  echo "ERROR: MET image ${met_image} could not be verified (not found or DockerHub unreachable)."
+  echo "Check the error above. If the image has not been pushed yet, run this workflow manually for ${SOURCE_BRANCH} once it is available."
   exit 1
 fi
 
