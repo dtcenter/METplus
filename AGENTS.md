@@ -61,7 +61,12 @@ pytest markers.
 ## Use cases
 
 Before adding or changing a use case, read and follow
-`docs/Contributors_Guide/add_use_case.rst`.
+`docs/Contributors_Guide/add_use_case.rst`. It covers:
+
+- file and directory naming
+- what a use case config may and may not set
+- words to avoid in log messages
+- registering a new use case in the test suite and documentation
 
 When a pull request that adds a use case is approved and ready to merge,
 suggest running `/merge-use-case-pr <number>`. It merges the pull request,
@@ -109,8 +114,9 @@ notice, not whether the work fixed something.
    ```
 
    Set them to `false`, commit, and push **before** creating the pull request.
-   The `Check Use Case Groups` workflow fails any pull request to `develop` or
-   `main_vX.Y` that still has a group set to `true`.
+   The pull request is built from the pushed branch, so a local-only change
+   does not count. The `Check Use Case Groups` workflow fails any pull request
+   to `develop` or `main_vX.Y` that still has a group set to `true`.
 
 2. **Title the pull request after the branch**, replacing the underscores in
    the description with spaces, e.g. `Feature #777 wrapper xyz` for branch
