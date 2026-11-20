@@ -11,10 +11,21 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
   workflow_dispatch:
+  # Check the links nightly so that the link check history stays current
+  schedule:
+    - cron: '17 6 * * *'
+
+# Group by workflow name and branch/PR reference, with the nightly run in
+# a group of its own so that it and a push to the same branch do not
+# cancel each other
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name == 'schedule' }}
+  cancel-in-progress: true
 
 jobs:
   documentation:
     name: Documentation
+    if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -42,6 +53,8 @@ jobs:
   linkcheck:
     name: Check Links
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v6
       - name: Check links

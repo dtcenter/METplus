@@ -59,7 +59,10 @@ and to check the documentation for broken links
 
 This workflow is triggered by pushes that change files under the
 **docs** directory of the METplus repository, by every pull request,
-and manually with a **workflow_dispatch** event.
+manually with a **workflow_dispatch** event, and nightly on a schedule.
+The nightly run uses the **develop** branch only, because GitHub runs
+scheduled workflows from the default branch, and it checks the links
+without building the documentation.
 It builds the documentation by running "make clean html" and
 makes the files available to download at the end of the workflow
 as a GitHub Actions artifact. This step is no longer mandatory because
@@ -102,13 +105,24 @@ component repositories. Each component runs it from its own
 Documentation workflow.
 
 Because it is part of the Documentation workflow, the link check runs
-whenever the Documentation workflow does.
+whenever the Documentation workflow does, including the nightly run that
+keeps the link check history described below up to date.
 
 Links that fail because of a temporary network problem are re-checked
 after a delay before they are reported as broken. If broken links are
 found, the workflow job fails, as indicated by a red X. The broken links
 are listed in the job summary, and the full ``linkcheck`` report is made
 available for download as a GitHub Actions artifact.
+
+The action keeps a history of every link it checks on the
+**linkcheck-history** branch of the repository. A link that keeps failing
+because of a temporary network problem is reported as a warning until it has
+been failing for longer than a grace period, 14 days by default, and only then
+fails the workflow job. Links that are broken outright, such as those that
+return 404, still fail the job at once. The nightly run, pushes, and manual
+runs all write the history, while pull requests read it but do not write it.
+See the "Link Check History" section of the action's
+`README <https://github.com/dtcenter/metplus-action-linkcheck>`_ for details.
 
 Some links may be intentionally excluded from this check. For example, a link
 may be valid but block automated/non-browser requests, or may point to a
