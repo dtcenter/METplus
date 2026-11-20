@@ -33,7 +33,8 @@ fi
 MET_DOCKER_REPO=met
 met_tag=$("${GITHUB_WORKSPACE}"/develop/metplus/component_versions.py -v "${METPLUS_VERSION}" -o MET -f "${tag_format}")
 if [ -z "${met_tag}" ]; then
-  echo "ERROR: Could not get MET version for METplus version ${METPLUS_VERSION}"
+  echo "ERROR: Could not get MET version for METplus version ${METPLUS_VERSION}."
+  echo "Add an entry for this X.Y coordinated release to metplus/component_versions.py on the develop branch, as described in the 'Add Next Version to Lookup Table' release step."
   exit 1
 fi
 
