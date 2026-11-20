@@ -15,20 +15,38 @@ dockerfile_dir=${DOCKERFILE_DIR:-${GITHUB_WORKSPACE}/internal/scripts/docker}
 dockerhub_repo=${DOCKERHUB_BASE_REPO}
 dockerhub_repo_analysis=${DOCKERHUB_ANALYSIS_REPO}
 
-# if rc is in version number, get main_vX.Y, otherwise get X.Y-latest or develop
-if [[ "${METPLUS_VERSION}" =~ rc ]]; then
-  tag_format="main_v{X}.{Y}"
-else
+# Build every release image on a released MET image so that the content of
+# the image is determined by the release alone:
+#   official release X.Y.Z    -> dtcenter/met:X.Y-latest, so that a scheduled
+#                                rebuild picks up MET bugfix releases
+#   beta or rc X.Y.Z-betaN/rcN -> the matching MET release, e.g.
+#                                dtcenter/met:13.0.0-rc1
+if [[ "${METPLUS_VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   tag_format="{X}.{Y}-latest"
+elif [[ "${METPLUS_VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+-(beta|rc)[0-9]+$ ]]; then
+  tag_format="{X}.{Y}.{Z}{N}"
+else
+  echo "ERROR: METplus version ${METPLUS_VERSION} is not a release version"
+  exit 1
 fi
 
-# Get MET tag and adjust MET Docker repo if develop
-met_tag=$("${GITHUB_WORKSPACE}"/develop/metplus/component_versions.py -v "${METPLUS_VERSION}" -o MET -f ${tag_format} --no-get_dev_version)
-echo "$met_tag"
-
 MET_DOCKER_REPO=met
-if [ "$met_tag" == "develop" ] || [[ "${met_tag}" =~ ^main_v[0-9]+\.[0-9]+ ]]; then
-  MET_DOCKER_REPO=met-dev
+met_tag=$("${GITHUB_WORKSPACE}"/develop/metplus/component_versions.py -v "${METPLUS_VERSION}" -o MET -f "${tag_format}")
+if [ -z "${met_tag}" ]; then
+  echo "ERROR: Could not get MET version for METplus version ${METPLUS_VERSION}."
+  echo "Add an entry for this X.Y coordinated release to metplus/component_versions.py on the develop branch, as described in the 'Add Next Version to Lookup Table' release step."
+  exit 1
+fi
+
+met_image=dtcenter/${MET_DOCKER_REPO}:${met_tag}
+echo "Using MET image: ${met_image}"
+
+# The MET release image may be pushed to DockerHub after the METplus release
+# is published. Fail instead of building on a different image.
+if ! docker manifest inspect "${met_image}" > /dev/null; then
+  echo "ERROR: MET image ${met_image} could not be verified (not found or DockerHub unreachable)."
+  echo "Check the error above. If the image has not been pushed yet, run this workflow manually for ${SOURCE_BRANCH} once it is available."
+  exit 1
 fi
 
 # get METplus Analysis tool versions
