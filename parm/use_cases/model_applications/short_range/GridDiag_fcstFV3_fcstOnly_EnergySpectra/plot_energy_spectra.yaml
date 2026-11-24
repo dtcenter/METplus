@@ -1,0 +1,3 @@
+plot_title: 'FV3 3km CONUS spectra Multiple Leads'
+plot_filename: !ENV '${PLOT_OUTPUT_DIR}/GridDiag_fcstFV3_fcstOnly_EnergySpectra/Grid_Diag_Spectra_FV3_multiple_leads.png'
+grid_km: 3
