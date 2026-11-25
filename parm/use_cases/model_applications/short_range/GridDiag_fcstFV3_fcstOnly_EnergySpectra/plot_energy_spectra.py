@@ -1,4 +1,4 @@
-#!/usr/bin/env /nrit/ral/anaconda3/bin/python3
+#!/usr/bin/env python3
 
 ##KE Spectra plotting code
 ##Written by Maria Frediani, NSF NCAR / RAL, 2022
