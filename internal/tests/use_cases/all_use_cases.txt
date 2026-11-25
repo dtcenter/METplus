@@ -213,6 +213,7 @@ Category: short_range
 15::MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning::model_applications/short_range/MODEMultivar_fcstRRFS_obsGOES_MRMS_BrightnessTemp_Lightning.conf
 16::GridStat_fcstGSWR_obsMRMS_GeoTIFF_multiField::model_applications/short_range/GridStat_fcstGSWR_obsMRMS_GeoTIFF_multiField.conf:: rioxarray_env, py_embed
 17::GridStat_fcstHRRRCast_obsHRRRanal_zarr::model_applications/short_range/GridStat_fcstHRRRCast_obsHRRRanal_zarr.conf:: py_embed, zarr_env
+18::GridDiag_fcstFV3_fcstOnly_EnergySpectra::model_applications/short_range/GridDiag_fcstFV3_fcstOnly_EnergySpectra.conf:: metcalcpy, metplotpy,mp_analysis_env
 
 Category: space_weather
 0::GridStat_fcstGloTEC_obsGloTEC_vx7:: model_applications/space_weather/GridStat_fcstGloTEC_obsGloTEC_vx7.conf

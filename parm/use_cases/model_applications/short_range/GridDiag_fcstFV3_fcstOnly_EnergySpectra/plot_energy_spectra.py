@@ -10,6 +10,8 @@ import sys
 import numpy as np
 import datetime
 import glob
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from netCDF4 import Dataset
@@ -124,6 +126,11 @@ def main():
     ptitle = config_dict['plot_title']
     fname = config_dict['plot_filename']
     grid_km = config_dict['grid_km']
+
+    # Make a plot directory if it doesn't exist
+    plotdir = os.path.dirname(fname)
+    if not os.path.exists(plotdir):
+        os.makedirs(plotdir)
 
     snsc = mpl.colormaps.get_cmap('tab10')
     lwidth = 1.8
